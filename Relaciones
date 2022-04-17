@@ -1,0 +1,5 @@
+Relaciones
+
+auto_ads
+
+auto_ads -> ad_body_type_id relacionado con  car_body_types -> id
