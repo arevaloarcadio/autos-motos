@@ -120,3 +120,143 @@ $factory->define(App\Models\Company::class, static function (Faker\Generator $fa
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\AutoAd::class, static function (Faker\Generator $faker) {
+    return [
+        'ad_id' => $faker->sentence,
+        'price' => $faker->randomNumber(5),
+        'price_contains_vat' => $faker->boolean(),
+        'vin' => $faker->sentence,
+        'doors' => $faker->randomNumber(5),
+        'mileage' => $faker->randomNumber(5),
+        'exterior_color' => $faker->sentence,
+        'interior_color' => $faker->sentence,
+        'condition' => $faker->sentence,
+        'dealer_id' => $faker->sentence,
+        'dealer_show_room_id' => $faker->sentence,
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email_address' => $faker->sentence,
+        'address' => $faker->text(),
+        'zip_code' => $faker->sentence,
+        'city' => $faker->sentence,
+        'country' => $faker->sentence,
+        'mobile_number' => $faker->sentence,
+        'landline_number' => $faker->sentence,
+        'whatsapp_number' => $faker->sentence,
+        'youtube_link' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        'ad_fuel_type_id' => $faker->sentence,
+        'ad_body_type_id' => $faker->sentence,
+        'ad_transmission_type_id' => $faker->sentence,
+        'ad_drive_type_id' => $faker->sentence,
+        'first_registration_month' => $faker->randomNumber(5),
+        'first_registration_year' => $faker->randomNumber(5),
+        'engine_displacement' => $faker->randomNumber(5),
+        'power_hp' => $faker->randomNumber(5),
+        'owners' => $faker->randomNumber(5),
+        'inspection_valid_until_month' => $faker->randomNumber(5),
+        'inspection_valid_until_year' => $faker->randomNumber(5),
+        'make_id' => $faker->sentence,
+        'model_id' => $faker->sentence,
+        'generation_id' => $faker->sentence,
+        'series_id' => $faker->sentence,
+        'trim_id' => $faker->sentence,
+        'equipment_id' => $faker->sentence,
+        'additional_vehicle_info' => $faker->sentence,
+        'seats' => $faker->randomNumber(5),
+        'fuel_consumption' => $faker->randomNumber(5),
+        'co2_emissions' => $faker->randomNumber(5),
+        'latitude' => $faker->sentence,
+        'longitude' => $faker->sentence,
+        'geocoding_status' => $faker->sentence,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\AutoAd::class, static function (Faker\Generator $faker) {
+    return [
+        'ad_id' => $faker->sentence,
+        'price' => $faker->randomNumber(5),
+        'vin' => $faker->sentence,
+        'doors' => $faker->randomNumber(5),
+        'mileage' => $faker->randomNumber(5),
+        'exterior_color' => $faker->sentence,
+        'interior_color' => $faker->sentence,
+        'condition' => $faker->sentence,
+        'dealer_id' => $faker->sentence,
+        'dealer_show_room_id' => $faker->sentence,
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email_address' => $faker->sentence,
+        'address' => $faker->text(),
+        'zip_code' => $faker->sentence,
+        'city' => $faker->sentence,
+        'country' => $faker->sentence,
+        'mobile_number' => $faker->sentence,
+        'landline_number' => $faker->sentence,
+        'whatsapp_number' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        'ad_fuel_type_id' => $faker->sentence,
+        'ad_body_type_id' => $faker->sentence,
+        'ad_transmission_type_id' => $faker->sentence,
+        'ad_drive_type_id' => $faker->sentence,
+        'first_registration_month' => $faker->randomNumber(5),
+        'first_registration_year' => $faker->randomNumber(5),
+        'engine_displacement' => $faker->randomNumber(5),
+        'power_hp' => $faker->randomNumber(5),
+        'owners' => $faker->randomNumber(5),
+        'inspection_valid_until_month' => $faker->randomNumber(5),
+        'inspection_valid_until_year' => $faker->randomNumber(5),
+        'make_id' => $faker->sentence,
+        'model_id' => $faker->sentence,
+        'generation_id' => $faker->sentence,
+        'series_id' => $faker->sentence,
+        'trim_id' => $faker->sentence,
+        'equipment_id' => $faker->sentence,
+        'additional_vehicle_info' => $faker->sentence,
+        'seats' => $faker->randomNumber(5),
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CarBodyType::class, static function (Faker\Generator $faker) {
+    return [
+        'internal_name' => $faker->sentence,
+        'slug' => $faker->unique()->slug,
+        'icon_url' => $faker->sentence,
+        'external_name' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CarFuelType::class, static function (Faker\Generator $faker) {
+    return [
+        'internal_name' => $faker->sentence,
+        'slug' => $faker->unique()->slug,
+        'external_name' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CarTransmissionType::class, static function (Faker\Generator $faker) {
+    return [
+        'internal_name' => $faker->sentence,
+        'slug' => $faker->unique()->slug,
+        'external_name' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

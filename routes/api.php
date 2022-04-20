@@ -91,5 +91,52 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/{company}',                                   'CompaniesController@update')->name('update');
             Route::delete('/{company}',                                 'CompaniesController@destroy')->name('destroy');
         });
+
+        Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
+            Route::get('/',                                             'AutoAdsController@index')->name('index');
+            Route::get('/create',                                       'AutoAdsController@create')->name('create');
+            Route::post('/',                                            'AutoAdsController@store')->name('store');
+            Route::get('/{autoAd}/edit',                                'AutoAdsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'AutoAdsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{autoAd}',                                    'AutoAdsController@update')->name('update');
+            Route::delete('/{autoAd}',                                  'AutoAdsController@destroy')->name('destroy');
+        });
+
+
+	    Route::prefix('car-body-types')->name('car-body-types/')->group(static function() {
+	        Route::get('/',                                             'CarBodyTypesController@index')->name('index');
+	        Route::get('/create',                                       'CarBodyTypesController@create')->name('create');
+	        Route::post('/',                                            'CarBodyTypesController@store')->name('store');
+	        Route::get('/{carBodyType}/edit',                           'CarBodyTypesController@edit')->name('edit');
+	        Route::post('/bulk-destroy',                                'CarBodyTypesController@bulkDestroy')->name('bulk-destroy');
+	        Route::post('/{carBodyType}',                               'CarBodyTypesController@update')->name('update');
+	        Route::delete('/{carBodyType}',                             'CarBodyTypesController@destroy')->name('destroy');
+	    });
+			
+
+			/* Auto-generated admin routes */
+			
+	    Route::prefix('car-fuel-types')->name('car-fuel-types/')->group(static function() {
+	        Route::get('/',                                             'CarFuelTypesController@index')->name('index');
+	        Route::get('/create',                                       'CarFuelTypesController@create')->name('create');
+	        Route::post('/',                                            'CarFuelTypesController@store')->name('store');
+	        Route::get('/{carFuelType}/edit',                           'CarFuelTypesController@edit')->name('edit');
+	        Route::post('/bulk-destroy',                                'CarFuelTypesController@bulkDestroy')->name('bulk-destroy');
+	        Route::post('/{carFuelType}',                               'CarFuelTypesController@update')->name('update');
+	        Route::delete('/{carFuelType}',                             'CarFuelTypesController@destroy')->name('destroy');
+	    });
+		
+
+			/* Auto-generated admin routes */
+		Route::prefix('car-transmission-types')->name('car-transmission-types/')->group(static function() {
+	        Route::get('/',                                             'CarTransmissionTypesController@index')->name('index');
+	        Route::get('/create',                                       'CarTransmissionTypesController@create')->name('create');
+	        Route::post('/',                                            'CarTransmissionTypesController@store')->name('store');
+	        Route::get('/{carTransmissionType}/edit',                   'CarTransmissionTypesController@edit')->name('edit');
+	        Route::post('/bulk-destroy',                                'CarTransmissionTypesController@bulkDestroy')->name('bulk-destroy');
+	        Route::post('/{carTransmissionType}',                       'CarTransmissionTypesController@update')->name('update');
+	        Route::delete('/{carTransmissionType}',                     'CarTransmissionTypesController@destroy')->name('destroy');
+	    });
 	});
 });
+

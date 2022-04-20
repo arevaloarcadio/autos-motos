@@ -10,6 +10,10 @@
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/stores') }}"><i class="nav-icon icon-globe"></i> {{ trans('admin.store.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/companies') }}"><i class="nav-icon icon-ghost"></i> {{ trans('admin.company.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/vehicles') }}"><i class="nav-icon icon-ghost"></i> {{ trans('admin.vehicle.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/auto-ads') }}"><i class="nav-icon icon-star"></i> {{ trans('admin.auto-ad.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/car-body-types') }}"><i class="nav-icon icon-drop"></i> {{ trans('admin.car-body-type.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/car-fuel-types') }}"><i class="nav-icon icon-star"></i> {{ trans('admin.car-fuel-type.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/car-transmission-types') }}"><i class="nav-icon icon-flag"></i> {{ trans('admin.car-transmission-type.title') }}</a></li>
            {{-- Do not delete me :) I'm used for auto-generation menu items --}}
 
             <li class="nav-title">{{ trans('brackets/admin-ui::admin.sidebar.settings') }}</li>

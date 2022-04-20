@@ -8,3 +8,7 @@ import './attribute';
 import './attribute-value';
 import './store';
 import './company';
+import './auto-ad';
+import './car-body-type';
+import './car-fuel-type';
+import './car-transmission-type';
