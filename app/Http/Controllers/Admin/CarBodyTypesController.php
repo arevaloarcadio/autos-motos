@@ -44,12 +44,13 @@ class CarBodyTypesController extends Controller
         );
 
         if ($request->ajax()) {
+             
             if ($request->has('bulk')) {
                 return [
                     'bulkItems' => $data->pluck('id')
                 ];
             }
-            return ['data' => $data];
+           return response()->json(['data' => $data]);
         }
 
         return view('admin.car-body-type.index', ['data' => $data]);

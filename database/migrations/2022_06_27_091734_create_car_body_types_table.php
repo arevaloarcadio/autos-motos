@@ -25,6 +25,7 @@ class CreateCarBodyTypesTable extends Migration
                 $table->string('slug')->unique();
                 $table->string('icon_url')->nullable();
                 $table->string('external_name')->nullable();
+                $table->string('ad_type')->default('auto');
                 $table->timestamps();
             }
         );
