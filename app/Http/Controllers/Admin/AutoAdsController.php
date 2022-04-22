@@ -52,6 +52,15 @@ class AutoAdsController extends Controller
                 if ($request->input('filter.make_id')) {
                     $query->where('make_id',$request->input('filter.make_id'));
                 }
+                if ($request->input('filter.condition')) {
+                    $query->where('condition',$request->input('filter.condition'));
+                }
+                if ($request->input('filter.exterior_color')) {
+                    $query->where('exterior_color',$request->input('filter.exterior_color'));
+                }
+                if ($request->input('filter.city')) {
+                    $query->where('city',$request->input('filter.city'));
+                }
             }
         );
 
