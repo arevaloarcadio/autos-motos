@@ -23,8 +23,7 @@ class CreateCompaniesTable extends Migration
             $table->string('whatsapp');
             $table->string('logo');
             $table->text('description');
-            $table->unsignedBigInteger('country_id');
-            $table->unsignedBigInteger('user_id');
+            $table->string('country');
             $table->timestamps();
         });
     }

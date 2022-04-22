@@ -18,14 +18,36 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', 'App\Http\Controllers\UserController@register');
+Route::post('/register/professional', 'App\Http\Controllers\UserController@register_professional');
+Route::post('/register/occasional', 'App\Http\Controllers\UserController@register_occasional');
+
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
+
+
+Route::namespace('App\Http\Controllers\Admin')->group(static function() {
+
+    Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
+		Route::get('/',                                             'AutoAdsController@index')->name('index');
+	});
+	
+	Route::prefix('vehicle-categories')->name('vehicle-categories/')->group(static function() {
+		Route::get('/',                                             'VehicleCategoriesController@index')->name('index');
+	});
+	
+	Route::prefix('car-fuel-types')->name('car-fuel-types/')->group(static function() {
+		Route::get('/',                                             'CarFuelTypesController@index')->name('index');
+	});
+
+	Route::prefix('car-transmission-types')->name('car-transmission-types/')->group(static function() {
+	 	Route::get('/',                                             'CarTransmissionTypesController@index')->name('index');
+	});
+});
+
 
 Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 	
 		Route::prefix('vehicle-categories')->name('vehicle-categories/')->group(static function() {
-	        Route::get('/',                                             'VehicleCategoriesController@index')->name('index');
 	        Route::get('/create',                                       'VehicleCategoriesController@create')->name('create');
 	        Route::post('/',                                            'VehicleCategoriesController@store')->name('store');
 	        Route::get('/{vehicleCategory}/edit',                       'VehicleCategoriesController@edit')->name('edit');
@@ -93,7 +115,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         });
 
         Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
-            Route::get('/',                                             'AutoAdsController@index')->name('index');
             Route::get('/create',                                       'AutoAdsController@create')->name('create');
             Route::post('/',                                            'AutoAdsController@store')->name('store');
             Route::get('/{autoAd}/edit',                                'AutoAdsController@edit')->name('edit');
@@ -117,7 +138,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 			/* Auto-generated admin routes */
 			
 	    Route::prefix('car-fuel-types')->name('car-fuel-types/')->group(static function() {
-	        Route::get('/',                                             'CarFuelTypesController@index')->name('index');
 	        Route::get('/create',                                       'CarFuelTypesController@create')->name('create');
 	        Route::post('/',                                            'CarFuelTypesController@store')->name('store');
 	        Route::get('/{carFuelType}/edit',                           'CarFuelTypesController@edit')->name('edit');
@@ -129,7 +149,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
 			/* Auto-generated admin routes */
 		Route::prefix('car-transmission-types')->name('car-transmission-types/')->group(static function() {
-	        Route::get('/',                                             'CarTransmissionTypesController@index')->name('index');
 	        Route::get('/create',                                       'CarTransmissionTypesController@create')->name('create');
 	        Route::post('/',                                            'CarTransmissionTypesController@store')->name('store');
 	        Route::get('/{carTransmissionType}/edit',                   'CarTransmissionTypesController@edit')->name('edit');

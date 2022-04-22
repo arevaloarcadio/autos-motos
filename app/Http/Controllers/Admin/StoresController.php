@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Store\DestroyStore;
 use App\Http\Requests\Admin\Store\IndexStore;
 use App\Http\Requests\Admin\Store\StoreStore;
 use App\Http\Requests\Admin\Store\UpdateStore;
-use App\Models\Store;
+use App\Models\{SellerStore,Store} ;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -20,10 +20,12 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
 
 class StoresController extends Controller
 {
-
+    use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -82,8 +84,7 @@ class StoresController extends Controller
             'city' => ['required', 'string'],
             'code_postal' => ['required', 'string'],
             'whatsapp' => ['required', 'string'],
-            'country_id' => ['required', 'int'],
-            'user_id' => 'required|int|exists:users,id',
+            'country' => ['required', 'string'],
         ],
         [
            
@@ -95,7 +96,17 @@ class StoresController extends Controller
 
         try {
 
-            $store = Store::create($request->all()); 
+            $store = new Store; 
+            
+            $store->name = $request->input('name');
+            $store->email = $request->input('email');
+            $store->phone = $request->input('phone');
+            $store->city = $request->input('city');
+            $store->code_postal = $request->input('code_postal');
+            $store->whatsapp = $request->input('whatsapp');
+            $store->country = $request->input('country');
+
+            $store->save();
             
             return response()->json(['response' => 'OK', 'data' => $store]);  
         } catch (Exception $e) {

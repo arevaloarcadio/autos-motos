@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\User;
+use App\Models\{SellerStore,User,Store,Company};
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -61,7 +61,7 @@ class UserController extends Controller
         return response()->json(compact('user'));
     }
 
-    public function register(Request $request)
+    public function register_occasional(Request $request)
     {   
         $resource = ApiHelper::resource();
 
@@ -69,6 +69,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'code_postal' => 'nullable|integer|min:4',
+            'phone' => 'nullable|string|min:7',
             'email' => 'required|string|unique:users|email|max:255',
             'password' => 'required|min:6|confirmed'
         ]);
@@ -77,19 +78,27 @@ class UserController extends Controller
             ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
             return $this->sendResponse($resource);
         }
-
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->code_postal = $request->code_postal;
-        $user->last_name = $request->last_name;
-        $user->password = Hash::make($request->password);
         
-        $user->save();
+        try {
+            
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->code_postal = $request->code_postal;
+            $user->phone = $request->phone;
+            $user->last_name = $request->last_name;
+            $user->password = Hash::make($request->password);
+            
+            $user->save();
 
-        $token = JWTAuth::fromUser($user);
+            $token = JWTAuth::fromUser($user);
 
-        return response()->json(compact('user','token'), 201);
+            return response()->json(compact('user','token'), 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }    
     }
 
     public function register_professional(Request $request)
@@ -101,7 +110,9 @@ class UserController extends Controller
             'last_name' => 'required|string|max:255',
             'code_postal' => 'nullable|integer|min:4',
             'email' => 'required|string|unique:users|email|max:255',
-            'password' => 'required|min:6|confirmed'
+            'password' => 'required|min:6|confirmed',
+            'store_id' => 'required|numeric|exists:stores,id',
+            'company_id' => 'required|numeric|exists:companies,id',
         ]);
 
         if ($validator->fails()) {
@@ -109,18 +120,35 @@ class UserController extends Controller
             return $this->sendResponse($resource);
         }
 
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->code_postal = $request->code_postal;
-        $user->last_name = $request->last_name;
-        $user->password = Hash::make($request->password);
-        
-        $user->save();
+        try {
+            
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->code_postal = $request->code_postal;
+            $user->last_name = $request->last_name;
+            $user->password = Hash::make($request->password);
+            $user->company_id = $request->company_id;
+            
+            $user->save();
 
-        $token = JWTAuth::fromUser($user);
+            $seller_store = new SellerStore;
+            $seller_store->user_id = $user->id;
+            $seller_store->store_id = $request->store_id;
 
-        return response()->json(compact('user','token'), 201);
+            $seller_store->save(); 
+
+            $store = Store::find($request->store_id);
+            $company = Company::find($request->company_id);
+
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json(compact('user','token','store','company'), 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     public function logout()

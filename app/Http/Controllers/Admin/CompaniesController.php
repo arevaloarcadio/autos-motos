@@ -20,10 +20,13 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Traits\ApiController;
+use App\Helpers\Api as ApiHelper;
+
 
 class CompaniesController extends Controller
 {
-
+    use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -73,7 +76,9 @@ class CompaniesController extends Controller
      * @return array|RedirectResponse|Redirector
      */
     public function store(Request $request)
-    {
+    {   
+        $resource = ApiHelper::resource();
+
         $validator = \Validator::make($request->all(),[
             'name' => ['required', 'string'],
             'cif' => ['required', 'string'],
@@ -83,25 +88,41 @@ class CompaniesController extends Controller
             'whatsapp' => ['required', 'string'],
             'logo' => ['required', 'file'],
             'description' => ['required', 'string'],
-            'country_id' => ['required', 'int'],
-            'user_id' => 'required|int|exists:users,id',
+            'country' => ['required', 'string']
         ],
         [
            
         ]);
 
         if($validator->fails()){
-            return response()->json(['response' => 'error', 'data' => json_decode($validator->errors()->toJson())],422);  
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
         }
 
         try {
 
-            $company = Store::create($request->all()); 
-            
-            return response()->json(['response' => 'OK', 'data' => $company]);  
-        } catch (Exception $e) {
+            $file = $request->file('logo');
+            $logo = date('dmY').'-'.$file->getClientOriginalName();
+            $destinationPath = public_path('/logos');
+            $move = $file->move($destinationPath, $logo);
 
-            return response()->json(['response' => 'error', 'data' => $e->getMessage()],500);  
+            $company = new Company; 
+            $company->name = $request->name;
+            $company->cif = $request->cif;
+            $company->phone = $request->phone;
+            $company->city = $request->city;
+            $company->code_postal = $request->code_postal;
+            $company->whatsapp = $request->whatsapp;
+            $company->country = $request->country;
+            $company->description = $request->description;
+            $company->logo = $logo;
+            $company->save();
+
+            return response()->json(['response' => 'OK', 'data' => $company]);  
+        
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
         }
     }
 
@@ -146,7 +167,7 @@ class CompaniesController extends Controller
     public function update(Request $request, Company $company)
     {
         $validator = \Validator::make($request->all(),[
-            'name' => ['required', 'string'],
+             'name' => ['required', 'string'],
             'cif' => ['required', 'string'],
             'phone' => ['required', 'string'],
             'city' => ['required', 'string'],
@@ -154,8 +175,7 @@ class CompaniesController extends Controller
             'whatsapp' => ['required', 'string'],
             'logo' => ['required', 'file'],
             'description' => ['required', 'string'],
-            'country_id' => ['required', 'int'],
-            'user_id' => 'required|int|exists:users,id',
+            'country' => ['required', 'string']
         ],
         [
            
