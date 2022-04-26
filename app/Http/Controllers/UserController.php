@@ -68,8 +68,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'code_postal' => 'nullable|integer|min:4',
             'phone' => 'nullable|string|min:7',
+            'whatsapp' => 'nullable|string|min:7',
             'email' => 'required|string|unique:users|email|max:255',
             'password' => 'required|min:6|confirmed'
         ]);
@@ -86,6 +86,7 @@ class UserController extends Controller
             $user->email = $request->email;
             $user->code_postal = $request->code_postal;
             $user->phone = $request->phone;
+            $user->whatsapp = $request->whatsapp;
             $user->last_name = $request->last_name;
             $user->password = Hash::make($request->password);
             
