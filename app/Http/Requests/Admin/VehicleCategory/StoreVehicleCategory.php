@@ -15,7 +15,7 @@ class StoreVehicleCategory extends FormRequest
      */
     public function authorize(): bool
     {
-       return true;
+        return true;
     }
 
     /**
@@ -26,9 +26,9 @@ class StoreVehicleCategory extends FormRequest
     public function rules(): array
     {
         return [
-            'icon' => ['nullable', 'string'],
-            'name' => ['nullable', 'string'],
-            'type_ads' => ['nullable', 'integer'],
+            'internal_name' => ['required', 'string'],
+            'slug' => ['required', Rule::unique('vehicle_categories', 'slug'), 'string'],
+            'ad_type' => ['required', 'string'],
             
         ];
     }

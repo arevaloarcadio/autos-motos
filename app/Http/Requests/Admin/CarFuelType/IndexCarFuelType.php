@@ -25,7 +25,7 @@ class IndexCarFuelType extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,internal_name,external_name|nullable',
+            'orderBy' => 'in:id,internal_name,external_name,ad_type|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',

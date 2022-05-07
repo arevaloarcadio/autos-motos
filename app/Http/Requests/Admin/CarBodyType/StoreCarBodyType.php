@@ -30,6 +30,7 @@ class StoreCarBodyType extends FormRequest
             'slug' => ['required', Rule::unique('car_body_types', 'slug'), 'string'],
             'icon_url' => ['nullable', 'string'],
             'external_name' => ['nullable', 'string'],
+            'ad_type' => ['required', 'string'],
             
         ];
     }

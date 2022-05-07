@@ -2,12 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class VehicleCategory extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'internal_name',
+        'slug',
+        'ad_type',
+    
+    ];
+    
+    
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    
+    ];
+    
+    protected $appends = ['resource_url'];
 
-    protected $fillable =  ['id', 'icon', 'name', 'type_ads'];
+    /* ************************ ACCESSOR ************************* */
+
+    public function getResourceUrlAttribute()
+    {
+        return url('/admin/vehicle-categories/'.$this->getKey());
+    }
 }

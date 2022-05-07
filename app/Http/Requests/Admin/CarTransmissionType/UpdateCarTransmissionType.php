@@ -29,6 +29,7 @@ class UpdateCarTransmissionType extends FormRequest
             'internal_name' => ['sometimes', Rule::unique('car_transmission_types', 'internal_name')->ignore($this->carTransmissionType->getKey(), $this->carTransmissionType->getKeyName()), 'string'],
             'slug' => ['sometimes', Rule::unique('car_transmission_types', 'slug')->ignore($this->carTransmissionType->getKey(), $this->carTransmissionType->getKeyName()), 'string'],
             'external_name' => ['nullable', 'string'],
+            'ad_type' => ['sometimes', 'string'],
             
         ];
     }

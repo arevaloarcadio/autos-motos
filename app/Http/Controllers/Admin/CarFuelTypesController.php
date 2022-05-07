@@ -37,22 +37,26 @@ class CarFuelTypesController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'internal_name', 'external_name'],
+            ['id', 'internal_name', 'external_name', 'ad_type'],
 
             // set columns to searchIn
-            ['id', 'internal_name', 'slug', 'external_name']
-        );
+            ['id', 'internal_name', 'slug', 'external_name', 'ad_type'],
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns = ['id', 'internal_name', 'slug', 'external_name', 'ad_type'];
+                
+                foreach ($columns as $column) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
             }
-            return ['data' => $data];
-        }
-
-        return view('admin.car-fuel-type.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

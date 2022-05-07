@@ -29,6 +29,7 @@ class StoreCarFuelType extends FormRequest
             'internal_name' => ['required', Rule::unique('car_fuel_types', 'internal_name'), 'string'],
             'slug' => ['required', Rule::unique('car_fuel_types', 'slug'), 'string'],
             'external_name' => ['nullable', 'string'],
+            'ad_type' => ['required', 'string'],
             
         ];
     }

@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class CarBodyType extends Model
 {
-    use \App\Traits\TraitUuid;
-    
     protected $fillable = [
         'internal_name',
         'slug',
         'icon_url',
         'external_name',
+        'ad_type',
     
     ];
     

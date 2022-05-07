@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Models;
+use App\Models\Mark;
 
 class ModelController extends Controller
 {
@@ -26,7 +27,12 @@ class ModelController extends Controller
     public function store(Request $request)
     {
          try {
-              Models::insert($request->models);
+                foreach ($request->marks as $mark) {
+                    $mark['created_at'] = date('Y-m-d h:m');
+                    $mark['updated_at'] = date('Y-m-d h:m');
+                    Mark::insert($mark);
+                }
+              
 
             return response()->json(['response' => true], 200);
         } catch (Exception $e) {

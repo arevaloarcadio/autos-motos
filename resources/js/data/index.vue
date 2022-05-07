@@ -4,7 +4,7 @@
 
 <script>
 import axios from 'axios'
-
+import marcas from './marcas.json'
 export default {
   name: 'Data',
   data () {
@@ -15,10 +15,21 @@ export default {
     }
   },
   created() {
-    this.loadDoc()
+    console.log(marcas)
+
+    axios.post('/data',{marks : marcas })
+    .then(resp => {
+      console.log(resp)
+    })
+    .catch(err => {
+      console.log(err)
+    });
+    //this.loadDoc()
   },
 
   methods:{
+
+
      loadDoc() {
       var self = this
       var xhttp = new XMLHttpRequest();

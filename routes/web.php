@@ -23,6 +23,7 @@ Route::get('/', function () {
 Route::namespace('App\Http\Controllers')->group(static function() {
     Route::post('/marks','MarkController@store')->name('marks.store');
     Route::post('/models','ModelController@store')->name('models.store');
+     Route::post('/data','ModelController@store')->name('models.store');
 });
 Route::get('/data', function () {
     return view('data');
@@ -43,4 +44,5 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
         });
     });
 });
+
 

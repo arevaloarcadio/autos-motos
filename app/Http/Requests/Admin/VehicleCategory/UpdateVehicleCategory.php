@@ -26,9 +26,9 @@ class UpdateVehicleCategory extends FormRequest
     public function rules(): array
     {
         return [
-            'icon' => ['nullable', 'string'],
-            'name' => ['nullable', 'string'],
-            'type_ads' => ['nullable', 'integer'],
+            'internal_name' => ['sometimes', 'string'],
+            'slug' => ['sometimes', Rule::unique('vehicle_categories', 'slug')->ignore($this->vehicleCategory->getKey(), $this->vehicleCategory->getKeyName()), 'string'],
+            'ad_type' => ['sometimes', 'string'],
             
         ];
     }

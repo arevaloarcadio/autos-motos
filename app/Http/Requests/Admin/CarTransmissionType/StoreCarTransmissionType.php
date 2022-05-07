@@ -29,6 +29,7 @@ class StoreCarTransmissionType extends FormRequest
             'internal_name' => ['required', Rule::unique('car_transmission_types', 'internal_name'), 'string'],
             'slug' => ['required', Rule::unique('car_transmission_types', 'slug'), 'string'],
             'external_name' => ['nullable', 'string'],
+            'ad_type' => ['required', 'string'],
             
         ];
     }

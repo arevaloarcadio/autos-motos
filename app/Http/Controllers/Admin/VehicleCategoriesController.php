@@ -37,22 +37,26 @@ class VehicleCategoriesController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'icon', 'name', 'type_ads'],
+            ['id', 'internal_name', 'ad_type'],
 
             // set columns to searchIn
-            ['id', 'icon', 'name']
-        );
+            ['id', 'internal_name', 'slug', 'ad_type'],
 
-        //if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns =  ['id', 'internal_name', 'slug', 'ad_type'];
+                
+                foreach ($columns as $column) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
             }
-            return ['data' => $data];
-        //}
-
-        //return view('admin.vehicle-category.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

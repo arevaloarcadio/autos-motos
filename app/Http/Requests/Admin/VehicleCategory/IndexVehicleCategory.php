@@ -25,7 +25,7 @@ class IndexVehicleCategory extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,icon,name,type_ads|nullable',
+            'orderBy' => 'in:id,internal_name,ad_type|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',

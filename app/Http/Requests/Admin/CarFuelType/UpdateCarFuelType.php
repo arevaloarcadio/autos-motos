@@ -29,6 +29,7 @@ class UpdateCarFuelType extends FormRequest
             'internal_name' => ['sometimes', Rule::unique('car_fuel_types', 'internal_name')->ignore($this->carFuelType->getKey(), $this->carFuelType->getKeyName()), 'string'],
             'slug' => ['sometimes', Rule::unique('car_fuel_types', 'slug')->ignore($this->carFuelType->getKey(), $this->carFuelType->getKeyName()), 'string'],
             'external_name' => ['nullable', 'string'],
+            'ad_type' => ['sometimes', 'string'],
             
         ];
     }

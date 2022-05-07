@@ -14,7 +14,7 @@ class DestroyCarFuelType extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('admin.car-fuel-type.delete', $this->carFuelType);
     }
 
     /**

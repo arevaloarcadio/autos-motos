@@ -37,23 +37,26 @@ class CarBodyTypesController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'internal_name', 'icon_url', 'external_name'],
+            ['id', 'internal_name', 'icon_url', 'external_name', 'ad_type'],
 
             // set columns to searchIn
-            ['id', 'internal_name', 'slug', 'icon_url', 'external_name']
-        );
+            ['id', 'internal_name', 'slug', 'icon_url', 'external_name', 'ad_type'],
 
-        if ($request->ajax()) {
-             
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns = ['id', 'internal_name', 'slug', 'icon_url', 'external_name', 'ad_type'];
+                
+                foreach ($columns as $column) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
             }
-           return response()->json(['data' => $data]);
-        }
-
-        return view('admin.car-body-type.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

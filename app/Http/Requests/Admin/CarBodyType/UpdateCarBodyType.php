@@ -15,7 +15,7 @@ class UpdateCarBodyType extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('admin.car-body-type.edit', $this->carBodyType);
     }
 
     /**
@@ -30,6 +30,7 @@ class UpdateCarBodyType extends FormRequest
             'slug' => ['sometimes', Rule::unique('car_body_types', 'slug')->ignore($this->carBodyType->getKey(), $this->carBodyType->getKeyName()), 'string'],
             'icon_url' => ['nullable', 'string'],
             'external_name' => ['nullable', 'string'],
+            'ad_type' => ['sometimes', 'string'],
             
         ];
     }

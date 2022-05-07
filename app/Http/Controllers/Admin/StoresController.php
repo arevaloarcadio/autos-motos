@@ -43,14 +43,22 @@ class StoresController extends Controller
             ['id', 'name', 'email', 'phone', 'city', 'code_postal', 'whatsapp', 'country_id', 'user_id'],
 
             // set columns to searchIn
-            ['id', 'name', 'email', 'phone', 'city', 'code_postal', 'whatsapp']
-        );
+            ['id', 'name', 'email', 'phone', 'city', 'code_postal', 'whatsapp'],
 
-        if ($request->has('bulk')) {
-            return [
-                'bulkItems' => $data->pluck('id')
-            ];
-        }
+            function ($query) use ($request) {
+                        
+                $columns =  ['id', 'name', 'email', 'phone', 'city', 'code_postal', 'whatsapp', 'country_id', 'user_id'];
+                
+                foreach ($columns as $column) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+        );
+        
         return ['data' => $data];
      
     }

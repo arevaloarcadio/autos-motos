@@ -5,9 +5,9 @@ Vue.component('vehicle-category-form', {
     data: function() {
         return {
             form: {
-                icon:  '' ,
-                name:  '' ,
-                type_ads:  '' ,
+                internal_name:  '' ,
+                slug:  '' ,
+                ad_type:  '' ,
                 
             }
         }
