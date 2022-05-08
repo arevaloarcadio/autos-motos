@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dealer extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'slug',
         'company_name',

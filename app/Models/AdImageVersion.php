@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdImageVersion extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'ad_image_id',
         'name',

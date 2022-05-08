@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'first_name',
         'last_name',

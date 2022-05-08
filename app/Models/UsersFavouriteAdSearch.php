@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsersFavouriteAdSearch extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
     
     ];

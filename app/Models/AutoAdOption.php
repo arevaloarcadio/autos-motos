@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AutoAdOption extends Model
 {
+    
     protected $fillable = [
         'auto_ad_id',
         'auto_option_id',

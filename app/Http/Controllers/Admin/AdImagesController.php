@@ -46,13 +46,13 @@ class AdImagesController extends Controller
                         
                 $columns = ['id', 'ad_id', 'path', 'is_external', 'order_index'];
                 
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
-                }
             }
         );
         

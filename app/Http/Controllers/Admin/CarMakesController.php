@@ -46,13 +46,13 @@ class CarMakesController extends Controller
                         
                 $columns = ['id', 'name', 'external_id', 'is_active'];
                 
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
-                }
             }
         );
         

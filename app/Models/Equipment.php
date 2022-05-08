@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipment extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'name',
         'trim_id',

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CarSpec extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'car_make_id',
         'car_model_id',

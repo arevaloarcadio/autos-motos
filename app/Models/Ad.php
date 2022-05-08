@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ad extends Model
 {
+    use \App\Traits\TraitUuid;
+
     protected $fillable = [
         'slug',
         'title',

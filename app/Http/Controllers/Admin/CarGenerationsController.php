@@ -46,13 +46,13 @@ class CarGenerationsController extends Controller
                         
                 $columns = ['id', 'name', 'year', 'car_model_id', 'external_id'];
                 
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
-                }
             }
         );
         

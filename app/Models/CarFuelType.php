@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CarFuelType extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'internal_name',
         'slug',

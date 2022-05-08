@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Translation extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'locale_id',
         'translation_key',

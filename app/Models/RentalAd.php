@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RentalAd extends Model
 {
+     use \App\Traits\TraitUuid;
     protected $fillable = [
         'ad_id',
         'address',

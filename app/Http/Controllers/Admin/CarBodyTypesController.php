@@ -46,13 +46,13 @@ class CarBodyTypesController extends Controller
                         
                 $columns = ['id', 'internal_name', 'slug', 'icon_url', 'external_name', 'ad_type'];
                 
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
-                }
             }
         );
         
