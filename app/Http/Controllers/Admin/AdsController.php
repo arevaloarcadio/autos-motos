@@ -30,7 +30,9 @@ class AdsController extends Controller
      * @return array|Factory|View
      */
     public function index(IndexAd $request)
-    {
+    {   
+   
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Ad::class)->processRequestAndGet(
             // pass the request with params
@@ -43,7 +45,7 @@ class AdsController extends Controller
             ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text'],
 
         function ($query) use ($request) {
-                        
+                     
                 $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text'];
 
                 foreach ($columns as $column) {
@@ -55,9 +57,12 @@ class AdsController extends Controller
                         }
                     }
                 }
+
+                foreach (Ad::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
-        
         return ['data' => $data];
     }
 

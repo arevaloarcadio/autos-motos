@@ -47,12 +47,16 @@ class AdImagesController extends Controller
                 $columns = ['id', 'ad_id', 'path', 'is_external', 'order_index'];
                 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (AdImage::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         

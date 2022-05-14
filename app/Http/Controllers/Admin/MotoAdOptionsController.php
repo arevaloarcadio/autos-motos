@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Locale\BulkDestroyLocale;
-use App\Http\Requests\Admin\Locale\DestroyLocale;
-use App\Http\Requests\Admin\Locale\IndexLocale;
-use App\Http\Requests\Admin\Locale\StoreLocale;
-use App\Http\Requests\Admin\Locale\UpdateLocale;
-use App\Models\Locale;
+use App\Http\Requests\Admin\MotoAdOption\BulkDestroyMotoAdOption;
+use App\Http\Requests\Admin\MotoAdOption\DestroyMotoAdOption;
+use App\Http\Requests\Admin\MotoAdOption\IndexMotoAdOption;
+use App\Http\Requests\Admin\MotoAdOption\StoreMotoAdOption;
+use App\Http\Requests\Admin\MotoAdOption\UpdateMotoAdOption;
+use App\Models\MotoAdOption;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -20,31 +20,31 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-class LocalesController extends Controller
+class MotoAdOptionsController extends Controller
 {
 
     /**
      * Display a listing of the resource.
      *
-     * @param IndexLocale $request
+     * @param IndexMotoAdOption $request
      * @return array|Factory|View
      */
-    public function index(IndexLocale $request)
+    public function index(IndexMotoAdOption $request)
     {
         // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(Locale::class)->processRequestAndGet(
+        $data = AdminListing::create(MotoAdOption::class)->processRequestAndGet(
             // pass the request with params
             $request,
 
             // set columns to query
-            ['id', 'internal_name', 'code', 'icon'],
+            ['moto_ad_id', 'option_id'],
 
             // set columns to searchIn
-            ['id', 'internal_name', 'code', 'icon'],
+            ['moto_ad_id', 'option_id'],
 
             function ($query) use ($request) {
                         
-                $columns = ['id', 'internal_name', 'code', 'icon'];
+                $columns =   ['moto_ad_id', 'option_id'];
                 
                 if ($request->filters) {
                     foreach ($request->filters as $key => $filter) {
@@ -53,8 +53,8 @@ class LocalesController extends Controller
                         }
                     }
                 }
-
-                foreach (Locale::getRelationships() as $key => $value) {
+                
+                foreach (MotoAdOption::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
             }
@@ -71,42 +71,42 @@ class LocalesController extends Controller
      */
     public function create()
     {
-        $this->authorize('admin.locale.create');
+        $this->authorize('admin.moto-ad-option.create');
 
-        return view('admin.locale.create');
+        return view('admin.moto-ad-option.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param StoreLocale $request
+     * @param StoreMotoAdOption $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreLocale $request)
+    public function store(StoreMotoAdOption $request)
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-        // Store the Locale
-        $locale = Locale::create($sanitized);
+        // Store the MotoAdOption
+        $motoAdOption = MotoAdOption::create($sanitized);
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/locales'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('admin/moto-ad-options'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/locales');
+        return redirect('admin/moto-ad-options');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param Locale $locale
+     * @param MotoAdOption $motoAdOption
      * @throws AuthorizationException
      * @return void
      */
-    public function show(Locale $locale)
+    public function show(MotoAdOption $motoAdOption)
     {
-        $this->authorize('admin.locale.show', $locale);
+        $this->authorize('admin.moto-ad-option.show', $motoAdOption);
 
         // TODO your code goes here
     }
@@ -114,56 +114,56 @@ class LocalesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Locale $locale
+     * @param MotoAdOption $motoAdOption
      * @throws AuthorizationException
      * @return Factory|View
      */
-    public function edit(Locale $locale)
+    public function edit(MotoAdOption $motoAdOption)
     {
-        $this->authorize('admin.locale.edit', $locale);
+        $this->authorize('admin.moto-ad-option.edit', $motoAdOption);
 
 
-        return view('admin.locale.edit', [
-            'locale' => $locale,
+        return view('admin.moto-ad-option.edit', [
+            'motoAdOption' => $motoAdOption,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateLocale $request
-     * @param Locale $locale
+     * @param UpdateMotoAdOption $request
+     * @param MotoAdOption $motoAdOption
      * @return array|RedirectResponse|Redirector
      */
-    public function update(UpdateLocale $request, Locale $locale)
+    public function update(UpdateMotoAdOption $request, MotoAdOption $motoAdOption)
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-        // Update changed values Locale
-        $locale->update($sanitized);
+        // Update changed values MotoAdOption
+        $motoAdOption->update($sanitized);
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('admin/locales'),
+                'redirect' => url('admin/moto-ad-options'),
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
 
-        return redirect('admin/locales');
+        return redirect('admin/moto-ad-options');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param DestroyLocale $request
-     * @param Locale $locale
+     * @param DestroyMotoAdOption $request
+     * @param MotoAdOption $motoAdOption
      * @throws Exception
      * @return ResponseFactory|RedirectResponse|Response
      */
-    public function destroy(DestroyLocale $request, Locale $locale)
+    public function destroy(DestroyMotoAdOption $request, MotoAdOption $motoAdOption)
     {
-        $locale->delete();
+        $motoAdOption->delete();
 
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
@@ -175,17 +175,17 @@ class LocalesController extends Controller
     /**
      * Remove the specified resources from storage.
      *
-     * @param BulkDestroyLocale $request
+     * @param BulkDestroyMotoAdOption $request
      * @throws Exception
      * @return Response|bool
      */
-    public function bulkDestroy(BulkDestroyLocale $request) : Response
+    public function bulkDestroy(BulkDestroyMotoAdOption $request) : Response
     {
         DB::transaction(static function () use ($request) {
             collect($request->data['ids'])
                 ->chunk(1000)
                 ->each(static function ($bulkChunk) {
-                    Locale::whereIn('id', $bulkChunk)->delete();
+                    MotoAdOption::whereIn('id', $bulkChunk)->delete();
 
                     // TODO your code goes here
                 });

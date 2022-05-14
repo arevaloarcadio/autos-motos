@@ -1466,5 +1466,22 @@ return [
         ],
     ],
 
+    'moto-ad-option' => [
+        'title' => 'Moto Ad Options',
+
+        'actions' => [
+            'index' => 'Moto Ad Options',
+            'create' => 'New Moto Ad Option',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'moto_ad_id' => 'Moto ad',
+            'option_id' => 'Option',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];

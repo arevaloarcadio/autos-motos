@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-     use \App\Traits\TraitUuid;
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
+    
     protected $fillable = [
         'name',
     

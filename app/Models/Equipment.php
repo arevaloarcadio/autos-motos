@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Equipment extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'trim_id',
@@ -32,5 +33,16 @@ class Equipment extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/equipment/'.$this->getKey());
+    }
+
+    public function trim()
+    {
+        return $this->belongsTo(Trim::class);
+    }
+
+    public function options()
+    {
+        return $this->belongsToMany(Option::class, 'equipment_options')
+                    ->withPivot('is_base');
     }
 }

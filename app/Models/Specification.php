@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Specification extends Model
 {
-     use \App\Traits\TraitUuid;
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
+    
     protected $fillable = [
         'name',
         'slug',
@@ -32,5 +34,20 @@ class Specification extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/specifications/'.$this->getKey());
+    }
+    
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Specification::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(Specification::class, 'parent_id')->orderBy('name', 'asc');;
+    }
+
+    protected function getSluggableField(): string
+    {
+        return 'name';
     }
 }

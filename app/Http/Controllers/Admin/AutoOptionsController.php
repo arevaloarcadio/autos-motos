@@ -40,19 +40,27 @@ class AutoOptionsController extends Controller
             ['id', 'internal_name', 'parent_id', 'ad_type'],
 
             // set columns to searchIn
-            ['id', 'internal_name', 'slug', 'parent_id', 'ad_type']
-        );
+            ['id', 'internal_name', 'slug', 'parent_id', 'ad_type'],
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns =  ['id', 'internal_name', 'slug', 'parent_id', 'ad_type'];
+                
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+
+                foreach (AutoOption::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
-            return ['data' => $data];
-        }
-
-        return view('admin.auto-option.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

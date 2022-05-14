@@ -46,12 +46,16 @@ class AdImageVersionsController extends Controller
                         
                 $columns = ['id', 'ad_image_id', 'name', 'path', 'is_external'];
                 
-                foreach ($columns as $column) {
+                if ($request->filters) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (AdImageVersion::getRelationships() as $key => $value) {
+                   $query->with($key);
                 }
             }
         );

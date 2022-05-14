@@ -47,12 +47,16 @@ class EquipmentOptionsController extends Controller
                 $columns =  ['equipment_id', 'option_id', 'is_base', 'ad_type', 'external_id', 'external_updated_at'];
                 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (EquipmentOption::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         

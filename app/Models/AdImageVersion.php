@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AdImageVersion extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'ad_image_id',
         'name',
@@ -30,4 +31,21 @@ class AdImageVersion extends Model
     {
         return url('/admin/ad-image-versions/'.$this->getKey());
     }
+
+    public function adImage()
+    {
+        return $this->belongsTo(AdImage::class);
+    }
+
+    /**
+     * @return string
+     */
+    /*public function getUrlAttribute(): string
+    {
+        if (1 === $this->is_external) {
+            return $this->path;
+        }
+
+        return Storage::disk('s3')->url($this->path);
+    }*/
 }

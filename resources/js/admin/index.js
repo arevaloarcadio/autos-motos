@@ -51,3 +51,4 @@ import './user';
 import './users-favourite-ad';
 import './users-favourite-ad-search';
 import './user-role';
+import './moto-ad-option';

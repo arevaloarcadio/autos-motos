@@ -46,3 +46,19 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 });
 
 
+
+
+/* Auto-generated admin routes */
+Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
+        Route::prefix('moto-ad-options')->name('moto-ad-options/')->group(static function() {
+            Route::get('/',                                             'MotoAdOptionsController@index')->name('index');
+            Route::get('/create',                                       'MotoAdOptionsController@create')->name('create');
+            Route::post('/',                                            'MotoAdOptionsController@store')->name('store');
+            Route::get('/{motoAdOption}/edit',                          'MotoAdOptionsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'MotoAdOptionsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{motoAdOption}',                              'MotoAdOptionsController@update')->name('update');
+            Route::delete('/{motoAdOption}',                            'MotoAdOptionsController@destroy')->name('destroy');
+        });
+    });
+});

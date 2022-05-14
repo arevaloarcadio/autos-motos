@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Market extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'internal_name',
         'slug',
@@ -34,5 +35,32 @@ class Market extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/markets/'.$this->getKey());
+    }
+
+    public function defaultLocale()
+    {
+        return $this->belongsTo(Locale::class, 'default_locale_id', 'id');
+    }
+
+    /**
+     * @param string|null $value
+     *
+     * @return string|null
+     */
+   /* public function getIconAttribute(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return Storage::disk('s3')->url($value);
+    }*/
+
+    /**
+     * @return string
+     */
+    protected function getSluggableField(): string
+    {
+        return 'internal_name';
     }
 }

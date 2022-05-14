@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Dealer extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'slug',
         'company_name',
@@ -40,4 +41,34 @@ class Dealer extends Model
     {
         return url('/admin/dealers/'.$this->getKey());
     }
+
+    /**
+     * @return HasMany
+     */
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function showRooms()
+    {
+        return $this->hasMany(DealerShowRoom::class)->orderBy('name', 'ASC');
+    }
+
+    /**
+     * @param string|null $value
+     *
+     * @return string|null
+     */
+    /*public function getLogoPathAttribute(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return Storage::disk('s3')->url($value);
+    }*/
 }

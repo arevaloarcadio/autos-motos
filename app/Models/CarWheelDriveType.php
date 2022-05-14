@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CarWheelDriveType extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'internal_name',
         'slug',

@@ -40,19 +40,28 @@ class AutoAdOptionsController extends Controller
             ['auto_ad_id', 'auto_option_id'],
 
             // set columns to searchIn
-            ['auto_ad_id', 'auto_option_id']
-        );
+            ['auto_ad_id', 'auto_option_id'],
+            function ($query) use ($request) {
+                            
+                    $columns =  ['auto_ad_id', 'auto_option_id'];
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
+                        }
+                    }
 
-        return view('admin.auto-ad-option.index', ['data' => $data]);
+                    foreach (AutoAdOption::getRelationships() as $key => $value) {
+                       $query->with($key);
+                    }
+
+                     $query->orderBy('auto_ad_id');
+                }
+            );
+
+        return ['data' => $data];
     }
 
     /**

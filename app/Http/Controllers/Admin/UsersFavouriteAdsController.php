@@ -37,22 +37,30 @@ class UsersFavouriteAdsController extends Controller
             $request,
 
             // set columns to query
-            [''],
+            ['user_id', 'ad_id'],
 
             // set columns to searchIn
-            ['']
-        );
+            ['user_id', 'ad_id'],
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns =     ['user_id', 'ad_id'];
+                
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+
+                foreach (UsersFavouriteAd::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
-            return ['data' => $data];
-        }
-
-        return view('admin.users-favourite-ad.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

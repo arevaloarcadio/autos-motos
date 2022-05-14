@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-     use \App\Traits\TraitUuid;
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
+    
     protected $fillable = [
         'first_name',
         'last_name',
@@ -40,5 +42,43 @@ class User extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/users/'.$this->getKey());
+    }
+
+    public function dealer()
+    {
+        return $this->belongsTo(Dealer::class);
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_roles')->withTimestamps();
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return $this->roles->contains('name', $role);
+    }
+
+    /**
+     * @return array
+     */
+    public function toAuthUserOutput(): array
+    {
+        $roles = collect($this->roles)->map(
+            function (Role $role) {
+                return $role->name;
+            }
+        );
+
+        return [
+            'id'         => $this->id,
+            'email'      => $this->email,
+            'first_name' => $this->first_name,
+            'last_name'  => $this->last_name,
+            'roles'      => $roles,
+        ];
     }
 }

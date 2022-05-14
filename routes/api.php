@@ -591,7 +591,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 });
 
-
+/*
 Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 	
@@ -683,7 +683,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	    });
 			
 
-			/* Auto-generated admin routes */
 			
 	    Route::prefix('car-fuel-types')->name('car-fuel-types/')->group(static function() {
 	        Route::get('/create',                                       'CarFuelTypesController@create')->name('create');
@@ -695,7 +694,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	    });
 		
 
-			/* Auto-generated admin routes */
+	
 		Route::prefix('car-transmission-types')->name('car-transmission-types/')->group(static function() {
 	        Route::get('/create',                                       'CarTransmissionTypesController@create')->name('create');
 	        Route::post('/',                                            'CarTransmissionTypesController@store')->name('store');
@@ -705,5 +704,5 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	        Route::delete('/{carTransmissionType}',                     'CarTransmissionTypesController@destroy')->name('destroy');
 	    });
 	});
-});
+});*/
 

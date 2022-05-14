@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Make extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'slug',

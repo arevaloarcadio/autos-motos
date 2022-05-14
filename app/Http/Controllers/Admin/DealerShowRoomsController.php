@@ -47,12 +47,16 @@ class DealerShowRoomsController extends Controller
                 $columns =  ['id', 'name', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'email_address', 'mobile_number', 'landline_number', 'whatsapp_number', 'dealer_id', 'market_id'];
                 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (DealerShowRoom::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         

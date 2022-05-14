@@ -40,19 +40,27 @@ class RolesController extends Controller
             ['id', 'name'],
 
             // set columns to searchIn
-            ['id', 'name']
-        );
+            ['id', 'name'],
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns =   ['id', 'name'];
+                
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+
+                foreach (Role::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
-            return ['data' => $data];
-        }
-
-        return view('admin.role.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

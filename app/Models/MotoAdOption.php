@@ -4,23 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Model extends Model
+class MotoAdOption extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
-        'name',
-        'slug',
-        'make_id',
-        'is_active',
-        'ad_type',
-        'external_id',
-        'external_updated_at',
+        'moto_ad_id',
+        'option_id',
     
     ];
     
     
     protected $dates = [
-        'external_updated_at',
         'created_at',
         'updated_at',
     
@@ -32,6 +27,6 @@ class Model extends Model
 
     public function getResourceUrlAttribute()
     {
-        return url('/admin/models/'.$this->getKey());
+        return url('/admin/moto-ad-options/'.$this->getKey());
     }
 }

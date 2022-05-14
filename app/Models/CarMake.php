@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CarMake extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'slug',
@@ -30,4 +31,10 @@ class CarMake extends Model
     {
         return url('/admin/car-makes/'.$this->getKey());
     }
+
+    public function models()
+    {
+        return $this->hasMany(CarModel::class);
+    }
 }
+

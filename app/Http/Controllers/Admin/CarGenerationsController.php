@@ -47,12 +47,16 @@ class CarGenerationsController extends Controller
                 $columns = ['id', 'name', 'year', 'car_model_id', 'external_id'];
                 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (CarGeneration::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         

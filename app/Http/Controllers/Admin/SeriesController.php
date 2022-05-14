@@ -47,12 +47,16 @@ class SeriesController extends Controller
                 $columns =  ['id', 'name', 'model_id', 'generation_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
                 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (Series::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         

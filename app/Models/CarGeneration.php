@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CarGeneration extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'year',
@@ -30,5 +31,18 @@ class CarGeneration extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/car-generations/'.$this->getKey());
+    }
+
+    public function model()
+    {
+        return $this->belongsTo(CarModel::class, 'car_model_id', 'id');
+    }
+    
+    /**
+     * @return HasMany
+     */
+    public function specs()
+    {
+        return $this->hasMany(CarSpec::class, 'car_generation_id', 'id');
     }
 }

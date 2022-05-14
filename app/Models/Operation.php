@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Operation extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'context',
@@ -23,7 +24,9 @@ class Operation extends Model
     ];
     
     protected $appends = ['resource_url'];
-
+    protected $casts = [
+        'context' => 'array',
+    ];
     /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()

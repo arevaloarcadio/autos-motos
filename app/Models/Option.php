@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Option extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'slug',
@@ -32,5 +33,15 @@ class Option extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/options/'.$this->getKey());
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Option::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Option::class, 'parent_id')->orderBy('name', 'asc');;
     }
 }

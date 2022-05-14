@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class CarBodyType extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'internal_name',
         'slug',
@@ -31,4 +32,14 @@ class CarBodyType extends Model
     {
         return url('/admin/car-body-types/'.$this->getKey());
     }
+
+    /*public function getIconUrlAttribute(?string $value): ?string
+    {
+        if (null === $value) {
+            return null;
+        }
+        $file = Storage::disk('s3')->url($value);
+        
+        return $file;
+    }*/
 }

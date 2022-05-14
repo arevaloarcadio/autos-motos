@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Carbon\Carbon;
 class Generation extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'name',
         'model_id',
@@ -34,5 +35,15 @@ class Generation extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/generations/'.$this->getKey());
+    }
+
+    public function model()
+    {
+        return $this->belongsTo(Model::class);
+    }
+
+    public function getYearEndAttribute(?int $value): int
+    {
+        return $value ?? Carbon::now()->year;
     }
 }

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class VehicleCategory extends Model
 {
-     use \App\Traits\TraitUuid;
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
+    
     protected $fillable = [
         'internal_name',
         'slug',

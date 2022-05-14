@@ -6,9 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsersFavouriteAd extends Model
 {
-     use \App\Traits\TraitUuid;
-    protected $fillable = [
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
     
+    protected $table = "user_favourite_ads";
+    protected $fillable = [
+    'id',
+    'user_id',
+    'ad_id'
     ];
     
     
@@ -24,5 +29,15 @@ class UsersFavouriteAd extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/users-favourite-ads/'.$this->getKey());
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function ad()
+    {
+        return $this->belongsTo(Ad::class);
     }
 }

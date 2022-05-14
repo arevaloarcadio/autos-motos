@@ -1021,3 +1021,14 @@ $factory->define(App\Models\VehicleCategory::class, static function (Faker\Gener
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\MotoAdOption::class, static function (Faker\Generator $faker) {
+    return [
+        'moto_ad_id' => $faker->sentence,
+        'option_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

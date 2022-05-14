@@ -47,12 +47,16 @@ class AdMakesController extends Controller
                 $columns =  ['id', 'name', 'slug', 'ad_type'];
 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+
+                foreach (AdMake::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         

@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Model\DestroyModel;
 use App\Http\Requests\Admin\Model\IndexModel;
 use App\Http\Requests\Admin\Model\StoreModel;
 use App\Http\Requests\Admin\Model\UpdateModel;
-use App\Models\Model;
+use App\Models\Models;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -32,7 +32,7 @@ class ModelsController extends Controller
     public function index(IndexModel $request)
     {
         // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(Model::class)->processRequestAndGet(
+        $data = AdminListing::create(Models::class)->processRequestAndGet(
             // pass the request with params
             $request,
 
@@ -47,12 +47,16 @@ class ModelsController extends Controller
                 $columns =  ['id', 'name', 'make_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
                 
                 if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
+                }
+                
+                foreach (Models::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
         );
         
@@ -84,7 +88,7 @@ class ModelsController extends Controller
         $sanitized = $request->getSanitized();
 
         // Store the Model
-        $model = Model::create($sanitized);
+        $model = Models::create($sanitized);
 
         if ($request->ajax()) {
             return ['redirect' => url('admin/models'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
@@ -181,7 +185,7 @@ class ModelsController extends Controller
             collect($request->data['ids'])
                 ->chunk(1000)
                 ->each(static function ($bulkChunk) {
-                    Model::whereIn('id', $bulkChunk)->delete();
+                    Models::whereIn('id', $bulkChunk)->delete();
 
                     // TODO your code goes here
                 });

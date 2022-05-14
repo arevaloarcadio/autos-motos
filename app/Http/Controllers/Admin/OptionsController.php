@@ -40,19 +40,26 @@ class OptionsController extends Controller
             ['id', 'name', 'parent_id', 'ad_type', 'external_id', 'external_updated_at'],
 
             // set columns to searchIn
-            ['id', 'name', 'slug', 'parent_id', 'ad_type']
-        );
+            ['id', 'name', 'slug', 'parent_id', 'ad_type'],
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
+            function ($query) use ($request) {
+                        
+                $columns =  ['id', 'name', 'parent_id', 'ad_type', 'external_id', 'external_updated_at'];
+                
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+                foreach (Option::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
             }
-            return ['data' => $data];
-        }
-
-        return view('admin.option.index', ['data' => $data]);
+        );
+        
+        return ['data' => $data];
     }
 
     /**

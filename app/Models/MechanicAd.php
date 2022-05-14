@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MechanicAd extends Model
 {
      use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
     protected $fillable = [
         'ad_id',
         'address',
@@ -37,5 +38,19 @@ class MechanicAd extends Model
     public function getResourceUrlAttribute()
     {
         return url('/admin/mechanic-ads/'.$this->getKey());
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullAddressAttribute(): string
+    {
+        return sprintf(
+            '%s, %s, %s, %s',
+            $this->address,
+            $this->zip_code,
+            $this->city,
+            ucfirst(mb_strtolower($this->country))
+        );
     }
 }

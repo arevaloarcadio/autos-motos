@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class AutoAdOption extends Model
 {
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
+    
+    protected $primaryKey  = 'auto_ad_id';
+    public $incrementing = false;
     
     protected $fillable = [
         'auto_ad_id',
