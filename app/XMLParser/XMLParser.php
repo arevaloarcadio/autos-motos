@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\XmlParser;
+namespace App\XMLParser;
 
 use App\XMLParser\Output\XMLNode;
 use SimpleXMLElement;

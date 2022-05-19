@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Ad\Creator;
+namespace App\Service\Ad;
 
 use App\Exceptions\InvalidAdTypeInputException;
 use App\Exceptions\InvalidAdTypeProvidedException;
