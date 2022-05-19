@@ -46,10 +46,12 @@ class DealersController extends Controller
                         
                 $columns =  ['id', 'slug', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'description', 'source'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
                 }

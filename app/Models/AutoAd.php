@@ -94,7 +94,7 @@ class AutoAd extends Model
      */
     public function model()
     {
-        return $this->belongsTo(Model::class, 'model_id');
+        return $this->belongsTo(Models::class, 'model_id');
     }
 
     /**

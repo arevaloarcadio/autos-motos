@@ -46,13 +46,15 @@ class MechanicAdsController extends Controller
                         
                 $columns =   ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address', 'geocoding_status'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
+                            }
                         }
                     }
-                }
 
                 foreach (MechanicAd::getRelationships() as $key => $value) {
                    $query->with($key);

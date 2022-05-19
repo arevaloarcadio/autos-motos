@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Gate;
 
 class IndexAutoAd extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,4 +35,6 @@ class IndexAutoAd extends FormRequest
 
         ];
     }
+
+    
 }

@@ -45,10 +45,12 @@ class AutoAdOptionsController extends Controller
                             
                     $columns =  ['auto_ad_id', 'auto_option_id'];
 
-                    if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
+                    foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
                             }
                         }
                     }

@@ -46,10 +46,12 @@ class CarModelsController extends Controller
                         
                 $columns = ['id', 'name', 'slug', 'car_make_id'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
                 }

@@ -49,10 +49,12 @@ class StoresController extends Controller
                         
                 $columns =  ['id', 'name', 'email', 'phone', 'city', 'code_postal', 'whatsapp', 'country_id', 'user_id'];
                 
-                if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
+            foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
                             }
                         }
                     }

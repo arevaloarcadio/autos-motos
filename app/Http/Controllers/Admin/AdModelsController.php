@@ -46,10 +46,12 @@ class AdModelsController extends Controller
                         
                 $columns =  ['id', 'name', 'slug', 'ad_type', 'parent_id', 'ad_make_id'];
 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
                 }

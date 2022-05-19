@@ -3,10 +3,16 @@
 namespace App\Http\Requests\Admin\Ad;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Gate;
 
 class IndexAd extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -32,5 +38,14 @@ class IndexAd extends FormRequest
             'per_page' => 'integer|nullable',
 
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = (new ValidationException($validator))->errors();
+
+        throw new HttpResponseException(
+            response()->json(['errors' => $errors], Response::HTTP_UNPROCESSABLE_ENTITY)
+        );
     }
 }

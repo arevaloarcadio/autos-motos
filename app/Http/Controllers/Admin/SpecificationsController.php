@@ -46,10 +46,12 @@ class SpecificationsController extends Controller
                         
                 $columns =  ['id', 'name', 'parent_id', 'ad_type', 'external_id', 'external_updated_at'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
                 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Enum\Ad\AdImageVersionTypeEnum;
 use Storage;
 
 class Ad extends Model

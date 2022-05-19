@@ -8,6 +8,8 @@ use Illuminate\Validation\Rule;
 
 class UpdateAutoAdOption extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
+    
     /**
      * Determine if the user is authorized to make this request.
      *

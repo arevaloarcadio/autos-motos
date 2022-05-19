@@ -46,13 +46,15 @@ class UserRolesController extends Controller
                         
                 $columns =  ['user_id', 'role_id'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
+                            }
                         }
                     }
-                }
 
                 foreach (UserRole::getRelationships() as $key => $value) {
                    $query->with($key);

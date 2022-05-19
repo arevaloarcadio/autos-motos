@@ -8,6 +8,8 @@ use Illuminate\Validation\Rule;
 
 class UpdateMake extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
+    
     /**
      * Determine if the user is authorized to make this request.
      *

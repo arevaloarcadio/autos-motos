@@ -46,13 +46,15 @@ class TrimsController extends Controller
                         
                 $columns =  ['id', 'name', 'model_id', 'series_id', 'production_year_start', 'production_year_end', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
+                            }
                         }
                     }
-                }
 
                 foreach (Trim::getRelationships() as $key => $value) {
                    $query->with($key);

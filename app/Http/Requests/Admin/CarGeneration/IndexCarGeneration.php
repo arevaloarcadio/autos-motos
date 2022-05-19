@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Gate;
 
 class IndexCarGeneration extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
+    
     /**
      * Determine if the user is authorized to make this request.
      *

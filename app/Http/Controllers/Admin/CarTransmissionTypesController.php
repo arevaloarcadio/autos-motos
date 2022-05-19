@@ -46,13 +46,15 @@ class CarTransmissionTypesController extends Controller
                         
                 $columns =  ['id', 'internal_name', 'slug', 'external_name', 'ad_type'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
+                            }
                         }
                     }
-                }
 
                 foreach (CarTransmissionType::getRelationships() as $key => $value) {
                    $query->with($key);

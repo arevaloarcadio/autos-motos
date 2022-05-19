@@ -46,13 +46,15 @@ class UsersFavouriteAdsController extends Controller
                         
                 $columns =     ['user_id', 'ad_id'];
                 
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                foreach ($columns as $column) {
+                        if ($request->filters) {
+                            foreach ($request->filters as $key => $filter) {
+                                if ($column == $key) {
+                                   $query->where($key,$filter);
+                                }
+                            }
                         }
                     }
-                }
 
                 foreach (UsersFavouriteAd::getRelationships() as $key => $value) {
                    $query->with($key);
