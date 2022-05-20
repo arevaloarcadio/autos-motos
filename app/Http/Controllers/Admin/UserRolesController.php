@@ -92,11 +92,7 @@ class UserRolesController extends Controller
         // Store the UserRole
         $userRole = UserRole::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/user-roles'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/user-roles');
+        return ['data' => $userRole];
     }
 
     /**

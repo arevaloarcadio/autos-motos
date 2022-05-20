@@ -92,11 +92,7 @@ class CarBodyTypesController extends Controller
         // Store the CarBodyType
         $carBodyType = CarBodyType::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-body-types'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-body-types');
+        return ['data' => $carBodyType];
     }
 
     /**

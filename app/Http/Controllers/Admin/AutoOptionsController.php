@@ -92,11 +92,7 @@ class AutoOptionsController extends Controller
         // Store the AutoOption
         $autoOption = AutoOption::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/auto-options'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/auto-options');
+        return ['data' => $autoOption];
     }
 
     /**

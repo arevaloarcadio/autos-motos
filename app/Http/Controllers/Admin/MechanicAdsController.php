@@ -92,11 +92,7 @@ class MechanicAdsController extends Controller
         // Store the MechanicAd
         $mechanicAd = MechanicAd::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/mechanic-ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/mechanic-ads');
+        return ['data' => $mechanicAd];
     }
 
     /**

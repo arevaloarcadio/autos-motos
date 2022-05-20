@@ -92,11 +92,7 @@ class CarFuelTypesController extends Controller
         // Store the CarFuelType
         $carFuelType = CarFuelType::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-fuel-types'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-fuel-types');
+        return ['data' => $carFuelType];
     }
 
     /**

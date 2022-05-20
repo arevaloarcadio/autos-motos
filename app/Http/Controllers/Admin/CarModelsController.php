@@ -92,11 +92,7 @@ class CarModelsController extends Controller
         // Store the CarModel
         $carModel = CarModel::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-models'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-models');
+        return ['data' => $carModel];
     }
 
     /**

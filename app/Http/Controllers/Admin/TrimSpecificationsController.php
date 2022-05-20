@@ -92,11 +92,7 @@ class TrimSpecificationsController extends Controller
         // Store the TrimSpecification
         $trimSpecification = TrimSpecification::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/trim-specifications'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/trim-specifications');
+        return ['data' => $trimSpecification];
     }
 
     /**

@@ -92,11 +92,7 @@ class EquipmentOptionsController extends Controller
         // Store the EquipmentOption
         $equipmentOption = EquipmentOption::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/equipment-options'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/equipment-options');
+        return ['data' => $equipmentOption];
     }
 
     /**

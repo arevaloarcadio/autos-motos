@@ -92,11 +92,7 @@ class AutoAdsController extends Controller
         // Store the AutoAd
         $autoAd = AutoAd::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/auto-ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/auto-ads');
+        return ['data' => $autoAd];
     }
 
     /**

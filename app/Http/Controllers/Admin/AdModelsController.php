@@ -92,11 +92,7 @@ class AdModelsController extends Controller
         // Store the AdModel
         $adModel = AdModel::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ad-models'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ad-models');
+        return ['data' => $adModel];
     }
 
     /**

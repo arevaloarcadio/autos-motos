@@ -92,11 +92,7 @@ class SeriesController extends Controller
         // Store the Series
         $series = Series::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/series'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/series');
+        return ['data' => $series];
     }
 
     /**

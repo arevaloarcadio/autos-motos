@@ -92,11 +92,7 @@ class MakesController extends Controller
         // Store the Make
         $make = Make::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/makes'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/makes');
+        return ['data' => $make];
     }
 
     /**

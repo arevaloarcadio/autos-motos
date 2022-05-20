@@ -92,11 +92,7 @@ class DealerShowRoomsController extends Controller
         // Store the DealerShowRoom
         $dealerShowRoom = DealerShowRoom::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/dealer-show-rooms'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/dealer-show-rooms');
+        return ['data' => $dealerShowRoom];
     }
 
     /**

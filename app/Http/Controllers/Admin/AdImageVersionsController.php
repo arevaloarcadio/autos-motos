@@ -92,11 +92,7 @@ class AdImageVersionsController extends Controller
         // Store the AdImageVersion
         $adImageVersion = AdImageVersion::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ad-image-versions'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ad-image-versions');
+        return ['data' => $adImageVersion];
     }
 
     /**

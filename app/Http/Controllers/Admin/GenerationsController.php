@@ -92,11 +92,7 @@ class GenerationsController extends Controller
         // Store the Generation
         $generation = Generation::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/generations'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/generations');
+        return ['data' => $generation];
     }
 
     /**

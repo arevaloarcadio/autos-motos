@@ -92,11 +92,7 @@ class CarSpecsController extends Controller
         // Store the CarSpec
         $carSpec = CarSpec::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-specs'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-specs');
+        return ['data' => $carSpec];
     }
 
     /**

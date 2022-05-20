@@ -37,14 +37,14 @@ class UsersController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'dealer_id'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type', 'dealer_id'],
 
             // set columns to searchIn
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'dealer_id'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'type','dealer_id'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'dealer_id'];
+                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'dealer_id'];
                 
                 foreach ($columns as $column) {
                         if ($request->filters) {
@@ -92,11 +92,7 @@ class UsersController extends Controller
         // Store the User
         $user = User::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/users'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/users');
+        return ['data' => $user];
     }
 
     /**

@@ -92,11 +92,7 @@ class OptionsController extends Controller
         // Store the Option
         $option = Option::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/options'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/options');
+        return ['data' => $option];
     }
 
     /**

@@ -92,11 +92,7 @@ class TruckAdsController extends Controller
         // Store the TruckAd
         $truckAd = TruckAd::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/truck-ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/truck-ads');
+        return ['data' => $truckAd];
     }
 
     /**

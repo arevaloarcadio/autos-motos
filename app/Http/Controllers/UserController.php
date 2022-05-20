@@ -66,10 +66,10 @@ class UserController extends Controller
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'phone' => 'nullable|string|min:7',
-            'whatsapp' => 'nullable|string|min:7',
+            'mobile_number' => 'required|string|min:7',
+            'whatsapp_number' => 'required|string|min:7',
             'email' => 'required|string|unique:users|email|max:255',
             'password' => 'required|min:6|confirmed'
         ]);
@@ -82,12 +82,11 @@ class UserController extends Controller
         try {
             
             $user = new User;
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->code_postal = $request->code_postal;
-            $user->phone = $request->phone;
-            $user->whatsapp = $request->whatsapp;
+            $user->first_name = $request->name;
             $user->last_name = $request->last_name;
+            $user->email = $request->email;
+            $user->mobile_number = $request->mobile_number;
+            $user->whatsapp_number = $request->whatsapp_number;
             $user->password = Hash::make($request->password);
             
             $user->save();

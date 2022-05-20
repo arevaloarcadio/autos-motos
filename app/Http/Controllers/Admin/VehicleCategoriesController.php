@@ -92,11 +92,7 @@ class VehicleCategoriesController extends Controller
         // Store the VehicleCategory
         $vehicleCategory = VehicleCategory::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/vehicle-categories'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/vehicle-categories');
+        return ['data' => $vehicleCategory];
     }
 
     /**

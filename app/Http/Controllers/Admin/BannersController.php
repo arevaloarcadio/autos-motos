@@ -82,11 +82,7 @@ class BannersController extends Controller
         // Store the Banner
         $banner = Banner::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/banners'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/banners');
+        return ['data' => $banner];
     }
 
     /**

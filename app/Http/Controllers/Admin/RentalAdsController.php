@@ -92,11 +92,7 @@ class RentalAdsController extends Controller
         // Store the RentalAd
         $rentalAd = RentalAd::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/rental-ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/rental-ads');
+        return ['data' => $rentalAd];
     }
 
     /**

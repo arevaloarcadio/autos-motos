@@ -92,11 +92,7 @@ class CarWheelDriveTypesController extends Controller
         // Store the CarWheelDriveType
         $carWheelDriveType = CarWheelDriveType::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-wheel-drive-types'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-wheel-drive-types');
+        return ['data' => $carWheelDriveType];
     }
 
     /**

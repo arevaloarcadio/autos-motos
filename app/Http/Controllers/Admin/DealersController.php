@@ -92,11 +92,8 @@ class DealersController extends Controller
         // Store the Dealer
         $dealer = Dealer::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/dealers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/dealers');
+        
+        return ['data' => $dealer];
     }
 
     /**

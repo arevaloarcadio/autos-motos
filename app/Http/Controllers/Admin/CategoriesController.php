@@ -82,11 +82,8 @@ class CategoriesController extends Controller
         // Store the Category
         $category = Category::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/categories'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/categories');
+    
+        return ['data' => $category];
     }
 
     /**

@@ -92,11 +92,7 @@ class OperationsController extends Controller
         // Store the Operation
         $operation = Operation::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/operations'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/operations');
+        return ['data' => $operation];
     }
 
     /**

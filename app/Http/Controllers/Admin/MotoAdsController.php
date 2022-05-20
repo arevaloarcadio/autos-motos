@@ -92,11 +92,7 @@ class MotoAdsController extends Controller
         // Store the MotoAd
         $motoAd = MotoAd::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/moto-ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/moto-ads');
+        return ['data' => $motoAd];
     }
 
     /**

@@ -92,11 +92,7 @@ class ModelsController extends Controller
         // Store the Model
         $model = Models::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/models'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/models');
+        return ['data' => $model];
     }
 
     /**

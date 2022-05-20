@@ -92,11 +92,7 @@ class TrimsController extends Controller
         // Store the Trim
         $trim = Trim::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/trims'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/trims');
+        return ['data' => $trim];
     }
 
     /**

@@ -92,11 +92,7 @@ class ShopAdsController extends Controller
         // Store the ShopAd
         $shopAd = ShopAd::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/shop-ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/shop-ads');
+        return ['data' => $shopAd];
     }
 
     /**

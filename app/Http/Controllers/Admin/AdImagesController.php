@@ -92,11 +92,7 @@ class AdImagesController extends Controller
         // Store the AdImage
         $adImage = AdImage::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ad-images'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ad-images');
+        return ['data' => $adImage];
     }
 
     /**

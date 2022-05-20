@@ -82,11 +82,7 @@ class UsersFavouriteAdSearchesController extends Controller
         // Store the UsersFavouriteAdSearch
         $usersFavouriteAdSearch = UsersFavouriteAdSearch::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/users-favourite-ad-searches'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/users-favourite-ad-searches');
+        return ['data' => $usersFavouriteAdSearch];
     }
 
     /**

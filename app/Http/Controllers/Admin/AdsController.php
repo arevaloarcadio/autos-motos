@@ -93,11 +93,7 @@ class AdsController extends Controller
         // Store the Ad
         $ad = Ad::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ads'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ads');
+        return ['data' => $ad];
     }
 
     /**

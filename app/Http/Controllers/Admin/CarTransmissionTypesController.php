@@ -92,11 +92,7 @@ class CarTransmissionTypesController extends Controller
         // Store the CarTransmissionType
         $carTransmissionType = CarTransmissionType::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-transmission-types'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-transmission-types');
+        return ['data' => $carTransmissionType];
     }
 
     /**

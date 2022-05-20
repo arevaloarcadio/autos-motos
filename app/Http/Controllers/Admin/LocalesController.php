@@ -92,11 +92,7 @@ class LocalesController extends Controller
         // Store the Locale
         $locale = Locale::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/locales'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/locales');
+        return ['data' => $locale];
     }
 
     /**

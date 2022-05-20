@@ -92,11 +92,7 @@ class EquipmentController extends Controller
         // Store the Equipment
         $equipment = Equipment::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/equipment'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/equipment');
+        return ['data' => $equipment];
     }
 
     /**

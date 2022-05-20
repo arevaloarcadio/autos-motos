@@ -92,11 +92,7 @@ class SpecificationsController extends Controller
         // Store the Specification
         $specification = Specification::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/specifications'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/specifications');
+        return ['data' => $specification];
     }
 
     /**

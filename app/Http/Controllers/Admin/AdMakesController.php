@@ -92,11 +92,7 @@ class AdMakesController extends Controller
         // Store the AdMake
         $adMake = AdMake::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ad-makes'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ad-makes');
+        return ['data' => $adMake];
     }
 
     /**

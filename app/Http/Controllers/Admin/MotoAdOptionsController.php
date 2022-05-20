@@ -92,11 +92,7 @@ class MotoAdOptionsController extends Controller
         // Store the MotoAdOption
         $motoAdOption = MotoAdOption::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/moto-ad-options'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/moto-ad-options');
+        return ['data' => $motoAdOption];
     }
 
     /**

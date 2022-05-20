@@ -92,11 +92,7 @@ class MarketsController extends Controller
         // Store the Market
         $market = Market::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/markets'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/markets');
+        return ['data' => $market];
     }
 
     /**

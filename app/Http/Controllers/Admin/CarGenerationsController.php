@@ -92,11 +92,7 @@ class CarGenerationsController extends Controller
         // Store the CarGeneration
         $carGeneration = CarGeneration::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/car-generations'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/car-generations');
+        return ['data' => $carGeneration];
     }
 
     /**

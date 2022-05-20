@@ -28,7 +28,7 @@ class StoreDealer extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => ['required', Rule::unique('dealers', 'slug'), 'string'],
+            //'slug' => ['required', Rule::unique('dealers', 'slug'), 'string'],
             'company_name' => ['required', Rule::unique('dealers', 'company_name'), 'string'],
             'vat_number' => ['nullable', 'string'],
             'address' => ['required', 'string'],
