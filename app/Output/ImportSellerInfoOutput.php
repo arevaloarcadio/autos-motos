@@ -37,7 +37,7 @@ class ImportSellerInfoOutput
         ?string $logoUrl = null,
         ?string $whatsappNumber = null,
         ?string $latitude = null,
-        ?string $longitude = null,
+        ?string $longitude = null
     ) {
         $this->externalId     = $externalId;
         $this->companyName    = $companyName;

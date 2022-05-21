@@ -109,8 +109,9 @@ class ImportInventarioAdsCommand extends Command
     public function handle()
     {
         $this->info(sprintf('Command started at %s', (new DateTime())->format('Y-m-d H:i:s')));
-        $filePath = $this->saveXmlLocally();
-        $xml      = simplexml_load_file($filePath);
+        //$filePath = $this->saveXmlLocally();
+
+        $xml      = simplexml_load_file(env('INVENTARIO_IMPORT_URL'));
 
         /** @var User $adminUser */
         $adminUser = User::query()->where('email', '=', 'admin@autosmotos.es')->first();
@@ -633,7 +634,7 @@ class ImportInventarioAdsCommand extends Command
             $model = $this->queryModel($knownModels[$externalModel], $make->id);
         }
 
-        if ($model instanceof Model) {
+        if ($model instanceof Models) {
             return $model;
         }
 
@@ -834,6 +835,7 @@ class ImportInventarioAdsCommand extends Command
         $filePath  = sprintf('%s/%s_inventario.xml', $directory, Carbon::now()->format('dmY'));
 
         if (false === is_dir($directory)) {
+
             mkdir($directory);
         }
 

@@ -5,11 +5,11 @@ namespace App\Console\Commands;
 
 use App\Enum\Ad\ColorEnum;
 use App\Enum\Ad\ConditionEnum;
-use App\Models\CarAd\CarBodyType;
-use App\Models\CarAd\CarFuelType;
-use App\Models\CarAd\CarTransmissionType;
-use App\Models\Data\Make;
-use App\Models\Data\Model;
+use App\Models\CarBodyType;
+use App\Models\CarFuelType;
+use App\Models\CarTransmissionType;
+use App\Models\Make;
+use App\Models\Models;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Str;
@@ -48,7 +48,7 @@ trait AutoAdImportHelperTrait
         throw new Exception(sprintf('invalid_make: %s', $externalMake));
     }
 
-    protected function findModel(string $externalModel, Make $make): Model
+    protected function findModel(string $externalModel, Make $make): Models
     {
         if ('' === $externalModel) {
             throw new Exception('no_model');
@@ -106,17 +106,17 @@ trait AutoAdImportHelperTrait
             $model = $this->queryModel($knownModels[$externalModel], $make->id);
         }
 
-        if ($model instanceof Model) {
+        if ($model instanceof Models) {
             return $model;
         }
 
         throw new Exception(sprintf('invalid_model for make %s: %s', $make->name, $externalModel));
     }
 
-    protected function queryModel(string $name, string $makeId): ?Model
+    protected function queryModel(string $name, string $makeId): ?Models
     {
         /** @var Model $instance */
-        $instance = Model::query()->where('name', '=', $name)
+        $instance = Models::query()->where('name', '=', $name)
                          ->where('ad_type', '=', 'auto')
                          ->where('make_id', '=', $makeId)
                          ->first();
