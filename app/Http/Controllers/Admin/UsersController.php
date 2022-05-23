@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\User\UpdateUser;
 use App\Models\User;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
@@ -88,7 +89,7 @@ class UsersController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-
+        $sanitized['password'] = Hash::make($sanitized['password']);
         // Store the User
         $user = User::create($sanitized);
 

@@ -34,10 +34,11 @@ class StoreUser extends FormRequest
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
             'email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
-            'email_verified_at' => ['nullable', 'date'],
-            'password' => ['required', 'confirmed', 'min:7', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/', 'string'],
+            //'email_verified_at' => ['nullable', 'date'],
+            'password' => ['required', 'confirmed', 'min:7', 'string'],
             'dealer_id' => ['nullable', 'string'],
             'type' => ['nullable', 'string'],
+            //, 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/',
         ];
     }
 

@@ -35,7 +35,7 @@ class StoreDealer extends FormRequest
             'zip_code' => ['required', 'string'],
             'city' => ['required', 'string'],
             'country' => ['required', 'string'],
-            'logo_path' => ['nullable', 'string'],
+            'logo_path' => ['nullable', 'file'],
             'email_address' => ['required', 'string'],
             'phone_number' => ['required', 'string'],
             'status' => ['required', 'integer'],

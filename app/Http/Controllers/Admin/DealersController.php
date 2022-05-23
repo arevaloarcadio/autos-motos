@@ -89,10 +89,10 @@ class DealersController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
+        $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'))
         // Store the Dealer
         $dealer = Dealer::create($sanitized);
 
-        
         return ['data' => $dealer];
     }
 
@@ -191,5 +191,18 @@ class DealersController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function uploadFile($file)
+    {   
+        $picture = null;
+        
+        if ($file) {
+            $picture = date('dmYhms').$file->getClientOriginalName();
+            $destinationPath = public_path('/photo');
+            $move = $file->move($destinationPath, $picture);
+        }
+        
+        return $picture;
     }
 }

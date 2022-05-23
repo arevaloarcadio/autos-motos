@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+//use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable  implements JWTSubject
 {
     use \App\Traits\TraitUuid;
     use \App\Traits\Relationships;
-    use Notifiable;
+    //use Notifiable;
     
     protected $fillable = [
         'first_name',
@@ -84,4 +85,15 @@ class User extends Authenticatable
             'roles'      => $roles,
         ];
     }
+
+     public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
 }
