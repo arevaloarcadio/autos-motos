@@ -1032,3 +1032,69 @@ $factory->define(App\Models\MotoAdOption::class, static function (Faker\Generato
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\MobileHomeAd::class, static function (Faker\Generator $faker) {
+    return [
+        'ad_id' => $faker->sentence,
+        'make_id' => $faker->sentence,
+        'custom_make' => $faker->sentence,
+        'model_id' => $faker->sentence,
+        'custom_model' => $faker->sentence,
+        'fuel_type_id' => $faker->sentence,
+        'vehicle_category_id' => $faker->sentence,
+        'transmission_type_id' => $faker->sentence,
+        'construction_year' => $faker->randomNumber(5),
+        'first_registration_month' => $faker->randomNumber(5),
+        'first_registration_year' => $faker->randomNumber(5),
+        'inspection_valid_until_month' => $faker->randomNumber(5),
+        'inspection_valid_until_year' => $faker->randomNumber(5),
+        'owners' => $faker->randomNumber(5),
+        'length_cm' => $faker->randomNumber(5),
+        'width_cm' => $faker->randomNumber(5),
+        'height_cm' => $faker->randomNumber(5),
+        'max_weight_allowed_kg' => $faker->randomNumber(5),
+        'payload_kg' => $faker->randomNumber(5),
+        'engine_displacement' => $faker->randomNumber(5),
+        'mileage' => $faker->randomNumber(5),
+        'power_kw' => $faker->randomNumber(5),
+        'axes' => $faker->randomNumber(5),
+        'seats' => $faker->randomNumber(5),
+        'sleeping_places' => $faker->randomNumber(5),
+        'beds' => $faker->sentence,
+        'emission_class' => $faker->sentence,
+        'fuel_consumption' => $faker->randomNumber(5),
+        'co2_emissions' => $faker->randomNumber(5),
+        'condition' => $faker->sentence,
+        'color' => $faker->sentence,
+        'price' => $faker->randomNumber(5),
+        'price_contains_vat' => $faker->boolean(),
+        'dealer_id' => $faker->sentence,
+        'dealer_show_room_id' => $faker->sentence,
+        'first_name' => $faker->firstName,
+        'last_name' => $faker->lastName,
+        'email_address' => $faker->sentence,
+        'address' => $faker->text(),
+        'zip_code' => $faker->sentence,
+        'city' => $faker->sentence,
+        'country' => $faker->sentence,
+        'mobile_number' => $faker->sentence,
+        'landline_number' => $faker->sentence,
+        'whatsapp_number' => $faker->sentence,
+        'youtube_link' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\MobileHomeAdOption::class, static function (Faker\Generator $faker) {
+    return [
+        'mobile_home_ad_id' => $faker->sentence,
+        'option_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

@@ -1483,5 +1483,83 @@ return [
         ],
     ],
 
+    'mobile-home-ad' => [
+        'title' => 'Mobile Home Ads',
+
+        'actions' => [
+            'index' => 'Mobile Home Ads',
+            'create' => 'New Mobile Home Ad',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'ad_id' => 'Ad',
+            'make_id' => 'Make',
+            'custom_make' => 'Custom make',
+            'model_id' => 'Model',
+            'custom_model' => 'Custom model',
+            'fuel_type_id' => 'Fuel type',
+            'vehicle_category_id' => 'Vehicle category',
+            'transmission_type_id' => 'Transmission type',
+            'construction_year' => 'Construction year',
+            'first_registration_month' => 'First registration month',
+            'first_registration_year' => 'First registration year',
+            'inspection_valid_until_month' => 'Inspection valid until month',
+            'inspection_valid_until_year' => 'Inspection valid until year',
+            'owners' => 'Owners',
+            'length_cm' => 'Length cm',
+            'width_cm' => 'Width cm',
+            'height_cm' => 'Height cm',
+            'max_weight_allowed_kg' => 'Max weight allowed kg',
+            'payload_kg' => 'Payload kg',
+            'engine_displacement' => 'Engine displacement',
+            'mileage' => 'Mileage',
+            'power_kw' => 'Power kw',
+            'axes' => 'Axes',
+            'seats' => 'Seats',
+            'sleeping_places' => 'Sleeping places',
+            'beds' => 'Beds',
+            'emission_class' => 'Emission class',
+            'fuel_consumption' => 'Fuel consumption',
+            'co2_emissions' => 'Co2 emissions',
+            'condition' => 'Condition',
+            'color' => 'Color',
+            'price' => 'Price',
+            'price_contains_vat' => 'Price contains vat',
+            'dealer_id' => 'Dealer',
+            'dealer_show_room_id' => 'Dealer show room',
+            'first_name' => 'First name',
+            'last_name' => 'Last name',
+            'email_address' => 'Email address',
+            'address' => 'Address',
+            'zip_code' => 'Zip code',
+            'city' => 'City',
+            'country' => 'Country',
+            'mobile_number' => 'Mobile number',
+            'landline_number' => 'Landline number',
+            'whatsapp_number' => 'Whatsapp number',
+            'youtube_link' => 'Youtube link',
+            
+        ],
+    ],
+
+    'mobile-home-ad-option' => [
+        'title' => 'Mobile Home Ad Options',
+
+        'actions' => [
+            'index' => 'Mobile Home Ad Options',
+            'create' => 'New Mobile Home Ad Option',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'mobile_home_ad_id' => 'Mobile home ad',
+            'option_id' => 'Option',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];

@@ -52,3 +52,5 @@ import './users-favourite-ad';
 import './users-favourite-ad-search';
 import './user-role';
 import './moto-ad-option';
+import './mobile-home-ad';
+import './mobile-home-ad-option';

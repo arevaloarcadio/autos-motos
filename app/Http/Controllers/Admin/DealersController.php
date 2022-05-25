@@ -89,7 +89,7 @@ class DealersController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-        $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'))
+        $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'));
         // Store the Dealer
         $dealer = Dealer::create($sanitized);
 

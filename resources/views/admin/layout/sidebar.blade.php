@@ -53,6 +53,8 @@
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/users-favourite-ad-searches') }}"><i class="nav-icon icon-globe"></i> {{ trans('admin.users-favourite-ad-search.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/user-roles') }}"><i class="nav-icon icon-graduation"></i> {{ trans('admin.user-role.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/moto-ad-options') }}"><i class="nav-icon icon-book-open"></i> {{ trans('admin.moto-ad-option.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/mobile-home-ads') }}"><i class="nav-icon icon-flag"></i> {{ trans('admin.mobile-home-ad.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/mobile-home-ad-options') }}"><i class="nav-icon icon-plane"></i> {{ trans('admin.mobile-home-ad-option.title') }}</a></li>
            {{-- Do not delete me :) I'm used for auto-generation menu items --}}
 
             <li class="nav-title">{{ trans('brackets/admin-ui::admin.sidebar.settings') }}</li>
