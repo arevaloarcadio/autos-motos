@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\{SellerStore,User,Store,Company};
+use App\Models\{SellerStore,User,UserRole,tore,Company};
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -28,8 +28,39 @@ class UserController extends Controller
         try {
 
             $credentials = $request->only('email', 'password');
+
             
             if (!$token = JWTAuth::attempt($credentials)) {
+                return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could_not_create_token'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $user = Auth::user();
+
+        return response()->json([
+            'token' => $token,
+            'user'  => $user
+        ]);
+    }
+
+    public function authenticate_admin(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        try {
+
+            $admin = User::where('email',$credentials['email'])->first(); 
+            
+            $authenticate = false;
+            
+            foreach ($admin->roles as $role) {
+                $authenticate = $role['name'] == 'ADMIN' ? true : false;
+             
+            }
+
+            if (!$token = JWTAuth::attempt($credentials) && $authenticate) {
                 return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
             }
         } catch (JWTException $e) {

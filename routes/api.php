@@ -24,6 +24,12 @@ Route::post('/register/occasional', 'App\Http\Controllers\UserController@registe
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
 
 
+Route::namespace('App\Http\Controllers')->group(static function() {
+    Route::prefix('admin')->group(static function() {
+        Route::post('/login', 'UserController@authenticate_admin');
+    });
+});
+
 Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
     Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
