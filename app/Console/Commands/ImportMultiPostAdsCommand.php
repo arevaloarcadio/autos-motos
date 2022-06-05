@@ -155,8 +155,8 @@ class ImportMultiPostAdsCommand extends Command
 
             $this->cleanUpAds($dealerOutput->getDealer());
             
-            Storage::disk('ftp-s3')->delete($file);
-            $this->info(sprintf('Successfully imported and deleted file %s', $file));
+            //Storage::disk('ftp-s3')->delete($file);
+            //$this->info(sprintf('Successfully imported and deleted file %s', $file));
         }
 
         $this->info(sprintf('Command ended at %s', (new DateTime())->format('Y-m-d H:i:s')));
