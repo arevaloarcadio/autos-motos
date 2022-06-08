@@ -284,7 +284,7 @@ class ImportWebmobile24AdsCommand extends Command
             
             $make->name = trim($externalMake);
             $make->slug = Str::slug($externalMake);
-            $make->active = 1;  
+            $make->is_active = 1;  
             $make->ad_type = 'AUTO'; 
 
             $make->save(); 

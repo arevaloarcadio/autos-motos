@@ -31,6 +31,29 @@ class DealersController extends Controller
      */
     public function index(IndexDealer $request)
     {
+        if ($request->all) {
+            
+            $query = Dealer::query();
+
+            $columns = ['id', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'status', 'external_id', 'source'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Dealer::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Dealer::class)->processRequestAndGet(
             // pass the request with params

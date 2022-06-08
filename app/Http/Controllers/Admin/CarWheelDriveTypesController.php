@@ -31,6 +31,29 @@ class CarWheelDriveTypesController extends Controller
      */
     public function index(IndexCarWheelDriveType $request)
     {
+        if ($request->all) {
+            
+            $query = CarWheelDriveType::query();
+
+            $columns = ['id', 'internal_name', 'slug', 'external_name', 'ad_type'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (CarWheelDriveType::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(CarWheelDriveType::class)->processRequestAndGet(
             // pass the request with params

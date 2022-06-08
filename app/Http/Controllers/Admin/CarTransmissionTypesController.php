@@ -31,6 +31,29 @@ class CarTransmissionTypesController extends Controller
      */
     public function index(IndexCarTransmissionType $request)
     {
+        if ($request->all) {
+            
+            $query = CarTransmissionType::query();
+
+            $columns = ['id', 'internal_name', 'slug', 'external_name', 'ad_type'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (CarTransmissionType::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(CarTransmissionType::class)->processRequestAndGet(
             // pass the request with params

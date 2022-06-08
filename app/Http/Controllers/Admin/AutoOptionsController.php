@@ -31,6 +31,29 @@ class AutoOptionsController extends Controller
      */
     public function index(IndexAutoOption $request)
     {
+        if ($request->all) {
+            
+            $query = AutoOption::query();
+
+            $columns = ['id', 'internal_name', 'slug', 'parent_id', 'ad_type'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (AutoOption::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AutoOption::class)->processRequestAndGet(
             // pass the request with params

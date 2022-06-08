@@ -31,6 +31,29 @@ class OptionsController extends Controller
      */
     public function index(IndexOption $request)
     {
+        if ($request->all) {
+            
+            $query = Option::query();
+
+            $columns = ['id', 'name', 'parent_id', 'ad_type', 'external_id', 'external_updated_at'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Option::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Option::class)->processRequestAndGet(
             // pass the request with params

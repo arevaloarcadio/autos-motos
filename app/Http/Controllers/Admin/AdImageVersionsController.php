@@ -31,6 +31,29 @@ class AdImageVersionsController extends Controller
      */
     public function index(IndexAdImageVersion $request)
     {
+        if ($request->all) {
+            
+            $query = AdImageVersion::query();
+
+            $columns =  ['id', 'ad_image_id', 'name', 'path', 'is_external'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (AdImageVersion::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AdImageVersion::class)->processRequestAndGet(
             // pass the request with params

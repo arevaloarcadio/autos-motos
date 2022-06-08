@@ -31,6 +31,29 @@ class CarMakesController extends Controller
      */
     public function index(IndexCarMake $request)
     {
+        if ($request->all) {
+            
+            $query = CarMake::query();
+
+            $columns =['id', 'name', 'external_id', 'is_active'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (CarMake::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(CarMake::class)->processRequestAndGet(
             // pass the request with params

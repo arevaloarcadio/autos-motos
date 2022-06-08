@@ -31,6 +31,29 @@ class AttributeValuesController extends Controller
      */
     public function index(IndexAttributeValue $request)
     {
+        if ($request->all) {
+            
+            $query = Table::query();
+
+            $columns =['id', 'attribute_id', 'value', 'color_code', 'ads_type'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Table::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AttributeValue::class)->processRequestAndGet(
             // pass the request with params

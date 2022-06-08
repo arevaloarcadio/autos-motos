@@ -30,7 +30,30 @@ class EquipmentController extends Controller
      * @return array|Factory|View
      */
     public function index(IndexEquipment $request)
-    {
+    {   
+        if ($request->all) {
+            
+            $query = Equipment::query();
+
+            $columns = ['id', 'name', 'trim_id', 'year', 'ad_type', 'external_id', 'external_updated_at'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Equipment::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Equipment::class)->processRequestAndGet(
             // pass the request with params

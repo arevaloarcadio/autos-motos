@@ -31,6 +31,29 @@ class MotoAdOptionsController extends Controller
      */
     public function index(IndexMotoAdOption $request)
     {
+        if ($request->all) {
+            
+            $query = MotoAdOption::query();
+
+            $columns = ['moto_ad_id', 'option_id'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (MotoAdOption::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MotoAdOption::class)->processRequestAndGet(
             // pass the request with params

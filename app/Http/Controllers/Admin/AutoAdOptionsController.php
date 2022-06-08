@@ -31,6 +31,29 @@ class AutoAdOptionsController extends Controller
      */
     public function index(IndexAutoAdOption $request)
     {
+        if ($request->all) {
+            
+            $query = AutoAdOption::query();
+
+            $columns =  ['auto_ad_id', 'auto_option_id'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (AutoAdOption::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AutoAdOption::class)->processRequestAndGet(
             // pass the request with params

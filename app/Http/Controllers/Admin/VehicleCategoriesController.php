@@ -31,6 +31,29 @@ class VehicleCategoriesController extends Controller
      */
     public function index(IndexVehicleCategory $request)
     {
+        if ($request->all) {
+            
+            $query = VehicleCategory::query();
+
+            $columns =  ['id', 'internal_name', 'slug', 'ad_type'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (VehicleCategory::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(VehicleCategory::class)->processRequestAndGet(
             // pass the request with params

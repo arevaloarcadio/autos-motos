@@ -31,6 +31,29 @@ class MarketsController extends Controller
      */
     public function index(IndexMarket $request)
     {
+        if ($request->all) {
+            
+            $query = Market::query();
+
+            $columns = ['id', 'internal_name', 'slug', 'domain', 'default_locale_id', 'icon', 'mobile_number', 'whatsapp_number', 'email_address'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Table::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Market::class)->processRequestAndGet(
             // pass the request with params

@@ -31,6 +31,29 @@ class RentalAdsController extends Controller
      */
     public function index(IndexRentalAd $request)
     {
+        if ($request->all) {
+            
+            $query = RentalAd::query();
+
+            $columns = ['id', 'ad_id', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (RentalAd::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(RentalAd::class)->processRequestAndGet(
             // pass the request with params

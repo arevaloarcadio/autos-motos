@@ -31,6 +31,30 @@ class SeriesController extends Controller
      */
     public function index(IndexSeries $request)
     {
+        if ($request->all) {
+            
+            $query = Series::query();
+
+            $columns =  ['id', 'name', 'model_id', 'generation_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
+                
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Series::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Series::class)->processRequestAndGet(
             // pass the request with params

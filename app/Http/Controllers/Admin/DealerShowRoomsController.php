@@ -30,7 +30,30 @@ class DealerShowRoomsController extends Controller
      * @return array|Factory|View
      */
     public function index(IndexDealerShowRoom $request)
-    {
+    {   
+        if ($request->all) {
+            
+            $query = DealerShowRoom::query();
+
+            $columns = ['id', 'name', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'email_address', 'mobile_number', 'landline_number', 'whatsapp_number', 'dealer_id', 'market_id'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (DealerShowRoom::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(DealerShowRoom::class)->processRequestAndGet(
             // pass the request with params

@@ -31,6 +31,29 @@ class GenerationsController extends Controller
      */
     public function index(IndexGeneration $request)
     {
+        if ($request->all) {
+            
+            $query = Generation::query();
+
+            $columns =  ['id', 'name', 'model_id', 'year_begin', 'year_end', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Generation::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Generation::class)->processRequestAndGet(
             // pass the request with params

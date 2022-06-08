@@ -31,6 +31,30 @@ class UsersFavouriteAdsController extends Controller
      */
     public function index(IndexUsersFavouriteAd $request)
     {
+
+        if ($request->all) {
+            
+            $query = UsersFavouriteAd::query();
+
+            $columns = ['user_id', 'ad_id'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (UsersFavouriteAd::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(UsersFavouriteAd::class)->processRequestAndGet(
             // pass the request with params
@@ -62,6 +86,8 @@ class UsersFavouriteAdsController extends Controller
             }
         );
         
+        
+
         return ['data' => $data];
     }
 

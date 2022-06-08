@@ -31,6 +31,30 @@ class AdImagesController extends Controller
      */
     public function index(IndexAdImage $request)
     {
+       if ($request->all) {
+            
+            $query = AdImage::query();
+
+            $columns = 
+            ['id', 'ad_id', 'path', 'is_external', 'order_index'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (AdImage::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AdImage::class)->processRequestAndGet(
             // pass the request with params

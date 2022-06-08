@@ -32,7 +32,29 @@ class AdsController extends Controller
     public function index(IndexAd $request)
     {   
    
-        
+        if ($request->all) {
+            
+            $query = Ad::query();
+
+            $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Ad::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Ad::class)->processRequestAndGet(
             // pass the request with params
@@ -66,7 +88,6 @@ class AdsController extends Controller
 
         foreach ($data as $key0 => $ad) {
             foreach (Ad::getRelationships() as $key1 => $ad_Relationship) {
-                
                 if ($ad[$key1] !== null) {
                     if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
                         foreach ($ad[$key1]::getRelationships() as $key2 => $value) {

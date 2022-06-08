@@ -31,6 +31,29 @@ class BannersController extends Controller
      */
     public function index(IndexBanner $request)
     {
+        if ($request->all) {
+            
+            $query = Banner::query();
+
+            $columns = ['id', 'location', 'image_path', 'link', 'order_index'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Banner::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Banner::class)->processRequestAndGet(
             // pass the request with params

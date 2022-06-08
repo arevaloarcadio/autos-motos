@@ -31,6 +31,29 @@ class CarModelsController extends Controller
      */
     public function index(IndexCarModel $request)
     {
+        if ($request->all) {
+            
+            $query = CarModel::query();
+
+            $columns = ['id', 'name', 'car_make_id', 'external_id'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (CarModel::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(CarModel::class)->processRequestAndGet(
             // pass the request with params

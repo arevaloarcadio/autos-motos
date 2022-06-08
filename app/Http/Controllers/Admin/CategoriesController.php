@@ -31,6 +31,29 @@ class CategoriesController extends Controller
      */
     public function index(IndexCategory $request)
     {
+        if ($request->all) {
+            
+            $query = Category::query();
+
+            $columns = ['id', 'name', 'order_level', 'icon', 'ads_type', 'meta_title'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (Category::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Category::class)->processRequestAndGet(
             // pass the request with params
