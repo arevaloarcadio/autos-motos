@@ -59,10 +59,25 @@ class AdsController extends Controller
                 }
 
                 foreach (Ad::getRelationships() as $key => $value) {
-                   $query->with($key);
+                    $query->with($key);
                 }
             }
         );
+
+        foreach ($data as $key0 => $ad) {
+            foreach (Ad::getRelationships() as $key1 => $ad_Relationship) {
+                
+                if ($ad[$key1] !== null) {
+                    if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
+                        foreach ($ad[$key1]::getRelationships() as $key2 => $value) {
+                            $ad[$key1][$key2] = $ad[$key1][$key2];
+                        }
+                    }
+                }
+            }      
+        }
+
+        
         return ['data' => $data];
     }
 

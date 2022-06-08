@@ -147,6 +147,7 @@ class ImportWebmobile24AdsCommand extends Command
         $fuels        = $this->getFuelOptions();
 
         if (isset($fuels[$externalFuel])) {
+            
             $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
                               ->where('ad_type', '=', 'auto')
                               ->first();
@@ -165,7 +166,22 @@ class ImportWebmobile24AdsCommand extends Command
             return $car_fuel_type;
         }
 
-        return null;
+        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
+                              ->where('ad_type', '=', 'auto')
+                              ->first();
+
+        if (is_null($car_fuel_type)) {
+                
+            $this->info('Save new car fuel type: '.strtolower(trim($externalFuel)));
+            
+            $car_fuel_type = new CarFuelType;
+            $car_fuel_type->internal_name = strtolower(trim($externalFuel));
+            $car_fuel_type->ad_type = 'AUTO';
+            $car_fuel_type->slug = Str::slug($externalFuel);
+            $car_fuel_type->save();
+        }
+
+        return $car_fuel_type;
     }
 
 
@@ -176,9 +192,9 @@ class ImportWebmobile24AdsCommand extends Command
         if ('' === $externalBody) {
             return null;
         }
-        //$externalBody = strtolower(trim($externalBody));
+       
         $bodyTypes    = $this->getBodyOptions();
-
+    
         if (isset($bodyTypes[$externalBody])) {
             
             $car_body_type = CarBodyType::query()
@@ -200,9 +216,23 @@ class ImportWebmobile24AdsCommand extends Command
             return $car_body_type;
         }
 
-        return null;
+        $car_body_type = CarBodyType::query()
+                              ->where('internal_name', '=', strtolower(trim($externalBody)))
+                              ->where('ad_type', '=', 'AUTO')
+                              ->first();
 
-        
+        if (is_null($car_body_type)) {
+            
+            $this->info('Save new car body type: '.strtolower(trim($externalBody)));
+            
+            $car_body_type = new CarBodyType;
+            $car_body_type->internal_name = strtolower(trim($externalBody));
+            $car_body_type->ad_type = 'AUTO';
+            $car_body_type->slug = Str::slug($externalBody); 
+            $car_body_type->save();
+        }
+
+        return $car_body_type;
     }
 
     private function findTransmissionTypeId(string $externalTransmission)
@@ -212,14 +242,13 @@ class ImportWebmobile24AdsCommand extends Command
         }
         $externalTransmission = strtolower(trim($externalTransmission));
         $transmissions        = $this->getTransmissionOptions();
-
+       
         if (isset($transmissions[$externalTransmission])) {
-
             $car_transmission_type = CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
                                       ->where('ad_type', '=', 'auto')
                                       ->first();
-           
+            
             return $car_transmission_type;                       
         }
 
@@ -248,6 +277,18 @@ class ImportWebmobile24AdsCommand extends Command
         }
 
         if ($make instanceof Make) {
+            return $make;
+        }else{
+            
+            $make = new Make;
+            
+            $make->name = trim($externalMake);
+            $make->slug = Str::slug($externalMake);
+            $make->active = 1;  
+            $make->ad_type = 'AUTO'; 
+
+            $make->save(); 
+
             return $make;
         }
 
@@ -487,9 +528,10 @@ class ImportWebmobile24AdsCommand extends Command
 
             $this->info(sprintf('Save new External Model: %s , Mark: %s', $externalModel ,$make->name));
 
+            $slug = Models::where('slug','=',Str::slug($externalModel))->first();
             $model = new Models;
             $model->name = $externalModel;
-            $model->slug = Str::slug($externalModel);
+            $model->slug = is_null($slug) ? Str::slug($externalModel) : Str::slug($externalModel.' '.$make->name);
             $model->make_id = $make->id;
             $model->ad_type = 'AUTO';
             $model->external_updated_at = Carbon::now();
@@ -551,15 +593,15 @@ class ImportWebmobile24AdsCommand extends Command
 
         $this->info('Accessing AWS Amazon .zip files');
         
-        //$zip_files = Storage::disk('ftp-s3')->files('webmobile24');
+        $zip_files = Storage::disk('ftp-s3')->files('webmobile24');
         
-        $zip_files = Storage::disk('local')->files('public/webmobile24');
+        //$zip_files = Storage::disk('local')->files('public/webmobile24');
 
         foreach ($zip_files as $key => $zip_file) {
             
             $zip = new ZipArchive;
             
-            //Storage::disk('local')->put($zip_file, Storage::disk('ftp-s3')->get($zip_file));
+            Storage::disk('local')->put($zip_file, Storage::disk('ftp-s3')->get($zip_file));
            
             $compressed = $zip->open(storage_path('app/'.$zip_file));
             
@@ -599,8 +641,10 @@ class ImportWebmobile24AdsCommand extends Command
 
                         $thumbnail =  preg_split("/_/", $csv_ad[2]);
                            
-                        $year_month = explode('.', $csv_ad[13]);
+                        $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
                         
+                       
+                       
                         $thumbnail_format = explode('.', $csv_ad[2]);
                         
                         $images = Storage::disk('local')->files('public/'.$key);
@@ -654,8 +698,8 @@ class ImportWebmobile24AdsCommand extends Command
                             'ad_fuel_type_id' => $this->findFuelTypeId($csv_ad[12])->id , //OK
                             'ad_body_type_id' => $this->findBodyTypeId(utf8_encode($csv_ad[8]))->id, //OK
                             'ad_transmission_type_id' => $this->findTransmissionTypeId($csv_ad[7])->id, 
-                            'first_registration_year' => $year_month[1],
-                            'first_registration_month' => $year_month[0],
+                            'first_registration_year' => $year_month[1] ?? '01',
+                            'first_registration_month' => $year_month[0] ?? '2000',
                             'engine_displacement' => $csv_ad[18], //OK
                             'power_hp' => $csv_ad[19], //OK
                             'make_id' => $this->findMake($csv_ad[3])->id, //OK
@@ -686,8 +730,10 @@ class ImportWebmobile24AdsCommand extends Command
                                     $i++;
                                     $directory = '/listings/'.$ad->id.'/'.$ad->id.'_'.$i.'.'.$format[1];
                                     
-                                    if (!$this->findOrCreateAdImage($ad->id,$directory,$i)) {
-                                        $import = Storage::disk('local')->copy($image,'webmobile24'.$directory);
+                                    $this->findOrCreateAdImage($ad->id,$directory,$i);
+
+                                    if (!Storage::disk('ftp-s3')->exists('webmobile24-test'.$directory)) {
+                                        $import = Storage::disk('ftp-s3')->put('webmobile24-test'.$directory,Storage::disk('local')->get($image));
                                         $import ? $this->totalImageAdsImportedCounter++ : $this->totalImageAdsFailedCounter++;
                                     }
                                 }

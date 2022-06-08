@@ -62,11 +62,11 @@ abstract class AbstractLocalizableModelObserver
      * @return void
      * @throws ReflectionException
      */
-    public function created(ILocalizable $model)
+    public function created($model)
     {
-        $locales = $this->localeManager->findAllPaginated();
+        /*$locales = $this->localeManager->findAllPaginated();
         
-        /** @var Locale $locale */
+
         foreach ($locales as $locale) {
             $translationKey = sprintf('%s.%s', $this->getGroupName($model), $model->internal_name);
             if ($this->translator->has($translationKey, $locale->code, false)) {
@@ -79,7 +79,7 @@ abstract class AbstractLocalizableModelObserver
             $translation->resource_id       = $model->id;
             $this->translationManager->save($translation);
             $this->clearTranslationsCache($model, $locale->code);
-        }
+        }*/
         
     }
     
