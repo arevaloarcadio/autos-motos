@@ -14,14 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::post('/register/professional', 'App\Http\Controllers\UserController@register_professional');
-Route::post('/register/occasional', 'App\Http\Controllers\UserController@register_occasional');
-
-Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
 
 
 Route::namespace('App\Http\Controllers')->group(static function() {
@@ -29,6 +21,19 @@ Route::namespace('App\Http\Controllers')->group(static function() {
         Route::post('/login', 'UserController@authenticate_admin');
     });
 });
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::namespace('App\Http\Controllers\Admin')->group(static function() {
+        Route::prefix('admin')->group(static function() {
+            Route::post('/import/massive', 'ImportController@import_massive');
+        });
+    });
+});
+
+
+
+
+Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
 
 Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
@@ -54,6 +59,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('ads')->name('ads/')->group(static function() {
             Route::get('/',                                             'AdsController@index')->name('index');
+            Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
             Route::get('/create',                                       'AdsController@create')->name('create');
             Route::post('/',                                            'AdsController@store')->name('store');
             Route::get('/{ad}/edit',                                    'AdsController@edit')->name('edit');
@@ -623,7 +629,25 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::delete('/{vehicleCategory}',                         'VehicleCategoriesController@destroy')->name('destroy');
         });
 
+        Route::prefix('characteristics')->name('characteristics/')->group(static function() {
+            Route::get('/',                                             'CharacteristicsController@index')->name('index');
+            Route::get('/create',                                       'CharacteristicsController@create')->name('create');
+            Route::post('/',                                            'CharacteristicsController@store')->name('store');
+            Route::get('/{characteristic}/edit',                        'CharacteristicsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'CharacteristicsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{characteristic}',                            'CharacteristicsController@update')->name('update');
+            Route::delete('/{characteristic}',                          'CharacteristicsController@destroy')->name('destroy');
+        });
 
+        Route::prefix('sub-characteristics')->name('sub-characteristics/')->group(static function() {
+            Route::get('/',                                             'SubCharacteristicsController@index')->name('index');
+            Route::get('/create',                                       'SubCharacteristicsController@create')->name('create');
+            Route::post('/',                                            'SubCharacteristicsController@store')->name('store');
+            Route::get('/{subCharacteristic}/edit',                     'SubCharacteristicsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'SubCharacteristicsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{subCharacteristic}',                         'SubCharacteristicsController@update')->name('update');
+            Route::delete('/{subCharacteristic}',                       'SubCharacteristicsController@destroy')->name('destroy');
+        });
 });
 
 /*

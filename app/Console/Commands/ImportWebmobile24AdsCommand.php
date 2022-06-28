@@ -271,7 +271,9 @@ class ImportWebmobile24AdsCommand extends Command
         $knownMakes = [
             'mercedes'    => 'mercedes-benz',
             'rolls royce' => 'rolls-royce',
+            'VW' => 'Volkswagen'
         ];
+
         if (null === $make && isset($knownMakes[$externalMake])) {
             $make = Make::query()->where('name', '=', $knownMakes[$externalMake])->first();
         }
@@ -686,7 +688,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'mileage' => $csv_ad[14], ///OK
                             'exterior_color' => utf8_encode($csv_ad[9]),
                             'interior_color' => $this->getColor($csv_ad[9]),
-                            'condition' =>  $csv_ad[6], //OK
+                            'condition' =>  $this->getCondition($csv_ad[6]) , //OK
                             'dealer_id' => $dealer->id,
                             'dealer_show_room_id' => $dealer_show_room->id,
                             'email_address' => $dealer->email_address,

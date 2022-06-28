@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Requests\Admin\Ad\BulkDestroyAd;
 use App\Http\Requests\Admin\Ad\DestroyAd;
 use App\Http\Requests\Admin\Ad\IndexAd;
@@ -36,7 +37,7 @@ class AdsController extends Controller
             
             $query = Ad::query();
 
-            $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text'];
+            $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','name_csv'];
                 
             foreach ($columns as $column) {
                 if ($request->filters) {
@@ -61,14 +62,14 @@ class AdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'title', 'thumbnail', 'status', 'type', 'is_featured', 'user_id', 'market_id', 'external_id', 'source', 'images_processing_status'],
+            ['id', 'title', 'thumbnail', 'status', 'type', 'is_featured', 'user_id', 'market_id', 'external_id', 'source', 'images_processing_status','name_csv'],
 
             // set columns to searchIn
-            ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text'],
+            ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','name_csv'],
 
         function ($query) use ($request) {
                      
-                $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text'];
+                $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','name_csv'];
 
                 foreach ($columns as $column) {
                     if ($request->filters) {
@@ -102,6 +103,20 @@ class AdsController extends Controller
         return ['data' => $data];
     }
 
+    public function bySource(Request $request)
+    {
+
+        $ads = Ad::selectRaw('count(*) as count,source')
+            ->where('source','!=',NULL)
+            ->where('source','!=','CSV')
+            ->groupBy('source');
+        
+        if ($request->dateStart && $request->dateEnd) {
+             $ads->whereBetween('created_at',[$request->dateStart,$request->dateEnd]);
+        }
+
+        return ['data' => $ads->get()];
+    }
     /**
      * Show the form for creating a new resource.
      *

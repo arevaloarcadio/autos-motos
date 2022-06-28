@@ -1098,3 +1098,24 @@ $factory->define(App\Models\MobileHomeAdOption::class, static function (Faker\Ge
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Characteristic::class, static function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->firstName,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\SubCharacteristic::class, static function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->firstName,
+        'characteristic_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

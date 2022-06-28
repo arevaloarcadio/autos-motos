@@ -1561,5 +1561,38 @@ return [
         ],
     ],
 
+    'characteristic' => [
+        'title' => 'Characteristics',
+
+        'actions' => [
+            'index' => 'Characteristics',
+            'create' => 'New Characteristic',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'name' => 'Name',
+            
+        ],
+    ],
+
+    'sub-characteristic' => [
+        'title' => 'Sub Characteristics',
+
+        'actions' => [
+            'index' => 'Sub Characteristics',
+            'create' => 'New Sub Characteristic',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'name' => 'Name',
+            'characteristic_id' => 'Characteristic',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];

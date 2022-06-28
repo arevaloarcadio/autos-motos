@@ -54,3 +54,5 @@ import './user-role';
 import './moto-ad-option';
 import './mobile-home-ad';
 import './mobile-home-ad-option';
+import './characteristic';
+import './sub-characteristic';
