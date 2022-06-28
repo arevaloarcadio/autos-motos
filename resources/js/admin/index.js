@@ -56,3 +56,4 @@ import './mobile-home-ad';
 import './mobile-home-ad-option';
 import './characteristic';
 import './sub-characteristic';
+import './ad-sub-characteristic';

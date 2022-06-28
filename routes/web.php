@@ -50,3 +50,19 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 
 
 
+
+
+/* Auto-generated admin routes */
+Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
+        Route::prefix('ad-sub-characteristics')->name('ad-sub-characteristics/')->group(static function() {
+            Route::get('/',                                             'AdSubCharacteristicsController@index')->name('index');
+            Route::get('/create',                                       'AdSubCharacteristicsController@create')->name('create');
+            Route::post('/',                                            'AdSubCharacteristicsController@store')->name('store');
+            Route::get('/{adSubCharacteristic}/edit',                   'AdSubCharacteristicsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'AdSubCharacteristicsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{adSubCharacteristic}',                       'AdSubCharacteristicsController@update')->name('update');
+            Route::delete('/{adSubCharacteristic}',                     'AdSubCharacteristicsController@destroy')->name('destroy');
+        });
+    });
+});

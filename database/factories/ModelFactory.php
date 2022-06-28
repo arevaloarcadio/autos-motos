@@ -1119,3 +1119,14 @@ $factory->define(App\Models\SubCharacteristic::class, static function (Faker\Gen
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\AdSubCharacteristic::class, static function (Faker\Generator $faker) {
+    return [
+        'ad_id' => $faker->sentence,
+        'sub_characteristic_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

@@ -1594,5 +1594,22 @@ return [
         ],
     ],
 
+    'ad-sub-characteristic' => [
+        'title' => 'Ad Sub Characteristics',
+
+        'actions' => [
+            'index' => 'Ad Sub Characteristics',
+            'create' => 'New Ad Sub Characteristic',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'ad_id' => 'Ad',
+            'sub_characteristic_id' => 'Sub characteristic',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];

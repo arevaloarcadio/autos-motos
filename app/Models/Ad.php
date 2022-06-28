@@ -185,4 +185,9 @@ class Ad extends Model
                 return null;
         }
     }
+
+    public function characteristics(){
+      return $this->belongsToMany(SubCharacteristic::class)
+                  ->using(AdSubCharacteristic::class);
+    }
 }
