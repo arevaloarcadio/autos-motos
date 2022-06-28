@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 
 class BulkDestroyAdSubCharacteristic extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -14,7 +15,7 @@ class BulkDestroyAdSubCharacteristic extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.ad-sub-characteristic.bulk-delete');
+        return true;
     }
 
     /**

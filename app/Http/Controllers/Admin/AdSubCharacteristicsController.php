@@ -31,6 +31,29 @@ class AdSubCharacteristicsController extends Controller
      */
     public function index(IndexAdSubCharacteristic $request)
     {
+        if ($request->all) {
+            
+            $query = AdSubCharacteristic::query();
+
+            $columns =  ['id', 'ad_id', 'sub_characteristic_id'];
+                
+            foreach ($columns as $column) {
+                if ($request->filters) {
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
+                        }
+                    }
+                }
+            }
+
+            foreach (AdSubCharacteristic::getRelationships() as $key => $value) {
+               $query->with($key);
+            }
+
+            return ['data' => $query->get()];
+        }
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AdSubCharacteristic::class)->processRequestAndGet(
             // pass the request with params
@@ -40,19 +63,28 @@ class AdSubCharacteristicsController extends Controller
             ['id', 'ad_id', 'sub_characteristic_id'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'sub_characteristic_id']
+            ['id', 'ad_id', 'sub_characteristic_id'],
+            function ($query) use ($request) {
+                     
+                $columns =  ['id', 'ad_id', 'sub_characteristic_id'];
+
+                foreach ($columns as $column) {
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
+                        }
+                    }
+                }
+
+                foreach (Ad::getRelationships() as $key => $value) {
+                    $query->with($key);
+                }
+            }
         );
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
-
-        return view('admin.ad-sub-characteristic.index', ['data' => $data]);
+        return ['data' => $data];
     }
 
     /**
@@ -82,11 +114,7 @@ class AdSubCharacteristicsController extends Controller
         // Store the AdSubCharacteristic
         $adSubCharacteristic = AdSubCharacteristic::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ad-sub-characteristics'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ad-sub-characteristics');
+        return ['data' => $adSubCharacteristic];
     }
 
     /**
@@ -135,14 +163,7 @@ class AdSubCharacteristicsController extends Controller
         // Update changed values AdSubCharacteristic
         $adSubCharacteristic->update($sanitized);
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/ad-sub-characteristics'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
-        }
-
-        return redirect('admin/ad-sub-characteristics');
+        return ['data' => $adSubCharacteristic];
     }
 
     /**

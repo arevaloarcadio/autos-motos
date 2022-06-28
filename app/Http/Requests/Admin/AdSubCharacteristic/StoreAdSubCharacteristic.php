@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class StoreAdSubCharacteristic extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,7 +16,7 @@ class StoreAdSubCharacteristic extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.ad-sub-characteristic.create');
+        return true;
     }
 
     /**
