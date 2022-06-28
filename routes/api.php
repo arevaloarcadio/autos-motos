@@ -648,6 +648,17 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/{subCharacteristic}',                         'SubCharacteristicsController@update')->name('update');
             Route::delete('/{subCharacteristic}',                       'SubCharacteristicsController@destroy')->name('destroy');
         });
+
+        Route::prefix('ad-sub-characteristics')->name('ad-sub-characteristics/')->group(static function() {
+            Route::get('/',                                             'AdSubCharacteristicsController@index')->name('index');
+            Route::get('/create',                                       'AdSubCharacteristicsController@create')->name('create');
+            Route::post('/',                                            'AdSubCharacteristicsController@store')->name('store');
+            Route::get('/{adSubCharacteristic}/edit',                   'AdSubCharacteristicsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'AdSubCharacteristicsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{adSubCharacteristic}',                       'AdSubCharacteristicsController@update')->name('update');
+            Route::delete('/{adSubCharacteristic}',                     'AdSubCharacteristicsController@destroy')->name('destroy');
+        });
+   
 });
 
 /*
