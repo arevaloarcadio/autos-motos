@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-//use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable  implements JWTSubject
 {
     use \App\Traits\TraitUuid;
     use \App\Traits\Relationships;
-    //use Notifiable;
+    use Notifiable;
     
     protected $fillable = [
         'first_name',

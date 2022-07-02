@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Notifications\NotifyApproved;
 use App\Http\Requests\Admin\Ad\BulkDestroyAd;
 use App\Http\Requests\Admin\Ad\DestroyAd;
 use App\Http\Requests\Admin\Ad\IndexAd;
 use App\Http\Requests\Admin\Ad\StoreAd;
 use App\Http\Requests\Admin\Ad\UpdateAd;
-use App\Models\Ad;
+use App\Models\{Ad,CsvAd,RejectedComment,AdRejectedComment,User};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -117,6 +118,49 @@ class AdsController extends Controller
 
         return ['data' => $ads->get()];
     }
+
+    public function byCsv(Request $request,$csv_ad_id)
+    {
+        $ads = Ad::where('source','CSV')
+                ->where('csv_ad_id',$csv_ad_id)
+                ->where('status',0)
+                ->with(['csv_ad','autoAd' => function($query)
+                    {
+                        $query->with(['make','model']);
+                    }
+                ]
+                )
+                ->get();
+        
+        return ['data' => $ads];
+    }
+
+    public function groupByCsv(Request $request)
+    {
+        $ads = CsvAd::with('user')
+                ->get();
+        
+        return ['data' => $ads];
+    }
+
+
+    public function setApprovedRejected(Request $request,$status)
+    {   
+        
+        $ads = Ad::whereIn('id',$request->ad_ids)
+                ->update(
+                    [
+                        'status' => $status == 'approved' ? 10 : 20
+                    ]
+                );
+        
+        $user = User::find($request->user_id);
+
+        //$user->notify(new NotifyApproved);
+
+        return ['data' => $ads];
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -154,11 +198,28 @@ class AdsController extends Controller
      * @throws AuthorizationException
      * @return void
      */
-    public function show(Ad $ad)
-    {
-        $this->authorize('admin.ad.show', $ad);
+    public function show($ad)
+    {   
+        $ad = Ad::find($ad);
+        
+        return ['data' => $ad];
+    }
 
-        // TODO your code goes here
+
+    public function storeCommentRejected(Request $request,$ad)
+    {   
+        $ad = Ad::find($ad);
+        
+        $rejected_comment = new RejectedComment;
+        $rejected_comment->comment = $request->comment;
+        $rejected_comment->save();
+
+        $ad_rejected_comment = new AdRejectedComment;
+        $ad_rejected_comment->ad_id = $ad->id;
+        $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
+        $ad_rejected_comment->save();
+        
+        return ['data' => 'OK'];
     }
 
     /**

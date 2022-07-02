@@ -25,6 +25,7 @@ class Ad extends Model
         'source',
         'images_processing_status',
         'images_processing_status_text',
+        'csv_ad_id'
     
     ];
     
@@ -43,6 +44,12 @@ class Ad extends Model
     {
         return url('/admin/ads/'.$this->getKey());
     }
+
+    public function csv_ad()
+    {
+        return $this->belongsTo(CsvAd::class,'csv_ad_id');
+    }
+
      public function autoAd()
     {
         return $this->hasOne(AutoAd::class);
@@ -189,5 +196,10 @@ class Ad extends Model
     public function characteristics(){
       return $this->belongsToMany(SubCharacteristic::class)
                   ->using(AdSubCharacteristic::class);
+    }
+
+    public function rejected_comments(){
+      return $this->belongsToMany('App\Models\RejectedComment','rejected_comments')
+                  ->using('App\Models\AdRejectedComment');
     }
 }

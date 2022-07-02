@@ -12,7 +12,8 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Carbon\Carbon as DateTime;
 use Illuminate\Support\Str;
-use App\Models\{Ad,AutoAd,AdImage,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
+use Pusher\Pusher;
+use App\Models\{Ad,AutoAd,AdImage,User,CarBodyType,CsvAd,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
 
 
 class ImportController extends Controller
@@ -37,7 +38,9 @@ class ImportController extends Controller
         try {
 
         	$file = $request->file('file');
-        	$csv = date('dmyhms').'.csv';
+        	
+            $csv = date('dmyhms').'.csv';
+
             $path = $file->move(storage_path('app/massive'),$csv);
             
             $directory = storage_path('app/massive/'.$csv);
@@ -45,12 +48,24 @@ class ImportController extends Controller
             $handle = fopen($directory, "r");
 
             $user = Auth::user();
-            
+
+            $csv_ad_id = $this->saveCsvAd($user['id'],$csv);
+
             $market = $this->getMarket();
 
             $dealer = $this->findDealer($user->dealer_id ?? null);
 
             $dealer_show_room = $this->findDealerShowRoom($dealer->id ?? null);
+            
+            $total_ads = 0;
+            
+            $count_ads = 0;
+            
+            $fh = fopen($directory,'rb') or die("ERROR OPENING DATA");
+
+            while (fgets($fh) !== false) $total_ads++;
+
+            fclose($fh);
 
             while (($csv_ad = fgetcsv($handle,null,';')) !== FALSE) {
 
@@ -68,7 +83,7 @@ class ImportController extends Controller
                     'title'                         => utf8_encode($csv_ad[5]),
                     'description'                   => utf8_encode($csv_ad[58]) ,
                     'thumbnail'                     => $csv_ad[2],
-                    'status'                        => 10,
+                    'status'                        => 0,
                     'type'                          => 'auto',
                     'user_id'                       => $user->id,
                     'market_id'                     => $market->id,
@@ -76,7 +91,7 @@ class ImportController extends Controller
                     'source'                        => 'CSV',
                     'images_processing_status'      => 'N/A',
                     'images_processing_status_text' => null,
-                    'name_csv'                      => $csv
+                    'csv_ad_id'                     => $csv_ad_id['id']
                 ];
                 
                 $data_auto_ad = [
@@ -88,9 +103,9 @@ class ImportController extends Controller
                     'exterior_color'           => utf8_encode($csv_ad[9]),
                     'interior_color'           => utf8_encode($csv_ad[9]),
                     'condition'                => $this->getCondition($csv_ad[6]), //OK
-                    'dealer_id'                => !is_null($dealer)  ? $dealer['id'] : null,
+                    'dealer_id'                => !is_null($dealer) ? $dealer['id'] : null,
                     'dealer_show_room_id'      => !is_null($dealer_show_room)  ? $dealer_show_room['id'] : null,
-                    'email_address'            => !is_null($dealer)  ? $dealer['email_address'] : $user->email,
+                    'email_address'            => !is_null($dealer) ? $dealer['email_address'] : $user->email,
                     'address'                  => !is_null($dealer) ? $dealer['address'] : '.',
                     'zip_code'                 => !is_null($dealer) ? $dealer['zip_code'] : '.',
                     'city'                     => !is_null($dealer) ? $dealer['city'] : '.',
@@ -114,14 +129,44 @@ class ImportController extends Controller
                 $data_auto_ad['ad_id'] = $ad->id;
                 
                 $auto_ad = $this->findOrCreateAutoAd($data_auto_ad,$ad);
-                    
-            }
-	        //ApiHelper::success($resource);
+                $count_ads++;    
 
+               /* $pusher = new Pusher(
+                    env('PUSHER_APP_KEY'),
+                    env('PUSHER_APP_SECRET'),
+                    env('PUSHER_APP_ID'),
+                    [ 
+                        'cluster' => env('PUSHER_APP_CLUSTER'),
+                        'useTLS' => true
+                    ]
+                );
+
+                $pusher->trigger(
+                    'percentage',
+                    'percentage-'.$user['id'],
+                    [ 
+                        'percentage' => round(($count_ads*100)/$total_ads,2).'%'
+                    ]
+                );     */
+            }
+        
         } catch (Exception $e) {
+            $resource = array_merge($resource, [
+                    'error_message' => sprintf('Error en la fila %d por favor verifique el archivo e intente  nuevamente',$count_ads+1) 
+                ]
+            );
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
-        } 	
+        } 
+        
+        $resource = array_merge($resource, [
+                    'data' => 'Total de anuncios importandos '.$count_ads.' de '.$total_ads
+                ]
+            );
+
+        ApiHelper::success($resource);
+
+        return $this->sendResponse($resource); 	
     }
 
     private function getColorOptions(): array
@@ -320,6 +365,13 @@ class ImportController extends Controller
         return $bodys;
     }
 
+    private function saveCsvAd($user_id,$csv)
+    {
+        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' => 'Pendiente']);
+        
+        return $csv;
+    }
+
     private function findFuelTypeId(string $externalFuel)
     {
         if ('' === $externalFuel) {
@@ -454,7 +506,8 @@ class ImportController extends Controller
         $knownMakes = [
             'mercedes'    => 'mercedes-benz',
             'rolls royce' => 'rolls-royce',
-            'VW' => 'Volkswagen'
+            'VW' => 'Volkswagen',
+            'vw' => 'Volkswagen'
         ];
 
         if (null === $make && isset($knownMakes[$externalMake])) {

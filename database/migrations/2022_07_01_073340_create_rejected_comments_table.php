@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnTypeUserInUsersTable extends Migration
+class CreateRejectedCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddColumnTypeUserInUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-             $table->string('type')->default('professional')->nullable();
+        Schema::create('rejected_comments', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->text('comment');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddColumnTypeUserInUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-             $table->dropColumn('type');
-        });
+        Schema::dropIfExists('rejected_comments');
     }
 }

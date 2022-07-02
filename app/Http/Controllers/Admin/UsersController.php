@@ -128,9 +128,7 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
-        $this->authorize('admin.user.show', $user);
-
-        // TODO your code goes here
+        return ['data' => $user];
     }
 
     /**

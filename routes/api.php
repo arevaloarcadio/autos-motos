@@ -36,6 +36,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
 
 Route::namespace('App\Http\Controllers\Admin')->group(static function() {
+   
 
     Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
 		Route::get('/',                                             'AutoAdsController@index')->name('index');
@@ -60,8 +61,13 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('ads')->name('ads/')->group(static function() {
             Route::get('/',                                             'AdsController@index')->name('index');
             Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
+            Route::get('/byCsv/{csv_ad_id}',                            'AdsController@byCsv')->name('byCsv');
+            Route::get('/groupByCsv',                                   'AdsController@groupByCsv')->name('groupByCsv');
             Route::get('/create',                                       'AdsController@create')->name('create');
+            Route::get('/{ad_id}',                                      'AdsController@show')->name('show');
             Route::post('/',                                            'AdsController@store')->name('store');
+            Route::post('/{ad_id}/rejected_comment',                    'AdsController@storeCommentRejected')->name('storeCommentRejected');
+            Route::post('/{status}/approved_rejected',                  'AdsController@setApprovedRejected')->name('store');
             Route::get('/{ad}/edit',                                    'AdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{ad}',                                        'AdsController@update')->name('update');
@@ -570,6 +576,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('users')->name('users/')->group(static function() {
             Route::get('/',                                             'UsersController@index')->name('index');
+            Route::get('/{user}',                                      'UsersController@show')->name('show');
             Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');
             Route::get('/{user}/edit',                                  'UsersController@edit')->name('edit');
