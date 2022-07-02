@@ -198,8 +198,8 @@ class Ad extends Model
                   ->using(AdSubCharacteristic::class);
     }
 
-    public function rejected_comments(){
+    /*public function rejected_comments(){
       return $this->belongsToMany('App\Models\RejectedComment','rejected_comments')
                   ->using('App\Models\AdRejectedComment');
-    }
+    }*/
 }
