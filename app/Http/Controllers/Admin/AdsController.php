@@ -260,6 +260,24 @@ class AdsController extends Controller
         return ['data' => 'OK'];
     }
 
+     public function storeCommentsRejected(Request $request,$csv_ad_id)
+    {   
+        $rejected_comment = new RejectedComment;
+        $rejected_comment->comment = $request->comment;
+        $rejected_comment->save();
+
+        $ads = Ad::where('csv_ad_id',$csv_ad_id)->get();
+
+        foreach ($ads as $ad) {
+            $ad_rejected_comment = new AdRejectedComment;
+            $ad_rejected_comment->ad_id = $ad->id;
+            $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
+            $ad_rejected_comment->save();
+        }
+        
+        return ['data' => 'OK'];
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
