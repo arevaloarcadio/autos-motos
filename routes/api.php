@@ -61,6 +61,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('ads')->name('ads/')->group(static function() {
             Route::get('/',                                             'AdsController@index')->name('index');
             Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
+            Route::get('/countToday',                                   'AdsController@countAdsToday')->name('countAdsToday');
+            Route::get('/countAdsImportToday',                          'AdsController@countAdsImportToday')->name('countAdsImportToday');
             Route::get('/byCsv/{csv_ad_id}',                            'AdsController@byCsv')->name('byCsv');
             Route::get('/groupByCsv',                                   'AdsController@groupByCsv')->name('groupByCsv');
             Route::get('/create',                                       'AdsController@create')->name('create');

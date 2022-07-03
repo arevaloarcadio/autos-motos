@@ -137,10 +137,48 @@ class AdsController extends Controller
 
     public function groupByCsv(Request $request)
     {
-        $ads = CsvAd::with('user')
-                ->get();
+        $ads = CsvAd::select('csv_ads.*')
+            ->with('user');
         
-        return ['data' => $ads];
+        if ($request->type) {
+            $ads = $ads->join('users','users.id','csv_ads.user_id')
+                        ->where('users.type',$request->type);
+        }
+        
+        if ($request->date) {
+            $ads->where('csv_ads.created_at','LIKE','%'.$request->date.'%');
+        }
+
+        if ($request->sort) {
+            $ads->where('csv_ads.status',$request->sort);
+        }
+
+        return ['data' => $ads->get()];
+    }
+
+    public function countAdsToday(Request $request)
+    {
+        $today = date('Y-m-d');
+        $count_ads = Ad::where('created_at','LIKE','%'.$today.'%')->count();
+        
+        return ['data' => $count_ads];
+    }
+
+     public function countAdsImportToday(Request $request)
+    {
+        $today = date('Y-m-d');
+        $sources = [
+            'INVENTARIO_IMPORT',
+            'MECHANICS_IMPORT',
+            'PORTAL',
+            'PORTAL_CLUB_IMPORT',
+            'RENTALS_IMPORT',
+            'WEB_MOBILE_24'
+        ];
+
+        $count_ads = Ad::where('created_at','LIKE','%'.$today.'%')->whereIn('source',$sources)->count();
+        
+        return ['data' => $count_ads];
     }
 
 
