@@ -83,7 +83,7 @@ class ImportController extends Controller
                     'title'                         => utf8_encode($csv_ad[5]),
                     'description'                   => utf8_encode($csv_ad[58]) ,
                     'thumbnail'                     => $csv_ad[2],
-                    'status'                        => 0,
+                    'status'                        => 10,
                     'type'                          => 'auto',
                     'user_id'                       => $user->id,
                     'market_id'                     => $market->id,
@@ -131,7 +131,7 @@ class ImportController extends Controller
                 $auto_ad = $this->findOrCreateAutoAd($data_auto_ad,$ad);
                 $count_ads++;    
 
-               /* $pusher = new Pusher(
+                $pusher = new Pusher(
                     env('PUSHER_APP_KEY'),
                     env('PUSHER_APP_SECRET'),
                     env('PUSHER_APP_ID'),
@@ -147,7 +147,7 @@ class ImportController extends Controller
                     [ 
                         'percentage' => round(($count_ads*100)/$total_ads,2).'%'
                     ]
-                );     */
+                );     
             }
         
         } catch (Exception $e) {
@@ -367,7 +367,7 @@ class ImportController extends Controller
 
     private function saveCsvAd($user_id,$csv)
     {
-        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' => 'Pendiente']);
+        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' => 'Aprobado']);
         
         return $csv;
     }
