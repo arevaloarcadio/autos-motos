@@ -13,6 +13,7 @@ use App\Traits\ApiController;
 use Carbon\Carbon as DateTime;
 use Illuminate\Support\Str;
 use Pusher\Pusher;
+use Storage;
 use App\Models\{Ad,AutoAd,AdImage,User,CarBodyType,CsvAd,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
 
 
@@ -745,6 +746,11 @@ class ImportController extends Controller
         }
 
         return 'other';
+    }
+
+    public function downloadCsv()
+    {
+        return Storage::download('files/export.csv');
     }
 
 }

@@ -30,8 +30,11 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     });
 });
 
-
-
+Route::namespace('App\Http\Controllers\Admin')->group(static function() {
+    Route::prefix('admin')->group(static function() {
+        Route::get('/download_csv', 'ImportController@downloadCsv');
+    });
+});
 
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
 
