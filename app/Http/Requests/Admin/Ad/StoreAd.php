@@ -32,7 +32,7 @@ class StoreAd extends FormRequest
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'thumbnail' => ['nullable', 'string'],
-            'status' => ['required', 'integer'],
+            //'status' => ['required', 'integer'],
             'type' => ['required', 'string'],
             'is_featured' => ['required', 'boolean'],
             'user_id' => ['nullable', 'string'],

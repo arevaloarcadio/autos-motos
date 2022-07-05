@@ -32,7 +32,7 @@ class UpdateAd extends FormRequest
             'title' => ['sometimes', 'string'],
             'description' => ['sometimes', 'string'],
             'thumbnail' => ['nullable', 'string'],
-            'status' => ['sometimes', 'integer'],
+            //'status' => ['sometimes', 'integer'],
             'type' => ['sometimes', 'string'],
             'is_featured' => ['sometimes', 'boolean'],
             'user_id' => ['nullable', 'string'],

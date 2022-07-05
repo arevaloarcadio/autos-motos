@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class CsvAd extends Model
 {
 	use \App\Traits\TraitUuid;
-	
+	use \App\Traits\Relationships;
+
 	protected $appends = ['resource_url'];
 	
 	protected $fillable = [

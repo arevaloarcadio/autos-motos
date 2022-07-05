@@ -38,7 +38,7 @@ class AdsController extends Controller
             
             $query = Ad::query();
 
-            $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id'];
+            $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'status','type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'];
                 
             foreach ($columns as $column) {
                 if ($request->filters) {
@@ -63,20 +63,24 @@ class AdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'title', 'thumbnail', 'status', 'type', 'is_featured', 'user_id', 'market_id', 'external_id', 'source', 'images_processing_status','csv_ad_id'],
+            ['id', 'title', 'thumbnail', 'status', 'type',  'status','is_featured', 'user_id', 'market_id', 'external_id', 'source', 'images_processing_status','csv_ad_id'],
 
             // set columns to searchIn
-            ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id'],
+            ['id', 'slug', 'title', 'description', 'thumbnail', 'status', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'],
 
         function ($query) use ($request) {
                      
-                $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id'];
+                $columns =  ['id', 'slug', 'title', 'description', 'status', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'];
 
                 foreach ($columns as $column) {
                     if ($request->filters) {
                         foreach ($request->filters as $key => $filter) {
                             if ($column == $key) {
-                               $query->where($key,$filter);
+                                if ($key == 'created_at') {
+                                    $query->where($key,'LIKE','%'.$filter.'%');
+                                }else{
+                                    $query->where($key,$filter);
+                                }
                             }
                         }
                     }
@@ -93,6 +97,7 @@ class AdsController extends Controller
                 if ($ad[$key1] !== null) {
                     if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
                         foreach ($ad[$key1]::getRelationships() as $key2 => $value) {
+
                             $ad[$key1][$key2] = $ad[$key1][$key2];
                         }
                     }
@@ -222,7 +227,7 @@ class AdsController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-
+        $sanitized['status'] = 0;
         // Store the Ad
         $ad = Ad::create($sanitized);
 
