@@ -109,9 +109,12 @@ class ReviewsController extends Controller
         $data = Review::select('reviews.*')
                 ->join('ads','ads.id','reviews.ad_id')
                 ->where('ads.user_id',Auth::user()->id)
-                ->get();
-
-        return ['data' => $data];       
+                
+        if ($request->type) {
+           $data->where('ads.type',$request->type)
+        }       
+        
+        return ['data' => $data->get()];       
     }
     /**
      * Show the form for editing the specified resource.
