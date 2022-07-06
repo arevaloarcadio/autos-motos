@@ -87,6 +87,34 @@ class AdsController extends Controller
                     }
                 }
 
+                if ($request->input('types')) {
+                    
+                    $query->whereIn('type',$request->input('types'));
+                    $where_ad_id = '';
+                    $i = 1;
+
+                    foreach ($request->input('types') as $type ) {
+                        $table = $this->getTypeAds($type);
+                        if ($table) {
+                            if ($i == 1) {
+                                if ($i ==  count($request->input('types'))) {
+                                    $where_ad_id .= sprintf('(ads.id in (SELECT ad_id from %s)) ',$table);
+                                }else{
+                                    $where_ad_id .= sprintf('(ads.id in (SELECT ad_id from %s) ',$table);
+                                }
+                            }else{
+                                if ($i == count($request->input('types'))) {
+                                    $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s)) ',$table);
+                                }else{
+                                    $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s) ',$table);
+                                }
+                            }
+                            $i++;        
+                        }
+                    }
+
+                    $query->whereRaw($where_ad_id); 
+                }
 
                 foreach (Ad::getRelationships() as $key => $value) {
                     $query->with($key);
@@ -99,7 +127,6 @@ class AdsController extends Controller
                 if ($ad[$key1] !== null) {
                     if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
                         foreach ($ad[$key1]::getRelationships() as $key2 => $value) {
-
                             $ad[$key1][$key2] = $ad[$key1][$key2];
                         }
                     }
@@ -107,7 +134,6 @@ class AdsController extends Controller
             }      
         }
 
-        
         return ['data' => $data];
     }
 
@@ -389,5 +415,24 @@ class AdsController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function getTypeAds($key){
+
+        $type_ads = [
+            'auto' => 'auto_ads',
+            'moto' => 'moto_ads',
+            'mobile-home' => 'mobile_home_ads',
+            'truck' => 'truck_ads',
+            'rental' => 'rental_ads',
+            'shop' => 'shop_ads',
+            'truck' => 'truck_ads'
+        ];
+        
+        if (isset($type_ads[$key])) {
+            return $type_ads[$key];
+        }
+
+        return null;
     }
 }
