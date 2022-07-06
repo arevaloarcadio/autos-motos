@@ -27,6 +27,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         Route::prefix('admin')->group(static function() {
             Route::post('/import/massive', 'ImportController@import_massive');
         });
+
+        Route::prefix('ads')->name('ads/')->group(static function() {
+            Route::get('/byUser',                                   'AdsController@byUser')->name('byUser');
+        });
     });
 });
 

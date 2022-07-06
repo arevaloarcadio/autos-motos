@@ -12,6 +12,7 @@ use App\Http\Requests\Admin\Ad\StoreAd;
 use App\Http\Requests\Admin\Ad\UpdateAd;
 use App\Models\{Ad,CsvAd,RejectedComment,AdRejectedComment,User};
 use Brackets\AdminListing\Facades\AdminListing;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -85,7 +86,7 @@ class AdsController extends Controller
                         }
                     }
                 }
-                
+
 
                 foreach (Ad::getRelationships() as $key => $value) {
                     $query->with($key);
@@ -123,6 +124,30 @@ class AdsController extends Controller
         }
 
         return ['data' => $ads->get()];
+    }
+
+
+    public function byUser(Request $request)
+    {
+
+        $data = Ad::where('user_id',Auth::user()->id)
+                    ->orderBy('created_at','DESC')
+                    ->limit(10)->get();
+      
+        foreach ($data as $key0 => $ad) {
+            foreach (Ad::getRelationships() as $key1 => $ad_Relationship) {
+                if ($ad[$key1] !== null) {
+                    if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
+                        foreach ($ad[$key1]::getRelationships() as $key2 => $value) {
+
+                            $ad[$key1][$key2] = $ad[$key1][$key2];
+                        }
+                    }
+                }
+            }      
+        }
+
+        return ['data' => $data];
     }
 
     public function byCsv(Request $request,$csv_ad_id)
