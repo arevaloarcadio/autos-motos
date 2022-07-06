@@ -112,7 +112,7 @@ class AdsController extends Controller
                             $i++;        
                         }
                     }
-                    
+
                     if (!is_null($where_ad_id)) {
                         $query->whereRaw($where_ad_id); 
                     }
@@ -161,22 +161,31 @@ class AdsController extends Controller
 
         $data = Ad::where('user_id',Auth::user()->id)
                     ->orderBy('created_at','DESC')
-                    ->limit(10)->get();
+                    ->limit(20);
       
-        foreach ($data as $key0 => $ad) {
-            foreach (Ad::getRelationships() as $key1 => $ad_Relationship) {
-                if ($ad[$key1] !== null) {
-                    if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
-                        foreach ($ad[$key1]::getRelationships() as $key2 => $value) {
-
-                            $ad[$key1][$key2] = $ad[$key1][$key2];
-                        }
-                    }
-                }
-            }      
-        }
-
-        return ['data' => $data];
+        $data->with(
+            [
+                'autoAd' => function($query)
+                {
+                    $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                },
+                'motoAd' => function($query)
+                {
+                    $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                },
+                'mobileHomeAd' => function($query)
+                {
+                    $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                },
+                'truckAd' => function($query)
+                {
+                    $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                },
+                'mechanicAd','rentalAd','shopAd'
+            ]
+        );
+      
+        return ['data' => $data->get()];
     }
 
     public function byCsv(Request $request,$csv_ad_id)

@@ -85,7 +85,7 @@ class Ad extends Model
         return $this->hasOne(ShopAd::class);
     }
 
-    public function getSpecificAd(): ?Model
+    /*public function getSpecificAd(): ?Model
     {
         if ($this->autoAd instanceof AutoAd) {
             return $this->autoAd;
@@ -110,7 +110,7 @@ class Ad extends Model
         }
 
         return null;
-    }
+    }*/
 
     public function user()
     {
