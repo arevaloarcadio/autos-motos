@@ -53,3 +53,19 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 
 
 /* Auto-generated admin routes */
+
+
+/* Auto-generated admin routes */
+Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
+        Route::prefix('reviews')->name('reviews/')->group(static function() {
+            Route::get('/',                                             'ReviewsController@index')->name('index');
+            Route::get('/create',                                       'ReviewsController@create')->name('create');
+            Route::post('/',                                            'ReviewsController@store')->name('store');
+            Route::get('/{review}/edit',                                'ReviewsController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'ReviewsController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{review}',                                    'ReviewsController@update')->name('update');
+            Route::delete('/{review}',                                  'ReviewsController@destroy')->name('destroy');
+        });
+    });
+});

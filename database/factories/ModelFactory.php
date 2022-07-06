@@ -1130,3 +1130,28 @@ $factory->define(App\Models\AdSubCharacteristic::class, static function (Faker\G
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Review::class, static function (Faker\Generator $faker) {
+    return [
+        'testimony' => $faker->text(),
+        'user_id' => $faker->sentence,
+        'score' => $faker->randomNumber(5),
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Review::class, static function (Faker\Generator $faker) {
+    return [
+        'testimony' => $faker->text(),
+        'ad_id' => $faker->sentence,
+        'user_creator_id' => $faker->sentence,
+        'score' => $faker->randomNumber(5),
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

@@ -127,6 +127,11 @@ class Ad extends Model
         return $this->hasMany(AdImage::class, 'ad_id')->orderBy('order_index');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'ad_id');
+    }
+
    /* public function getThumbnailAttribute(?string $value): ?string
     {
         if (null === $value) {

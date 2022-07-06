@@ -1611,5 +1611,42 @@ return [
         ],
     ],
 
+    'review' => [
+        'title' => 'Reviews',
+
+        'actions' => [
+            'index' => 'Reviews',
+            'create' => 'New Review',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'testimony' => 'Testimony',
+            'user_id' => 'User',
+            'score' => 'Score',
+            
+        ],
+    ],
+
+    'review' => [
+        'title' => 'Reviews',
+
+        'actions' => [
+            'index' => 'Reviews',
+            'create' => 'New Review',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'testimony' => 'Testimony',
+            'ad_id' => 'Ad',
+            'user_creator_id' => 'User creator',
+            'score' => 'Score',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];
