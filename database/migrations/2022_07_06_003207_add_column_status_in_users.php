@@ -15,6 +15,7 @@ class AddColumnStatusInUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('status',['Pendiente','Aprobado','Rechazado','Bloqueado'])->default('Aprobado');
+            $table->string('type')->default('Profesional');
         });
     }
 
