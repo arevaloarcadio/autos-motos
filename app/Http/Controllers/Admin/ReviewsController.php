@@ -20,6 +20,7 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ReviewsController extends Controller
 {
@@ -104,14 +105,18 @@ class ReviewsController extends Controller
         // TODO your code goes here
     }
 
-    public function byUser()
+    public function byUser(Request $request)
     {
         $data = Review::select('reviews.*')
                 ->join('ads','ads.id','reviews.ad_id')
-                ->where('ads.user_id',Auth::user()->id)
+                ->where('ads.user_id',Auth::user()->id);
                 
         if ($request->type) {
-           $data->where('ads.type',$request->type)
+            if ($request->type == 'auto') {
+                $data->whereIn('ads.type',['auto','moto','mobile-home','truck']);
+            }else{
+                $data->where('ads.type',$request->type);
+            }
         }       
         
         return ['data' => $data->get()];       
