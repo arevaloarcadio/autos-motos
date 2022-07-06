@@ -31,7 +31,7 @@ class IndexAd extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,title,thumbnail,status,type,is_featured,user_id,market_id,external_id,source,images_processing_status|nullable',
+            'orderBy' => 'in:id,title,thumbnail,status,type,is_featured,user_id,market_id,external_id,source,images_processing_status,created_at|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
