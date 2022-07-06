@@ -422,8 +422,8 @@ class AdsController extends Controller
         $type_ads = [
             'auto' => 'auto_ads',
             'moto' => 'moto_ads',
+            'mechanic' => 'mechanic_ads',
             'mobile-home' => 'mobile_home_ads',
-            'truck' => 'truck_ads',
             'rental' => 'rental_ads',
             'shop' => 'shop_ads',
             'truck' => 'truck_ads'
