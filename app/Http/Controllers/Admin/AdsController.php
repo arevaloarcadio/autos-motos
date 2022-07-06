@@ -85,6 +85,7 @@ class AdsController extends Controller
                         }
                     }
                 }
+                
 
                 foreach (Ad::getRelationships() as $key => $value) {
                     $query->with($key);
@@ -133,8 +134,7 @@ class AdsController extends Controller
                     {
                         $query->with(['make','model']);
                     }
-                ]
-                )
+                ])
                 ->get();
         
         return ['data' => $ads];

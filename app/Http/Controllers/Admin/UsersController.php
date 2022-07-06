@@ -20,6 +20,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
@@ -36,7 +37,7 @@ class UsersController extends Controller
             
             $query = User::query();
 
-            $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'dealer_id'];
+            $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
                 
             foreach ($columns as $column) {
                 if ($request->filters) {
@@ -61,24 +62,32 @@ class UsersController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type', 'dealer_id'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type', 'status','dealer_id'],
 
             // set columns to searchIn
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'type','dealer_id'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'type','status','dealer_id'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'dealer_id'];
+                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
                 
                 foreach ($columns as $column) {
-                        if ($request->filters) {
-                            foreach ($request->filters as $key => $filter) {
-                                if ($column == $key) {
-                                   $query->where($key,$filter);
-                                }
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
                             }
                         }
                     }
+                }
+
+                if ($request->dateStart && $request->dateEnd) {
+                     $query->whereBetween('created_at',[$request->dateStart,$request->dateEnd]);
+                }
+
+                if ($request->dateStart && !$request->dateEnd) {
+                     $query->where('created_at','LIKE','%'.$request->dateStart.'%');
+                }     
 
                 foreach (User::getRelationships() as $key => $value) {
                    $query->with($key);
@@ -113,6 +122,7 @@ class UsersController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
         $sanitized['password'] = Hash::make($sanitized['password']);
+        $sanitized['status'] = 'Pendiente';
         // Store the User
         $user = User::create($sanitized);
 
@@ -128,6 +138,14 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
+        return ['data' => $user];
+    }
+
+    public function setStatus(Request $request, User $user)
+    {
+        $user->status = $request->status;
+        $user->save();
+
         return ['data' => $user];
     }
 

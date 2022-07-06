@@ -582,9 +582,10 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('users')->name('users/')->group(static function() {
             Route::get('/',                                             'UsersController@index')->name('index');
-            Route::get('/{user}',                                      'UsersController@show')->name('show');
+            Route::get('/{user}',                                       'UsersController@show')->name('show');
             //Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');
+            Route::post('/{user}/status',                               'UsersController@setStatus')->name('setStatus');
             //Route::get('/{user}/edit',                                  'UsersController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'UsersController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{user}',                                      'UsersController@update')->name('update');
