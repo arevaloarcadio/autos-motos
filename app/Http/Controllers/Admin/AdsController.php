@@ -90,7 +90,7 @@ class AdsController extends Controller
                 if ($request->input('types')) {
                     
                     $query->whereIn('type',$request->input('types'));
-                    $where_ad_id = '';
+                    $where_ad_id = null;
                     $i = 1;
 
                     foreach ($request->input('types') as $type ) {
@@ -112,8 +112,11 @@ class AdsController extends Controller
                             $i++;        
                         }
                     }
-
-                    $query->whereRaw($where_ad_id); 
+                    
+                    if (!is_null($where_ad_id)) {
+                        $query->whereRaw($where_ad_id); 
+                    }
+                   
                 }
 
                 foreach (Ad::getRelationships() as $key => $value) {
