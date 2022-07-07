@@ -496,7 +496,7 @@ class ImportController extends Controller
         $car_transmission_type = new CarTransmissionType;
             
         $car_transmission_type->internal_name  = trim($externalTransmission);
-        $car_transmission_type->slug = Str::slug($$externalTransmission);
+        $car_transmission_type->slug = Str::slug($externalTransmission);
         $car_transmission_type->external_name = trim($externalTransmission); 
         $car_transmission_type->ad_type = 'AUTO'; 
 
