@@ -102,6 +102,21 @@ class ShopAdsController extends Controller
         return view('admin.shop-ad.create');
     }
 
+
+    public function byUser(Request $request)
+    {
+
+        $data = Ad::where('user_id',Auth::user()->id)
+                    ->orderBy('created_at','DESC')
+                    ->limit(20);
+      
+        $data->with(
+            ['ad','make','dealer','dealerShowRoom']
+        );
+      
+        return ['data' => $data->get()];
+    }
+
     /**
      * Store a newly created resource in storage.
      *

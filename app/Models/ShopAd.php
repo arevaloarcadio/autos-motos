@@ -63,6 +63,11 @@ class ShopAd extends Model
         return $this->belongsTo(Make::class);
     }
 
+    public function model()
+    {
+        return $this->belongsTo(Model::class);
+    }
+
     public function dealer()
     {
         return $this->belongsTo(Dealer::class);

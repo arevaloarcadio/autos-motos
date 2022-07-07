@@ -162,7 +162,11 @@ class AdsController extends Controller
         $data = Ad::where('user_id',Auth::user()->id)
                     ->orderBy('created_at','DESC')
                     ->limit(20);
-      
+        
+        if ($request->filter) {
+             $data->where('type',$request->filter);
+        } 
+        
         $data->with(
             [
                 'autoAd' => function($query)
@@ -181,7 +185,10 @@ class AdsController extends Controller
                 {
                     $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                 },
-                'mechanicAd','rentalAd','shopAd'
+                'mechanicAd','rentalAd','shopAd' => function($query)
+                {
+                    $query->with(['make','model','dealer','dealerShowRoom']);
+                }
             ]
         );
       
