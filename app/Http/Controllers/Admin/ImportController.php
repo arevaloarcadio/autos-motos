@@ -49,8 +49,14 @@ class ImportController extends Controller
             $handle = fopen($directory, "r");
 
             $user = Auth::user();
+            
+            $is_admin = false;
 
-            $csv_ad_id = $this->saveCsvAd($user['id'],$csv);
+            foreach ($user->roles as $role) {
+                $is_admin = $role['name'] == 'ADMIN' ? true : false;
+            } 
+            
+            $csv_ad_id = $this->saveCsvAd($user['id'],$csv,$is_admin);
 
             $market = $this->getMarket();
 
@@ -366,9 +372,9 @@ class ImportController extends Controller
         return $bodys;
     }
 
-    private function saveCsvAd($user_id,$csv)
+    private function saveCsvAd($user_id,$csv,$is_admin)
     {
-        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' => 'Aprobado']);
+        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' => $is_admin ? 'Aprobado' : 'Pendiente']);
         
         return $csv;
     }
@@ -487,7 +493,16 @@ class ImportController extends Controller
             return $car_transmission_type;                       
         }
 
-        return null;
+        $car_transmission_type = new CarTransmissionType;
+            
+        $car_transmission_type->internal_name  = trim($externalTransmission);
+        $car_transmission_type->slug = Str::slug($$externalTransmission);
+        $car_transmission_type->external_name = trim($externalTransmission); 
+        $car_transmission_type->ad_type = 'AUTO'; 
+
+        $car_transmission_type->save(); 
+
+        return $car_transmission_type;
     }
 
     
