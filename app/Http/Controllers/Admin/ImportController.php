@@ -485,6 +485,7 @@ class ImportController extends Controller
         $transmissions        = $this->getTransmissionOptions();
        
         if (isset($transmissions[$externalTransmission])) {
+            
             $car_transmission_type = CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
                                       ->where('ad_type', '=', 'auto')
@@ -493,15 +494,23 @@ class ImportController extends Controller
             return $car_transmission_type;                       
         }
 
-        $car_transmission_type = new CarTransmissionType;
+        $car_transmission_type = CarTransmissionType::query()
+                                      ->where('internal_name', '=', $externalTransmission)
+                                      ->where('ad_type', '=', 'auto')
+                                      ->first();
+       
+       if (is_null($car_transmission_type)) {
+        
+            $car_transmission_type = new CarTransmissionType;
             
-        $car_transmission_type->internal_name  = trim($externalTransmission);
-        $car_transmission_type->slug = Str::slug($externalTransmission);
-        $car_transmission_type->external_name = trim($externalTransmission); 
-        $car_transmission_type->ad_type = 'AUTO'; 
+            $car_transmission_type->internal_name  = trim($externalTransmission);
+            $car_transmission_type->slug = Str::slug($externalTransmission);
+            $car_transmission_type->external_name = trim($externalTransmission); 
+            $car_transmission_type->ad_type = 'AUTO'; 
 
-        $car_transmission_type->save(); 
-
+            $car_transmission_type->save(); 
+        }
+        
         return $car_transmission_type;
     }
 
