@@ -18,14 +18,14 @@ use App\Models\{Ad,AutoAd,AdImage,User,CarBodyType,CsvAd,Market,CarFuelType,CarT
 
 
 class ImportController extends Controller
-{	
-	use ApiController;
+{   
+    use ApiController;
 
     public function import_massive(Request $request)
     {
         ini_set('max_execution_time', 0);
         
-    	$resource = ApiHelper::resource();
+        $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
             'file' => 'required|file',
@@ -38,8 +38,8 @@ class ImportController extends Controller
         
         try {
 
-        	$file = $request->file('file');
-        	
+            $file = $request->file('file');
+            
             $csv = date('dmyhms').'.csv';
 
             $path = $file->move(storage_path('app/massive'),$csv);
@@ -53,9 +53,12 @@ class ImportController extends Controller
             $is_admin = false;
 
             foreach ($user->roles as $role) {
-                $is_admin = $role['name'] == 'ADMIN' ? true : false;
+                if ($role['name'] == 'ADMIN') {
+
+                   $is_admin = true;
+                }
             } 
-            
+             
             $csv_ad_id = $this->saveCsvAd($user['id'],$csv,$is_admin);
 
             $market = $this->getMarket();
@@ -75,7 +78,6 @@ class ImportController extends Controller
             fclose($fh);
 
             while (($csv_ad = fgetcsv($handle,null,';')) !== FALSE) {
-
                 $thumbnail =  preg_split("/_/", $csv_ad[2]);
                    
                 $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
@@ -100,7 +102,7 @@ class ImportController extends Controller
                     'images_processing_status_text' => null,
                     'csv_ad_id'                     => $csv_ad_id['id']
                 ];
-                
+
                 $data_auto_ad = [
                     'price'                    => $csv_ad[15],//OK.
                     'price_contains_vat'       => 0,
@@ -118,7 +120,7 @@ class ImportController extends Controller
                     'city'                     => !is_null($dealer) ? $dealer['city'] : '.',
                     'country'                  => !is_null($dealer) ? $dealer['country'] : '.',
                     'mobile_number'            => !is_null($dealer) ? $dealer['phone_number'] : '.',
-                    'ad_fuel_type_id'          => $this->findFuelTypeId($csv_ad[12])->id , //OK
+                    'ad_fuel_type_id'          => $this->findFuelTypeId($csv_ad[12])->id, //OK
                     'ad_body_type_id'          => $this->findBodyTypeId(utf8_encode($csv_ad[8]))->id, //OK
                     'ad_transmission_type_id'  => $this->findTransmissionTypeId($csv_ad[7])->id, 
                     'first_registration_year'  => $year_month[1] ?? '01',
@@ -173,52 +175,52 @@ class ImportController extends Controller
 
         ApiHelper::success($resource);
 
-        return $this->sendResponse($resource); 	
+        return $this->sendResponse($resource);  
     }
 
     private function getColorOptions(): array
     {
         $colors = [
-            'rot' 			=> 'red',     
-            'grün' 			=> 'green',
-            'gelb' 			=> 'yellow',
-            'blau' 			=> 'blue',
-            'weiß' 			=> 'white',
-            'schwarz' 		=> 'black',
-            'orange' 		=> 'oragen',
-            'lila' 			=> 'lilac',
-            'braun'  		=> 'brown',
-            'rosa' 			=> 'rose',
-            'grau' 			=> 'gray',
-            'violett' 		=> 'purple',
-            'silbern' 		=> 'silver',
-            'golden' 		=> 'golden',
-            'pink' 			=> 'pink',
-            'red' 			=> 'red',     
-            'green' 		=> 'green',
-            'yellow' 		=> 'yellow',
-            'blue' 			=> 'blue',
-            'white' 		=> 'white',
-            'black' 		=> 'black',
-            'oragen' 		=> 'oragen',
-            'lilac' 		=> 'lilac',
-            'brown' 		=> 'brown',
-            'rose' 			=> 'rose',
-            'gray' 			=> 'gray',
-            'purple' 		=> 'purple',
-            'silver' 		=> 'silver',
-            'golden' 		=> 'golden',
-            'pink' 			=> 'pink',
-            'rojo'     		=> 'red',
-            'azul'     		=> 'blue',
-            'plateado' 		=> 'silver',
-            'blanco'   		=> 'white',
-            'negro'    		=> 'black',
-            'marrón'   		=> 'brown',
-            'gris'     		=> 'gray',
-            'oro'      		=> 'gold',
-            'verde'    		=> 'green',
-            'beige'    		=> 'beige',
+            'rot'           => 'red',     
+            'grün'          => 'green',
+            'gelb'          => 'yellow',
+            'blau'          => 'blue',
+            'weiß'          => 'white',
+            'schwarz'       => 'black',
+            'orange'        => 'oragen',
+            'lila'          => 'lilac',
+            'braun'         => 'brown',
+            'rosa'          => 'rose',
+            'grau'          => 'gray',
+            'violett'       => 'purple',
+            'silbern'       => 'silver',
+            'golden'        => 'golden',
+            'pink'          => 'pink',
+            'red'           => 'red',     
+            'green'         => 'green',
+            'yellow'        => 'yellow',
+            'blue'          => 'blue',
+            'white'         => 'white',
+            'black'         => 'black',
+            'oragen'        => 'oragen',
+            'lilac'         => 'lilac',
+            'brown'         => 'brown',
+            'rose'          => 'rose',
+            'gray'          => 'gray',
+            'purple'        => 'purple',
+            'silver'        => 'silver',
+            'golden'        => 'golden',
+            'pink'          => 'pink',
+            'rojo'          => 'red',
+            'azul'          => 'blue',
+            'plateado'      => 'silver',
+            'blanco'        => 'white',
+            'negro'         => 'black',
+            'marrón'        => 'brown',
+            'gris'          => 'gray',
+            'oro'           => 'gold',
+            'verde'         => 'green',
+            'beige'         => 'beige',
             'rossa'         => 'red',
             'blu'           => 'blue',
             'argento'       => 'silver',
@@ -242,11 +244,11 @@ class ImportController extends Controller
     private function getFuelOptions(): array
     {
         $fuel_types = [
-            'Diesel' 			=> 'diesel',
-            'Elektro/Benzin' 	=> 'hybrid_petrol_electric',
-            'Benzin' 			=> 'petrol',
-            'Elektro' 			=> 'electric',
-            'LPG' 				=> 'lpg', 
+            'Diesel'            => 'diesel',
+            'Elektro/Benzin'    => 'hybrid_petrol_electric',
+            'Benzin'            => 'petrol',
+            'Elektro'           => 'electric',
+            'LPG'               => 'lpg', 
             'gasolina'          => 'petrol',
             'diesel'            => 'diesel',
             'gas licuado (glp)' => 'gas_gasoline',
@@ -333,8 +335,8 @@ class ImportController extends Controller
             'Sportwagen/Coupé'=> ['internal_name' => 'sport_coupe', 'ad_type' => 'AUTO'], //sports car/coupe
             'Sonstige Moto'   => ['internal_name' => 'other_moto', 'ad_type' => 'MOTO'], //Other Moto
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
-            'Lieferwagen' 	  => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'AUTO'],  //delivery trucks
-         	'sedan'           => ['internal_name' => 'sedan', 'ad_type' => 'AUTO'],
+            'Lieferwagen'     => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'AUTO'],  //delivery trucks
+            'sedan'           => ['internal_name' => 'sedan', 'ad_type' => 'AUTO'],
             'bus'             => ['internal_name' => null, 'ad_type' => 'AUTO'],
             'cabrio'          => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'],
             'coupè'           => ['internal_name' => 'sport_coupe', 'ad_type' => 'AUTO'],
@@ -373,8 +375,14 @@ class ImportController extends Controller
     }
 
     private function saveCsvAd($user_id,$csv,$is_admin)
-    {
-        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' => $is_admin ? 'Aprobado' : 'Pendiente']);
+    {  
+        $status = 'Pendiente';
+        
+        if ($is_admin) {
+            $status = 'Aprobado';
+        }
+
+        $csv = CsvAd::create(['user_id' => $user_id , 'name' => $csv, 'status' =>  $status]);
         
         return $csv;
     }
@@ -403,7 +411,7 @@ class ImportController extends Controller
                 $car_fuel_type->slug = Str::slug($externalFuel);
                 $car_fuel_type->save();
             }
-
+           
             return $car_fuel_type;
         }
 

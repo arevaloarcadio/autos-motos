@@ -12,6 +12,7 @@ class CsvAd extends Model
 	protected $appends = ['resource_url'];
 	
 	protected $fillable = [
+        'status',
         'name',
         'user_id'
     ];

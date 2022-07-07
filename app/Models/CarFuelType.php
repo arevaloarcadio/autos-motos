@@ -9,6 +9,7 @@ class CarFuelType extends Model
      use \App\Traits\TraitUuid;
       use \App\Traits\Relationships;
     protected $fillable = [
+        'id',
         'internal_name',
         'slug',
         'external_name',
