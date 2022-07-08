@@ -28,7 +28,7 @@ class StoreAd extends FormRequest
     public function rules(): array
     {
         return [
-            'slug' => ['required', Rule::unique('ads', 'slug'), 'string'],
+            //'slug' => ['required', Rule::unique('ads', 'slug'), 'string'],
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'thumbnail' => ['nullable', 'string'],

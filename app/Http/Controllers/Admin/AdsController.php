@@ -22,6 +22,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 
 class AdsController extends Controller
 {
@@ -34,31 +35,6 @@ class AdsController extends Controller
      */
     public function index(IndexAd $request)
     {   
-   
-        if ($request->all) {
-            
-            $query = Ad::query();
-
-            $columns =  ['id', 'slug', 'title', 'description', 'thumbnail', 'status','type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'];
-                
-            foreach ($columns as $column) {
-                if ($request->filters) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
-                        }
-                    }
-                }
-            }
-
-            foreach (Ad::getRelationships() as $key => $value) {
-               $query->with($key);
-            }
-
-            return ['data' => $query->get()];
-        }
-
-        // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Ad::class)->processRequestAndGet(
             // pass the request with params
             $request,
@@ -88,54 +64,62 @@ class AdsController extends Controller
                 }
 
                 if ($request->input('types')) {
-                    
                     $query->whereIn('type',$request->input('types'));
                     $where_ad_id = null;
-                    $i = 1;
+                }
+               
+                $i = 1;
+                $type_ads = [
+                    'auto_ads',
+                    'moto_ads',
+                    'mechanic_ads',
+                    'mobile_home_ads',
+                    'rental_ads',
+                    'shop_ads',
+                    'truck_ads' 
+                ];
 
-                    foreach ($request->input('types') as $type ) {
-                        $table = $this->getTypeAds($type);
-                        if ($table) {
-                            if ($i == 1) {
-                                if ($i ==  count($request->input('types'))) {
-                                    $where_ad_id .= sprintf('(ads.id in (SELECT ad_id from %s)) ',$table);
-                                }else{
-                                    $where_ad_id .= sprintf('(ads.id in (SELECT ad_id from %s) ',$table);
-                                }
-                            }else{
-                                if ($i == count($request->input('types'))) {
-                                    $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s)) ',$table);
-                                }else{
-                                    $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s) ',$table);
-                                }
-                            }
-                            $i++;        
+                foreach ($type_ads as $type) {
+                    if ($i == 1) {
+                        $where_ad_id .= sprintf('(ads.id in (SELECT ad_id from %s) ',$type);
+                    }else if ($i == count($type_ads)) {
+                        $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s)) ',$type);
+                    }else{
+                        $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s) ',$type);
+                    }
+                    $i++; 
+                }
+                  
+                $query->whereRaw($where_ad_id); 
+                
+                $query->with(
+                    [
+                        'mechanicAd',
+                        'rentalAd',
+                        'autoAd' => function($query)
+                        {
+                            $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                        },
+                        'motoAd' => function($query)
+                        {
+                            $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                        },
+                        'mobileHomeAd' => function($query)
+                        {
+                            $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                        },
+                        'truckAd' => function($query)
+                        {
+                            $query->with(['make','fuelType','transmissionType','dealer','dealerShowRoom']);
+                        },
+                        'shopAd' => function($query)
+                        {
+                            $query->with(['make','model','dealer','dealerShowRoom']);
                         }
-                    }
-
-                    if (!is_null($where_ad_id)) {
-                        $query->whereRaw($where_ad_id); 
-                    }
-                   
-                }
-
-                foreach (Ad::getRelationships() as $key => $value) {
-                    $query->with($key);
-                }
+                    ]
+                );
             }
         );
-
-        foreach ($data as $key0 => $ad) {
-            foreach (Ad::getRelationships() as $key1 => $ad_Relationship) {
-                if ($ad[$key1] !== null) {
-                    if (get_class($ad[$key1]) != 'Illuminate\Database\Eloquent\Collection') {
-                        foreach ($ad[$key1]::getRelationships() as $key2 => $value) {
-                            $ad[$key1][$key2] = $ad[$key1][$key2];
-                        }
-                    }
-                }
-            }      
-        }
 
         return ['data' => $data];
     }
@@ -166,9 +150,10 @@ class AdsController extends Controller
         if ($request->filter) {
              $data->where('type',$request->filter);
         } 
-        
+
         $data->with(
-            [
+            [   'mechanicAd',
+                'rentalAd',
                 'autoAd' => function($query)
                 {
                     $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
@@ -183,9 +168,9 @@ class AdsController extends Controller
                 },
                 'truckAd' => function($query)
                 {
-                    $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    $query->with(['make','fuelType','transmissionType','dealer','dealerShowRoom']);
                 },
-                'mechanicAd','rentalAd','shopAd' => function($query)
+                'shopAd' => function($query)
                 {
                     $query->with(['make','model','dealer','dealerShowRoom']);
                 }
@@ -274,6 +259,23 @@ class AdsController extends Controller
         return ['data' => $ads];
     }
 
+     public function setApprovedRejectedIndividual(Request $request,$status)
+    {   
+        
+        $ads = Ad::whereIn('id',$request->ad_ids)
+                ->update(
+                    [
+                        'status' => $status == 'approved' ? 10 : 20
+                    ]
+                );
+        
+        $user = User::find($request->user_id);
+
+        //$user->notify(new NotifyApproved);
+
+        return ['data' => $ads];
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -298,6 +300,7 @@ class AdsController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
         $sanitized['status'] = 0;
+        $sanitized['slug'] = Str::slug($sanitized['title']);
         // Store the Ad
         $ad = Ad::create($sanitized);
 
@@ -353,6 +356,26 @@ class AdsController extends Controller
         return ['data' => 'OK'];
     }
 
+    public function storeCommentsRejectedIndividual(Request $request)
+    {   
+        if ($request->ads_ids) {
+            
+            $rejected_comment = new RejectedComment;
+            $rejected_comment->comment = $request->comment;
+            $rejected_comment->save();
+
+            $ads = Ad::whereIn('id',$request->ads_ids)->get();
+
+            foreach ($ads as $ad) {
+                $ad_rejected_comment = new AdRejectedComment;
+                $ad_rejected_comment->ad_id = $ad['id'];
+                $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
+                $ad_rejected_comment->save();
+            }
+        }
+        
+        return ['data' => 'OK'];
+    }
     /**
      * Show the form for editing the specified resource.
      *
