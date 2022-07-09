@@ -62,10 +62,12 @@ class AdsController extends Controller
                         }
                     }
                 }
+                
+                $where_ad_id = null;
 
                 if ($request->input('types')) {
                     $query->whereIn('type',$request->input('types'));
-                    $where_ad_id = null;
+                    
                 }
                
                 $i = 1;
