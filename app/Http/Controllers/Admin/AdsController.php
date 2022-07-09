@@ -49,8 +49,9 @@ class AdsController extends Controller
                      
                 $columns =  ['id', 'slug', 'title', 'description', 'status', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'];
 
-                foreach ($columns as $column) {
-                    if ($request->filters) {
+               
+                if ($request->filters) {
+                    foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
                             if ($column == $key) {
                                 if ($key == 'created_at') {
