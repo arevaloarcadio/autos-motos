@@ -27,8 +27,9 @@ class StoreSubCharacteristic extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'characteristic_id' => ['required', 'string'],
+            'sub_characteristics' => ['required', 'array'],
+            //'name' => ['required', 'string'],
+            //'characteristic_id' => ['required', 'string'],
             
         ];
     }

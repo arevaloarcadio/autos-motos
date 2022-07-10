@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\AutoAd\DestroyAutoAd;
 use App\Http\Requests\Admin\AutoAd\IndexAutoAd;
 use App\Http\Requests\Admin\AutoAd\StoreAutoAd;
 use App\Http\Requests\Admin\AutoAd\UpdateAutoAd;
-use App\Models\AutoAd;
+use App\Models\{Ad,AutoAd,DealerShowRoom};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -18,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class AutoAdsController extends Controller
@@ -37,8 +38,8 @@ class AutoAdsController extends Controller
 
             $columns = ['id', 'ad_id', 'price', 'price_contains_vat', 'vin', 'doors', 'mileage', 'exterior_color', 'interior_color', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link', 'ad_fuel_type_id', 'ad_body_type_id', 'ad_transmission_type_id', 'ad_drive_type_id', 'first_registration_month', 'first_registration_year', 'engine_displacement', 'power_hp', 'owners', 'inspection_valid_until_month', 'inspection_valid_until_year', 'make_id', 'model_id', 'generation_id', 'series_id', 'trim_id', 'equipment_id', 'additional_vehicle_info', 'seats', 'fuel_consumption', 'co2_emissions', 'latitude', 'longitude', 'geocoding_status'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -69,14 +70,15 @@ class AutoAdsController extends Controller
                         
                 $columns = ['id', 'ad_id', 'price', 'price_contains_vat', 'vin', 'doors', 'mileage', 'exterior_color', 'interior_color', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link', 'ad_fuel_type_id', 'ad_body_type_id', 'ad_transmission_type_id', 'ad_drive_type_id', 'first_registration_month', 'first_registration_year', 'engine_displacement', 'power_hp', 'owners', 'inspection_valid_until_month', 'inspection_valid_until_year', 'make_id', 'model_id', 'generation_id', 'series_id', 'trim_id', 'equipment_id', 'additional_vehicle_info', 'seats', 'fuel_consumption', 'co2_emissions', 'latitude', 'longitude', 'geocoding_status'];
                 
-                foreach ($columns as $column) {
-                        if ($request->filters) {
-                            foreach ($request->filters as $key => $filter) {
-                                if ($column == $key) {
-                                   $query->where($key,$filter);
-                                }
+                
+                if ($request->filters) {
+                    foreach ($columns as $column) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
                             }
                         }
+                    }
                 }
 
                 foreach (AutoAd::getRelationships() as $key => $value) {
@@ -112,10 +114,76 @@ class AutoAdsController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-        // Store the AutoAd
-        $autoAd = AutoAd::create($sanitized);
+        $ad = Ad::create([
+            'slug' => Str::slug($sanitized['title']),
+            'title' => $sanitized['title'],
+            'description' => $sanitized['description'],
+            'thumbnail' => $sanitized['thumbnail'],
+            'status' => 0,
+            'type' => 'auto',
+            'is_featured' => 0,
+            'user_id' => Auth::user()->id,
+            'market_id' => $sanitized['market_id'],
+            'external_id' =>null,
+            'source' => null,
+            'images_processing_status' => 'SUCCESSFUL',
+            'images_processing_status_text' => null,
+        ]);
+        
+        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
 
-        return ['data' => $autoAd];
+        $autoAd = AutoAd::create([
+            
+            'ad_id' =>  $ad->id,
+            'price' => $sanitized['price'],
+            'price_contains_vat' => 0,
+            'vin' => null,
+            'doors' => $sanitized['doors'],
+            'mileage' => $sanitized['mileage'],
+            'exterior_color' => $sanitized['exterior_color'],
+            'interior_color' =>$sanitized['interior_color'],
+            'condition' => $sanitized['condition'],
+            'dealer_id' => Auth::user()->dealer_id ?? null,
+            'dealer_show_room_id' => $dealer_show_room_id,
+            'first_name' =>  $sanitized['first_name'],
+            'last_name' =>  $sanitized['last_name'],
+            'email_address' =>  $sanitized['email_address'],
+            'address' =>  $sanitized['address'],
+            'zip_code' =>  $sanitized['zip_code'],
+            'city' =>  $sanitized['city'],
+            'country' =>  $sanitized['country'],
+            'mobile_number' =>  $sanitized['mobile_number'],
+            'landline_number' =>  $sanitized['landline_number'],
+            'whatsapp_number' => $sanitized['whatsapp_number'],
+            'youtube_link' => $sanitized['youtube_link'],
+            'ad_fuel_type_id' =>  $sanitized['ad_fuel_type_id'],
+            'ad_body_type_id' =>  $sanitized['ad_body_type_id'],
+            'ad_transmission_type_id' =>  $sanitized['ad_transmission_type_id'],
+            'ad_drive_type_id' =>  $sanitized['ad_drive_type_id'],
+            'first_registration_month' =>  $sanitized['first_registration_month'],
+            'first_registration_year' =>  $sanitized['first_registration_year'],
+            'engine_displacement' =>  $sanitized['engine_displacement'],
+            'power_hp' => $sanitized['power_hp'],
+            'owners' =>  $sanitized['owners'],
+            'inspection_valid_until_month' =>  $sanitized['inspection_valid_until_month'],
+            'inspection_valid_until_year' => $sanitized['inspection_valid_until_year'],
+            'make_id' =>  $sanitized['make_id'],
+            'model_id' => $sanitized['model_id'],
+            'generation_id' =>  $sanitized['generation_id'],
+            'series_id' =>  $sanitized['series_id'],
+            'trim_id' => $sanitized['trim_id'],
+            'equipment_id' =>  $sanitized['equipment_id'],
+            'additional_vehicle_info' =>  $sanitized['additional_vehicle_info'],
+            'seats' =>  $sanitized['seats'],
+            'fuel_consumption' =>  $sanitized['fuel_consumption'],
+            'co2_emissions' => $sanitized['co2_emissions'],
+            'latitude' =>  $sanitized['latitude'],
+            'longitude' =>  $sanitized['longitude'],
+            'geocoding_status' =>  $sanitized['geocoding_status'],
+            
+        ]);
+
+        return ['data' => ['ad' => $ad,'auto_ad' =>$autoAd]];
     }
 
     /**

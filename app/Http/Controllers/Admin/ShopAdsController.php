@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\ShopAd\DestroyShopAd;
 use App\Http\Requests\Admin\ShopAd\IndexShopAd;
 use App\Http\Requests\Admin\ShopAd\StoreShopAd;
 use App\Http\Requests\Admin\ShopAd\UpdateShopAd;
-use App\Models\ShopAd;
+use App\Models\{Ad,DealerShowRoom,ShopAd};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -38,8 +38,8 @@ class ShopAdsController extends Controller
             $columns =  ['id', 'ad_id', 'category', 'make_id', 'model', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
            
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -70,8 +70,9 @@ class ShopAdsController extends Controller
                         
                 $columns =  ['id', 'ad_id', 'category', 'make_id', 'model', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
                 
-                foreach ($columns as $column) {
-                        if ($request->filters) {
+                
+                    if ($request->filters) {
+                        foreach ($columns as $column) {
                             foreach ($request->filters as $key => $filter) {
                                 if ($column == $key) {
                                    $query->where($key,$filter);
@@ -128,10 +129,51 @@ class ShopAdsController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-        // Store the ShopAd
-        $shopAd = ShopAd::create($sanitized);
+        $ad = Ad::create([
+            'slug' => Str::slug($sanitized['title']),
+            'title' => $sanitized['title'],
+            'description' => $sanitized['description'],
+            'thumbnail' => $sanitized['thumbnail'],
+            'status' => 0,
+            'type' => 'auto',
+            'is_featured' => 0,
+            'user_id' => Auth::user()->id,
+            'market_id' => $sanitized['market_id'],
+            'external_id' =>null,
+            'source' => null,
+            'images_processing_status' => 'SUCCESSFUL',
+            'images_processing_status_text' => null,
+        ]);
 
-        return ['data' => $shopAd];
+        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id']  : null;
+        // Store the ShopAd
+        $shopAd = ShopAd::create([
+            'category' => $sanitized['category'],
+            'make_id' => $sanitized['make_id'],
+            'model' => $sanitized['model'],
+            'manufacturer' => $sanitized['manufacturer'],
+            'code' => $sanitized['code'],
+            'condition' => $sanitized['condition'],
+            'price' => $sanitized['price'],
+            'price_contains_vat' => $sanitized['price_contains_vat'],
+            'dealer_id' => Auth::user()->dealer_id ?? null,
+            'dealer_show_room_id' => $dealer_show_room_id,
+            'first_name' => $sanitized['first_name'],
+            'last_name' => $sanitized['last_name'],
+            'email_address' => $sanitized['email_address'],
+            'address' => $sanitized['address'],
+            'zip_code' =>$sanitized['zip_code'],
+            'city' => $sanitized['city'],
+            'country' => $sanitized['country'],
+            'latitude' => $sanitized['latitude'],
+            'longitude' => $sanitized['longitude'],
+            'mobile_number' => $sanitized['mobile_number'],
+            'landline_number' => $sanitized['landline_number'],
+            'whatsapp_number' => $sanitized['whatsapp_number'],
+            'youtube_link' => $sanitized['youtube_link']
+        ]);
+
+        return ['data' =>['ad' =>$ad,'shop_ad' => $shopAd]];
     }
 
     /**

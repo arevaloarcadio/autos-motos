@@ -37,8 +37,8 @@ class CategoriesController extends Controller
 
             $columns = ['id', 'name', 'order_level', 'icon', 'ads_type', 'meta_title'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);

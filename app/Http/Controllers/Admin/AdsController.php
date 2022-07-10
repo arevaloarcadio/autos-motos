@@ -10,7 +10,7 @@ use App\Http\Requests\Admin\Ad\DestroyAd;
 use App\Http\Requests\Admin\Ad\IndexAd;
 use App\Http\Requests\Admin\Ad\StoreAd;
 use App\Http\Requests\Admin\Ad\UpdateAd;
-use App\Models\{Ad,CsvAd,RejectedComment,AdRejectedComment,User};
+use App\Models\{Ad,CsvAd,RejectedComment,AdRejectedComment,User,AutoAd,MotoAd,MechanicAd,MobileHomeAd,ShopAd,TruckAd,RentalAd};
 use Brackets\AdminListing\Facades\AdminListing;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -125,6 +125,55 @@ class AdsController extends Controller
         );
 
         return ['data' => $data];
+    }
+
+    public function searchAdsLike(Request $request)
+    {   
+        $validator = \Validator::make($request->all(), [
+            'filter' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => json_decode($validator->errors()->toJson())],422);
+        }
+
+        $filter = $request->filter;
+        
+        $ads = Ad::where(function ($query) use ($filter){
+                $query->where('ads.title','LIKE','%'. $filter.'%')
+                      ->orWhere('ads.description','LIKE','%'.$filter.'%')
+                      ->orWhere('ads.type','LIKE','%'.$filter.'%');
+            })->limit(50);
+
+        $ads->with([
+            'mechanicAd',
+            'rentalAd',
+            'autoAd' => function($query)
+            {
+                $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+            },
+            'motoAd' => function($query)
+            {
+                $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+            },
+            'mobileHomeAd' => function($query)
+            {
+                $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+            },
+            'truckAd' => function($query)
+            {
+                $query->with(['make','fuelType','transmissionType','dealer','dealerShowRoom']);
+            },
+            'shopAd' => function($query)
+            {
+                $query->with(['make','model','dealer','dealerShowRoom']);
+            }
+        ]);
+
+        return response()->json([
+            'data' => $ads->get(),
+            'total' => count($ads->get()) 
+        ]);
     }
 
     public function bySource(Request $request)

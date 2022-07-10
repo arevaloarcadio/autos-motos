@@ -8,13 +8,14 @@ use App\Http\Requests\Admin\MotoAd\DestroyMotoAd;
 use App\Http\Requests\Admin\MotoAd\IndexMotoAd;
 use App\Http\Requests\Admin\MotoAd\StoreMotoAd;
 use App\Http\Requests\Admin\MotoAd\UpdateMotoAd;
-use App\Models\MotoAd;
+use App\Models\{Ad,MotoAd,DealerShowRoom};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
@@ -37,8 +38,8 @@ class MotoAdsController extends Controller
 
             $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -69,8 +70,9 @@ class MotoAdsController extends Controller
                         
                 $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
                 
-                foreach ($columns as $column) {
-                        if ($request->filters) {
+                
+                    if ($request->filters) {
+                        foreach ($columns as $column) {
                             foreach ($request->filters as $key => $filter) {
                                 if ($column == $key) {
                                    $query->where($key,$filter);
@@ -112,10 +114,70 @@ class MotoAdsController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
+        $ad = Ad::create([
+            'slug' => Str::slug($sanitized['title']),
+            'title' => $sanitized['title'],
+            'description' => $sanitized['description'],
+            'thumbnail' => $sanitized['thumbnail'],
+            'status' => 0,
+            'type' => 'moto',
+            'is_featured' => 0,
+            'user_id' => Auth::user()->id,
+            'market_id' => $sanitized['market_id'],
+            'external_id' =>null,
+            'source' => null,
+            'images_processing_status' => 'SUCCESSFUL',
+            'images_processing_status_text' => null,
+        ]);
+        
+        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id']  : null;
         // Store the MotoAd
-        $motoAd = MotoAd::create($sanitized);
+        $motoAd = MotoAd::create([
+            'ad_id' =>  $ad->id,
+            'make_id' => $sanitized['make_id'],
+            'custom_make' => $sanitized['custom_make'],
+            'model_id' => $sanitized['model_id'],
+            'custom_model' => $sanitized['custom_model'],
+            'fuel_type_id' => $sanitized['fuel_type_id'],
+            'body_type_id' => $sanitized['body_type_id'],
+            'transmission_type_id' => $sanitized['transmission_type_id'],
+            'drive_type_id' => $sanitized['drive_type_id'],
+            'first_registration_month' => $sanitized['first_registration_month'],
+            'first_registration_year' => $sanitized['first_registration_year'],
+            'inspection_valid_until_month' => $sanitized['inspection_valid_until_month'],
+            'inspection_valid_until_year' => $sanitized['inspection_valid_until_year'],
+            'last_customer_service_month' => $sanitized['last_customer_service_month'],
+            'last_customer_service_year' => $sanitized['last_customer_service_year'],
+            'owners' => $sanitized['owners'],
+            'weight_kg' => $sanitized['weight_kg'],
+            'engine_displacement' => $sanitized['engine_displacement'],
+            'mileage' =>$sanitized['mileage'],
+            'power_kw' => $sanitized['power_kw'],
+            'gears' => $sanitized['gears'],
+            'cylinders' => $sanitized['cylinders'],
+            'emission_class' => $sanitized['emission_class'],
+            'fuel_consumption' => $sanitized['fuel_consumption'],
+            'co2_emissions' => $sanitized['co2_emissions'],
+            'condition' =>$sanitized['condition'],
+            'color' =>$sanitized['color'],
+            'price' =>$sanitized['price'],
+            'price_contains_vat' => $sanitized['price_contains_vat'],
+            'dealer_id' => Auth::user()->dealer_id ?? null,
+            'dealer_show_room_id' => $dealer_show_room_id,
+            'first_name' => $sanitized['first_name'],
+            'last_name' => $sanitized['last_name'],
+            'email_address' => $sanitized['email_address'],
+            'address' => $sanitized['address'],
+            'zip_code' => $sanitized['zip_code'],
+            'city' => $sanitized['city'],
+            'country' =>$sanitized['country'],
+            'mobile_number' => $sanitized['mobile_number'],
+            'landline_number' =>$sanitized['landline_number'],
+            'whatsapp_number' => $sanitized['whatsapp_number'],
+            'youtube_link' =>$sanitized['youtube_link']
+        ]);
 
-        return ['data' => $motoAd];
+        return ['data' => ['ad' => $ad, 'moto_ad' => $motoAd]];
     }
 
     /**

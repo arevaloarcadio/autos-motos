@@ -37,8 +37,8 @@ class SubCharacteristicsController extends Controller
 
             $columns = ['id', 'name', 'characteristic_id'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -94,9 +94,13 @@ class SubCharacteristicsController extends Controller
         $sanitized = $request->getSanitized();
 
         // Store the SubCharacteristic
-        $subCharacteristic = SubCharacteristic::create($sanitized);
+        $sub_characteristics = [];
+        
+        foreach ($sanitized['sub_characteristics'] as $key => $sub_characteristic) {
+            $sub_characteristics[$key] = SubCharacteristic::create($sub_characteristic);
+        }
 
-        return ['data' => $subCharacteristic];
+        return ['data' => $sub_characteristics];
     }
 
     /**

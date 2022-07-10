@@ -37,8 +37,8 @@ class AdModelsController extends Controller
 
             $columns =  ['id', 'name', 'ad_type', 'parent_id', 'ad_make_id'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -69,8 +69,8 @@ class AdModelsController extends Controller
                         
                 $columns =  ['id', 'name', 'slug', 'ad_type', 'parent_id', 'ad_make_id'];
 
-                foreach ($columns as $column) {
-                    if ($request->filters) {
+                if ($request->filters) {
+                    foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
                             if ($column == $key) {
                                $query->where($key,$filter);

@@ -28,7 +28,12 @@ class StoreShopAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['required', Rule::unique('shop_ads', 'ad_id'), 'string'],
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'thumbnail' => ['nullable', 'string'],
+            'type' => ['required', 'string'],
+            'market_id' => ['required', 'string'],
+
             'category' => ['required', 'string'],
             'make_id' => ['required', 'string'],
             'model' => ['nullable', 'string'],

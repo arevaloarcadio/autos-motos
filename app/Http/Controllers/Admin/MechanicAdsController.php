@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\MechanicAd\DestroyMechanicAd;
 use App\Http\Requests\Admin\MechanicAd\IndexMechanicAd;
 use App\Http\Requests\Admin\MechanicAd\StoreMechanicAd;
 use App\Http\Requests\Admin\MechanicAd\UpdateMechanicAd;
-use App\Models\MechanicAd;
+use App\Models\{Ad, MechanicAd};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -37,8 +37,8 @@ class MechanicAdsController extends Controller
 
             $columns = ['id', 'internal_name', 'slug', 'domain', 'default_locale_id', 'icon', 'mobile_number', 'whatsapp_number', 'email_address'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -112,10 +112,38 @@ class MechanicAdsController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-        // Store the MechanicAd
-        $mechanicAd = MechanicAd::create($sanitized);
+        $ad = Ad::create([
+            'slug' => Str::slug($sanitized['title']),
+            'title' => $sanitized['title'],
+            'description' => $sanitized['description'],
+            'thumbnail' => $sanitized['thumbnail'],
+            'status' => 0,
+            'type' => 'moto',
+            'is_featured' => 0,
+            'user_id' => Auth::user()->id,
+            'market_id' => $sanitized['market_id'],
+            'external_id' =>null,
+            'source' => null,
+            'images_processing_status' => 'SUCCESSFUL',
+            'images_processing_status_text' => null,
+        ]);
+        
+        $mechanicAd = MechanicAd::create([
+            'ad_id' =>  $ad->id,
+            'address' =>$sanitized['address'],
+            'latitude' => $sanitized['latitude'],
+            'longitude' => $sanitized['longitude'],
+            'zip_code' => $sanitized['zip_code'],
+            'city' => $sanitized['city'],
+            'country' =>$sanitized['country'],
+            'mobile_number' => $sanitized['mobile_number'],
+            'whatsapp_number' => $sanitized['whatsapp_number'],
+            'website_url' => $sanitized['website_url'],
+            'email_address' => $sanitized['email_address'],
+            'geocoding_status' => $sanitized['geocoding_status']
+        ]);
 
-        return ['data' => $mechanicAd];
+        return ['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd]];
     }
 
     /**

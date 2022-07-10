@@ -37,8 +37,8 @@ class MotoAdOptionsController extends Controller
 
             $columns = ['moto_ad_id', 'option_id'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);

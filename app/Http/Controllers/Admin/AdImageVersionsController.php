@@ -37,8 +37,8 @@ class AdImageVersionsController extends Controller
 
             $columns =  ['id', 'ad_image_id', 'name', 'path', 'is_external'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -69,8 +69,8 @@ class AdImageVersionsController extends Controller
                         
                 $columns = ['id', 'ad_image_id', 'name', 'path', 'is_external'];
                 
-                foreach ($columns as $column) {
-                    if ($request->filters) {
+                if ($request->filters) {
+                    foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
                             if ($column == $key) {
                                $query->where($key,$filter);

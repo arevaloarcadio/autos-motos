@@ -37,8 +37,8 @@ class UserRolesController extends Controller
 
             $columns = ['user_id', 'role_id'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);

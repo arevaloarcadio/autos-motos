@@ -38,8 +38,8 @@ class AdImagesController extends Controller
             $columns = 
             ['id', 'ad_id', 'path', 'is_external', 'order_index'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -70,8 +70,8 @@ class AdImagesController extends Controller
                         
                 $columns = ['id', 'ad_id', 'path', 'is_external', 'order_index'];
                 
-                foreach ($columns as $column) {
-                    if ($request->filters) {
+                if ($request->filters) {
+                    foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
                             if ($column == $key) {
                                $query->where($key,$filter);

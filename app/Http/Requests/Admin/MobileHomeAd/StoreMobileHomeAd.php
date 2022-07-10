@@ -27,7 +27,12 @@ class StoreMobileHomeAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['required', Rule::unique('mobile_home_ads', 'ad_id'), 'string'],
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'thumbnail' => ['nullable', 'string'],
+            'type' => ['required', 'string'],
+            'market_id' => ['required', 'string'],
+            
             'make_id' => ['nullable', 'string'],
             'custom_make' => ['nullable', 'string'],
             'model_id' => ['nullable', 'string'],

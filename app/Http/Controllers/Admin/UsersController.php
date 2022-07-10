@@ -39,8 +39,8 @@ class UsersController extends Controller
 
             $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
                 
-            foreach ($columns as $column) {
-                if ($request->filters) {
+            if ($request->filters) {
+                foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
                            $query->where($key,$filter);
@@ -71,15 +71,15 @@ class UsersController extends Controller
                         
                 $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
                 
+if ($request->filters) {
                 foreach ($columns as $column) {
-                    if ($request->filters) {
-                        foreach ($request->filters as $key => $filter) {
-                            if ($column == $key) {
-                               $query->where($key,$filter);
-                            }
+                    foreach ($request->filters as $key => $filter) {
+                        if ($column == $key) {
+                           $query->where($key,$filter);
                         }
                     }
                 }
+            }
 
                 if ($request->dateStart && $request->dateEnd) {
                      $query->whereBetween('created_at',[$request->dateStart,$request->dateEnd]);
