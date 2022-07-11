@@ -32,8 +32,15 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::get('/byUser',                                   'AdsController@byUser')->name('byUser');
         });
 
-        Route::prefix('reviews')->name('ads/')->group(static function() {
+        Route::prefix('reviews')->name('reviews/')->group(static function() {
             Route::get('/byUser',                                   'ReviewsController@byUser')->name('byUser');
+        });
+
+        Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
+            Route::post('/principal_data',                           'AutoAdsController@principal_data')->name('principal_data');
+            Route::post('/details_ads',                              'AutoAdsController@details_ads')->name('details_ads');
+            Route::post('/add_sub_characteristic_ads',               'AutoAdsController@add_sub_characteristic_ads')->name('details_ads');
+            Route::post('/add_details_contacts',               'AutoAdsController@add_details_contacts')->name('add_details_contacts');
         });
     });
 });
@@ -81,6 +88,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/{ad_id}',                                      'AdsController@show')->name('show');
             Route::post('/',                                            'AdsController@store')->name('store');
             Route::post('/search_ads_like',                             'AdsController@searchAdsLike')->name('search_ads_like');
+
          
             Route::post('/{ad_id}/rejected_comment',                    'AdsController@storeCommentRejected')->name('storeCommentRejected');
             Route::post('/rejected_comment_individual_ads',             'AdsController@storeCommentsRejectedIndividual')->name('storeCommentRejected');
@@ -153,6 +161,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/',                                             'AutoAdsController@index')->name('index');
             //Route::get('/create',                                       'AutoAdsController@create')->name('create');
             Route::post('/',                                            'AutoAdsController@store')->name('store');
+            
             //Route::get('/{autoAd}/edit',                                'AutoAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AutoAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{autoAd}',                                    'AutoAdsController@update')->name('update');
