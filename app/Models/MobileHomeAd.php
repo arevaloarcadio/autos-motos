@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class MobileHomeAd extends Model
 {
+    use \App\Traits\TraitUuid;
+    use \App\Traits\Relationships;
+
     protected $fillable = [
         'ad_id',
         'make_id',

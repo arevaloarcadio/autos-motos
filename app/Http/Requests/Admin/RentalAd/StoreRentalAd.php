@@ -28,7 +28,10 @@ class StoreRentalAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['required', Rule::unique('rental_ads', 'ad_id'), 'string'],
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'thumbnail' => ['nullable', 'string'],
+            'market_id' => ['required', 'string'],
             'address' => ['required', 'string'],
             'latitude' => ['nullable', 'string'],
             'longitude' => ['nullable', 'string'],
@@ -39,6 +42,7 @@ class StoreRentalAd extends FormRequest
             'whatsapp_number' => ['nullable', 'string'],
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
+            'geocoding_status' => ['nullable', 'string'],
             
         ];
     }

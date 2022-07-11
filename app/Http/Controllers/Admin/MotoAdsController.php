@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\MotoAd\DestroyMotoAd;
 use App\Http\Requests\Admin\MotoAd\IndexMotoAd;
 use App\Http\Requests\Admin\MotoAd\StoreMotoAd;
 use App\Http\Requests\Admin\MotoAd\UpdateMotoAd;
-use App\Models\{Ad,MotoAd,DealerShowRoom};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -19,11 +18,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
+
+use Illuminate\Http\Request;
 use App\Http\Resources\Data;
 use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\{Ad,MotoAd,DealerShowRoom,AdSubCharacteristic};
 
 class MotoAdsController extends Controller
 {
@@ -201,9 +204,10 @@ class MotoAdsController extends Controller
             'inspection_valid_until_month' => ['nullable', 'integer'],
             'inspection_valid_until_year' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
-            'ad_fuel_type_id' => ['nullable', 'string'],
-            'ad_transmission_type_id' => ['nullable', 'string'],
-            'ad_drive_type_id' => ['nullable', 'string'],
+            'fuel_type_id' => ['nullable', 'string'],
+            'transmission_type_id' => ['nullable', 'string'],
+            'body_type_id' => ['required', 'string'],
+            'drive_type_id' => ['nullable', 'string'],
             'engine_displacement' => ['nullable', 'integer'],
             'power_hp' => ['nullable', 'integer'],
             'fuel_consumption' => ['nullable', 'numeric'],
@@ -223,6 +227,7 @@ class MotoAdsController extends Controller
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
 
+            
             $motoAd = MotoAd::create([
                 'ad_id' =>  '.',
                 'email_address' =>  '.',
@@ -230,6 +235,7 @@ class MotoAdsController extends Controller
                 'zip_code' =>  '.',
                 'city' =>  '.',
                 'country' =>  '.',
+                'color' =>  '.',
                 'price' =>  0,
                 'doors' => $request['doors'],
                 'mileage' => $request['mileage'],
@@ -238,9 +244,10 @@ class MotoAdsController extends Controller
                 'condition' => $request['condition'],
                 'dealer_id' => Auth::user()->dealer_id ?? null,
                 'dealer_show_room_id' => $dealer_show_room_id,
-                'ad_fuel_type_id' =>  $request['ad_fuel_type_id'],
-                'ad_transmission_type_id' =>  $request['ad_transmission_type_id'],
-                'ad_drive_type_id' =>  $request['ad_drive_type_id'],
+                'fuel_type_id' =>  $request['fuel_type_id'],
+                'transmission_type_id' =>  $request['transmission_type_id'],
+                'drive_type_id' =>  $request['drive_type_id'],
+                'body_type_id' =>  $request['body_type_id'],
                 'first_registration_month' =>  $request['first_registration_month'],
                 'first_registration_year' =>  $request['first_registration_year'],
                 'engine_displacement' =>  $request['engine_displacement'],
@@ -270,7 +277,7 @@ class MotoAdsController extends Controller
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
-            'auto_ad_id' => ['required', 'string'],
+            'moto_ad_id' => ['required', 'string'],
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'thumbnail' => ['nullable', 'string'],
@@ -292,7 +299,7 @@ class MotoAdsController extends Controller
                 'description' => $request['description'],
                 'thumbnail' => $request['thumbnail'],
                 'status' => 0,
-                'type' => 'auto',
+                'type' => 'moto',
                 'is_featured' => 0,
                 'user_id' => Auth::user()->id,
                 'market_id' => $request['market_id'],
@@ -302,15 +309,15 @@ class MotoAdsController extends Controller
                 'images_processing_status_text' => null,
             ]);
 
-            MotoAd::where('id',$request['auto_ad_id'])->update([
+            MotoAd::where('id',$request['moto_ad_id'])->update([
                 'ad_id' =>  $ad->id,
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
 
-            $motoAd = MotoAd::find($request['auto_ad_id']);
+            $motoAd = MotoAd::find($request['moto_ad_id']);
 
-            return response()->json(['data' => ['ad' => $ad,'auto_ad' =>$motoAd]], 200);
+            return response()->json(['data' => ['ad' => $ad,'moto_ad' =>$motoAd]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
@@ -359,7 +366,7 @@ class MotoAdsController extends Controller
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
-            'auto_ad_id' => ['required', 'string'],
+            'moto_ad_id' => ['required', 'string'],
             'first_name' => ['required', 'string'],
             'last_name' => ['required', 'string'],
             'email_address' => ['required', 'string'],
@@ -378,7 +385,7 @@ class MotoAdsController extends Controller
 
         try {
             
-            MotoAd::where('id',$request['auto_ad_id'])->update([
+            MotoAd::where('id',$request['moto_ad_id'])->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,
@@ -390,8 +397,8 @@ class MotoAdsController extends Controller
                 'whatsapp_number' =>  $request->whatsapp_number,
             ]);
 
-            $motoAd = MotoAd::find($request['auto_ad_id']);
-            
+            $motoAd = MotoAd::find($request['moto_ad_id']);
+           
             return response()->json(['data' => $motoAd], 200);
 
         } catch (Exception $e) {

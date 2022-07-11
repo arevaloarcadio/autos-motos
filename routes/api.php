@@ -42,6 +42,39 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/add_sub_characteristic_ads',               'AutoAdsController@add_sub_characteristic_ads')->name('details_ads');
             Route::post('/add_details_contacts',               'AutoAdsController@add_details_contacts')->name('add_details_contacts');
         });
+
+        Route::prefix('moto-ads')->name('moto-ads/')->group(static function() {
+            Route::post('/principal_data',                           'MotoAdsController@principal_data')->name('principal_data');
+            Route::post('/details_ads',                              'MotoAdsController@details_ads')->name('details_ads');
+            Route::post('/add_sub_characteristic_ads',               'MotoAdsController@add_sub_characteristic_ads')->name('details_ads');
+            Route::post('/add_details_contacts',                     'MotoAdsController@add_details_contacts')->name('add_details_contacts');
+        });
+
+        Route::prefix('mobile-home-ads')->name('mobile-home-ads/')->group(static function() {
+            Route::post('/principal_data',                           'MobileHomeAdsController@principal_data')->name('principal_data');
+            Route::post('/details_ads',                              'MobileHomeAdsController@details_ads')->name('details_ads');
+            Route::post('/add_sub_characteristic_ads',               'MobileHomeAdsController@add_sub_characteristic_ads')->name('details_ads');
+            Route::post('/add_details_contacts',                     'MobileHomeAdsController@add_details_contacts')->name('add_details_contacts');
+        });
+
+        Route::prefix('truck-ads')->name('truck-ads/')->group(static function() {
+            Route::post('/principal_data',                           'TruckAdsController@principal_data')->name('principal_data');
+            Route::post('/details_ads',                              'TruckAdsController@details_ads')->name('details_ads');
+            Route::post('/add_sub_characteristic_ads',               'MobileHomeAdsController@add_sub_characteristic_ads')->name('details_ads');
+            Route::post('/add_details_contacts',                     'TruckAdsController@add_details_contacts')->name('add_details_contacts');
+        });
+        
+        Route::prefix('mechanic-ads')->name('mechanic-ads/')->group(static function() {
+            Route::post('/',                                          'MechanicAdsController@store')->name('store');
+        });  
+
+        Route::prefix('rental-ads')->name('rental-ads/')->group(static function() {
+            Route::post('/',                                           'RentalAdsController@store')->name('store');
+        });
+
+        Route::prefix('dealers')->name('dealers/')->group(static function() {
+            Route::post('/{dealer}',                                    'DealersController@update')->name('update');
+        });
     });
 });
 
@@ -316,7 +349,6 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/',                                            'DealersController@store')->name('store');
             //Route::get('/{dealer}/edit',                                'DealersController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'DealersController@bulkDestroy')->name('bulk-destroy');
-            Route::post('/{dealer}',                                    'DealersController@update')->name('update');
             Route::delete('/{dealer}',                                  'DealersController@destroy')->name('destroy');
         });
 
@@ -409,7 +441,6 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('mechanic-ads')->name('mechanic-ads/')->group(static function() {
             Route::get('/',                                             'MechanicAdsController@index')->name('index');
             //Route::get('/create',                                       'MechanicAdsController@create')->name('create');
-            Route::post('/',                                            'MechanicAdsController@store')->name('store');
             //Route::get('/{mechanicAd}/edit',                            'MechanicAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'MechanicAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{mechanicAd}',                                'MechanicAdsController@update')->name('update');
@@ -498,7 +529,6 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('rental-ads')->name('rental-ads/')->group(static function() {
             Route::get('/',                                             'RentalAdsController@index')->name('index');
             //Route::get('/create',                                       'RentalAdsController@create')->name('create');
-            Route::post('/',                                            'RentalAdsController@store')->name('store');
             //Route::get('/{rentalAd}/edit',                              'RentalAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'RentalAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{rentalAd}',                                  'RentalAdsController@update')->name('update');

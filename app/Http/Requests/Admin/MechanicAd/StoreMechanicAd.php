@@ -31,9 +31,7 @@ class StoreMechanicAd extends FormRequest
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'thumbnail' => ['nullable', 'string'],
-            'type' => ['required', 'string'],
             'market_id' => ['required', 'string'],
-
             'address' => ['required', 'string'],
             'latitude' => ['nullable', 'string'],
             'longitude' => ['nullable', 'string'],

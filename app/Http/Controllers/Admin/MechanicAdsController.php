@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\MechanicAd\DestroyMechanicAd;
 use App\Http\Requests\Admin\MechanicAd\IndexMechanicAd;
 use App\Http\Requests\Admin\MechanicAd\StoreMechanicAd;
 use App\Http\Requests\Admin\MechanicAd\UpdateMechanicAd;
-use App\Models\{Ad, MechanicAd};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -20,9 +19,19 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use App\Models\{Ad,MechanicAd,DealerShowRoom};
+
 class MechanicAdsController extends Controller
 {
-
+    use ApiController;
+    
     /**
      * Display a listing of the resource.
      *
@@ -109,42 +118,49 @@ class MechanicAdsController extends Controller
      */
     public function store(StoreMechanicAd $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        try {
 
-        $ad = Ad::create([
-            'slug' => Str::slug($sanitized['title']),
-            'title' => $sanitized['title'],
-            'description' => $sanitized['description'],
-            'thumbnail' => $sanitized['thumbnail'],
-            'status' => 0,
-            'type' => 'moto',
-            'is_featured' => 0,
-            'user_id' => Auth::user()->id,
-            'market_id' => $sanitized['market_id'],
-            'external_id' =>null,
-            'source' => null,
-            'images_processing_status' => 'SUCCESSFUL',
-            'images_processing_status_text' => null,
-        ]);
-        
-        $mechanicAd = MechanicAd::create([
-            'ad_id' =>  $ad->id,
-            'address' =>$sanitized['address'],
-            'latitude' => $sanitized['latitude'],
-            'longitude' => $sanitized['longitude'],
-            'zip_code' => $sanitized['zip_code'],
-            'city' => $sanitized['city'],
-            'country' =>$sanitized['country'],
-            'mobile_number' => $sanitized['mobile_number'],
-            'whatsapp_number' => $sanitized['whatsapp_number'],
-            'website_url' => $sanitized['website_url'],
-            'email_address' => $sanitized['email_address'],
-            'geocoding_status' => $sanitized['geocoding_status']
-        ]);
+            $sanitized = $request->getSanitized();
 
-        return ['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd]];
+            $ad = Ad::create([
+                'slug' => Str::slug($sanitized['title']),
+                'title' => $sanitized['title'],
+                'description' => $sanitized['description'],
+               // 'thumbnail' => $sanitized['thumbnail'],
+                'status' => 0,
+                'type' => 'mechanic',
+                'is_featured' => 0,
+                'user_id' => Auth::user()->id,
+                'market_id' => $sanitized['market_id'],
+                'external_id' =>null,
+                'source' => null,
+                'images_processing_status' => 'SUCCESSFUL',
+                'images_processing_status_text' => null,
+            ]);
+            
+            $mechanicAd = MechanicAd::create([
+                'ad_id' =>  $ad->id,
+                'address' => $sanitized['address'],
+                'latitude' => $sanitized['latitude'] ?? null,
+                'longitude' => $sanitized['longitude'] ?? null,
+                'zip_code' => $sanitized['zip_code'],
+                'city' => $sanitized['city'],
+                'country' =>$sanitized['country'],
+                'mobile_number' => $sanitized['mobile_number'],
+                'whatsapp_number' => $sanitized['whatsapp_number'],
+                'website_url' => $sanitized['website_url'],
+                'email_address' => $sanitized['email_address'],
+                'geocoding_status' => $sanitized['geocoding_status'] ?? null
+            ]);
+
+            return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd]], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
+        
 
     /**
      * Display the specified resource.

@@ -1,0 +1,5 @@
+INSERT INTO `ads` (`id`, `slug`, `title`, `description`, `thumbnail`, `status`, `type`, `is_featured`, `user_id`, `market_id`, `created_at`, `updated_at`, `external_id`, `source`, `images_processing_status`, `images_processing_status_text`, `csv_ad_id`) VALUES ('.', '.', '.', '.', '.', '0', '', '0', '23bcf97c-296b-46c9-bdd5-8057e052bfce', '5b8fa498-efe4-4c19-90a8-7285901b4585', '2022-07-02 09:28:15', '2021-05-15 09:28:15', '26409', NULL, 'N/A', NULL, NULL);
+
+ALTER TABLE `moto_ads` DROP FOREIGN KEY `moto_ads_model_id_foreign`; ALTER TABLE `moto_ads` ADD CONSTRAINT `moto_ads_model_id_foreign` FOREIGN KEY (`model_id`) REFERENCES `models`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE `mobile_home_ads` DROP FOREIGN KEY `mobile_home_ads_model_id_foreign`; ALTER TABLE `mobile_home_ads` ADD CONSTRAINT `mobile_home_ads_model_id_foreign` FOREIGN KEY (`model_id`) REFERENCES `models`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;

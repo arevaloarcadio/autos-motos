@@ -69,7 +69,7 @@ class DealersController extends Controller
                         
                 $columns =  ['id', 'slug', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'description', 'source'];
                 
-if ($request->filters) {
+            if ($request->filters) {
                 foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
@@ -162,17 +162,11 @@ if ($request->filters) {
         // Sanitize input
         $sanitized = $request->getSanitized();
 
+
         // Update changed values Dealer
         $dealer->update($sanitized);
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/dealers'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
-        }
-
-        return redirect('admin/dealers');
+        return ['data' => $dealer];
     }
 
     /**
