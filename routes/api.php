@@ -75,6 +75,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         Route::prefix('dealers')->name('dealers/')->group(static function() {
             Route::post('/{dealer}',                                    'DealersController@update')->name('update');
         });
+
+        Route::prefix('users')->name('users/')->group(static function() {
+            Route::post('/{user}/ocassional',                           'UsersController@updateOcassional')->name('update');
+           
+        });
+            
     });
 });
 
@@ -641,7 +647,6 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/{user}/status',                               'UsersController@setStatus')->name('setStatus');
             //Route::get('/{user}/edit',                                  'UsersController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'UsersController@bulkDestroy')->name('bulk-destroy');
-            Route::post('/{user}',                                      'UsersController@update')->name('update');
             Route::delete('/{user}',                                    'UsersController@destroy')->name('destroy');
         });
 

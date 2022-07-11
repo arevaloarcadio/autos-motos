@@ -21,6 +21,7 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -71,7 +72,7 @@ class UsersController extends Controller
                         
                 $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
                 
-if ($request->filters) {
+            if ($request->filters) {
                 foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
@@ -181,14 +182,19 @@ if ($request->filters) {
         // Update changed values User
         $user->update($sanitized);
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/users'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
-        }
+        return ['data' => $user];
+    }
 
-        return redirect('admin/users');
+
+    public function updateOcassional(UpdateUser $request, User $user)
+    {
+        // Sanitize input
+        $sanitized = $request->getSanitized();
+        $user = Auth::user();
+        // Update changed values User
+        $user->update($sanitized);
+
+        return ['data' => $user];
     }
 
     /**

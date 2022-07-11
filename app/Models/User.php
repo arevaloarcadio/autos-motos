@@ -40,14 +40,14 @@ class User extends Authenticatable  implements JWTSubject
     
     ];
     
-    protected $appends = ['resource_url'];
+    //protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */
 
-    public function getResourceUrlAttribute()
+    /*public function getResourceUrlAttribute()
     {
         return url('/admin/users/'.$this->getKey());
-    }
+    }*/
 
     public function dealer()
     {
