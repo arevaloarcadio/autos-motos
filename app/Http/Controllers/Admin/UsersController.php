@@ -22,10 +22,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UsersController extends Controller
 {
-
+    use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -185,18 +190,39 @@ class UsersController extends Controller
         return ['data' => $user];
     }
 
-
-    public function updateOcassional(UpdateUser $request, User $user)
+    public function updateOcassional(Request $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        $resource = ApiHelper::resource();
+
         $user = Auth::user();
-        // Update changed values User
-        $user->update($sanitized);
 
-        return ['data' => $user];
+        $validator = Validator::make($request->all(), [
+            'first_name' => ['sometimes', 'string'],
+            'last_name' => ['sometimes', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'email' => 'required|unique:users,email,'.$user->id,
+            'password' => ['sometimes', 'confirmed', 'min:7', 'string'],
+        //    'dealer_id' => ['nullable', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+
+            $user->update($request->all());
+           
+            return response()->json(['data' => $user], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
-
     /**
      * Remove the specified resource from storage.
      *

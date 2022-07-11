@@ -77,7 +77,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         });
 
         Route::prefix('users')->name('users/')->group(static function() {
-            Route::post('/{user}/ocassional',                           'UsersController@updateOcassional')->name('update');
+            Route::post('/ocassional',                           'UsersController@updateOcassional')->name('update');
            
         });
             
