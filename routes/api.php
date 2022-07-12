@@ -30,6 +30,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
         Route::prefix('ads')->name('ads/')->group(static function() {
             Route::get('/byUser',                                   'AdsController@byUser')->name('byUser');
+
         });
 
         Route::prefix('reviews')->name('reviews/')->group(static function() {
@@ -117,6 +118,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('ads')->name('ads/')->group(static function() {
             Route::get('/',                                             'AdsController@index')->name('index');
+
             Route::post('/filter',                                      'AdsController@index')->name('filter');
             Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
             Route::get('/countToday',                                   'AdsController@countAdsToday')->name('countAdsToday');
@@ -126,6 +128,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             //Route::get('/create',                                       'AdsController@create')->name('create');
             Route::get('/{ad_id}',                                      'AdsController@show')->name('show');
             Route::post('/',                                            'AdsController@store')->name('store');
+            Route::post('/search_advanced',                           'AdsController@searchAdvanced')->name('searchAdvanced');
             Route::post('/search_ads_like',                             'AdsController@searchAdsLike')->name('search_ads_like');
 
          

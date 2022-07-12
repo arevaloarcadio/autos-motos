@@ -22,10 +22,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class AdsController extends Controller
 {
+      use ApiController;
 
     /**
      * Display a listing of the resource.
@@ -45,7 +51,7 @@ class AdsController extends Controller
             // set columns to searchIn
             ['id', 'slug', 'title', 'description', 'thumbnail', 'status', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'],
 
-        function ($query) use ($request) {
+            function ($query) use ($request) {
                      
                 $columns =  ['id', 'slug', 'title', 'description', 'status', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'];
 
@@ -68,7 +74,6 @@ class AdsController extends Controller
 
                 if ($request->input('types')) {
                     $query->whereIn('type',$request->input('types'));
-                    
                 }
                
                 $i = 1;
@@ -126,6 +131,47 @@ class AdsController extends Controller
 
         return ['data' => $data];
     }
+
+
+    public function searchAdvanced(Request $request)
+    {   
+        
+        $resource = ApiHelper::resource();
+        $filter_types = [];
+        $response = [];
+        
+        try {
+            
+            if ($request->types) {
+                foreach ($request->types as $type) {
+                    switch ($type) {
+                        case 'auto':
+                            array_push($response, ...$this->getAutoAd($request));
+                            break;
+                        case 'moto':
+                            array_push($response,...$this->getMotoAd($request));
+                            break;
+                        case 'mobile-home':
+                            array_push($response, ...$this->getMobileHomeAd($request));
+                            break;
+                        case 'truck':
+                            array_push($response, ...$this->getTruckAd($request));
+                            break;
+                        default:
+                            
+                            break;
+                    }
+                }
+            }
+               
+            return response()->json(['data' => $response], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
 
     public function searchAdsLike(Request $request)
     {   
@@ -529,4 +575,286 @@ class AdsController extends Controller
 
         return null;
     }
+
+    public function getAutoAd($filters)
+    {
+        $auto_ad = AutoAd::query();
+
+        $auto_ad->where(function($query) use ($filters){
+            
+            if ($filters->make_id) {
+                $query->orWhere('make_id',$filters->make_id);
+            }
+            if ($filters->model_id) {
+                $query->orWhere('model_id',$filters->model_id);
+            }
+            if ($filters->country) {
+                $query->orWhere('country',$filters->country);
+            }
+            if ($filters->city) {
+                $query->orWhere('city',$filters->city);
+            }
+            if ($filters->mileage) {
+                $query->orWhere('mileage',$filters->mileage);
+            }
+            if ($filters->condition) {
+                $query->orWhere('condition',$filters->condition);
+            }
+            if ($filters->fuel_type_id) {
+                $query->orWhere('ad_fuel_type_id',$filters->fuel_type_id);
+            }
+            if ($filters->transmission_type_id) {
+                $query->orWhere('ad_transmission_type_id',$filters->transmission_type_id);
+            }
+            if ($filters->drive_type_id) {
+                $query->orWhere('ad_drive_type_id',$filters->drive_type_id);
+            }
+            if ($filters->price) {
+                $query->orWhere('price',$filters->price);
+            }
+            if ($filters->from_power_hp && $filters->to_power_hp){
+                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+            }
+            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+            }
+            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+            }
+            if ($filters->exterior_color) {
+                $query->orWhere('exterior_color',$filters->exterior_color);
+            }
+            if ($filters->interior_color) {
+                $query->orWhere('interior_color',$filters->interior_color);
+            }
+            if ($filters->dealer_id) {
+                $query->orWhere('dealer_id',$filters->dealer_id);
+            }
+            if ($filters->inspection_valid_until_month) {
+                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+            }
+            if ($filters->inspection_valid_until_year) {
+                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+            }
+            if ($filters->seats) {
+                $query->orWhere('seats',$filters->seats);
+            }
+            if ($filters->owners) {
+                $query->orWhere('owners',$filters->owners);
+            }
+            if ($filters->fuel_consumption) {
+                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+            }
+        });
+        
+        return $auto_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+    }
+
+    public function getMotoAd($filters)
+    {
+        $moto_ad = MotoAd::query();
+
+        $moto_ad->where(function($query) use ($filters){
+            
+            if ($filters->make_id) {
+                $query->orWhere('make_id',$filters->make_id);
+            }
+            if ($filters->model_id) {
+                $query->orWhere('model_id',$filters->model_id);
+            }
+            if ($filters->country) {
+                $query->orWhere('country',$filters->country);
+            }
+            if ($filters->city) {
+                $query->orWhere('city',$filters->city);
+            }
+            if ($filters->mileage) {
+                $query->orWhere('mileage',$filters->mileage);
+            }
+            if ($filters->condition) {
+                $query->orWhere('condition',$filters->condition);
+            }
+            if ($filters->fuel_type_id) {
+                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+            }
+            if ($filters->transmission_type_id) {
+                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+            }
+            if ($filters->drive_type_id) {
+                $query->orWhere('drive_type_id',$filters->drive_type_id);
+            }
+            if ($filters->price) {
+                $query->orWhere('price',$filters->price);
+            }
+            if ($filters->from_power_hp && $filters->to_power_hp){
+                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+            }
+            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+            }
+            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+            }
+            if ($filters->color) {
+                $query->orWhere('color',$filters->color);
+            }
+            if ($filters->dealer_id) {
+                $query->orWhere('dealer_id',$filters->dealer_id);
+            }
+            if ($filters->inspection_valid_until_month) {
+                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+            }
+            if ($filters->inspection_valid_until_year) {
+                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+            }
+            if ($filters->cylinders) {
+                $query->orWhere('cylinders',$filters->seats);
+            }
+            if ($filters->gears) {
+                $query->orWhere('gears',$filters->gears);
+            }
+            if ($filters->owners) {
+                $query->orWhere('owners',$filters->owners);
+            }
+            if ($filters->fuel_consumption) {
+                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+            }
+        });
+        
+        return $moto_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+    }
+
+    public function getMobileHomeAd($filters)
+    {
+        $mobile_home_ad = MobileHomeAd::query();
+
+        $mobile_home_ad->where(function($query) use ($filters){
+            
+            if ($filters->make_id) {
+                $query->orWhere('make_id',$filters->make_id);
+            }
+            if ($filters->model_id) {
+                $query->orWhere('model_id',$filters->model_id);
+            }
+            if ($filters->country) {
+                $query->orWhere('country',$filters->country);
+            }
+            if ($filters->city) {
+                $query->orWhere('city',$filters->city);
+            }
+            if ($filters->mileage) {
+                $query->orWhere('mileage',$filters->mileage);
+            }
+            if ($filters->condition) {
+                $query->orWhere('condition',$filters->condition);
+            }
+            if ($filters->fuel_type_id) {
+                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+            }
+            if ($filters->transmission_type_id) {
+                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+            }
+            if ($filters->drive_type_id) {
+                $query->orWhere('drive_type_id',$filters->drive_type_id);
+            }
+            if ($filters->price) {
+                $query->orWhere('price',$filters->price);
+            }
+            if ($filters->from_power_hp && $filters->to_power_hp){
+                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+            }
+            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+            }
+            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+            }
+            if ($filters->color) {
+                $query->orWhere('color',$filters->color);
+            }
+            if ($filters->dealer_id) {
+                $query->orWhere('dealer_id',$filters->dealer_id);
+            }
+            if ($filters->inspection_valid_until_month) {
+                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+            }
+            if ($filters->inspection_valid_until_year) {
+                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+            }
+            if ($filters->cylinders) {
+                $query->orWhere('cylinders',$filters->seats);
+            }
+            if ($filters->gears) {
+                $query->orWhere('gears',$filters->gears);
+            }
+            if ($filters->owners) {
+                $query->orWhere('owners',$filters->owners);
+            }
+            if ($filters->fuel_consumption) {
+                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+            }
+        });
+
+        return $mobile_home_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+    }
+
+    public function getTruckAd($filters)
+    {
+        $truck_ad = TruckAd::query();
+
+        $truck_ad->where(function($query) use ($filters){
+            
+            if ($filters->make_id) {
+                $query->orWhere('make_id',$filters->make_id);
+            }
+            if ($filters->country) {
+                $query->orWhere('country',$filters->country);
+            }
+            if ($filters->city) {
+                $query->orWhere('city',$filters->city);
+            }
+            if ($filters->mileage) {
+                $query->orWhere('mileage',$filters->mileage);
+            }
+            if ($filters->condition) {
+                $query->orWhere('condition',$filters->condition);
+            }
+            if ($filters->fuel_type_id) {
+                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+            }
+            if ($filters->transmission_type_id) {
+                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+            }
+            if ($filters->price) {
+                $query->orWhere('price',$filters->price);
+            }
+            if ($filters->from_power_kw && $filters->to_power_kw){
+                $query->orWhereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
+            }
+            if ($filters->exterior_color) {
+                $query->orWhere('exterior_color',$filters->exterior_color);
+            }
+            if ($filters->interior_color) {
+                $query->orWhere('interior_color',$filters->interior_color);
+            }
+            if ($filters->dealer_id) {
+                $query->orWhere('dealer_id',$filters->dealer_id);
+            }
+            if ($filters->inspection_valid_until_month) {
+                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+            }
+            if ($filters->inspection_valid_until_year) {
+                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+            }
+            if ($filters->owners) {
+                $query->orWhere('owners',$filters->owners);
+            }
+            if ($filters->fuel_consumption) {
+                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+            }
+        });
+        
+        return $truck_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+    }
+        
 }
