@@ -61,10 +61,13 @@ class UserController extends Controller
             }
 
             if (!$token = JWTAuth::attempt($credentials)) {
-                if (!$authenticate) {
-                    return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
-                }
+                return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
             }
+
+            if (!$authenticate) {
+                return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
+            }
+
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
