@@ -342,12 +342,8 @@ class AdsController extends Controller
 
     public function setApprovedRejected(Request $request,$status)
     {   
-        
-
         $resource = ApiHelper::resource();
-        $filter_types = [];
-        $response = [];
-        
+       
         $validator = Validator::make($request->all(), [
             'ad_ids' => 'required|array',
         ]);
@@ -376,7 +372,7 @@ class AdsController extends Controller
                 $status == 'approved' ? $user->notify(new NotifyApproved($ad->title)) :  $user->notify(new NotifyRejected($ad->title));
             }
                
-            return response()->json(['data' => $response], 200);
+            return response()->json(['data' => 'OK'], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
