@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NotifyApproved extends Notification
+class NotifyRejected extends Notification
 {
     use Queueable;
 
@@ -21,6 +21,7 @@ class NotifyApproved extends Notification
     {
         $this->title = $title;
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -42,11 +43,12 @@ class NotifyApproved extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Su anuncio ha sido aprobado')
-            ->line('Nos complace informar que su anuncio: ')
+            ->subject('Su anuncio ha sido rechazado')
+            ->line('Lamento informarle que su anuncio: ')
             ->line($this->title)
-            ->line('Ha sido aprobado')
-            ->action('Ingrese a Autos Motos','https://automotos.dattatech.com/')
+            ->line('Ha sido rechazado')
+            ->line('Para mas información presione')
+            ->action('Aqui','https://automotos.dattatech.com/')
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }

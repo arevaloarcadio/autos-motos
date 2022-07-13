@@ -19,12 +19,19 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
+
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewsController extends Controller
 {
 
+    use  ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -39,10 +46,10 @@ class ReviewsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'user_creator_id', 'score'],
+            ['id', 'ad_id', 'name', 'score'],
 
             // set columns to searchIn
-            ['id', 'testimony', 'ad_id', 'user_creator_id']
+            ['id', 'ad_id', 'testimony', 'name']
         );
 
         if ($request->ajax()) {
@@ -70,12 +77,34 @@ class ReviewsController extends Controller
         return view('admin.review.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param StoreReview $request
-     * @return array|RedirectResponse|Redirector
-     */
+    
+    public function byUser(Request $request)
+    {   
+        
+        $resource = ApiHelper::resource();
+    
+        try {
+            
+            $reviews = Review::select('reviews.*')
+                ->join('ads','ads.id','reviews.ad_id')
+                ->where('ads.user_id',Auth::user()->id);
+                
+            if ($request->type) {
+                if ($request->type == 'auto') {
+                    $reviews->whereIn('ads.type',['auto','moto','mobile-home','truck']);
+                }else{
+                    $reviews->where('ads.type',$request->type);
+                }
+            }       
+                   
+            return response()->json(['data' => $reviews->get()], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
     public function store(StoreReview $request)
     {
         // Sanitize input
@@ -84,11 +113,7 @@ class ReviewsController extends Controller
         // Store the Review
         $review = Review::create($sanitized);
 
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/reviews'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/reviews');
+        return ['data' => $review];
     }
 
     /**
@@ -105,22 +130,6 @@ class ReviewsController extends Controller
         // TODO your code goes here
     }
 
-    public function byUser(Request $request)
-    {
-        $data = Review::select('reviews.*')
-                ->join('ads','ads.id','reviews.ad_id')
-                ->where('ads.user_id',Auth::user()->id);
-                
-        if ($request->type) {
-            if ($request->type == 'auto') {
-                $data->whereIn('ads.type',['auto','moto','mobile-home','truck']);
-            }else{
-                $data->where('ads.type',$request->type);
-            }
-        }       
-        
-        return ['data' => $data->get()];       
-    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -153,14 +162,7 @@ class ReviewsController extends Controller
         // Update changed values Review
         $review->update($sanitized);
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/reviews'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
-        }
-
-        return redirect('admin/reviews');
+        return ['data' => $review];
     }
 
     /**

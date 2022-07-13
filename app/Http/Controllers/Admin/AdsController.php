@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Notifications\NotifyApproved;
+use App\Notifications\{NotifyRejected,NotifyApproved};
 use App\Http\Requests\Admin\Ad\BulkDestroyAd;
 use App\Http\Requests\Admin\Ad\DestroyAd;
 use App\Http\Requests\Admin\Ad\IndexAd;
@@ -343,18 +343,45 @@ class AdsController extends Controller
     public function setApprovedRejected(Request $request,$status)
     {   
         
-        $ads = Ad::whereIn('id',$request->ad_ids)
+
+        $resource = ApiHelper::resource();
+        $filter_types = [];
+        $response = [];
+        
+        $validator = Validator::make($request->all(), [
+            'ad_ids' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
+        }
+        
+        try {
+            
+            Ad::whereIn('id',$request->ad_ids)
                 ->update(
                     [
                         'status' => $status == 'approved' ? 10 : 20
                     ]
                 );
-        
-        $user = User::find($request->user_id);
 
-        //$user->notify(new NotifyApproved);
+            $ads = Ad::select('ads.user_id','ads.title')
+                ->whereIn('id',$request->ad_ids)
+                ->groupBy('ads.user_id','ads.title')
+                ->get();
+            
+            foreach ($ads as $ad) {
+                $user = User::find($ad->user_id);
+                $status == 'approved' ? $user->notify(new NotifyApproved($ad->title)) :  $user->notify(new NotifyRejected($ad->title));
+            }
+               
+            return response()->json(['data' => $response], 200);
 
-        return ['data' => $ads];
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
      public function setApprovedRejectedIndividual(Request $request,$status)

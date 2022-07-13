@@ -14,7 +14,7 @@ class BulkDestroyReview extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('admin.review.bulk-delete');
     }
 
     /**

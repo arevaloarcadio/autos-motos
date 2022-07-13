@@ -176,10 +176,10 @@ class Ad extends Model
         return ApprovalStatusEnum::getString($this->status);
     }
 
-    public function getTitleAttribute(string $value): string
+    /*public function getTitleAttribute(string $value): string
     {
         return htmlspecialchars_decode($value);
-    }
+    }*/
 
     public function onboardingRequests()
     {

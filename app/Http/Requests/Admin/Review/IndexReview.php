@@ -14,7 +14,7 @@ class IndexReview extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('admin.review.index');
     }
 
     /**
@@ -25,7 +25,7 @@ class IndexReview extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,ad_id,user_creator_id,score|nullable',
+            'orderBy' => 'in:id,ad_id,name,score|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',

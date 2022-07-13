@@ -136,7 +136,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/rejected_comment_individual_ads',             'AdsController@storeCommentsRejectedIndividual')->name('storeCommentRejected');
             Route::post('/{csv_ad_id}/ads_rejected_comment',            'AdsController@storeCommentsRejected')->name('ads_rejected_comment');
             Route::post('/{status}/approved_rejected',                  'AdsController@setApprovedRejected')->name('store');
-            Route::post('/{status}/approved_rejected_ads',                  'AdsController@setApprovedRejected')->name('store');
+            Route::post('/{status}/approved_rejected_ads',              'AdsController@setApprovedRejected')->name('store');
             
             //Route::get('/{ad}/edit',                                    'AdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AdsController@bulkDestroy')->name('bulk-destroy');

@@ -15,7 +15,7 @@ class StoreReview extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('admin.review.create');
     }
 
     /**
@@ -26,9 +26,9 @@ class StoreReview extends FormRequest
     public function rules(): array
     {
         return [
-            'testimony' => ['required', 'string'],
             'ad_id' => ['required', 'string'],
-            'user_creator_id' => ['required', 'string'],
+            'testimony' => ['required', 'string'],
+            'name' => ['required', 'string'],
             'score' => ['required', 'numeric'],
             
         ];

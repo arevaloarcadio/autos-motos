@@ -15,9 +15,9 @@ class CreateReviewsTable extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->text('testimony');
             $table->uuid('ad_id');
-            $table->uuid('user_creator_id');
+            $table->text('testimony');
+            $table->string('name');
             $table->decimal('score',10,2);
             $table->timestamps();
         });

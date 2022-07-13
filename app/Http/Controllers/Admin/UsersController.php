@@ -151,7 +151,7 @@ class UsersController extends Controller
     {
         $user->status = $request->status;
         $user->save();
-
+        
         return ['data' => $user];
     }
 

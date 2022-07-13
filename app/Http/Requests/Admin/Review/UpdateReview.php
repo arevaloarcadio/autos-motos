@@ -15,7 +15,7 @@ class UpdateReview extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Gate::allows('admin.review.edit', $this->review);
     }
 
     /**
@@ -26,9 +26,9 @@ class UpdateReview extends FormRequest
     public function rules(): array
     {
         return [
-            'testimony' => ['sometimes', 'string'],
             'ad_id' => ['sometimes', 'string'],
-            'user_creator_id' => ['sometimes', 'string'],
+            'testimony' => ['sometimes', 'string'],
+            'name' => ['sometimes', 'string'],
             'score' => ['sometimes', 'numeric'],
             
         ];

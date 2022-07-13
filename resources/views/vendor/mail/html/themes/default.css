@@ -83,7 +83,7 @@ img {
 /* Layout */
 
 .wrapper {
-    background-color: #4A6DF5;
+    background-color: #fff;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -216,13 +216,14 @@ img {
     -webkit-text-size-adjust: none;
 }
 
-.button-blue,
-.button-primary {
-    background-color: #4A6DF5;
-    border-top: 10px solid #4A6DF5;
-    border-right: 18px solid #4A6DF5;
-    border-bottom: 10px solid #4A6DF5;
-    border-left: 18px solid #4A6DF5;
+.button-primary,
+.button-blue {
+    background-color: #ED1C24;
+    border-top: 10px solid #ED1C24;
+    border-right: 18px solid #ED1C24;
+    border-bottom: 10px solid #ED1C24;
+    border-left: 18px solid #ED1C24;
+    border-radius: 100px;
 }
 
 .button-green,
@@ -236,11 +237,12 @@ img {
 
 .button-red,
 .button-error {
-    background-color: #E03441;
-    border-top: 10px solid #E03441;
-    border-right: 18px solid #E03441;
-    border-bottom: 10px solid #E03441;
-    border-left: 18px solid #E03441;
+    background-color: #ED1C24;
+    border-top: 10px solid #ED1C24;
+    border-right: 18px solid #ED1C24;
+    border-bottom: 10px solid #ED1C24;
+    border-left: 18px solid #ED1C24;
+    border-radius: 100px;
 }
 
 /* Panels */

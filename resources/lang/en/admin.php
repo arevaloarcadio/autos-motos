@@ -1648,5 +1648,24 @@ return [
         ],
     ],
 
+    'review' => [
+        'title' => 'Reviews',
+
+        'actions' => [
+            'index' => 'Reviews',
+            'create' => 'New Review',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'ad_id' => 'Ad',
+            'testimony' => 'Testimony',
+            'name' => 'Name',
+            'score' => 'Score',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];
