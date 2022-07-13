@@ -104,6 +104,7 @@ class AdsController extends Controller
                     [
                         'mechanicAd',
                         'rentalAd',
+                        'images',
                         'autoAd' => function($query)
                         {
                             $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
