@@ -480,22 +480,27 @@ class AdsController extends Controller
 
     public function storeCommentsRejectedIndividual(Request $request)
     {   
-        if ($request->ads_ids) {
-            
-            $rejected_comment = new RejectedComment;
-            $rejected_comment->comment = $request->comment;
-            $rejected_comment->save();
 
-            $ads = Ad::whereIn('id',$request->ads_ids)->get();
+        $validator = \Validator::make($request->all(), [
+            'ads' => 'required|array',
+            'comment' => 'required|string',
+        ]);
 
-            foreach ($ads as $ad) {
-                $ad_rejected_comment = new AdRejectedComment;
-                $ad_rejected_comment->ad_id = $ad['id'];
-                $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
-                $ad_rejected_comment->save();
-            }
+        $rejected_comment = new RejectedComment;
+        $rejected_comment->comment = $request->comment;
+        $rejected_comment->save();
+
+        if ($validator->fails()) {
+            return response()->json(['data' => $validator->errors()],422);
         }
         
+        foreach ($request->ads as $ad) {
+            $ad_rejected_comment = new AdRejectedComment;
+            $ad_rejected_comment->ad_id = $ad;
+            $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
+            $ad_rejected_comment->save();
+        }
+
         return ['data' => 'OK'];
     }
     /**

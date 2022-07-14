@@ -190,6 +190,24 @@ class UsersController extends Controller
         return ['data' => $user];
     }
 
+    public function getDealer()
+    {
+        $resource = ApiHelper::resource();
+
+        $user = Auth::user();
+
+
+        try {
+            $dealer = $user->dealer;
+           
+            return response()->json(['data' => $dealer], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
     public function updateOcassional(Request $request)
     {
         $resource = ApiHelper::resource();

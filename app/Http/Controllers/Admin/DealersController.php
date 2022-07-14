@@ -145,9 +145,16 @@ class DealersController extends Controller
      */
     public function show(Dealer $dealer)
     {
-        $this->authorize('admin.dealer.show', $dealer);
-
-        // TODO your code goes here
+        $resource = ApiHelper::resource();
+        
+        try {
+            
+            return response()->json(['data' => $dealer] , 200);
+        
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**

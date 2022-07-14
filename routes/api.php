@@ -37,11 +37,16 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::get('/byUser',                                   'ReviewsController@byUser')->name('byUser');
         });
 
+
+        Route::prefix('users/')->name('dealers/')->group(static function() {
+            Route::get('/dealer',                                   'DealersController@show')->name('show');
+        });
+
         Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
             Route::post('/principal_data',                           'AutoAdsController@principal_data')->name('principal_data');
             Route::post('/details_ads',                              'AutoAdsController@details_ads')->name('details_ads');
             Route::post('/add_sub_characteristic_ads',               'AutoAdsController@add_sub_characteristic_ads')->name('details_ads');
-            Route::post('/add_details_contacts',               'AutoAdsController@add_details_contacts')->name('add_details_contacts');
+            Route::post('/add_details_contacts',                     'AutoAdsController@add_details_contacts')->name('add_details_contacts');
         });
 
         Route::prefix('moto-ads')->name('moto-ads/')->group(static function() {
@@ -86,7 +91,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
         Route::prefix('users')->name('users/')->group(static function() {
             Route::post('/ocassional',                           'UsersController@updateOcassional')->name('update');
-           
+            Route::get('/dealer',                                       'UsersController@getDealer')->name('show');
+          
         });
             
     });
@@ -651,7 +657,9 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('users')->name('users/')->group(static function() {
             Route::get('/',                                             'UsersController@index')->name('index');
+          
             Route::get('/{user}',                                       'UsersController@show')->name('show');
+          
             //Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');
             Route::post('/{user}/status',                               'UsersController@setStatus')->name('setStatus');
