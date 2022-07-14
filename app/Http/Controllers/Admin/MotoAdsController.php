@@ -26,7 +26,7 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\{Ad,MotoAd,DealerShowRoom,AdSubCharacteristic};
+use App\Models\{Ad,MotoAd,DealerShowRoom,AdSubCharacteristic,AdImage};
 
 class MotoAdsController extends Controller
 {
@@ -297,7 +297,7 @@ class MotoAdsController extends Controller
                 'slug' => Str::slug($request['title']),
                 'title' => $request['title'],
                 'description' => $request['description'],
-                'thumbnail' => $request['thumbnail'],
+                //'thumbnail' => $request['thumbnail'],
                 'status' => 0,
                 'type' => 'moto',
                 'is_featured' => 0,
@@ -309,6 +309,21 @@ class MotoAdsController extends Controller
                 'images_processing_status_text' => null,
             ]);
 
+            $thumbnail = '';
+            $i = 0;
+            
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+
             MotoAd::where('id',$request['moto_ad_id'])->update([
                 'ad_id' =>  $ad->id,
                 'youtube_link' =>  $request->youtube_link,
@@ -316,8 +331,12 @@ class MotoAdsController extends Controller
             ]);
 
             $motoAd = MotoAd::find($request['moto_ad_id']);
+            
+            Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
+            
+            $images = AdImage::where('ad_id',$ad->id)->get();
 
-            return response()->json(['data' => ['ad' => $ad,'moto_ad' =>$motoAd]], 200);
+            return response()->json(['data' => ['ad' => $ad,'moto_ad' =>$motoAd,'images' => $images]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
@@ -503,5 +522,25 @@ class MotoAdsController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function uploadFile($file,$ad_id,$order_index)
+    {   
+        $path = null;
+        
+        if ($file) {
+            $path = $file->store(
+                'listings/'.$ad_id, 's3'
+            );
+        }
+        
+        AdImage::create([
+            'ad_id' => $ad_id,
+            'path' => $path, 
+            'is_external' => 1, 
+            'order_index' => $order_index
+        ]);
+
+        return $path;
     }
 }

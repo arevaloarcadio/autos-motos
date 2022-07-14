@@ -19,10 +19,14 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Str;
 
 class DealersController extends Controller
 {
-
+     use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -109,14 +113,27 @@ class DealersController extends Controller
      */
     public function store(StoreDealer $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        
+        $resource = ApiHelper::resource();
 
-        $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'));
-        // Store the Dealer
-        $dealer = Dealer::create($sanitized);
+        
+        try {
+            
+            $sanitized = $request->getSanitized();
+            $sanitized['status'] = 0;
+            $sanitized['slug'] = Str::slug($sanitized['company_name']);
+            // Store the Dealer
 
-        return ['data' => $dealer];
+            $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
+            
+            $dealer = Dealer::create($sanitized);
+            
+            return response()->json(['data' => $dealer] , 200);
+        
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }  
     }
 
     /**
@@ -210,16 +227,16 @@ class DealersController extends Controller
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
 
-    public function uploadFile($file)
+    public function uploadFile($file,$name)
     {   
-        $picture = null;
+        $path = null;
         
         if ($file) {
-            $picture = date('dmYhms').$file->getClientOriginalName();
-            $destinationPath = public_path('/photo');
-            $move = $file->move($destinationPath, $picture);
+            $path = $file->store(
+                'dealers/'.Str::slug($name), 's3'
+            );
         }
         
-        return $picture;
+        return $path;
     }
 }

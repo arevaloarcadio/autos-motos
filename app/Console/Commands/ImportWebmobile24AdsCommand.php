@@ -685,7 +685,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'price_contains_vat' => 0,
                             'vin' => null,
                             'doors' => $csv_ad[16] == '' ? 0 : $csv_ad[16], //OK
-                            'mileage' => $csv_ad[14], ///OK
+                            'mileage' => $csv_ad[14]== '' ? 0 : $csv_ad[14], ///OK
                             'exterior_color' => utf8_encode($csv_ad[9]),
                             'interior_color' => $this->getColor($csv_ad[9]),
                             'condition' =>  $this->getCondition($csv_ad[6]) , //OK
@@ -697,12 +697,12 @@ class ImportWebmobile24AdsCommand extends Command
                             'city' => '.',
                             'country' => '.',
                             'mobile_number' => '+000000000',
-                            'ad_fuel_type_id' => $this->findFuelTypeId($csv_ad[12])->id , //OK
+                            'ad_fuel_type_id' => $this->findFuelTypeId($csv_ad[12])->id, //OK
                             'ad_body_type_id' => $this->findBodyTypeId(utf8_encode($csv_ad[8]))->id, //OK
                             'ad_transmission_type_id' => $this->findTransmissionTypeId($csv_ad[7])->id, 
-                            'first_registration_year' => $year_month[1] ?? '01',
-                            'first_registration_month' => $year_month[0] ?? '2000',
-                            'engine_displacement' => $csv_ad[18], //OK
+                            'first_registration_year' => $year_month[1]  == '' ? '01' : $year_month[1],
+                            'first_registration_month' => $year_month[0] ==  ? '2000' :  $year_month[0], 
+                            'engine_displacement' => $csv_ad[18]  == '' ? 0 : $csv_ad[18], //OK
                             'power_hp' => $csv_ad[19], //OK
                             'make_id' => $this->findMake($csv_ad[3])->id, //OK
                             'model_id' => $this->findModel($csv_ad[4],$this->findMake($csv_ad[3]))->id, //OK
@@ -734,8 +734,8 @@ class ImportWebmobile24AdsCommand extends Command
                                     
                                     $this->findOrCreateAdImage($ad->id,$directory,$i);
 
-                                    if (!Storage::disk('ftp-s3')->exists('webmobile24-test'.$directory)) {
-                                        $import = Storage::disk('ftp-s3')->put('webmobile24-test'.$directory,Storage::disk('local')->get($image));
+                                    if (!Storage::disk('s3')->exists($directory)) {
+                                        $import = Storage::disk('s3')->put($directory,Storage::disk('local')->get($image));
                                         $import ? $this->totalImageAdsImportedCounter++ : $this->totalImageAdsFailedCounter++;
                                     }
                                 }

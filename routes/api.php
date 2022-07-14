@@ -58,11 +58,18 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/add_details_contacts',                     'MobileHomeAdsController@add_details_contacts')->name('add_details_contacts');
         });
 
+
+
         Route::prefix('truck-ads')->name('truck-ads/')->group(static function() {
             Route::post('/principal_data',                           'TruckAdsController@principal_data')->name('principal_data');
             Route::post('/details_ads',                              'TruckAdsController@details_ads')->name('details_ads');
             Route::post('/add_sub_characteristic_ads',               'MobileHomeAdsController@add_sub_characteristic_ads')->name('details_ads');
             Route::post('/add_details_contacts',                     'TruckAdsController@add_details_contacts')->name('add_details_contacts');
+        });
+        Route::prefix('shop-ads')->name('mobile-home-ads/')->group(static function() {
+            Route::post('/principal_data',                           'ShopAdsController@principal_data')->name('principal_data');
+            Route::post('/details_ads',                              'ShopAdsController@details_ads')->name('details_ads');
+            Route::post('/add_details_contacts',                     'ShopAdsController@add_details_contacts')->name('add_details_contacts');
         });
         
         Route::prefix('mechanic-ads')->name('mechanic-ads/')->group(static function() {

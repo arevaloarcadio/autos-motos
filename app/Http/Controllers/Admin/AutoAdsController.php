@@ -26,7 +26,7 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\{Ad,AutoAd,DealerShowRoom,AdSubCharacteristic};
+use App\Models\{Ad,AutoAd,DealerShowRoom,AdSubCharacteristic,AdImage};
 
 class AutoAdsController extends Controller
 {
@@ -290,10 +290,11 @@ class AutoAdsController extends Controller
             'auto_ad_id' => ['required', 'string'],
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'thumbnail' => ['nullable', 'string'],
+            //'thumbnail' => ['nullable', 'string'],
             'market_id' => ['required', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
+            //'files' => ['required','array']
         ]);
 
         if ($validator->fails()) {
@@ -303,11 +304,13 @@ class AutoAdsController extends Controller
 
         try {
             
+            
+
             $ad = Ad::create([
                 'slug' => Str::slug($request['title']),
                 'title' => $request['title'],
                 'description' => $request['description'],
-                'thumbnail' => $request['thumbnail'],
+                //'thumbnail' => $request['thumbnail'],
                 'status' => 0,
                 'type' => 'auto',
                 'is_featured' => 0,
@@ -319,15 +322,32 @@ class AutoAdsController extends Controller
                 'images_processing_status_text' => null,
             ]);
 
+            $thumbnail = '';
+            $i = 0;
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
             AutoAd::where('id',$request['auto_ad_id'])->update([
                 'ad_id' =>  $ad->id,
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
 
+            Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
+            
             $autoAd = AutoAd::find($request['auto_ad_id']);
 
-            return response()->json(['data' => ['ad' => $ad,'auto_ad' =>$autoAd]], 200);
+            $images = AdImage::where('ad_id',$ad->id)->get();
+
+            return response()->json(['data' => ['ad' => $ad,'auto_ad' => $autoAd,'images' => $images]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
@@ -505,5 +525,25 @@ class AutoAdsController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function uploadFile($file,$ad_id,$order_index)
+    {   
+        $path = null;
+        
+        if ($file) {
+            $path = $file->store(
+                'listings/'.$ad_id, 's3'
+            );
+        }
+        
+        AdImage::create([
+            'ad_id' => $ad_id,
+            'path' => $path, 
+            'is_external' => 1, 
+            'order_index' => $order_index
+        ]);
+
+        return $path;
     }
 }

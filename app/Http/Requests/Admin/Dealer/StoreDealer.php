@@ -38,10 +38,10 @@ class StoreDealer extends FormRequest
             'logo_path' => ['nullable', 'file'],
             'email_address' => ['required', 'string'],
             'phone_number' => ['required', 'string'],
-            'status' => ['required', 'integer'],
+            //'status' => ['required', 'integer'],
             'description' => ['nullable', 'string'],
-            'external_id' => ['nullable', 'integer'],
-            'source' => ['nullable', 'string'],
+            //'external_id' => ['nullable', 'integer'],
+            //'source' => ['nullable', 'string'],
             
         ];
     }
