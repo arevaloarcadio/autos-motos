@@ -104,25 +104,26 @@ class AdsController extends Controller
                     [
                         'mechanicAd',
                         'rentalAd',
+                        'images',
                         'autoAd' => function($query)
                         {
-                            $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                            $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                         },
                         'motoAd' => function($query)
                         {
-                            $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                            $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                         },
                         'mobileHomeAd' => function($query)
                         {
-                            $query->with(['make','model','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                            $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                         },
                         'truckAd' => function($query)
                         {
-                            $query->with(['make','fuelType','transmissionType','dealer','dealerShowRoom']);
+                            $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
                         },
                         'shopAd' => function($query)
                         {
-                            $query->with(['make','model','dealer','dealerShowRoom']);
+                            $query->with(['make','model','ad','dealer','dealerShowRoom']);
                         }
                     ]
                 );
