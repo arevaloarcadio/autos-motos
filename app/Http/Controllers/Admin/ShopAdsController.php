@@ -221,6 +221,7 @@ class ShopAdsController extends Controller
                 'category' => $request['category'],
                 'make_id' => $request['make_id'],
                 'model_id' => $request['model_id'],
+                'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
                 'manufacturer' => $request['manufacturer'],
                 'code' => $request['code'],
                 'condition' => $request['condition'],
