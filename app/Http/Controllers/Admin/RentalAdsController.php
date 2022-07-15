@@ -26,7 +26,7 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\{Ad,RentalAd,DealerShowRoom};
+use App\Models\{Ad,RentalAd,AdImage,DealerShowRoom};
 
 class RentalAdsController extends Controller
 {
