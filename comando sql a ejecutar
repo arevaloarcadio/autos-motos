@@ -3,3 +3,26 @@ INSERT INTO `ads` (`id`, `slug`, `title`, `description`, `thumbnail`, `status`, 
 ALTER TABLE `moto_ads` DROP FOREIGN KEY `moto_ads_model_id_foreign`; ALTER TABLE `moto_ads` ADD CONSTRAINT `moto_ads_model_id_foreign` FOREIGN KEY (`model_id`) REFERENCES `models`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 ALTER TABLE `mobile_home_ads` DROP FOREIGN KEY `mobile_home_ads_model_id_foreign`; ALTER TABLE `mobile_home_ads` ADD CONSTRAINT `mobile_home_ads_model_id_foreign` FOREIGN KEY (`model_id`) REFERENCES `models`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+ALTER TABLE `auto_ads` DROP FOREIGN KEY `auto_ads_ad_id_foreign`;
+ALTER TABLE `moto_ads` DROP FOREIGN KEY `moto_ads_ad_id_foreign`;
+ALTER TABLE `mobile_home_ads` DROP FOREIGN KEY `mobile_home_ads_ad_id_foreign`;
+ALTER TABLE `truck_ads` DROP FOREIGN KEY `truck_ads_ad_id_foreign`;
+
+
+ALTER TABLE `auto_ads` DROP KEY `auto_ads_ad_id_unique`;
+ALTER TABLE `moto_ads` DROP KEY `moto_ads_ad_id_unique`;
+ALTER TABLE `mobile_home_ads` DROP INDEX `mobile_home_ads_ad_id_unique`;
+ALTER TABLE `truck_ads` DROP INDEX `truck_ads_ad_id_unique`;
+
+
+
+ALTER TABLE `shop_ads` DROP FOREIGN KEY `shop_ads_ad_id_foreign`;
+ALTER TABLE `rental_ads` DROP FOREIGN KEY `rental_ads_ad_id_foreign`;
+ALTER TABLE `mechanic_ads` DROP FOREIGN KEY `mechanic_ads_ad_id_foreign`;
+
+
+ALTER TABLE `shop_ads` DROP KEY `shop_ads_ad_id_unique`;
+ALTER TABLE `rental_ads` DROP KEY `rental_ads_ad_id_unique`;
+ALTER TABLE `mechanic_ads` DROP KEY `mechanic_ads_ad_id_unique`;

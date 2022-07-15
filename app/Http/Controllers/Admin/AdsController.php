@@ -941,5 +941,47 @@ class AdsController extends Controller
             ->get()
             ->toArray();
     }
+    
+    public function searchAdvancedService(Request $request)
+    {   
         
+        $resource = ApiHelper::resource();
+        $filter_types = [];
+        $response = [];
+        
+        try {
+            
+            $this->getTruckAd($request);
+                          
+            return response()->json(['data' => $response], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+    public function getMechanicAd($filters)
+    {
+        $mechanic_ad = MechanicAd::query();
+
+        $mechanic_ad->where(function($query) use ($filters){
+            
+            if ($filters->make_id) {
+                $query->orWhere('make_id',$filters->make_id);
+            }
+        });
+        
+        return $mechanic_ad
+            ->orderBy('created_at','DESC')
+            ->limit(25)
+            ->with(['make','fuelType','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },
+                'transmissionType','dealer','dealerShowRoom'])
+            ->get()
+            ->toArray();
+    }
+
 }

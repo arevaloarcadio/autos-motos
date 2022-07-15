@@ -156,7 +156,9 @@ class DealerShowRoomsController extends Controller
 
         try {
             
-            $DealerShowRoom = DealerShowRoom::where('dealer_id',$dealer_id)->first();
+            $DealerShowRoom = DealerShowRoom::where('dealer_id',$dealer_id)
+                ->with('dealer')
+                ->first();
     
             return response()->json(['data' => $DealerShowRoom], 200);
 
