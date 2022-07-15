@@ -660,6 +660,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/',                                             'UsersController@index')->name('index');
           
             Route::get('/{user}',                                       'UsersController@show')->name('show');
+            Route::get('/{user}/info_ads',                              'UsersController@countAdsByUser')->name('show');
           
             //Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');

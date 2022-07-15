@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\User\DestroyUser;
 use App\Http\Requests\Admin\User\IndexUser;
 use App\Http\Requests\Admin\User\StoreUser;
 use App\Http\Requests\Admin\User\UpdateUser;
-use App\Models\User;
+use App\Models\{Ad,User};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Support\Facades\Hash;
@@ -209,6 +209,28 @@ class UsersController extends Controller
             $dealer = $user->dealer;
            
             return response()->json(['data' => $dealer], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+    public function countAdsByUser(User $user)
+    {
+        $resource = ApiHelper::resource();
+
+        try {
+
+            $product_ads = Ad::where('user_id',$user->id)
+                ->whereIn('type',['auto','mobile-home','truck','moto'])
+                ->count();
+
+            $service_ads = Ad::where('user_id',$user->id)
+                ->whereIn('type',['shop','rental','mechanic'])
+                ->count();
+
+            return response()->json(['data' => ['product_ads' =>$product_ads, 'service_ads' => $service_ads]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());

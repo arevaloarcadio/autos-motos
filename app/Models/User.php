@@ -49,6 +49,7 @@ class User extends Authenticatable  implements JWTSubject
         return url('/admin/users/'.$this->getKey());
     }*/
 
+
     public function dealer()
     {
         return $this->belongsTo(Dealer::class);
