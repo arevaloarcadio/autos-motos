@@ -37,7 +37,7 @@ class StoreUser extends FormRequest
             //'email_verified_at' => ['nullable', 'date'],
             'password' => ['required', 'confirmed', 'min:7', 'string'],
             'dealer_id' => ['nullable', 'string'],
-            'type' => ['nullable', 'string'],
+            'type' => ['required', 'string'],
             //, 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/',
         ];
     }

@@ -435,6 +435,10 @@ class TruckAdsController extends Controller
 
             $truck_ad = TruckAd::find($request['truck_ad_id']);
             
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
             return response()->json(['data' => $truck_ad], 200);
 
         } catch (Exception $e) {

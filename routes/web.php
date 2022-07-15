@@ -23,10 +23,14 @@ Route::get('/', function () {
 Route::namespace('App\Http\Controllers')->group(static function() {
     Route::post('/marks','MarkController@store')->name('marks.store');
     Route::post('/models','ModelController@store')->name('models.store');
-     Route::post('/data','ModelController@store')->name('models.store');
+    Route::post('/data','ModelController@store')->name('models.store');
 });
 Route::get('/data', function () {
     return view('data');
+});
+
+Route::namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
+    Route::get('/confirm/email/{email}','UsersController@confirm_email')->name('confirm_email');
 });
 
 /* Auto-generated admin routes */
@@ -42,7 +46,10 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
             Route::delete('/{adminUser}',                               'AdminUsersController@destroy')->name('destroy');
             Route::get('/{adminUser}/resend-activation',                'AdminUsersController@resendActivationEmail')->name('resendActivationEmail');
         });
+        Route::get('/confirm/email','UserController@confirm_email')->name('confirm_email');
+
     });
+    
 });
 
 
@@ -66,6 +73,24 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
             Route::post('/bulk-destroy',                                'ReviewsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{review}',                                    'ReviewsController@update')->name('update');
             Route::delete('/{review}',                                  'ReviewsController@destroy')->name('destroy');
+        });
+    });
+});
+
+/* Auto-generated admin routes */
+
+
+/* Auto-generated admin routes */
+Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
+        Route::prefix('payment-histories')->name('payment-histories/')->group(static function() {
+            Route::get('/',                                             'PaymentHistoriesController@index')->name('index');
+            Route::get('/create',                                       'PaymentHistoriesController@create')->name('create');
+            Route::post('/',                                            'PaymentHistoriesController@store')->name('store');
+            Route::get('/{paymentHistory}/edit',                        'PaymentHistoriesController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'PaymentHistoriesController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{paymentHistory}',                            'PaymentHistoriesController@update')->name('update');
+            Route::delete('/{paymentHistory}',                          'PaymentHistoriesController@destroy')->name('destroy');
         });
     });
 });

@@ -328,7 +328,11 @@ class MobileHomeAdsController extends Controller
             ]);
 
             $mobile_home_ad = MobileHomeAd::find($request['mobile_home_ad_id']);
-           
+            
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
             return response()->json(['data' => $mobile_home_ad], 200);
 
         } catch (Exception $e) {

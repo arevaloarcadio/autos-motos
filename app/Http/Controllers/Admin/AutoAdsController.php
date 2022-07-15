@@ -429,6 +429,10 @@ class AutoAdsController extends Controller
 
             $autoAd = AutoAd::find($request['auto_ad_id']);
             
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
             return response()->json(['data' => $autoAd], 200);
 
         } catch (Exception $e) {

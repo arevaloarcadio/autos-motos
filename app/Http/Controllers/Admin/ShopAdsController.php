@@ -381,6 +381,10 @@ class ShopAdsController extends Controller
 
             $shopAd = ShopAd::find($request['shop_ad_id']);
             
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+
             return response()->json(['data' => $shopAd], 200);
 
         } catch (Exception $e) {

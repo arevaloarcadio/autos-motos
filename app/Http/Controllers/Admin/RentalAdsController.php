@@ -169,6 +169,10 @@ class RentalAdsController extends Controller
             Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
 
             $images = AdImage::where('ad_id',$ad->id)->get();
+            
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
 
             return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad,'images' => $images]], 200);
 

@@ -94,8 +94,22 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::get('/dealer',                                       'UsersController@getDealer')->name('show');
           
         });
-            
-    });
+        
+        Route::prefix('plans')->name('plans/')->group(static function() {
+            Route::get('/',                                             'PlansController@index')->name('index');
+            Route::post('/',                                            'PlansController@store')->name('store');
+            Route::post('/{plan}',                                      'PlansController@update')->name('update');
+            Route::delete('/{plan}',                                    'PlansController@destroy')->name('destroy');
+        }); 
+
+        Route::prefix('payment-histories')->name('payment-histories/')->group(static function() {
+            Route::get('/',                                             'PaymentHistoriesController@index')->name('index');
+            Route::get('/byUser',                                       'PaymentHistoriesController@byUser')->name('index');
+            Route::get('/{user}',                                       'PaymentHistoriesController@byUserAdmin')->name('index');
+            Route::post('/',                                            'PaymentHistoriesController@store')->name('store');
+            //Route::post('/{paymentHistory}',                            'PaymentHistoriesController@update')->name('update');
+        });
+     });
 });
 
 Route::namespace('App\Http\Controllers\Admin')->group(static function() {

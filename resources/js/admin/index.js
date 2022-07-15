@@ -58,3 +58,5 @@ import './characteristic';
 import './sub-characteristic';
 import './ad-sub-characteristic';
 import './review';
+import './plan';
+import './payment-history';

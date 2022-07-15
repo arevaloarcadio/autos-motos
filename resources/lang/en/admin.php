@@ -1667,5 +1667,56 @@ return [
         ],
     ],
 
+    'plan' => [
+        'title' => 'Plans',
+
+        'actions' => [
+            'index' => 'Plans',
+            'create' => 'New Plan',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'name' => 'Name',
+            'price' => 'Price',
+            
+        ],
+    ],
+
+    'payment-history' => [
+        'title' => 'Payment Histories',
+
+        'actions' => [
+            'index' => 'Payment Histories',
+            'create' => 'New Payment History',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            
+        ],
+    ],
+
+    'payment-history' => [
+        'title' => 'Payment Histories',
+
+        'actions' => [
+            'index' => 'Payment Histories',
+            'create' => 'New Payment History',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'mount' => 'Mount',
+            'data' => 'Data',
+            'way_to_pay' => 'Way to pay',
+            'transaction_number' => 'Transaction number',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];

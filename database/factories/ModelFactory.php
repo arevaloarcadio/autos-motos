@@ -1168,3 +1168,34 @@ $factory->define(App\Models\Review::class, static function (Faker\Generator $fak
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Plan::class, static function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->firstName,
+        'price' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\PaymentHistory::class, static function (Faker\Generator $faker) {
+    return [
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\PaymentHistory::class, static function (Faker\Generator $faker) {
+    return [
+        'mount' => $faker->randomNumber(5),
+        'data' => $faker->sentence,
+        'way_to_pay' => $faker->sentence,
+        'transaction_number' => $faker->randomNumber(5),
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

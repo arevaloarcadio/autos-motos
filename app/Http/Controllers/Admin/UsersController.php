@@ -27,6 +27,8 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+use App\Notifications\NewUser;
 
 class UsersController extends Controller
 {
@@ -125,14 +127,25 @@ class UsersController extends Controller
      */
     public function store(StoreUser $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-        $sanitized['password'] = Hash::make($sanitized['password']);
-        $sanitized['status'] = 'Pendiente';
-        // Store the User
-        $user = User::create($sanitized);
 
-        return ['data' => $user];
+        $resource = ApiHelper::resource();
+
+        try {
+            // Sanitize input
+            $sanitized = $request->getSanitized();
+            $sanitized['password'] = Hash::make($sanitized['password']);
+            $sanitized['status'] = 'Pendiente';
+            // Store the User
+            $user = User::create($sanitized);
+
+            $user->notify(new NewUser($user));
+            
+            return response()->json(['data' => $user], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**
@@ -310,5 +323,19 @@ class UsersController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function confirm_email($email)
+    {
+        if ($email) {
+
+            $user = User::where('email',$email)->first();
+
+            if ($user->email_verified_at == null) {
+                $user->email_verified_at = Carbon::now();
+                $user->save();   
+            }
+        }
+        return ['data'=> 'OK'];
     }
 }

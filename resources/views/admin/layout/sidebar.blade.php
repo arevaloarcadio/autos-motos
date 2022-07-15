@@ -59,6 +59,8 @@
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/sub-characteristics') }}"><i class="nav-icon icon-compass"></i> {{ trans('admin.sub-characteristic.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/ad-sub-characteristics') }}"><i class="nav-icon icon-star"></i> {{ trans('admin.ad-sub-characteristic.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('admin/reviews') }}"><i class="nav-icon icon-energy"></i> {{ trans('admin.review.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/plans') }}"><i class="nav-icon icon-energy"></i> {{ trans('admin.plan.title') }}</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/payment-histories') }}"><i class="nav-icon icon-star"></i> {{ trans('admin.payment-history.title') }}</a></li>
            {{-- Do not delete me :) I'm used for auto-generation menu items --}}
 
             <li class="nav-title">{{ trans('brackets/admin-ui::admin.sidebar.settings') }}</li>

@@ -417,7 +417,11 @@ class MotoAdsController extends Controller
             ]);
 
             $motoAd = MotoAd::find($request['moto_ad_id']);
-           
+            
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+
             return response()->json(['data' => $motoAd], 200);
 
         } catch (Exception $e) {
