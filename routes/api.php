@@ -149,6 +149,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/rejected_comment_individual_ads',             'AdsController@storeCommentsRejectedIndividual')->name('storeCommentRejected');
             Route::post('/{csv_ad_id}/ads_rejected_comment',            'AdsController@storeCommentsRejected')->name('ads_rejected_comment');
             Route::post('/{status}/approved_rejected',                  'AdsController@setApprovedRejected')->name('store');
+            Route::post('/{status}/approved_rejected_individual',       'AdsController@setApprovedRejectedIndividual')->name('store');
             Route::post('/{status}/approved_rejected_ads',              'AdsController@setApprovedRejected')->name('store');
             
             //Route::get('/{ad}/edit',                                    'AdsController@edit')->name('edit');
@@ -663,6 +664,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             //Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');
             Route::post('/{user}/status',                               'UsersController@setStatus')->name('setStatus');
+            Route::post('/{user}',                                      'UsersController@update')->name('update');
             //Route::get('/{user}/edit',                                  'UsersController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'UsersController@bulkDestroy')->name('bulk-destroy');
             Route::delete('/{user}',                                    'UsersController@destroy')->name('destroy');

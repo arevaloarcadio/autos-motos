@@ -384,18 +384,36 @@ class AdsController extends Controller
      public function setApprovedRejectedIndividual(Request $request,$status)
     {   
         
-        $ads = Ad::whereIn('id',$request->ad_ids)
+        $resource = ApiHelper::resource();
+       
+        $validator = Validator::make($request->all(), [
+            'ads' => 'required|array',
+            'ads.*.ad_id' => 'required',
+            'ads.*.user_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
+        }
+
+        foreach ($request->ads as $ad) {
+            Ad::where('id',$ad['ad_id'])
                 ->update(
                     [
                         'status' => $status == 'approved' ? 10 : 20
                     ]
                 );
+            $ad_ =  Ad::find($ad['ad_id']);
+
+            $user = User::find($ad['user_id']);
+
+            $status == 'approved' ? $user->notify(new NotifyApproved($ad_->title)) :  $user->notify(new NotifyRejected($ad_->title));
+        }
+
         
-        $user = User::find($request->user_id);
 
-        //$user->notify(new NotifyApproved);
-
-        return ['data' => $ads];
+        return ['data' => 'OK'];
     }
 
     /**

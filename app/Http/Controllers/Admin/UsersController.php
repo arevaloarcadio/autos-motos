@@ -181,13 +181,21 @@ class UsersController extends Controller
      */
     public function update(UpdateUser $request, User $user)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        $resource = ApiHelper::resource();
 
-        // Update changed values User
-        $user->update($sanitized);
+        try {
+            // Sanitize input
+            $sanitized = $request->getSanitized();
 
-        return ['data' => $user];
+            // Update changed values User
+            $user->update($sanitized);
+
+            return response()->json(['data' => $user], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     public function getDealer()
