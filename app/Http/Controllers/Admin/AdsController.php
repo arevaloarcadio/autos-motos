@@ -787,7 +787,7 @@ class AdsController extends Controller
             ->with(['make','model','ad'=> function($query)
                     {
                         $query->with(['images']);
-                    }, ,'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+                    } ,'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->get()
             ->toArray();
     }
