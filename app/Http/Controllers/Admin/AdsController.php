@@ -702,7 +702,10 @@ class AdsController extends Controller
         return $auto_ad
             ->orderBy('created_at','DESC')
             ->limit(25)
-            ->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->with(['make','model','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->get()
             ->toArray();
     }
@@ -781,7 +784,10 @@ class AdsController extends Controller
         return $moto_ad
             ->orderBy('created_at','DESC')
             ->limit(25)
-            ->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->with(['make','model','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    }, ,'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->get()
             ->toArray();
     }
@@ -860,7 +866,10 @@ class AdsController extends Controller
         return $mobile_home_ad
             ->orderBy('created_at','DESC')
             ->limit(25)
-            ->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->with(['make','model','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->get()
             ->toArray();
     }
@@ -924,7 +933,11 @@ class AdsController extends Controller
         return $truck_ad
             ->orderBy('created_at','DESC')
             ->limit(25)
-            ->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom'])
+            ->with(['make','fuelType','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },
+                'transmissionType','dealer','dealerShowRoom'])
             ->get()
             ->toArray();
     }
