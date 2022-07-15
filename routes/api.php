@@ -89,6 +89,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/{dealer}',                                    'DealersController@update')->name('update');
         });
 
+        Route::prefix('dealer-show-rooms')->name('dealer-show-rooms/')->group(static function() {
+            Route::get('/{dealer_id}/dealer',                           'DealerShowRoomsController@byDealerId')->name('byDealerId');
+            Route::get('/{dealer_id}/dealer',                           'DealerShowRoomsController@byDealerId')->name('byDealerId');
+            Route::post('/{dealerShowRoom}',                            'DealerShowRoomsController@update')->name('update');
+        });
+
         Route::prefix('users')->name('users/')->group(static function() {
             Route::post('/ocassional',                           'UsersController@updateOcassional')->name('update');
             Route::get('/dealer',                                       'UsersController@getDealer')->name('show');
@@ -393,11 +399,12 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('dealer-show-rooms')->name('dealer-show-rooms/')->group(static function() {
             Route::get('/',                                             'DealerShowRoomsController@index')->name('index');
+           
             //Route::get('/create',                                       'DealerShowRoomsController@create')->name('create');
             Route::post('/',                                            'DealerShowRoomsController@store')->name('store');
             //Route::get('/{dealerShowRoom}/edit',                        'DealerShowRoomsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'DealerShowRoomsController@bulkDestroy')->name('bulk-destroy');
-            Route::post('/{dealerShowRoom}',                            'DealerShowRoomsController@update')->name('update');
+           
             Route::delete('/{dealerShowRoom}',                          'DealerShowRoomsController@destroy')->name('destroy');
         });
 

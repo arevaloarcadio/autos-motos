@@ -20,9 +20,16 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+
 class DealerShowRoomsController extends Controller
 {
 
+    use ApiController; 
     /**
      * Display a listing of the resource.
      *
@@ -109,13 +116,23 @@ class DealerShowRoomsController extends Controller
      */
     public function store(StoreDealerShowRoom $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
 
-        // Store the DealerShowRoom
-        $dealerShowRoom = DealerShowRoom::create($sanitized);
+        $resource = ApiHelper::resource();
 
-        return ['data' => $dealerShowRoom];
+        try {
+            
+            // Sanitize input
+            $sanitized = $request->getSanitized();
+
+            // Store the DealerShowRoom
+            $dealerShowRoom = DealerShowRoom::create($sanitized);
+    
+            return response()->json(['data' => $dealerShowRoom], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**
@@ -130,6 +147,23 @@ class DealerShowRoomsController extends Controller
         $this->authorize('admin.dealer-show-room.show', $dealerShowRoom);
 
         // TODO your code goes here
+    }
+
+    public function byDealerId($dealer_id)
+    {
+        
+        $resource = ApiHelper::resource();
+
+        try {
+            
+            $DealerShowRoom = DealerShowRoom::where('dealer_id',$dealer_id)->first();
+    
+            return response()->json(['data' => $DealerShowRoom], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**
@@ -158,20 +192,21 @@ class DealerShowRoomsController extends Controller
      */
     public function update(UpdateDealerShowRoom $request, DealerShowRoom $dealerShowRoom)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        $resource = ApiHelper::resource();
 
-        // Update changed values DealerShowRoom
-        $dealerShowRoom->update($sanitized);
+        try {
+            
+            $sanitized = $request->getSanitized();
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/dealer-show-rooms'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
+            // Update changed values DealerShowRoom
+            $dealerShowRoom->update($sanitized);
+    
+            return response()->json(['data' => $dealerShowRoom], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
         }
-
-        return redirect('admin/dealer-show-rooms');
     }
 
     /**
