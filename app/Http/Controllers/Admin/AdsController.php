@@ -926,7 +926,7 @@ class AdsController extends Controller
             ->limit(25)
             ->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom'])
             ->get()
-            ->toArray());
+            ->toArray();
     }
         
 }
