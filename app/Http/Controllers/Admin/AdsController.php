@@ -699,7 +699,12 @@ class AdsController extends Controller
             }
         });
         
-        return $auto_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+        return $auto_ad
+            ->orderBy('created_at','DESC')
+            ->limit(25)
+            ->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->get()
+            ->toArray();
     }
 
     public function getMotoAd($filters)
@@ -773,7 +778,12 @@ class AdsController extends Controller
             }
         });
         
-        return $moto_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+        return $moto_ad
+            ->orderBy('created_at','DESC')
+            ->limit(25)
+            ->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->get()
+            ->toArray();
     }
 
     public function getMobileHomeAd($filters)
@@ -847,7 +857,12 @@ class AdsController extends Controller
             }
         });
 
-        return $mobile_home_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+        return $mobile_home_ad
+            ->orderBy('created_at','DESC')
+            ->limit(25)
+            ->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->get()
+            ->toArray();
     }
 
     public function getTruckAd($filters)
@@ -906,7 +921,12 @@ class AdsController extends Controller
             }
         });
         
-        return $truck_ad->orderBy('created_at','DESC')->limit(25)->get()->toArray();
+        return $truck_ad
+            ->orderBy('created_at','DESC')
+            ->limit(25)
+            ->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom'])
+            ->get()
+            ->toArray());
     }
         
 }
