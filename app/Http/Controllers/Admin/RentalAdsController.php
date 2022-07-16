@@ -44,7 +44,7 @@ class RentalAdsController extends Controller
             
             $query = RentalAd::query();
 
-            $columns = ['id', 'ad_id', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'];
+            $columns = ['id', 'ad_id','address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -55,21 +55,21 @@ class RentalAdsController extends Controller
                     }
                 }
             }
-
+            
             foreach (RentalAd::getRelationships() as $key => $value) {
                $query->with($key);
             }
 
             return ['data' => $query->get()];
         }
-        
+      
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(RentalAd::class)->processRequestAndGet(
             // pass the request with params
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'],
+            ['id', 'ad_id', 'address','latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'],
 
             // set columns to searchIn
             ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'],
