@@ -40,6 +40,11 @@ class RentalAd extends Model
         return url('/admin/rental-ads/'.$this->getKey());
     }
 
+    public function ad()
+    {
+        return $this->belongsTo(Ad::class);
+    }
+
     /**
      * @return string
      */
