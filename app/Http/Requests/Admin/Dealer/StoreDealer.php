@@ -40,6 +40,8 @@ class StoreDealer extends FormRequest
             'phone_number' => ['required', 'string'],
             //'status' => ['required', 'integer'],
             'description' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            
             //'external_id' => ['nullable', 'integer'],
             //'source' => ['nullable', 'string'],
             

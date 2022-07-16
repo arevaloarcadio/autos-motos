@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Dealer\DestroyDealer;
 use App\Http\Requests\Admin\Dealer\IndexDealer;
 use App\Http\Requests\Admin\Dealer\StoreDealer;
 use App\Http\Requests\Admin\Dealer\UpdateDealer;
-use App\Models\Dealer;
+use App\Models\{DealerShowRoom,Dealer};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -183,15 +183,34 @@ class DealersController extends Controller
      */
     public function update(UpdateDealer $request, Dealer $dealer)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        $resource = ApiHelper::resource();
 
-        $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
+        try {
             
-        // Update changed values Dealer
-        $dealer->update($sanitized);
+            $sanitized = $request->getSanitized();
 
-        return ['data' => $dealer];
+            if ($request->file('logo_path')) {
+                $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
+            }else{
+                $sanitized['logo_path'] = $dealer['logo_path'];
+            }
+
+            $dealer->update($sanitized);
+
+            $dealer_show_room = DealerShowRoom::where('dealer_id',$dealer->id)->first();
+
+            $dealer_show_room->update([
+                'name' => $sanitized['company_name'],
+                'whatsapp_number' => $sanitized['whatsapp_number']
+            ]);
+
+            return response()->json(['data' => ['dealer_show_room' => $dealer_show_room, 'dealer' => $dealer]], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+
     }
 
     /**

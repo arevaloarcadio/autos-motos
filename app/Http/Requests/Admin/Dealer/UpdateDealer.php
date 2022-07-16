@@ -37,12 +37,12 @@ class UpdateDealer extends FormRequest
             'country' => ['sometimes', 'string'],
             'logo_path' => ['nullable'],
             'email_address' => ['sometimes', 'string'],
+            'whatsapp_number' => ['sometimes', 'string'],
             'phone_number' => ['sometimes', 'string'],
             'status' => ['sometimes', 'integer'],
             'description' => ['nullable', 'string'],
             'external_id' => ['nullable', 'integer'],
             'source' => ['nullable', 'string'],
-            
         ];
     }
 

@@ -202,7 +202,7 @@ class DealerShowRoomsController extends Controller
             $sanitized = $request->getSanitized();
 
             $sanitized['name'] = $sanitized['company_name'];
-
+            
             $dealerShowRoom->update($sanitized);
             
             $dealer = Dealer::where('id',$dealerShowRoom->dealer_id)->first();
