@@ -161,7 +161,9 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             //Route::get('/create',                                       'AdsController@create')->name('create');
             Route::get('/{ad_id}',                                      'AdsController@show')->name('show');
             Route::post('/',                                            'AdsController@store')->name('store');
-            Route::post('/search_advanced',                           'AdsController@searchAdvanced')->name('searchAdvanced');
+            Route::post('/search_advanced',                             'AdsController@searchAdvanced')->name('searchAdvanced');
+             Route::post('/count_search_advanced',                      'AdsController@countSearchAdvanced')->name('searchAdvanced');
+            
             Route::post('/search_ads_like',                             'AdsController@searchAdsLike')->name('search_ads_like');
 
          

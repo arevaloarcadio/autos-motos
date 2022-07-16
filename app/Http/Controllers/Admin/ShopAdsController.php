@@ -265,7 +265,7 @@ class ShopAdsController extends Controller
                 'description' => $request['description'],
                 //'thumbnail' => $request['thumbnail'],
                 'status' => 0,
-                'type' => 'auto',
+                'type' => 'shop',
                 'is_featured' => 0,
                 'user_id' => Auth::user()->id,
                 'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
