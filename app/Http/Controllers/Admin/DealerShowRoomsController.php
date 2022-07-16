@@ -202,6 +202,7 @@ class DealerShowRoomsController extends Controller
             $sanitized = $request->getSanitized();
 
             // Update changed values DealerShowRoom
+            $sanitized['name'] = $sanitized['company_name'];
 
             $dealerShowRoom->update($sanitized);
             
