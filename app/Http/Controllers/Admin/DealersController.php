@@ -188,7 +188,7 @@ class DealersController extends Controller
         try {
             
             $sanitized = $request->getSanitized();
-
+            return  $sanitized['company_name'];
             if ($request->file('logo_path')) {
                 $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
             }else{
