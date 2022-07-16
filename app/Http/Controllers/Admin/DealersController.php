@@ -186,7 +186,8 @@ class DealersController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
-
+        $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
+            
         // Update changed values Dealer
         $dealer->update($sanitized);
 
