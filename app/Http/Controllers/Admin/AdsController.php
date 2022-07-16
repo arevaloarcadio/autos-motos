@@ -716,7 +716,6 @@ class AdsController extends Controller
         }
 
         return $auto_ad
-            
             ->with(['make','model','ad'=> function($query)
                     {
                         $query->with(['images']);

@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\DealerShowRoom\DestroyDealerShowRoom;
 use App\Http\Requests\Admin\DealerShowRoom\IndexDealerShowRoom;
 use App\Http\Requests\Admin\DealerShowRoom\StoreDealerShowRoom;
 use App\Http\Requests\Admin\DealerShowRoom\UpdateDealerShowRoom;
-use App\Models\DealerShowRoom;
+use App\Models\{Dealer,DealerShowRoom};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -25,6 +25,7 @@ use App\Http\Resources\Data;
 use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class DealerShowRoomsController extends Controller
 {
@@ -201,9 +202,19 @@ class DealerShowRoomsController extends Controller
             $sanitized = $request->getSanitized();
 
             // Update changed values DealerShowRoom
+
             $dealerShowRoom->update($sanitized);
-    
-            return response()->json(['data' => $dealerShowRoom], 200);
+            
+            $dealer = Dealer::where('id',$dealerShowRoom->dealer_id)->first();
+
+            $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
+           
+            $dealer->update([
+                'company_name' => $sanitized['company_name'],
+                'logo_path' => $sanitized['logo_path']
+            ]);
+
+            return response()->json(['data' => ['dealer_show_room' => $dealerShowRoom, 'dealer' => $dealer]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
@@ -250,5 +261,18 @@ class DealerShowRoomsController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function uploadFile($file,$name)
+    {   
+        $path = null;
+        
+        if ($file) {
+            $path = $file->store(
+                'dealers/'.Str::slug($name), 's3'
+            );
+        }
+        
+        return $path;
     }
 }

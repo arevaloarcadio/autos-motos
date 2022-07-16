@@ -28,7 +28,7 @@ class UpdateDealerShowRoom extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string'],
+            'company_name' => ['sometimes', 'string'],
             'address' => ['sometimes', 'string'],
             'zip_code' => ['sometimes', 'string'],
             'city' => ['sometimes', 'string'],
@@ -41,6 +41,7 @@ class UpdateDealerShowRoom extends FormRequest
             'whatsapp_number' => ['nullable', 'string'],
             'dealer_id' => ['sometimes', 'string'],
             'market_id' => ['nullable', 'string'],
+            'logo_path' => ['nullable', 'file'],
             
         ];
     }
