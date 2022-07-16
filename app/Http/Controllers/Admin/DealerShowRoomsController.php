@@ -201,15 +201,18 @@ class DealerShowRoomsController extends Controller
             
             $sanitized = $request->getSanitized();
 
-            // Update changed values DealerShowRoom
             $sanitized['name'] = $sanitized['company_name'];
 
             $dealerShowRoom->update($sanitized);
             
             $dealer = Dealer::where('id',$dealerShowRoom->dealer_id)->first();
 
-            $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
-           
+            if ($request->file('logo_path')) {
+                $sanitized['logo_path'] = $this->uploadFile($request->file('logo_path'),$sanitized['company_name']);
+            }else{
+                $sanitized['logo_path'] = $dealer['logo_path'];
+            }
+            
             $dealer->update([
                 'company_name' => $sanitized['company_name'],
                 'logo_path' => $sanitized['logo_path']
