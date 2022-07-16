@@ -41,7 +41,7 @@ class UpdateDealerShowRoom extends FormRequest
             'whatsapp_number' => ['nullable', 'string'],
             'dealer_id' => ['sometimes', 'string'],
             'market_id' => ['nullable', 'string'],
-            'logo_path' => ['nullable', 'file'],
+            'logo_path' => ['nullable'],
             
         ];
     }

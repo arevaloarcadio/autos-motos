@@ -35,7 +35,7 @@ class UpdateDealer extends FormRequest
             'zip_code' => ['sometimes', 'string'],
             'city' => ['sometimes', 'string'],
             'country' => ['sometimes', 'string'],
-            'logo_path' => ['nullable', 'file'],
+            'logo_path' => ['nullable'],
             'email_address' => ['sometimes', 'string'],
             'phone_number' => ['sometimes', 'string'],
             'status' => ['sometimes', 'integer'],
