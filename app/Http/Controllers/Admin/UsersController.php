@@ -45,7 +45,7 @@ class UsersController extends Controller
             
             $query = User::query();
 
-            $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
+            $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -77,7 +77,7 @@ class UsersController extends Controller
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' ,'status','dealer_id'];
+                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -135,6 +135,7 @@ class UsersController extends Controller
             $sanitized = $request->getSanitized();
             $sanitized['password'] = Hash::make($sanitized['password']);
             $sanitized['status'] = 'Pendiente';
+            $sanitized['image'] = 'users/user-default-ocassional.png';
             // Store the User
             $user = User::create($sanitized);
 
@@ -200,6 +201,16 @@ class UsersController extends Controller
             // Sanitize input
             $sanitized = $request->getSanitized();
 
+            $sanitized['first_name'] = $sanitized['first_name'] ?? $user['first_name']  ;
+            $sanitized['last_name'] = $sanitized['last_name'] ?? $user['last_name'];
+            $sanitized['mobile_number'] = $sanitized['mobile_number'] ?? $user['mobile_number'];
+            $sanitized['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
+            $sanitized['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
+            $sanitized['email'] =  $sanitized['email'] ?? $user['email'];
+            $sanitized['password'] =  Hash::make($sanitized['password']) ?? $user['password'];
+            $sanitized['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
+            
+            $sanitized['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
             // Update changed values User
             $user->update($sanitized);
 
@@ -219,6 +230,7 @@ class UsersController extends Controller
 
 
         try {
+
             $dealer = $user->dealer;
            
             return response()->json(['data' => $dealer], 200);
@@ -265,6 +277,7 @@ class UsersController extends Controller
             'whatsapp_number' => ['nullable', 'string'],
             'email' => 'required|unique:users,email,'.$user->id,
             'password' => ['sometimes', 'confirmed', 'min:7', 'string'],
+        //    'image' => ['file'],
         //    'dealer_id' => ['nullable', 'string'],
         ]);
 
@@ -275,7 +288,10 @@ class UsersController extends Controller
 
         try {
 
+            $sanitized['image'] = $this->uploadFile($request->file('image'),$user->id);
+          
             $user->update($request->all());
+           
            
             return response()->json(['data' => $user], 200);
 
@@ -337,5 +353,18 @@ class UsersController extends Controller
             }
         }
         return ['data'=> 'OK'];
+    }
+
+    public function uploadFile($file,$id)
+    {   
+        $path = null;
+        
+        if ($file) {
+            $path = $file->store(
+                'users/'.$id, 's3'
+            );
+        }
+        
+        return $path;
     }
 }

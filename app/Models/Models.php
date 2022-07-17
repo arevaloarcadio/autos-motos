@@ -35,4 +35,9 @@ class Models extends Model
     {
         return url('/admin/models/'.$this->getKey());
     }
+
+    public function generation()
+    {
+        return $this->hasMany(Generation::class,'model_id');
+    }
 }

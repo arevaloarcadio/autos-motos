@@ -33,8 +33,9 @@ class UpdateUser extends FormRequest
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
-            'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($this->user->getKey(), $this->user->getKeyName()), 'string'],
-            'password' => ['sometimes', 'confirmed', 'min:7', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/', 'string'],
+            'image' => ['nullable'],
+            'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($this->user->getKey(), $this->user->getKeyName()), 'string'],
+            'password' => ['nullable', 'confirmed', 'min:7', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/', 'string'],
             'dealer_id' => ['nullable', 'string'],
             
         ];

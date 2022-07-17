@@ -716,7 +716,12 @@ class AdsController extends Controller
         }
 
         return $auto_ad
-            ->with(['make','model','ad'=> function($query)
+            ->with(['make',
+                    'model'=> function($query)
+                    {
+                        $query->with(['generation']);
+                    },
+                    'ad'=> function($query)
                     {
                         $query->with(['images']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
@@ -813,10 +818,15 @@ class AdsController extends Controller
         }
 
         return $moto_ad
-            ->with(['make','model','ad'=> function($query)
+            ->with(['make','model'=> function($query)
+                    {
+                        $query->with(['generation']);
+                    },
+                    'ad'=> function($query)
                     {
                         $query->with(['images']);
-                    } ,'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+                    } ,
+                    'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->get()
             ->toArray();
     }
@@ -909,7 +919,11 @@ class AdsController extends Controller
         }
 
         return $mobile_home_ad
-            ->with(['make','model','ad'=> function($query)
+            ->with(['make','model' => function($query)
+                    {
+                        $query->with(['generation']);
+                    },
+                    'ad'=> function($query)
                     {
                         $query->with(['images']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])

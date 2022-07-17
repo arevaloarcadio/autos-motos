@@ -35,6 +35,7 @@ class StoreUser extends FormRequest
             'whatsapp_number' => ['nullable', 'string'],
             'email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
             //'email_verified_at' => ['nullable', 'date'],
+            'image' => ['nullable'],
             'password' => ['required', 'confirmed', 'min:7', 'string'],
             'dealer_id' => ['nullable', 'string'],
             'type' => ['required', 'string'],

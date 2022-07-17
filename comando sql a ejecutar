@@ -26,3 +26,9 @@ ALTER TABLE `mechanic_ads` DROP FOREIGN KEY `mechanic_ads_ad_id_foreign`;
 ALTER TABLE `shop_ads` DROP KEY `shop_ads_ad_id_unique`;
 ALTER TABLE `rental_ads` DROP KEY `rental_ads_ad_id_unique`;
 ALTER TABLE `mechanic_ads` DROP KEY `mechanic_ads_ad_id_unique`;
+
+UPDATE users set status = 'Aprobado' where status is null
+
+ALTER TABLE 
+users 
+ADD COLUMN image varchar(255) default 'users/user-default-ocassional.png';
