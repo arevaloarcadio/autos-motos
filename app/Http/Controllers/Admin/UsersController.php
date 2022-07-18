@@ -246,19 +246,19 @@ class UsersController extends Controller
         }
         
         try {  
-           
-            $request['first_name'] = $request['first_name'] ?? $user['first_name'];
-            $request['last_name'] = $request['last_name'] ?? $user['last_name'];
-            $request['mobile_number'] = $request['mobile_number'] ?? $user['mobile_number'];
-            $request['landline_number'] = $request['landline_number'] ?? $user['landline_number'];
-            $request['whatsapp_number'] = $request['whatsapp_number'] ?? $user['whatsapp_number'];
-            $request['email'] =  $request['email'] ?? $user['email'];
-            $request['password'] =  $request['password'] ? Hash::make($request['password']) : $user['password'];
-            $request['dealer_id'] = $request['dealer_id'] ?? $user['dealer_id'];
+            $data = [];
+            $data['first_name'] = $request['first_name'] ?? $user['first_name'];
+            $data['last_name'] = $request['last_name'] ?? $user['last_name'];
+            $data['mobile_number'] = $request['mobile_number'] ?? $user['mobile_number'];
+            $data['landline_number'] = $request['landline_number'] ?? $user['landline_number'];
+            $data['whatsapp_number'] = $request['whatsapp_number'] ?? $user['whatsapp_number'];
+            $data['email'] =  $request['email'] ?? $user['email'];
+            $data['password'] =  $request['password'] ? Hash::make($request['password']) : $user['password'];
+            $data['dealer_id'] = $request['dealer_id'] ?? $user['dealer_id'];
             
-            $request['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
+            $data['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
             
-            $user->update($request->all());
+            $user->update($data);
 
             return response()->json(['data' => $user], 200);
 
