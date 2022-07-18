@@ -222,28 +222,43 @@ class UsersController extends Controller
         }
     }
 
-    public function updateProfile(UpdateUser $request)
+    public function updateProfile(Request $request)
     {
         $resource = ApiHelper::resource();
+       
+        $user = Auth::user();
+       
+        $validator = Validator::make($request->all(), [
+            'first_name' => ['sometimes', 'string'],
+            'last_name' => ['sometimes', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'image' => ['nullable'],
+            'email' => 'required|unique:users,email,'.$user->id,
+            'password' => ['nullable', 'confirmed', 'min:7', 'string'],
+            'dealer_id' => ['nullable', 'string'],
+        ]);
 
-        try {
-            // Sanitize input
-            $user = Auth::user();
-
-            $sanitized = $request->getSanitized();
-
-            $sanitized['first_name'] = $sanitized['first_name'] ?? $user['first_name']  ;
-            $sanitized['last_name'] = $sanitized['last_name'] ?? $user['last_name'];
-            $sanitized['mobile_number'] = $sanitized['mobile_number'] ?? $user['mobile_number'];
-            $sanitized['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
-            $sanitized['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
-            $sanitized['email'] =  $sanitized['email'] ?? $user['email'];
-            $sanitized['password'] =  $sanitized['password'] ? Hash::make($sanitized['password']) : $user['password'];
-            $sanitized['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+        
+        try {  
+           
+            $request['first_name'] = $request['first_name'] ?? $user['first_name'];
+            $request['last_name'] = $request['last_name'] ?? $user['last_name'];
+            $request['mobile_number'] = $request['mobile_number'] ?? $user['mobile_number'];
+            $request['landline_number'] = $request['landline_number'] ?? $user['landline_number'];
+            $request['whatsapp_number'] = $request['whatsapp_number'] ?? $user['whatsapp_number'];
+            $request['email'] =  $request['email'] ?? $user['email'];
+            $request['password'] =  $request['password'] ? Hash::make($request['password']) : $user['password'];
+            $request['dealer_id'] = $request['dealer_id'] ?? $user['dealer_id'];
             
-            $sanitized['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
-            // Update changed values User
-            $user->update($sanitized);
+            $request['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
+            
+            $user->update($request->all());
 
             return response()->json(['data' => $user], 200);
 
