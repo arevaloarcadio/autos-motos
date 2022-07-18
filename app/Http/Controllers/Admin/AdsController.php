@@ -111,11 +111,11 @@ class AdsController extends Controller
                         },
                         'motoAd' => function($query)
                         {
-                            $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                            $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                         },
                         'mobileHomeAd' => function($query)
                         {
-                            $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                            $query->with(['','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                         },
                         'truckAd' => function($query)
                         {

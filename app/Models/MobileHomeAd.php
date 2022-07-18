@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class MobileHomeAd extends Model
 {
@@ -75,7 +76,7 @@ class MobileHomeAd extends Model
         return url('/admin/mobile-home-ads/'.$this->getKey());
     }
 
-    public function ad(): BelongsTo
+    public function ad()
     {
         return $this->belongsTo(Ad::class);
     }
@@ -83,7 +84,7 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsTo
      */
-    public function make(): BelongsTo
+    public function make()
     {
         return $this->belongsTo(Make::class, 'make_id');
     }
@@ -91,15 +92,15 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsTo
      */
-    public function model(): BelongsTo
+    public function model()
     {
-        return $this->belongsTo(\App\Models\Data\Model::class, 'model_id');
+        return $this->belongsTo(Models::class, 'model_id');
     }
 
     /**
      * @return BelongsTo
      */
-    public function vehicleCategory(): BelongsTo
+    public function vehicleCategory()
     {
         return $this->belongsTo(VehicleCategory::class, 'vehicle_category_id');
     }
@@ -107,7 +108,7 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsTo
      */
-    public function fuelType(): BelongsTo
+    public function fuelType()
     {
         return $this->belongsTo(CarFuelType::class, 'fuel_type_id');
     }
@@ -115,7 +116,7 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsTo
      */
-    public function transmissionType(): BelongsTo
+    public function transmissionType()
     {
         return $this->belongsTo(CarTransmissionType::class, 'transmission_type_id');
     }
@@ -123,7 +124,7 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsToMany
      */
-    public function options(): BelongsToMany
+    public function options()
     {
         return $this->belongsToMany(
             AutoOption::class,
@@ -136,7 +137,7 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsTo
      */
-    public function dealer(): BelongsTo
+    public function dealer()
     {
         return $this->belongsTo(Dealer::class);
     }
@@ -144,7 +145,7 @@ class MobileHomeAd extends Model
     /**
      * @return BelongsTo
      */
-    public function dealerShowRoom(): BelongsTo
+    public function dealerShowRoom()
     {
         return $this->belongsTo(DealerShowRoom::class);
     }
@@ -345,7 +346,7 @@ class MobileHomeAd extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function groupedOptions(): Collection
+    public function groupedOptions()
     {
         return $this->options->groupBy(
             function (AutoOption $option) {
@@ -366,7 +367,7 @@ class MobileHomeAd extends Model
         return number_format(floatval($this->engine_displacement));
     }
 
-    public function getInspectionValidUntilDateAttribute(): ?Carbon
+    public function getInspectionValidUntilDateAttribute()
     {
         if (null === $this->inspection_valid_until_month || null === $this->inspection_valid_until_year) {
             return null;
