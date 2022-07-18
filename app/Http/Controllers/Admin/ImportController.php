@@ -92,7 +92,7 @@ class ImportController extends Controller
                     'title'                         => utf8_encode($csv_ad[5]),
                     'description'                   => utf8_encode($csv_ad[58]) ,
                     'thumbnail'                     => null,
-                    'status'                        => 10,
+                    'status'                        => $is_admin ? 10 : 0,
                     'type'                          => 'auto',
                     'user_id'                       => $user->id,
                     'market_id'                     => $market->id,
@@ -595,22 +595,9 @@ class ImportController extends Controller
 
     private function findOrCreateAd($external_ad)
     {
-        if (count($external_ad) == 0) {
-            return null;
-        }
-
-        $ad = Ad::query()
-            ->where('external_id', '=', $external_ad['external_id'])->first();
-
-        if (is_null($ad)) {
             
-            $ad = Ad::create($external_ad);
+        $ad = Ad::create($external_ad);
 
-            //$this->info(sprintf('Successfully registered new ad %s',$external_ad['external_id']));
-        }
-
-        $ad->update($external_ad);
-        
         return $ad;
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
