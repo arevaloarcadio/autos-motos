@@ -222,6 +222,37 @@ class UsersController extends Controller
         }
     }
 
+    public function updateProfile(UpdateUser $request)
+    {
+        $resource = ApiHelper::resource();
+
+        try {
+            // Sanitize input
+            $user = Auth::user();
+
+            $sanitized = $request->getSanitized();
+
+            $sanitized['first_name'] = $sanitized['first_name'] ?? $user['first_name']  ;
+            $sanitized['last_name'] = $sanitized['last_name'] ?? $user['last_name'];
+            $sanitized['mobile_number'] = $sanitized['mobile_number'] ?? $user['mobile_number'];
+            $sanitized['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
+            $sanitized['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
+            $sanitized['email'] =  $sanitized['email'] ?? $user['email'];
+            $sanitized['password'] =  Hash::make($sanitized['password']) ?? $user['password'];
+            $sanitized['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
+            
+            $sanitized['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
+            // Update changed values User
+            $user->update($sanitized);
+
+            return response()->json(['data' => $user], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
     public function getDealer()
     {
         $resource = ApiHelper::resource();
