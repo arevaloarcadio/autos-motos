@@ -207,7 +207,7 @@ class UsersController extends Controller
             $sanitized['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
             $sanitized['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
             $sanitized['email'] =  $sanitized['email'] ?? $user['email'];
-            $sanitized['password'] =  Hash::make($sanitized['password']) ?? $user['password'];
+            $sanitized['password'] =  $sanitized['password'] ? Hash::make($sanitized['password']) : $user['password'];
             $sanitized['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
             
             $sanitized['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
@@ -238,7 +238,7 @@ class UsersController extends Controller
             $sanitized['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
             $sanitized['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
             $sanitized['email'] =  $sanitized['email'] ?? $user['email'];
-            $sanitized['password'] =  Hash::make($sanitized['password']) ?? $user['password'];
+            $sanitized['password'] =  $sanitized['password'] ? Hash::make($sanitized['password']) : $user['password'];
             $sanitized['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
             
             $sanitized['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
