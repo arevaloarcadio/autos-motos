@@ -235,7 +235,7 @@ class UsersController extends Controller
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
             'image' => ['nullable'],
-            'email' => 'required|unique:users,email,'.$user->id,
+            'email' => 'nullable|unique:users,email,'.$user->id,
             'password' => ['nullable', 'confirmed', 'min:7', 'string'],
             'dealer_id' => ['nullable', 'string'],
         ]);
