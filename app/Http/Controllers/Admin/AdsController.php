@@ -317,7 +317,7 @@ class AdsController extends Controller
             $ads->where('csv_ads.status',$request->sort);
         }
 
-        return ['data' => $ads->get()];
+        return ['data' => $ads->paginate(25)];
     }
 
     public function countAdsToday(Request $request)
