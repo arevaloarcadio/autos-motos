@@ -15,7 +15,7 @@ class BulkDestroyMobileHomeAd extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.mobile-home-ad.bulk-delete');
+        return true;
     }
 
     /**

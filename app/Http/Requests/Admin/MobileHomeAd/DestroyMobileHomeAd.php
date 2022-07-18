@@ -15,8 +15,9 @@ class DestroyMobileHomeAd extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.mobile-home-ad.delete', $this->mobileHomeAd);
+        return true;
     }
+
 
     /**
      * Get the validation rules that apply to the request.

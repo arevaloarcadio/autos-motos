@@ -16,8 +16,9 @@ class StoreMobileHomeAd extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.mobile-home-ad.create');
+        return true;
     }
+
 
     /**
      * Get the validation rules that apply to the request.

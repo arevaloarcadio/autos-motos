@@ -15,8 +15,9 @@ class IndexMobileHomeAd extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.mobile-home-ad.index');
+        return true;
     }
+
 
     /**
      * Get the validation rules that apply to the request.

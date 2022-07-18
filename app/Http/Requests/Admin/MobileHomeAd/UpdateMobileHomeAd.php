@@ -16,8 +16,9 @@ class UpdateMobileHomeAd extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.mobile-home-ad.edit', $this->mobileHomeAd);
+        return true;
     }
+
 
     /**
      * Get the validation rules that apply to the request.
