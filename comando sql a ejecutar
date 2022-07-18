@@ -32,3 +32,8 @@ UPDATE users set status = 'Aprobado' where status is null
 ALTER TABLE 
 users 
 ADD COLUMN image varchar(255) default 'users/user-default-ocassional.png';
+
+UPDATE  users set type= 'Profesional' where dealer_id  is not null
+
+
+UPDATE  users set type= 'Ocasional' where dealer_id  is  null

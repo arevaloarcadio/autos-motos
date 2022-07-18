@@ -74,4 +74,324 @@ class MobileHomeAd extends Model
     {
         return url('/admin/mobile-home-ads/'.$this->getKey());
     }
+
+    public function ad(): BelongsTo
+    {
+        return $this->belongsTo(Ad::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function make(): BelongsTo
+    {
+        return $this->belongsTo(Make::class, 'make_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function model(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Data\Model::class, 'model_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function vehicleCategory(): BelongsTo
+    {
+        return $this->belongsTo(VehicleCategory::class, 'vehicle_category_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function fuelType(): BelongsTo
+    {
+        return $this->belongsTo(CarFuelType::class, 'fuel_type_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function transmissionType(): BelongsTo
+    {
+        return $this->belongsTo(CarTransmissionType::class, 'transmission_type_id');
+    }
+
+    /**
+     * @return BelongsToMany
+     */
+    public function options(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            AutoOption::class,
+            'mobile_home_ad_options',
+            'mobile_home_ad_id',
+            'option_id'
+        )->withTimestamps();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function dealer(): BelongsTo
+    {
+        return $this->belongsTo(Dealer::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function dealerShowRoom(): BelongsTo
+    {
+        return $this->belongsTo(DealerShowRoom::class);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransmissionTypeNameAttribute(): ?string
+    {
+        return optional($this->transmissionType)->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTransmissionTypeShortAttribute(): ?string
+    {
+        if (null === $this->transmissionType) {
+            return null;
+        }
+
+        return strtoupper(mb_substr($this->transmissionType->name, 0, 1, 'UTF-8'));
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFuelTypeNameAttribute(): ?string
+    {
+        return optional($this->fuelType)->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVehicleCategoryNameAttribute(): ?string
+    {
+        return optional($this->vehicleCategory)->name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFuelTypeShortAttribute(): ?string
+    {
+        if (null === $this->fuelType) {
+            return null;
+        }
+
+        return strtoupper(mb_substr($this->fuelType->name, 0, 1, 'UTF-8'));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedPriceAttribute(): string
+    {
+        return number_format(floatval($this->price));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedMileageAttribute(): string
+    {
+        return number_format(floatval($this->mileage));
+    }
+
+    public function getFormattedFuelConsumptionAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->fuel_consumption));
+    }
+
+    public function getFormattedCo2EmissionsAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->co2_emissions));
+    }
+
+    public function getFormattedLengthCmAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->length_cm));
+    }
+
+    public function getFormattedWidthCmAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->width_cm));
+    }
+
+    public function getFormattedHeightCmAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->height_cm));
+    }
+
+    public function getFormattedMaxWeightAllowedKgAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->max_weight_allowed_kg));
+    }
+
+    public function getFormattedPayloadKgAttribute(): ?string
+    {
+        return $this->formatDecimal(floatval($this->payload_kg));
+    }
+
+    private function formatDecimal(?float $value, int $numberOfDecimals = 1): ?string
+    {
+        return $value ? number_format($value, $numberOfDecimals) : null;
+    }
+
+    public function getMaskedMobileNumberAttribute(): string
+    {
+        return substr($this->mobile_number, 0, 3) . '*******' . substr($this->mobile_number, -2);
+    }
+
+    public function getMaskedWhatsappNumberAttribute(): ?string
+    {
+        if (null === $this->whatsapp_number) {
+            return null;
+        }
+
+        return substr($this->whatsapp_number, 0, 3) . '*******' . substr($this->whatsapp_number, -2);
+    }
+
+    public function getMaskedLandlineNumberAttribute(): ?string
+    {
+        if (null === $this->landline_number) {
+            return null;
+        }
+
+        return substr($this->landline_number, 0, 3) . '*******' . substr($this->landline_number, -2);
+    }
+
+    public function getMaskedEmailAddressAttribute(): string
+    {
+        $emailComponents    = explode("@", $this->email_address);
+        $emailComponents[0] = substr($emailComponents[0], 0, 2) . '***' . substr($emailComponents[0], -2);
+
+        return implode('@', $emailComponents);
+    }
+
+    public function getTechnicalDescriptionAttribute(): string
+    {
+        $parts       = [
+            __('ads.make_label')  => optional($this->make)->name ?? $this->custom_make,
+            __('ads.model_label') => optional($this->model)->name ?? $this->custom_model,
+        ];
+        $filledParts = array_filter(
+            $parts,
+            function ($part) {
+                return ! ($part === null);
+            }
+        );
+
+        $pairs = [];
+        foreach ($filledParts as $key => $part) {
+            $pairs[] = sprintf('<strong>%s</strong>: %s', $key, $part);
+        }
+
+        return implode(', ', $pairs);
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortTechnicalDescriptionAttribute(): string
+    {
+        $parts       = [
+            __('ads.make_label')  => optional($this->make)->name ?? $this->custom_make,
+            __('ads.model_label') => optional($this->model)->name ?? $this->custom_model,
+        ];
+        $filledParts = array_filter(
+            $parts,
+            function ($part) {
+                return ! ($part === null);
+            }
+        );
+
+        $pairs = [];
+        foreach ($filledParts as $key => $part) {
+            $pairs[] = sprintf('<strong>%s</strong>: %s', $key, $part);
+        }
+
+        return implode(', ', $pairs);
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortAddressAttribute(): string
+    {
+        return sprintf(
+            '%s, %s, %s',
+            $this->zip_code,
+            $this->city,
+            $this->country
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function groupedOptions(): Collection
+    {
+        return $this->options->groupBy(
+            function (AutoOption $option) {
+                return $option->parent->name;
+            }
+        );
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFormattedEngineDisplacementAttribute(): ?string
+    {
+        if (null === $this->engine_displacement) {
+            return null;
+        }
+
+        return number_format(floatval($this->engine_displacement));
+    }
+
+    public function getInspectionValidUntilDateAttribute(): ?Carbon
+    {
+        if (null === $this->inspection_valid_until_month || null === $this->inspection_valid_until_year) {
+            return null;
+        }
+
+        return Carbon::createFromDate($this->inspection_valid_until_year, $this->inspection_valid_until_month, 1);
+    }
+
+    public function getFirstRegistrationDateAttribute(): Carbon
+    {
+        return Carbon::createFromDate($this->first_registration_year, $this->first_registration_month, 1);
+    }
+
+    public function getFirstRegistrationDateDisplayAttribute(): string
+    {
+        return $this->getFirstRegistrationDateAttribute()
+                    ->format('m/Y');
+    }
+
+    public function getMileageShortAttribute(): ?string
+    {
+        if ($this->mileage > 1000) {
+            return sprintf('%dk', $this->mileage / 1000);
+        }
+
+        return (string) $this->mileage;
+    }
 }
