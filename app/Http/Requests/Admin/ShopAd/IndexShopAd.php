@@ -27,7 +27,7 @@ class IndexShopAd extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,ad_id,category,make_id,model,manufacturer,code,condition,price,price_contains_vat,dealer_id,dealer_show_room_id,first_name,last_name,email_address,zip_code,city,country,latitude,longitude,mobile_number,landline_number,whatsapp_number,youtube_link|nullable',
+            'orderBy' => 'in:id,ad_id,category,make_id,model,manufacturer,code,condition,price,price_contains_vat,dealer_id,dealer_show_room_id,first_name,last_name,email_address,zip_code,city,country,latitude,longitude,mobile_number,landline_number,whatsapp_number,youtube_link,created_at|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',

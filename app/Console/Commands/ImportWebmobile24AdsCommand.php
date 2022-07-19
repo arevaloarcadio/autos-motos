@@ -403,15 +403,9 @@ class ImportWebmobile24AdsCommand extends Command
             throw new Exception('no_external_ad');
         }
 
-        $ad = Ad::query()
-            ->where('external_id', '=', $external_ad['external_id'])->first();
-
-        if (is_null($ad)) {
             
-            $ad = Ad::create($external_ad);
+        $ad = Ad::create($external_ad);
 
-            $this->info(sprintf('Successfully registered new ad %s',$external_ad['external_id']));
-        }
 
         return $ad;
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));

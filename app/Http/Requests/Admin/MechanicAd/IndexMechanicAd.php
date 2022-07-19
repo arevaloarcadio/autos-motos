@@ -27,7 +27,7 @@ class IndexMechanicAd extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,ad_id,latitude,longitude,zip_code,city,country,mobile_number,whatsapp_number,website_url,email_address,geocoding_status|nullable',
+            'orderBy' => 'in:id,ad_id,latitude,longitude,zip_code,city,country,mobile_number,whatsapp_number,website_url,email_address,geocoding_status,created_at|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
