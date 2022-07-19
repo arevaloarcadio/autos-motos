@@ -21,7 +21,6 @@ class MechanicAd extends Model
         'website_url',
         'email_address',
         'geocoding_status',
-    
     ];
     
     

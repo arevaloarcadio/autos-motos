@@ -91,7 +91,7 @@ class ImportController extends Controller
                     'slug'                          => Str::slug(utf8_encode($csv_ad[5])),
                     'title'                         => utf8_encode($csv_ad[5]),
                     'description'                   => utf8_encode($csv_ad[58]) ,
-                    'thumbnail'                     => null,
+                    'thumbnail'                     => 'assets/logo-default.svg',
                     'status'                        => $is_admin ? 10 : 0,
                     'type'                          => 'auto',
                     'user_id'                       => $user->id,

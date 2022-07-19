@@ -166,7 +166,9 @@ class MechanicAdsController extends Controller
                 'geocoding_status' => $sanitized['geocoding_status'] ?? null
             ]);
 
-            Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
+            
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
 
             $images = AdImage::where('ad_id',$ad->id)->get();
 
