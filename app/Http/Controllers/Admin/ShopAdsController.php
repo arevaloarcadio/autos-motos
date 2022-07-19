@@ -294,7 +294,8 @@ class ShopAdsController extends Controller
                 'price' =>  $request->price,
             ]);
 
-            Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
             
             $shopAd = ShopAd::find($request['shop_ad_id']);
 
