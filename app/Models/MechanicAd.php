@@ -39,6 +39,12 @@ class MechanicAd extends Model
         return url('/admin/mechanic-ads/'.$this->getKey());
     }
 
+    public function ad()
+    {
+        return $this->belongsTo(Ad::class);
+    }
+
+
     /**
      * @return string
      */

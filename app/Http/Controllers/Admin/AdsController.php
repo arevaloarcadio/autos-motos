@@ -459,10 +459,36 @@ class AdsController extends Controller
      * @throws AuthorizationException
      * @return void
      */
-    public function show($ad)
+    public function show($id)
     {   
-        $ad = Ad::find($ad);
-        
+        $ad = Ad::find($id);
+
+        $ad->with([
+                    'mechanicAd',
+                    'rentalAd',
+                    'images',
+                    'autoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'motoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'mobileHomeAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'truckAd' => function($query)
+                    {
+                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'shopAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                    }
+                ]);
+
         return ['data' => $ad];
     }
 
@@ -632,7 +658,7 @@ class AdsController extends Controller
     {
         $auto_ad = AutoAd::query();
 
-        $auto_ad->where(function($query) use ($filters){
+        $auto_ad = $auto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -734,7 +760,7 @@ class AdsController extends Controller
     {
         $moto_ad = MotoAd::query();
 
-        $moto_ad->where(function($query) use ($filters){
+        $moto_ad = $moto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -827,7 +853,7 @@ class AdsController extends Controller
                         $query->with(['images']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->get()
+            ->limit(25)
             ->toArray();
     }
 
@@ -835,7 +861,7 @@ class AdsController extends Controller
     {
         $mobile_home_ad = MobileHomeAd::query();
 
-        $mobile_home_ad->where(function($query) use ($filters){
+        $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -927,7 +953,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->get()
+            ->limit(25)
             ->toArray();
     }
 
@@ -935,7 +961,7 @@ class AdsController extends Controller
     {
         $truck_ad = TruckAd::query();
 
-        $truck_ad->where(function($query) use ($filters){
+        $truck_ad = $truck_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -1009,7 +1035,7 @@ class AdsController extends Controller
                         $query->with(['images']);
                     },
                 'transmissionType','dealer','dealerShowRoom'])
-            ->get()
+            ->limit(25)
             ->toArray();
     }
     
@@ -1055,7 +1081,7 @@ public function getCountAutoAd($filters)
     {
         $auto_ad = AutoAd::query();
 
-        $auto_ad->where(function($query) use ($filters){
+        $auto_ad = $auto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -1129,7 +1155,7 @@ public function getCountAutoAd($filters)
     {
         $moto_ad = MotoAd::query();
 
-        $moto_ad->where(function($query) use ($filters){
+        $moto_ad = $moto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -1203,7 +1229,7 @@ public function getCountAutoAd($filters)
     {
         $mobile_home_ad = MobileHomeAd::query();
 
-        $mobile_home_ad->where(function($query) use ($filters){
+        $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -1277,7 +1303,7 @@ public function getCountAutoAd($filters)
     {
         $truck_ad = TruckAd::query();
 
-        $truck_ad->where(function($query) use ($filters){
+        $truck_ad = $truck_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
@@ -1331,4 +1357,49 @@ public function getCountAutoAd($filters)
         
         return $truck_ad->count();
     }
+
+     public function searchAdvancedMechanic(Request $request)
+    {   
+        
+        $resource = ApiHelper::resource();
+        $filter_types = [];
+        $response = [];
+        
+        try {
+            
+            $mechanic_ads = MechanicAd::join('ads','ads.id','mechanic_ads.ad_id');
+            
+            //$mechanic_ads = MechanicAd::query();
+
+            $filters = $request->all();
+
+            $mechanic_ads = $mechanic_ads->where(function($query) use ($filters){
+            
+                if (isset($filters['title'])) {
+                    $query->orWhere('ads.title','LIKE', '%'.$filters['title'].'%');
+                }
+                if (isset($filters['country'])) {
+                    $query->orWhere('mechanic_ads.country',$filters['country']);
+                }
+                if (isset($filters['city'])) {
+                    $query->orWhere('mechanic_ads.city','LIKE','%'.$filters['city'].'%');
+                }
+            });
+            
+            if (isset($filters['oldest'])) {
+                $mechanic_ads->orderBy('created_at','DESC');
+            }
+            
+            if (isset($filters['newer'])) {
+                $mechanic_ads->orderBy('created_at','ASC');
+            }
+
+            return response()->json(['data' => $mechanic_ads->paginate(25)], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
 }
