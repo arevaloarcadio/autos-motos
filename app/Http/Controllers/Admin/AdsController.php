@@ -1059,6 +1059,7 @@ class AdsController extends Controller
                     },
                 'transmissionType','dealer','dealerShowRoom'])
             ->limit(25)
+            ->get()
             ->toArray();
     }
     
