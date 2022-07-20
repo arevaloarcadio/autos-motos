@@ -25,6 +25,7 @@ class PaypalController extends Controller
     }
     public function cancelled()
     {
+        dd('cancelado');
         return redirect('wwww.google.com');
     }
 }
