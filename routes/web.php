@@ -17,6 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/* Auto-generated admin routes */
 
 
 
@@ -77,7 +78,6 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
     });
 });
 
-/* Auto-generated admin routes */
 
 
 /* Auto-generated admin routes */
