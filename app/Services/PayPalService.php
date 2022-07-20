@@ -58,18 +58,14 @@ class PayPalService
 
     public function handleApproval()
     {
-        dd('pagocorrecto');
+     
         if (session()->has('approvalId')) {
             $approvalId = session()->get('approvalId');
-            $payment = $this->capturePayment($approvalId);
-           
-       
-            
-                       
+            $payment = $this->capturePayment($approvalId);                  
             return null;
         }
 
-        return redirect('/');
+        return view('landing.aprobado');
     }
 
     public function createOrder($value, $currency)
