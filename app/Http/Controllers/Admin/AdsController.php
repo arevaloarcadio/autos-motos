@@ -865,6 +865,7 @@ class AdsController extends Controller
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->limit(25)
+            ->get()
             ->toArray();
     }
 
@@ -970,6 +971,7 @@ class AdsController extends Controller
                         $query->with(['images']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->limit(25)
+             ->get()
             ->toArray();
     }
 
@@ -1049,7 +1051,7 @@ class AdsController extends Controller
             $offset = $filters->page * 25;
             $truck_ad = $truck_ad->offset($offset);    
         }
-        
+
         return $truck_ad
             ->with(['make','fuelType','ad'=> function($query)
                     {
