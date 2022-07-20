@@ -741,6 +741,12 @@ class AdsController extends Controller
             $auto_ad->orderBy('price','ASC');
         }
 
+        if (isset($filters->page)) {
+            $offset = $filters->page * 25;
+            $auto_ad = $auto_ad->offset($offset);    
+        }
+
+        
         return $auto_ad
             ->with(['make',
                     'model'=> function($query)
@@ -751,7 +757,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->limit(150)
+            ->limit(25)
             ->get()
             ->toArray();
     }
@@ -841,6 +847,11 @@ class AdsController extends Controller
         
         if ($filters->lower_price) {
             $moto_ad->orderBy('price','ASC');
+        }
+
+        if (isset($filters->page)) {
+            $offset = $filters->page * 25;
+            $moto_ad = $moto_ad->offset($offset);    
         }
 
         return $moto_ad
@@ -944,6 +955,11 @@ class AdsController extends Controller
             $mobile_home_ad->orderBy('price','ASC');
         }
 
+        if (isset($filters->page)) {
+            $offset = $filters->page * 25;
+            $mobile_home_ad = $mobile_home_ad->offset($offset);    
+        }
+
         return $mobile_home_ad
             ->with(['make','model' => function($query)
                     {
@@ -1029,6 +1045,11 @@ class AdsController extends Controller
             $truck_ad->orderBy('price','ASC');
         }
 
+        if (isset($filters->page)) {
+            $offset = $filters->page * 25;
+            $truck_ad = $truck_ad->offset($offset);    
+        }
+        
         return $truck_ad
             ->with(['make','fuelType','ad'=> function($query)
                     {
