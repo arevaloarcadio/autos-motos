@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 /* Auto-generated admin routes */
-
+Route::get('/payments/cancelled', 'App\Http\Controllers\PaypalController@cancelled')->name('cancelled');
 
 
 Route::namespace('App\Http\Controllers')->group(static function() {

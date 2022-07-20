@@ -26,7 +26,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::namespace('App\Http\Controllers')->group(static function() {
         Route::post('/paypal-payments', 'PaypalController@pay')->name('paypal-payment');
         Route::get('/payments/approval', 'PaypalController@approval')->name('approval');
-        Route::get('/payments/cancelled', 'PaypalController@cancelled')->name('cancelled');
+      
         Route::post('/stripe-payments', 'StripeController@pay')->middleware(['auth'])->name('stripe-payment');
         Route::get('/stripe-payments/approval', 'StripeController@approval')->middleware(['auth'])->name('stripe-approval');
         Route::get('/stripe-payments/cancelled', 'StripeController@cancelled')->middleware(['auth'])->name('stripe-cancelled');
