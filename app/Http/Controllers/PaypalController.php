@@ -25,7 +25,6 @@ class PaypalController extends Controller
     }
     public function cancelled()
     {
-        return redirect('/')
-            ->withErrors('You cancelled the payment');
+        return redirect('wwww.google.com');
     }
 }
