@@ -156,7 +156,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/filter',                                      'AdsController@index')->name('filter');
             Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
             Route::get('/countToday',                                   'AdsController@countAdsToday')->name('countAdsToday');
-            Route::get('/countAdsImportToday',                          'AdsController@countAdsImportToday')->name('countAdsImportToday');
+            Route::get('/countImportToday',                          'AdsController@countAdsImportToday')->name('countAdsImportToday');
             Route::get('/byCsv/{csv_ad_id}',                            'AdsController@byCsv')->name('byCsv');
             Route::get('/groupByCsv',                                   'AdsController@groupByCsv')->name('groupByCsv');
             //Route::get('/create',                                       'AdsController@create')->name('create');
