@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /resources/js
+/resources/views
 /public/storage
 /storage/*.key
 /vendor
