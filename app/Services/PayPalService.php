@@ -58,7 +58,7 @@ class PayPalService
         session()->put('plan_id', $request->plan_id);
         session()->put('user_id', $request->user_id);
        
-        return  $data['plan_id'];//redirect($approve->href);
+        return  $data->plan_id;//redirect($approve->href);
     }
 
     public function handleApproval()
