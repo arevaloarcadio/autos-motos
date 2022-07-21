@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Services\PayPalService;
 use App\Traits\ConsumesExternalServices;
+use Cache;
 use Carbon\Carbon;
 
 class PayPalService
@@ -51,24 +52,25 @@ class PayPalService
     public function handlePayment(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-
+        $expiresAt = Carbon::now()->addMinutes(10);
+  
 
         $data =json_encode($request->all());
         
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
-        session()->put('approvalId', $order->id);
-        session()->put('plan_id', json_decode($data)->plan_id);
-        session()->put('user_id', json_decode($data)->user_id);
+        Cache::put('approvalId', $order->id, $expiresAt);
+        Cache::put('plan_id', json_decode($data)->plan_id, $expiresAt);
+        Cache::put('user_id', json_decode($data)->user_id, $expiresAt);
        
         return  $approve;//redirect($approve->href);
     }
 
     public function handleApproval()
     {
-        $user_id = session()->get('user_id');
-        $plan_id = session()->get('plan_id');
+        $user_id = Cache::get('user_id');
+        $plan_id = Cache::get('plan_id');
         dd($user_id);
         if (session()->has('approvalId')) {
             dd('pase correcto');
