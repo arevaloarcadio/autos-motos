@@ -52,14 +52,17 @@ class PayPalService
 
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
-        //$approve = $orderLinks->where('rel', 'approve')->first();
+        $approve = $orderLinks->where('rel', 'approve')->first();
         session()->put('approvalId', $order->id);
-        return  $order;//redirect($approve->href);
+        session()->put('plan_id', $request->plan_id);
+        session()->put('user_id', $request->user_id);
+        return  $approve;//redirect($approve->href);
     }
 
     public function handleApproval()
     {
-     
+        $user_id = session()->get('user_id');
+        $plan_id = session()->get('plan_id');
         if (session()->has('approvalId')) {
             $approvalId = session()->get('approvalId');
             $payment = $this->capturePayment($approvalId);                  

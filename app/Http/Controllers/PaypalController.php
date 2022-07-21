@@ -13,6 +13,8 @@ class PaypalController extends Controller
         $rules = [
             'value' => ['required', 'numeric', 'min:5'],
             'currency' => ['required'],
+            'plan_id' => ['required'],
+            'user_id' => ['required'],
         ];
         $request->validate($rules);
         $paymentPlatform = resolve(PayPalService::class);
