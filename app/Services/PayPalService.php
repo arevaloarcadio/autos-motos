@@ -62,14 +62,14 @@ class PayPalService
         session()->put('plan_id', json_decode($data)->plan_id);
         session()->put('user_id', json_decode($data)->user_id);
        
-        return  $user;//$approve;//redirect($approve->href);
+        return  $approve;//redirect($approve->href);
     }
 
     public function handleApproval()
     {
         $user_id = session()->get('user_id');
         $plan_id = session()->get('plan_id');
-
+        dd($user_id);
         if (session()->has('approvalId')) {
             dd('pase correcto');
             $approvalId = session()->get('approvalId');
