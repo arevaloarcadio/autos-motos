@@ -55,10 +55,10 @@ class PayPalService
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
         session()->put('approvalId', $order->id);
-        session()->put('plan_id', $request->plan_id);
-        session()->put('user_id', $request->user_id);
+        session()->put('plan_id', json_decode($data)->plan_id);
+        session()->put('user_id', json_decode($data)->user_id);
        
-        return  json_decode($data)->plan_id;//redirect($approve->href);
+        return  $approve;//redirect($approve->href);
     }
 
     public function handleApproval()
@@ -71,8 +71,8 @@ class PayPalService
             $payment = $this->capturePayment($approvalId);                  
             return null;
         }
-
-        return view('landing.aprobado');
+        
+        return $plan_id;
     }
 
     public function createOrder($value, $currency)
