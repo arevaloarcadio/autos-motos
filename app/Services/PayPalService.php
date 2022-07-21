@@ -49,7 +49,7 @@ class PayPalService
 
     public function handlePayment(Request $request)
     {
-        dd($request->all());
+        dd($request);
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
