@@ -29,6 +29,7 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
+
 class AdsController extends Controller
 {
       use ApiController;
@@ -617,43 +618,46 @@ class AdsController extends Controller
         $resource = ApiHelper::resource();
         
         try {
-           
 
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            
             switch ($ad->type) {
                 case 'auto':
-                    AutoAd::where('ad_id'$ad->id)->delete();
+                    AutoAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'moto':
-                    MotoAd::where('ad_id'$ad->id)->delete();
+                    MotoAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'mobile-home':
-                    MobileHomeAd::where('ad_id'$ad->id)->delete();
+                    MobileHomeAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'truck':
-                    TruckAd::where('ad_id'$ad->id)->delete();
+                    TruckAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'rental':
-                    RentalAd::where('ad_id'$ad->id)->delete();
+                    RentalAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'shop':
-                    ShopAd::where('ad_id'$ad->id)->delete();
+                    ShopAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'mechanic':
-                    MechanicAd::where('ad_id'$ad->id)->delete();
+                    MechanicAd::where('ad_id',$ad->id)->delete();
                     break;
                 default:
-                    AutoAd::where('ad_id'$ad->id)->delete();
-                    MotoAd::where('ad_id'$ad->id)->delete();
-                    MobileHomeAd::where('ad_id'$ad->id)->delete();
-                    TruckAd::where('ad_id'$ad->id)->delete();
-                    RentalAd::where('ad_id'$ad->id)->delete();
-                    ShopAd::where('ad_id'$ad->id)->delete();
-                    MechanicAd::where('ad_id'$ad->id)->delete();
+                    AutoAd::where('ad_id',$ad->id)->delete();
+                    MotoAd::where('ad_id',$ad->id)->delete();
+                    MobileHomeAd::where('ad_id',$ad->id)->delete();
+                    TruckAd::where('ad_id',$ad->id)->delete();
+                    RentalAd::where('ad_id',$ad->id)->delete();
+                    ShopAd::where('ad_id',$ad->id)->delete();
+                    MechanicAd::where('ad_id',$ad->id)->delete();
                     break;
             }
           
             $ad->delete();
-
+            
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            
             return response()->json(['data' => 'OK'], 200);
 
         } catch (Exception $e) {
