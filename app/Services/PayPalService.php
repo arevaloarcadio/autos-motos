@@ -62,7 +62,7 @@ class PayPalService
         session()->put('plan_id', json_decode($data)->plan_id);
         session()->put('user_id', json_decode($data)->user_id);
        
-        return  $uses;//$approve;//redirect($approve->href);
+        return  $user;//$approve;//redirect($approve->href);
     }
 
     public function handleApproval()
