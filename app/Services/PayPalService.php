@@ -49,7 +49,7 @@ class PayPalService
 
     public function handlePayment(Request $request)
     {
-        $data =json_decode($request->plan_id);
+        $data =json_decode($request);
        
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
