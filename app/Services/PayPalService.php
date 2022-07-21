@@ -71,7 +71,6 @@ class PayPalService
     {
         $user_id = Cache::get('user_id');
         $plan_id = Cache::get('plan_id');
-        dd($user_id);
         if (session()->has('approvalId')) {
             dd('pase correcto');
             $approvalId = session()->get('approvalId');
