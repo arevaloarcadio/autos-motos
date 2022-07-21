@@ -63,6 +63,7 @@ class PayPalService
     {
         $user_id = session()->get('user_id');
         $plan_id = session()->get('plan_id');
+        dd($plan_id);
         if (session()->has('approvalId')) {
             $approvalId = session()->get('approvalId');
             $payment = $this->capturePayment($approvalId);                  
