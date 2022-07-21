@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\General\CollectionHelper;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Services\PayPalService;
 use App\Traits\ConsumesExternalServices;
 use Carbon\Carbon;
@@ -49,8 +50,11 @@ class PayPalService
 
     public function handlePayment(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+        dd($user);
+
         $data =json_encode($request->all());
-       
+        
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
@@ -66,7 +70,6 @@ class PayPalService
         $user_id = session()->get('user_id');
         $plan_id = session()->get('plan_id');
 
-        dd($user_id);
         if (session()->has('approvalId')) {
             dd('pase correcto');
             $approvalId = session()->get('approvalId');
