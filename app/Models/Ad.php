@@ -36,14 +36,13 @@ class Ad extends Model
     
     ];
     
-    protected $appends = ['resource_url'];
+    /*protected $appends = ['resource_url'];
 
-    /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()
     {
         return url('/admin/ads/'.$this->getKey());
-    }
+    }*/
 
     public function csv_ad()
     {

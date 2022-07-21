@@ -330,18 +330,23 @@ class AdsController extends Controller
 
      public function countAdsImportToday(Request $request)
     {
-        $today = date('Y-m-d');
-        $sources = [
-            'INVENTARIO_IMPORT',
-            'MECHANICS_IMPORT',
-            'PORTAL',
-            'PORTAL_CLUB_IMPORT',
-            'RENTALS_IMPORT',
-            'WEB_MOBILE_24'
-        ];
-
-        $count_ads = Ad::where('created_at','LIKE','%'.$today.'%')->whereIn('source',$sources)->count();
         
+        $count_ads = Ad::where(function($query){
+            
+            $today = date('Y-m-d');
+            
+            $sources = [
+                'INVENTARIO_IMPORT',
+                'MECHANICS_IMPORT',
+                'PORTAL',
+                'PORTAL_CLUB_IMPORT',
+                'RENTALS_IMPORT',
+                'WEB_MOBILE_24'
+            ];
+
+            $query->where('created_at','LIKE','%'.$today.'%')->whereIn('source',$sources);
+        })->count();
+
         return ['data' => $count_ads];
     }
 
@@ -687,8 +692,8 @@ class AdsController extends Controller
             if ($filters->drive_type_id) {
                 $query->orWhere('ad_drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
@@ -795,8 +800,8 @@ class AdsController extends Controller
             if ($filters->drive_type_id) {
                 $query->orWhere('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
@@ -902,8 +907,8 @@ class AdsController extends Controller
             if ($filters->drive_type_id) {
                 $query->orWhere('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
@@ -1002,8 +1007,8 @@ class AdsController extends Controller
             if ($filters->transmission_type_id) {
                 $query->orWhere('transmission_type_id',$filters->transmission_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_kw && $filters->to_power_kw){
                 $query->orWhereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
@@ -1134,8 +1139,8 @@ public function getCountAutoAd($filters)
             if ($filters->drive_type_id) {
                 $query->orWhere('ad_drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
@@ -1282,8 +1287,8 @@ public function getCountAutoAd($filters)
             if ($filters->drive_type_id) {
                 $query->orWhere('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
@@ -1350,8 +1355,8 @@ public function getCountAutoAd($filters)
             if ($filters->transmission_type_id) {
                 $query->orWhere('transmission_type_id',$filters->transmission_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_kw && $filters->to_power_kw){
                 $query->orWhereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);

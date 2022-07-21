@@ -88,10 +88,15 @@ class MechanicAdsController extends Controller
                     }
                 }
 
-                /*if(isset($request->filters['title'])){
-                    $query->join('ads','ads.id','mechanic_ads.ad_id')
-                          ->where('ads.title','LIKE','%'.$filter.'%');
-                }*/
+                if(isset($request->filters['title'])){
+                    $ad_ids = Ad::select('id')
+                        ->where('title','LIKE','%'.$request->filters['title'].'%' )
+                        ->where('type','mechanic')
+                        ->get()
+                        ->toArray();
+                    
+                    $query->whereIn('ad_id',$ad_ids);
+                }
 
                 foreach (MechanicAd::getRelationships() as $key => $value) {
                    $query->with($key);
@@ -302,4 +307,17 @@ class MechanicAdsController extends Controller
 
         return $path;
     }
+
+    public function calculaDistancia($longitud1, $latitud1, $longitud2, $latitud2){
+
+       //calculamos la diferencia de entre la longitud de los dos puntos
+       $diferenciaX = $longitud1 - $longitud2;
+
+       //ahora calculamos la diferencia entre la latitud de los dos puntos
+       $diferenciaY = $latitud1 -$latitud2;
+
+       // ahora ponemos en practica el teorema de pitagora para calcular la distancia
+       $distancia = sqrt(pow($diferenciaX,2) + pow($diferenciaY,2));
+    }
+
 }

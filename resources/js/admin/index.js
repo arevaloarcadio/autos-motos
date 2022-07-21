@@ -60,3 +60,6 @@ import './ad-sub-characteristic';
 import './review';
 import './plan';
 import './payment-history';
+import './ad-user-plan';
+import './characteristic-plan';
+import './characteristic-promotion-plan';

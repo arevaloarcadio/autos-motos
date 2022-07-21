@@ -1199,3 +1199,74 @@ $factory->define(App\Models\PaymentHistory::class, static function (Faker\Genera
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\AdUserPlan::class, static function (Faker\Generator $faker) {
+    return [
+        'plan_user_id' => $faker->sentence,
+        'ad_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CharacteristicPlan::class, static function (Faker\Generator $faker) {
+    return [
+        'vehicle_ads' => $faker->randomNumber(5),
+        'rental_ads' => $faker->randomNumber(5),
+        'promotion_month' => $faker->randomNumber(5),
+        'front_page_promotion' => $faker->randomNumber(5),
+        'video_a_day' => $faker->randomNumber(5),
+        'mechanics_rental_ads' => $faker->randomNumber(5),
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CharacteristicPromotionPlan::class, static function (Faker\Generator $faker) {
+    return [
+        'vehicle_ads' => $faker->randomNumber(5),
+        'shop_ads' => $faker->randomNumber(5),
+        'rental_ads' => $faker->randomNumber(5),
+        'mechanic_ads' => $faker->randomNumber(5),
+        'front_page_promotion' => $faker->randomNumber(5),
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CharacteristicPlan::class, static function (Faker\Generator $faker) {
+    return [
+        'vehicle_ads' => $faker->randomNumber(5),
+        'rental_ads' => $faker->randomNumber(5),
+        'promotion_month' => $faker->randomNumber(5),
+        'front_page_promotion' => $faker->randomNumber(5),
+        'video_a_day' => $faker->randomNumber(5),
+        'mechanics_rental_ads' => $faker->randomNumber(5),
+        'plan_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\CharacteristicPromotionPlan::class, static function (Faker\Generator $faker) {
+    return [
+        'vehicle_ads' => $faker->randomNumber(5),
+        'shop_ads' => $faker->randomNumber(5),
+        'rental_ads' => $faker->randomNumber(5),
+        'mechanic_ads' => $faker->randomNumber(5),
+        'front_page_promotion' => $faker->randomNumber(5),
+        'plan_id' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

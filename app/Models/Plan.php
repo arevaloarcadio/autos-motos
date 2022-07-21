@@ -34,4 +34,14 @@ class Plan extends Model
     {
         return $this->hasMany(ItemPlan::class, 'plan_id');
     }
+
+    public function characteristic_plans()
+    {
+        return $this->hasMany(CharacteristicPlan::class, 'plan_id');
+    }
+
+    public function characteristic_promotion_plans()
+    {
+        return $this->hasMany(CharacteristicPromotionPlan::class, 'plan_id');
+    }
 }

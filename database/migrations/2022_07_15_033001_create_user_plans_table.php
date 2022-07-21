@@ -16,7 +16,9 @@ class CreateUserPlansTable extends Migration
         Schema::create('user_plans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
+            $table->string('status');
             $table->uuid('plan_id');
+            $table->timestamp('date_end_at')->nullable();
             $table->timestamps();
         });
     }

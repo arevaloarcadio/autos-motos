@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ItemPlan extends Model
 {
 	use \App\Traits\TraitUuid;
-      use \App\Traits\Relationships;
+    use \App\Traits\Relationships;
       
     use HasFactory;
 }

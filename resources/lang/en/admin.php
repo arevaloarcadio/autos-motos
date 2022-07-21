@@ -1718,5 +1718,86 @@ return [
         ],
     ],
 
+    'ad-user-plan' => [
+        'title' => 'Ad User Plans',
+
+        'actions' => [
+            'index' => 'Ad User Plans',
+            'create' => 'New Ad User Plan',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'plan_user_id' => 'Plan user',
+            'ad_id' => 'Ad',
+            
+        ],
+    ],
+
+    'characteristic-plan' => [
+        'title' => 'Characteristic Plans',
+
+        'actions' => [
+            'index' => 'Characteristic Plans',
+            'create' => 'New Characteristic Plan',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'vehicle_ads' => 'Vehicle ads',
+            'rental_ads' => 'Rental ads',
+            'promotion_month' => 'Promotion month',
+            'front_page_promotion' => 'Front page promotion',
+            'video_a_day' => 'Video a day',
+            'mechanics_rental_ads' => 'Mechanics rental ads',
+            
+        ],
+    ],
+
+    'characteristic-plan' => [
+        'title' => 'Characteristic Plans',
+
+        'actions' => [
+            'index' => 'Characteristic Plans',
+            'create' => 'New Characteristic Plan',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'vehicle_ads' => 'Vehicle ads',
+            'rental_ads' => 'Rental ads',
+            'promotion_month' => 'Promotion month',
+            'front_page_promotion' => 'Front page promotion',
+            'video_a_day' => 'Video a day',
+            'mechanics_rental_ads' => 'Mechanics rental ads',
+            'plan_id' => 'Plan',
+            
+        ],
+    ],
+
+    'characteristic-promotion-plan' => [
+        'title' => 'Characteristic Promotion Plans',
+
+        'actions' => [
+            'index' => 'Characteristic Promotion Plans',
+            'create' => 'New Characteristic Promotion Plan',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'vehicle_ads' => 'Vehicle ads',
+            'shop_ads' => 'Shop ads',
+            'rental_ads' => 'Rental ads',
+            'mechanic_ads' => 'Mechanic ads',
+            'front_page_promotion' => 'Front page promotion',
+            'plan_id' => 'Plan',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];
