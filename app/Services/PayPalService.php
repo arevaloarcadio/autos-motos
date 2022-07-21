@@ -51,7 +51,7 @@ class PayPalService
     public function handlePayment(Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        dd($user);
+
 
         $data =json_encode($request->all());
         
@@ -62,7 +62,7 @@ class PayPalService
         session()->put('plan_id', json_decode($data)->plan_id);
         session()->put('user_id', json_decode($data)->user_id);
        
-        return  $approve;//redirect($approve->href);
+        return  $uses;//$approve;//redirect($approve->href);
     }
 
     public function handleApproval()
