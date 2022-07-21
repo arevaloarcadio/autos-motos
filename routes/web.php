@@ -20,7 +20,7 @@ Route::get('/', function () {
 /* Auto-generated admin routes */
 Route::get('/payments/cancelled', 'App\Http\Controllers\PaypalController@cancelled')->name('cancelled');
 Route::get('/payments/approval', 'App\Http\Controllers\PaypalController@approval')->name('approval');
-Route::post('/paypal-payments', 'App\Http\Controllers\PaypalController@pay')->name('paypal-payment');
+
 Route::namespace('App\Http\Controllers')->group(static function() {
     Route::post('/marks','MarkController@store')->name('marks.store');
     Route::post('/models','ModelController@store')->name('models.store');

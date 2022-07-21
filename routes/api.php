@@ -24,7 +24,7 @@ Route::namespace('App\Http\Controllers')->group(static function() {
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::namespace('App\Http\Controllers')->group(static function() {
-      
+        Route::post('/paypal-payments', 'PaypalController@pay')->name('paypal-payment');
       
         Route::post('/stripe-payments', 'StripeController@pay')->middleware(['auth'])->name('stripe-payment');
         Route::get('/stripe-payments/approval', 'StripeController@approval')->middleware(['auth'])->name('stripe-approval');
