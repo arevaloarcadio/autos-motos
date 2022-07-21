@@ -11,6 +11,7 @@ use App\Services\PayPalService;
 use App\Traits\ConsumesExternalServices;
 use Cache;
 use Carbon\Carbon;
+use App\Models\UserPlan;
 
 class PayPalService
 {
@@ -71,14 +72,18 @@ class PayPalService
     {
         $user_id = Cache::get('user_id');
         $plan_id = Cache::get('plan_id');
-        if (session()->has('approvalId')) {
-            dd('pase correcto');
-            $approvalId = session()->get('approvalId');
-            $payment = $this->capturePayment($approvalId);                  
-            return null;
+        $approvalId = Cache::get('approvalId');
+        if ($approvalId) {
+            
+            $this->createPlanUser($user_id,$plan_id);
+
+            $payment = $this->capturePayment($approvalId);
+
+            return view('landing.aprobado');
+        }else{
+            return view('landing.cancelado');
         }
         
-        return view('landing.aprobado');
     }
 
     public function createOrder($value, $currency)
@@ -132,5 +137,10 @@ class PayPalService
         }
 
         return 100;
+    }
+
+    public function createPlanUser($user_id,$plan_id)
+    {
+        $user_plan = new UserPlan;   
     }
 }

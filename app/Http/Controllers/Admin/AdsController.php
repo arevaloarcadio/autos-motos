@@ -244,13 +244,16 @@ class AdsController extends Controller
 
     public function byUser(Request $request)
     {
-
         $data = Ad::where('user_id',Auth::user()->id)
                     ->orderBy('created_at','DESC')
                     ->limit(20);
         
         if ($request->filter) {
-             $data->where('type',$request->filter);
+            if ($request->filter == 'autos') {
+                $data = $data->whereIn('type',['auto','mobile-home','moto','truck']);
+            }else{
+                $data = $data->where('type',$request->filter);
+            }
         } 
 
         $data->with(
