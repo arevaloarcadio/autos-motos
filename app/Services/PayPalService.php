@@ -52,9 +52,9 @@ class PayPalService
 
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
-        $approve = $orderLinks->where('rel', 'approve')->first();
+        //$approve = $orderLinks->where('rel', 'approve')->first();
         session()->put('approvalId', $order->id);
-        return redirect($approve->href);
+        return  $order;//redirect($approve->href);
     }
 
     public function handleApproval()

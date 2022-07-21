@@ -26,8 +26,7 @@ class PaypalController extends Controller
     }
     public function cancelled()
     {
-        $user = Auth::user();
-        dd($user);
+     
         return view('landing.cancelado');
     }
 }
