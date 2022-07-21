@@ -401,7 +401,8 @@ class UsersController extends Controller
                 $user->save();   
             }
         }
-        return ['data'=> 'OK'];
+        
+        return view('landing.confirm-email');
     }
 
     public function uploadFile($file,$id)
