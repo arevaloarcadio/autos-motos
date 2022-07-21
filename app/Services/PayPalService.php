@@ -49,14 +49,15 @@ class PayPalService
 
     public function handlePayment(Request $request)
     {
-       
+        dd(json_decode($request));
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
         session()->put('approvalId', $order->id);
         session()->put('plan_id', $request->plan_id);
         session()->put('user_id', $request->user_id);
-        return  $request;//redirect($approve->href);
+       
+        return  $approve;//redirect($approve->href);
     }
 
     public function handleApproval()
