@@ -65,6 +65,8 @@ class PayPalService
     {
         $user_id = session()->get('user_id');
         $plan_id = session()->get('plan_id');
+
+        dd($user_id);
         if (session()->has('approvalId')) {
             dd('pase correcto');
             $approvalId = session()->get('approvalId');
@@ -72,7 +74,7 @@ class PayPalService
             return null;
         }
         
-        return $plan_id;
+        return view('landing.aprobado');
     }
 
     public function createOrder($value, $currency)
