@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class CharacteristicPlan extends Model
 {
+    use \App\Traits\TraitUuid;
+      use \App\Traits\Relationships;
+      
     protected $fillable = [
         'vehicle_ads',
         'rental_ads',

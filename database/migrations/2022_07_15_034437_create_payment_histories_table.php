@@ -19,7 +19,7 @@ class CreatePaymentHistoriesTable extends Migration
             $table->string('status');
             $table->uuid('user_id');
             $table->string('way_to_pay');
-            $table->integer('transaction_number');
+            $table->string('transaction_number');
             $table->timestamps();
         });
     }
