@@ -49,7 +49,7 @@ class PayPalService
 
     public function handlePayment(Request $request)
     {
-
+        
         $order = $this->createOrder($request->value, $request->currency);
         $orderLinks = collect($order->links);
         $approve = $orderLinks->where('rel', 'approve')->first();
@@ -63,8 +63,9 @@ class PayPalService
     {
         $user_id = session()->get('user_id');
         $plan_id = session()->get('plan_id');
-        dd($plan_id);
+        dd($user_id);
         if (session()->has('approvalId')) {
+            dd('pase correcto');
             $approvalId = session()->get('approvalId');
             $payment = $this->capturePayment($approvalId);                  
             return null;
