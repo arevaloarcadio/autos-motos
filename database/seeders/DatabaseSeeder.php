@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(PlanSeeder::class);
-        $this->call(SubCharacteristicSeeder::class);
-        $this->call(CharacteristicSeeder::class);
+        //$this->call(SubCharacteristicSeeder::class);
+        //$this->call(CharacteristicSeeder::class);
     }
 }

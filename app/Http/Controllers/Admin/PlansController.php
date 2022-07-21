@@ -35,7 +35,8 @@ class PlansController extends Controller
             
             $query = Plan::query();
 
-            $columns =   ['id', 'name', 'price'];
+            $columns =   ['id', 'name', 'price','type','duration'];
+           
            
                 
             if ($request->filters) {
@@ -48,9 +49,9 @@ class PlansController extends Controller
                 }
             }
 
-            /*foreach (Plan::getRelationships() as $key => $value) {
+            foreach (Plan::getRelationships() as $key => $value) {
                $query->with($key);
-            }*/
+            }
 
             return ['data' => $query->get()];
         }
@@ -61,10 +62,28 @@ class PlansController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'name', 'price'],
+            ['id', 'name', 'price','type','duration'],
 
             // set columns to searchIn
-            ['id', 'name', 'price']
+            ['id', 'name', 'price','type','duration'],
+            function ($query) use ($request) {
+                        
+                $columns = ['id', 'name', 'price','type','duration'];
+                            
+                if ($request->filters) {
+                    foreach ($columns as $column) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
+                        }
+                    }
+                }
+
+                foreach (Plan::getRelationships() as $key => $value) {
+                   $query->with($key);
+                }
+            }
         );
 
         

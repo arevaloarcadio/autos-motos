@@ -2,33 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
+    use HasFactory;
+
     use \App\Traits\TraitUuid;
-      use \App\Traits\Relationships;
-    protected $fillable = [
-        'name',
-        'price',
-    
-    ];
-    
-    
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    
-    ];
-    
-    protected $appends = ['resource_url'];
-
-    /* ************************ ACCESSOR ************************* */
-
-    public function getResourceUrlAttribute()
-    {
-        return url('/admin/plans/'.$this->getKey());
-    }
+    use \App\Traits\Relationships;
 
     public function items()
     {

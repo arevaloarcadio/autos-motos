@@ -98,7 +98,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
         Route::prefix('dealer-show-rooms')->name('dealer-show-rooms/')->group(static function() {
             Route::get('/{dealer_id}/dealer',                           'DealerShowRoomsController@byDealerId')->name('byDealerId');
-            Route::get('/{dealer_id}/dealer',                           'DealerShowRoomsController@byDealerId')->name('byDealerId');
+            //Route::get('/{dealer_id}/dealer',                           'DealerShowRoomsController@byDealerId')->name('byDealerId');
             Route::post('/{dealerShowRoom}',                            'DealerShowRoomsController@update')->name('update');
         });
 
