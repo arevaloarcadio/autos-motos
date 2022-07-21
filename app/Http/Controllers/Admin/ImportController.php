@@ -594,8 +594,13 @@ class ImportController extends Controller
     }
 
     private function findOrCreateAd($external_ad)
-    {
-            
+    {   
+        $validate = Ad::where('slug',$external_ad['slug'])->count();  
+        
+        if ($validate  != 0) {
+            $external_ad['slug'] .= '-'.Str::uuid()->toString().'-'.$validate;
+        }
+        
         $ad = Ad::create($external_ad);
 
         return $ad;
