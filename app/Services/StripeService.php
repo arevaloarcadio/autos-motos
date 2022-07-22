@@ -10,6 +10,7 @@ use App\Traits\ConsumesExternalServices;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Cache;
+use App\Models\{PaymentHistory,UserPlan};
 
 class StripeService
 {
@@ -140,5 +141,24 @@ class StripeService
         }
 
         return 100;
+    }
+    public function savePaymentPlan($user_id,$plan_id,$value,$approvalId)
+    {
+        $user_plan = new UserPlan;
+        $user_plan->user_id = $user_id;
+        $user_plan->plan_id = $plan_id;
+        $user_plan->status = 'Aprobado';
+        $user_plan->date_end_at = Carbon::now()->addDays(30);
+        
+        $user_plan->save();
+
+        $payment_history = new PaymentHistory;
+        $payment_history->mount = $value;
+        $payment_history->status = 'Aprobado';
+        $payment_history->user_id = $user_id;
+        $payment_history->way_to_pay = 'Stripe';
+        $payment_history->transaction_number = $approvalId;
+
+        $payment_history->save();
     }
 }
