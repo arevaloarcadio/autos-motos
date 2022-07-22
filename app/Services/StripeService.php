@@ -69,6 +69,7 @@ class StripeService
             $paymentIntentId = Cache::get('paymentIntentId');
             if ($paymentIntentId) {
                 $confirmation = $this->confirmPayment($paymentIntentId);
+                dd($confirmation);
                 if ($confirmation->status === 'requires_action') {
                     $clientSecret = $confirmation->client_secret;
                     return view('stripe.3d-secure')->with([
