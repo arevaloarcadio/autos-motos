@@ -64,12 +64,14 @@ class StripeService
 
     public function handleApproval()
     {
+            $data="saludos1";
+            $data2="saludos2";
+            $data3="saludos3";
             $user_id = Cache::get('user_id');
             $plan_id = Cache::get('plan_id');
             $paymentIntentId = Cache::get('paymentIntentId');
             if ($paymentIntentId) {
                 $confirmation = $this->confirmPayment($paymentIntentId);
-                dd($confirmation);
                 if ($confirmation->status === 'requires_action') {
                     $clientSecret = $confirmation->client_secret;
                     return view('stripe.3d-secure')->with([
@@ -82,12 +84,12 @@ class StripeService
                     $currency = strtoupper($confirmation->currency);
                     $amount = $confirmation->amount / $this->resolveFactor($currency);
                     // $this->savePaymentPlan($user_id,$plan_id,$amount,$transactionId);
-                    return view('landing.aprobado');
+                    return $data;
                 }else{
-                    return view('landing.cancelado');
+                    return $data2;
                 }
             }else{
-                return view('landing.cancelado');
+                return $data3;
             }
 
        
