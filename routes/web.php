@@ -17,6 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/pp', function () {
+    return view('landing.aprobado');
+});
+
 /* Auto-generated admin routes */
 Route::get('/payments/cancelled', 'App\Http\Controllers\PaypalController@cancelled')->name('cancelled');
 Route::get('/payments/approval', 'App\Http\Controllers\PaypalController@approval')->name('approval');
@@ -80,20 +84,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 
 
 
-/* Auto-generated admin routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
-    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
-        Route::prefix('payment-histories')->name('payment-histories/')->group(static function() {
-            Route::get('/',                                             'PaymentHistoriesController@index')->name('index');
-            Route::get('/create',                                       'PaymentHistoriesController@create')->name('create');
-            Route::post('/',                                            'PaymentHistoriesController@store')->name('store');
-            Route::get('/{paymentHistory}/edit',                        'PaymentHistoriesController@edit')->name('edit');
-            Route::post('/bulk-destroy',                                'PaymentHistoriesController@bulkDestroy')->name('bulk-destroy');
-            Route::post('/{paymentHistory}',                            'PaymentHistoriesController@update')->name('update');
-            Route::delete('/{paymentHistory}',                          'PaymentHistoriesController@destroy')->name('destroy');
-        });
-    });
-});
+
 
 /* Auto-generated admin routes */
 Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {

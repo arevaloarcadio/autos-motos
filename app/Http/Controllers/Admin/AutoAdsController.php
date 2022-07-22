@@ -276,6 +276,7 @@ class AutoAdsController extends Controller
             return response()->json(['data' => $autoAd], 200);
 
         } catch (Exception $e) {
+
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }

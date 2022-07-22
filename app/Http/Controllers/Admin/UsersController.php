@@ -136,6 +136,7 @@ class UsersController extends Controller
             $sanitized['password'] = Hash::make($sanitized['password']);
             $sanitized['status'] = 'Pendiente';
             $sanitized['image'] = 'users/user-default-ocassional.png';
+            $sanitized['type'] =  array_key_exists('dealer_id', $sanitized) ? 'Profesional' : 'Ocasional';
             // Store the User
             $user = User::create($sanitized);
 
@@ -400,7 +401,8 @@ class UsersController extends Controller
                 $user->save();   
             }
         }
-        return ['data'=> 'OK'];
+        
+        return view('landing.confirm-email');
     }
 
     public function uploadFile($file,$id)

@@ -89,7 +89,17 @@ class User extends Authenticatable  implements JWTSubject
         ];
     }
 
-     public function getJWTIdentifier()
+    public function payment_histories()
+    {
+        return $this->hasMany(PaymentHistory::class, 'user_id');
+    }
+
+    public function plans(){
+      return $this->belongsToMany(Plan::class,'user_plans')->using(UserPlan::class)
+                  ->withPivot(['status','date_end_at']);
+    }
+
+    public function getJWTIdentifier()
     {
         return $this->getKey();
     }

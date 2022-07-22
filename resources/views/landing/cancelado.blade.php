@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Autos Motos</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,6 +21,19 @@
         </style>
     </head>
     <body class="antialiased">
-        <a href="http://automotos.dattatech.com/">pago cancelado volver al sitio</a> 
+        <a href="http://automotos.dattatech.com/">Pago cancelado, volviendo al sitio</a> 
     </body>
+    <script type="text/javascript">
+        function  redirect() {
+            setTimeout(() => {
+                window.location.href = 'https://automotos.dattatech.com/';
+            }, 3500);
+        }
+        
+        redirect();
+    </script>
 </html>
+
+
+
+

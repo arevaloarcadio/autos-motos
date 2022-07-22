@@ -19,10 +19,18 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PlansController extends Controller
 {
 
+    use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -102,6 +110,25 @@ class PlansController extends Controller
         $this->authorize('admin.plan.create');
 
         return view('admin.plan.create');
+    }
+
+    public function byUser(Request $request)
+    {   
+        
+        $resource = ApiHelper::resource();
+    
+        try {
+
+            $user = Auth::user();
+
+            $plans = $user->plans;
+                
+            return response()->json(['data' => $plans], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**

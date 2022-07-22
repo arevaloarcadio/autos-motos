@@ -11,6 +11,7 @@ use App\Services\PayPalService;
 use App\Traits\ConsumesExternalServices;
 use Cache;
 use Carbon\Carbon;
+use App\Models\{PaymentHistory,UserPlan};
 
 class PayPalService
 {
@@ -62,6 +63,7 @@ class PayPalService
         $approve = $orderLinks->where('rel', 'approve')->first();
         Cache::put('approvalId', $order->id, $expiresAt);
         Cache::put('plan_id', json_decode($data)->plan_id, $expiresAt);
+        Cache::put('value', json_decode($data)->value, $expiresAt);
         Cache::put('user_id', json_decode($data)->user_id, $expiresAt);
        
         return  $approve;//redirect($approve->href);
@@ -84,14 +86,17 @@ class PayPalService
     {
         $user_id = Cache::get('user_id');
         $plan_id = Cache::get('plan_id');
-        if (session()->has('approvalId')) {
-            dd('pase correcto');
-            $approvalId = session()->get('approvalId');
-            $payment = $this->capturePayment($approvalId);                  
-            return null;
+        $value = Cache::get('value');
+        $approvalId = Cache::get('approvalId');
+
+        if ($approvalId) {
+            $this->savePaymentPlan($user_id,$plan_id,$value,$approvalId);
+            $payment = $this->capturePayment($approvalId);
+            return view('landing.aprobado');
+        }else{
+            return view('landing.cancelado');
         }
         
-        return view('landing.aprobado');
     }
     public function handleApprovalAnuncio()
     {
@@ -158,5 +163,25 @@ class PayPalService
         }
 
         return 100;
+    }
+
+    public function savePaymentPlan($user_id,$plan_id,$value,$approvalId)
+    {
+        $user_plan = new UserPlan;
+        $user_plan->user_id = $user_id;
+        $user_plan->plan_id = $plan_id;
+        $user_plan->status = 'Aprobado';
+        $user_plan->date_end_at = Carbon::now()->addDays(30);
+        
+        $user_plan->save();
+
+        $payment_history = new PaymentHistory;
+        $payment_history->mount = $value;
+        $payment_history->status = 'Aprobado';
+        $payment_history->user_id = $user_id;
+        $payment_history->way_to_pay = 'PayPal';
+        $payment_history->transaction_number = $approvalId;
+
+        $payment_history->save();
     }
 }

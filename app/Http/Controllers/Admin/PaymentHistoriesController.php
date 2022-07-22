@@ -62,13 +62,12 @@ class PaymentHistoriesController extends Controller
         $resource = ApiHelper::resource();
     
         try {
-            
-            $payment_histories = PaymentHistory::select('payment_histories.*')
-                ->join('users','users.id','payment_histories.user_id')
-                ->where('payment_histories.user_id',Auth::user()->id);
+
+            $user = Auth::user();
+
+            $payment_histories = $user->payment_histories;
                 
-              
-            return response()->json(['data' => $payment_histories->get()], 200);
+            return response()->json(['data' => $payment_histories], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
@@ -86,9 +85,10 @@ class PaymentHistoriesController extends Controller
             
             $payment_histories = PaymentHistory::select('payment_histories.*')
                 ->join('users','users.id','payment_histories.user_id')
-                ->where('payment_histories.user_id',$id);
+                ->where('payment_histories.user_id',$id)
+                ->get();
                    
-            return response()->json(['data' => $payment_histories->get()], 200);
+            return response()->json(['data' => $payment_histories], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
