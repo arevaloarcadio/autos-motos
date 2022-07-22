@@ -57,9 +57,7 @@ class StripeService
         ]);
 
         $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
-        if ($request->cupon_id) {
-            session()->put('cupon_id', $request->cupon_id);
-        }
+       
         session()->put('paymentIntentId', $intent->id);
         session()->put('plan_id', $request->plan_id);
 

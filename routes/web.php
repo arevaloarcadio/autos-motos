@@ -24,6 +24,8 @@ Route::get('/pp', function () {
 /* Auto-generated admin routes */
 Route::get('/payments/cancelled', 'App\Http\Controllers\PaypalController@cancelled')->name('cancelled');
 Route::get('/payments/approval', 'App\Http\Controllers\PaypalController@approval')->name('approval');
+Route::get('/stripe-payments/approval', 'App\Http\Controllers\StripeController@approval')->name('stripe-approval');
+Route::get('/stripe-payments/cancelled', 'App\Http\Controllers\StripeController@cancelled')->name('stripe-cancelled');
 
 Route::namespace('App\Http\Controllers')->group(static function() {
     Route::post('/marks','MarkController@store')->name('marks.store');
