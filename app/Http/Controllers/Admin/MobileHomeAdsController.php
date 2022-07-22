@@ -193,7 +193,7 @@ class MobileHomeAdsController extends Controller
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
             'thumbnail' => ['nullable', 'string'],
-            'market_id' => ['required', 'string'],
+            'market_id' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
         ]);
@@ -214,7 +214,7 @@ class MobileHomeAdsController extends Controller
                 'type' => 'mobile-home',
                 'is_featured' => 0,
                 'user_id' => Auth::user()->id,
-                'market_id' => $request['market_id'],
+                'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
                 'external_id' =>null,
                 'source' => null,
                 'images_processing_status' => 'N/A',
