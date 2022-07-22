@@ -47,7 +47,7 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
-        dd('pase correcto');
+        $pase2 ="saludos";
         $request->validate([
             'payment_method' => 'required',
         ]);
@@ -56,7 +56,7 @@ class StripeService
        
         
 
-        return $intent;
+        return $pase2;
     }
 
     public function handleApproval()
