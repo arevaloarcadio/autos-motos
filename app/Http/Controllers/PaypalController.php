@@ -20,6 +20,18 @@ class PaypalController extends Controller
         $paymentPlatform = resolve(PayPalService::class);
         return $paymentPlatform->handlePayment($request);
     }
+    public function payAnuncio(Request $request)
+    {
+        $rules = [
+            'value' => ['required', 'numeric', 'min:5'],
+            'currency' => ['required'],
+            'anuncio_id' => ['required'],
+            'user_id' => ['required'],
+        ];
+        $request->validate($rules);
+        $paymentPlatform = resolve(PayPalService::class);
+        return $paymentPlatform->handlePaymentAnuncio($request);
+    }
     public function approval()
     {
         $paymentPlatform = resolve(PayPalService::class);
