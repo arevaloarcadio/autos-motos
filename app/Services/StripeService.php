@@ -47,7 +47,6 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
         $expiresAt = Carbon::now()->addMinutes(10);
         $request->validate([
             'paymentMethod' => 'required',
