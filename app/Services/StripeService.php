@@ -82,12 +82,21 @@ class StripeService
                     $currency = strtoupper($confirmation->currency);
                     $amount = $confirmation->amount / $this->resolveFactor($currency);
                     $this->savePaymentPlan($user_id,$plan_id,$amount,$transactionId);
-                    return view('landing.aprobado');
+                    return response()->json([
+                        'status' => "succeeded",
+                        'menssage'  => "compra realizada exitosamente"
+                    ]);
                 }else{
-                    return view('landing.cancelado');
+                    return response()->json([
+                        'status' => "error",
+                        'menssage'  => "hubo un error en la compra"
+                    ]);
                 }
             }else{
-                return view('landing.cancelado');
+                return response()->json([
+                    'status' => "error",
+                    'menssage'  => "hubo un error en la compra"
+                ]);
             }
 
        
