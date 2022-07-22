@@ -47,14 +47,15 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
-        
+        $request->validate([
+            'paymentMethod' => 'required',
+        ]);
 
-
-        $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
+        $intent = $this->createIntent($request->value, $request->currency, $request->paymentMethod);
        
         
 
-        return $request->all();
+        return $intent;
     }
 
     public function handleApproval()
