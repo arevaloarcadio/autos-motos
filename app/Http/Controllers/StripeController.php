@@ -20,10 +20,9 @@ class StripeController extends Controller
     }
     public function approval()
     {
-        $data="arepa";
-        //$paymentPlatform = resolve(StripeService::class);
+        $paymentPlatform = resolve(StripeService::class);
 
-        return $data;
+        return $paymentPlatform->handleApproval();
     }
     public function cancelled()
     {

@@ -59,7 +59,7 @@ class StripeService
         Cache::put('plan_id', $request->plan_id, $expiresAt);
         Cache::put('user_id', $request->user_id, $expiresAt);
 
-        return redirect()->route('stripe-approval');
+        return $this->handleApproval();
     }
 
     public function handleApproval()
