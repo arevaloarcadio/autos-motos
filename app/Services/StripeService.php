@@ -47,14 +47,14 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
-        $pase2 ="saludos";
+        
 
 
         $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
        
         
 
-        return $pase2;
+        return $request->all();
     }
 
     public function handleApproval()
