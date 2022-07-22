@@ -3,17 +3,14 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-use App\Models\Curso\Curso;
-use App\Models\Cursos\Cupon;
-use App\Models\Cursos\CuponHistory;
+
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\General\CollectionHelper;
 use App\Traits\ConsumesExternalServices;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Solicitudes\PlanUser;
-use App\Models\Idioma\Idioma;
-use App\Models\Membresia\Plan;
 use Carbon\Carbon;
+use Cache;
+use App\Models\{PaymentHistory,UserPlan};
 
 class StripeService
 {
@@ -52,130 +49,59 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
+        $expiresAt = Carbon::now()->addMinutes(10);
         $request->validate([
-            'payment_method' => 'required',
+            'paymentMethod' => 'required',
         ]);
 
-        $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
-        if ($request->cupon_id) {
-            session()->put('cupon_id', $request->cupon_id);
-        }
-        session()->put('paymentIntentId', $intent->id);
-        session()->put('plan_id', $request->plan_id);
+        $intent = $this->createIntent($request->value, $request->currency, $request->paymentMethod);
+       
+        Cache::put('paymentIntentId', $intent->id, $expiresAt);
+        Cache::put('plan_id', $request->plan_id, $expiresAt);
+        Cache::put('user_id', $request->user_id, $expiresAt);
 
-        return redirect()->route('stripe-approval');
+        return $this->handleApproval();
     }
 
     public function handleApproval()
     {
-        if (session()->has('paymentIntentId')) {
-            
-            $paymentIntentId = session()->get('paymentIntentId');
-            $plan_id = session()->get('plan_id');
-            $cupon_id = session()->get('cupon_id');
-
-            $confirmation = $this->confirmPayment($paymentIntentId);
-       
-            if ($confirmation->status === 'requires_action') {
-                $clientSecret = $confirmation->client_secret;
-
-                return view('stripe.3d-secure')->with([
-                    'clientSecret' => $clientSecret,
-                ]);
-            }
-
-            if ($confirmation->status === 'succeeded') {
-                $transactionId=$confirmation->id;
-                $name = $confirmation->charges->data[0]->billing_details->name;
-                $currency = strtoupper($confirmation->currency);
-                $amount = $confirmation->amount / $this->resolveFactor($currency);
-                $plan =Plan::find($plan_id);
-                if ($cupon_id) {
-                    $cupon=Cupon::find($cupon_id);
-                    $cupon->cantidad=$cupon->cantidad-1;
-                    $cupon->save();
-                    $cuponHistory = CuponHistory::create([
-                        'precio_pago' => $amount,
-                        'plan_id' => $plan_id,
-                        'cupon_id' => $cupon_id,
+            $user_id = Cache::get('user_id');
+            $plan_id = Cache::get('plan_id');
+            $paymentIntentId = Cache::get('paymentIntentId');
+            if ($paymentIntentId) {
+                $confirmation = $this->confirmPayment($paymentIntentId);
+                if ($confirmation->status === 'requires_action') {
+                    $clientSecret = $confirmation->client_secret;
+                    return view('stripe.3d-secure')->with([
+                        'clientSecret' => $clientSecret,
                     ]);
                 }
-                $solicitud = PlanUser::create([
-                    'comprobante' => $transactionId,
-                    'plan_id' => $plan_id,
-                    'available' => $plan->stock,
-                    'user_id' => Auth::user()->id,
-                    'tipo' => "Stripe",
+                if ($confirmation->status === 'succeeded') {
+                    $transactionId=$confirmation->id;
+                    $name = $confirmation->charges->data[0]->billing_details->name;
+                    $currency = strtoupper($confirmation->currency);
+                    $amount = $confirmation->amount / $this->resolveFactor($currency);
+                    $this->savePaymentPlan($user_id,$plan_id,$amount,$transactionId);
+                    return response()->json([
+                        'status' => "succeeded",
+                        'menssage'  => "compra realizada exitosamente"
+                    ]);
+                }else{
+                    return response()->json([
+                        'status' => "error",
+                        'menssage'  => "hubo un error en la compra"
+                    ]);
+                }
+            }else{
+                return response()->json([
+                    'status' => "error",
+                    'menssage'  => "hubo un error en la compra"
                 ]);
-                       
-            $idiomas=Idioma::get();
-
-                return view('landing.Comprar.Completado', compact('transactionId','idiomas'));
             }
-        }
 
-        return redirect()
-            ->route('home')
-            ->withErrors('We were unable to confirm your payment. Try again, please');
+       
     }
 
-    public function handleSubscription(Request $request)
-    {
-        $customer = $this->createCustomer(
-            $request->user()->name,
-            $request->user()->email,
-            $request->payment_method
-        );
-
-        $subscription = $this->createSubscription(
-            $customer->id,
-            $request->payment_method,
-            $this->plans[$request->plan]
-        );
-
-        if ($subscription->status == 'active') {
-            session()->put('subscriptionId', $subscription->id);
-
-            return redirect()->route(
-                'subscribe.approval',
-                [
-                    'plan' => $request->plan,
-                    'subscription_id' => $subscription->id,
-                ],
-            );
-        }
-
-        $paymentIntent = $subscription->latest_invoice->payment_intent;
-
-        if ($paymentIntent->status === 'requires_action') {
-            $clientSecret = $paymentIntent->client_secret;
-
-            session()->put('subscriptionId', $subscription->id);
-
-            return view('stripe.3d-secure-subscription')->with([
-                'clientSecret' => $clientSecret,
-                'plan' => $request->plan,
-                'paymentMethod' => $request->payment_method,
-                'subscriptionId' => $subscription->id,
-            ]);
-        }
-
-        return redirect()->route('subscribe.show')
-            ->withErrors('We were unable to activate your subscription. Try again, please.');
-    }
-
-    public function validateSubscription(Request $request)
-    {
-        if (session()->has('subscriptionId')) {
-            $subscriptionId = session()->get('subscriptionId');
-
-            session()->forget('subscriptionId');
-
-            return $request->subscription_id == $subscriptionId;
-        }
-
-        return false;
-    }
 
     public function createIntent($value, $currency, $paymentMethod)
     {
@@ -214,22 +140,6 @@ class StripeService
         );
     }
 
-    public function createSubscription($customerId, $paymentMethod, $priceId)
-    {
-        return $this->makeRequest(
-            'POST',
-            '/v1/subscriptions',
-            [],
-            [
-                'customer' => $customerId,
-                'items' => [
-                    ['price' => $priceId],
-                ],
-                'default_payment_method' => $paymentMethod,
-                'expand' => ['latest_invoice.payment_intent']
-            ],
-        );
-    }
 
     public function resolveFactor($currency)
     {
@@ -240,5 +150,24 @@ class StripeService
         }
 
         return 100;
+    }
+    public function savePaymentPlan($user_id,$plan_id,$value,$approvalId)
+    {
+        $user_plan = new UserPlan;
+        $user_plan->user_id = $user_id;
+        $user_plan->plan_id = $plan_id;
+        $user_plan->status = 'Aprobado';
+        $user_plan->date_end_at = Carbon::now()->addDays(30);
+        
+        $user_plan->save();
+
+        $payment_history = new PaymentHistory;
+        $payment_history->mount = $value;
+        $payment_history->status = 'Aprobado';
+        $payment_history->user_id = $user_id;
+        $payment_history->way_to_pay = 'Stripe';
+        $payment_history->transaction_number = $approvalId;
+
+        $payment_history->save();
     }
 }

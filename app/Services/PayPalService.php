@@ -68,6 +68,19 @@ class PayPalService
        
         return  $approve;//redirect($approve->href);
     }
+    public function handlePaymentAnuncio(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        $expiresAt = Carbon::now()->addMinutes(10);
+        $data =json_encode($request->all());
+        $order = $this->createOrder($request->value, $request->currency);
+        $orderLinks = collect($order->links);
+        $approve = $orderLinks->where('rel', 'approve')->first();
+        Cache::put('approvalId', $order->id, $expiresAt);
+        Cache::put('anuncio_id', json_decode($data)->anuncio_id, $expiresAt);
+        Cache::put('user_id', json_decode($data)->user_id, $expiresAt);
+        return  $approve;//redirect($approve->href);
+    }
 
     public function handleApproval()
     {
@@ -84,6 +97,19 @@ class PayPalService
             return view('landing.cancelado');
         }
         
+    }
+    public function handleApprovalAnuncio()
+    {
+        $user_id = Cache::get('user_id');
+        $anuncio_id = Cache::get('anuncio_id');
+        if (session()->has('approvalId')) {
+            dd('pase correcto');
+            $approvalId = session()->get('approvalId');
+            $payment = $this->capturePayment($approvalId);                  
+            return null;
+        }
+        
+        return view('landing.aprobado');
     }
 
     public function createOrder($value, $currency)

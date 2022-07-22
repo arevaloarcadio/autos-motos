@@ -8,12 +8,12 @@ class StripeController extends Controller
 {
     public function pay(Request $request)
     {
-   
         $rules = [
             'value' => ['required', 'numeric', 'min:5'],
             'currency' => ['required'],
+            'plan_id' => ['required'],
+            'user_id' => ['required'],
         ];
-
         $request->validate($rules);
         $paymentPlatform = resolve(StripeService::class);
         return $paymentPlatform->handlePayment($request);
@@ -26,9 +26,7 @@ class StripeController extends Controller
     }
     public function cancelled()
     {
-        return redirect()
-            ->route('home')
-            ->withErrors('You cancelled the payment');
+        return view('landing.cancelado');
     }
 
    
