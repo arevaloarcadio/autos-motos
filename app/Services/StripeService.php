@@ -48,9 +48,7 @@ class StripeService
     public function handlePayment(Request $request)
     {
         $pase2 ="saludos";
-        $request->validate([
-            'payment_method' => 'required',
-        ]);
+
 
         $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
        
