@@ -47,6 +47,7 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
+        dd('pase correcto');
         $request->validate([
             'payment_method' => 'required',
         ]);
