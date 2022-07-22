@@ -64,9 +64,6 @@ class StripeService
 
     public function handleApproval()
     {
-            $data="saludos1";
-            $data2="saludos2";
-            $data3="saludos3";
             $user_id = Cache::get('user_id');
             $plan_id = Cache::get('plan_id');
             $paymentIntentId = Cache::get('paymentIntentId');
@@ -83,13 +80,13 @@ class StripeService
                     $name = $confirmation->charges->data[0]->billing_details->name;
                     $currency = strtoupper($confirmation->currency);
                     $amount = $confirmation->amount / $this->resolveFactor($currency);
-                    // $this->savePaymentPlan($user_id,$plan_id,$amount,$transactionId);
-                    return $data;
+                    $this->savePaymentPlan($user_id,$plan_id,$amount,$transactionId);
+                    return view('landing.aprobado');
                 }else{
-                    return $data2;
+                    return view('landing.cancelado');
                 }
             }else{
-                return $data3;
+                return view('landing.cancelado');
             }
 
        
