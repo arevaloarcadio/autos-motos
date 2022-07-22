@@ -3,16 +3,11 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-use App\Models\Curso\Curso;
-use App\Models\Cursos\Cupon;
-use App\Models\Cursos\CuponHistory;
+
 use Illuminate\Support\Facades\Storage;
 use App\Helpers\General\CollectionHelper;
 use App\Traits\ConsumesExternalServices;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Solicitudes\PlanUser;
-use App\Models\Idioma\Idioma;
-use App\Models\Membresia\Plan;
 use Carbon\Carbon;
 
 class StripeService
@@ -58,10 +53,9 @@ class StripeService
 
         $intent = $this->createIntent($request->value, $request->currency, $request->payment_method);
        
-        session()->put('paymentIntentId', $intent->id);
-        session()->put('plan_id', $request->plan_id);
+        
 
-        return redirect()->route('stripe-approval');
+        return $intent;
     }
 
     public function handleApproval()
