@@ -47,68 +47,49 @@ class StripeService
 
     public function handlePayment(Request $request)
     {
+        $user = JWTAuth::parseToken()->authenticate();
+        $expiresAt = Carbon::now()->addMinutes(10);
         $request->validate([
             'paymentMethod' => 'required',
         ]);
 
         $intent = $this->createIntent($request->value, $request->currency, $request->paymentMethod);
        
-        
+        Cache::put('paymentIntentId', $intent->id, $expiresAt);
+        Cache::put('plan_id', $request->plan_id, $expiresAt);
+        Cache::put('user_id', $request->user_id, $expiresAt);
 
         return redirect()->route('stripe-approval');
     }
 
     public function handleApproval()
     {
-        if (session()->has('paymentIntentId')) {
-            
-            $paymentIntentId = session()->get('paymentIntentId');
-            $plan_id = session()->get('plan_id');
-            $cupon_id = session()->get('cupon_id');
-
-            $confirmation = $this->confirmPayment($paymentIntentId);
-       
-            if ($confirmation->status === 'requires_action') {
-                $clientSecret = $confirmation->client_secret;
-
-                return view('stripe.3d-secure')->with([
-                    'clientSecret' => $clientSecret,
-                ]);
-            }
-
-            if ($confirmation->status === 'succeeded') {
-                $transactionId=$confirmation->id;
-                $name = $confirmation->charges->data[0]->billing_details->name;
-                $currency = strtoupper($confirmation->currency);
-                $amount = $confirmation->amount / $this->resolveFactor($currency);
-                $plan =Plan::find($plan_id);
-                if ($cupon_id) {
-                    $cupon=Cupon::find($cupon_id);
-                    $cupon->cantidad=$cupon->cantidad-1;
-                    $cupon->save();
-                    $cuponHistory = CuponHistory::create([
-                        'precio_pago' => $amount,
-                        'plan_id' => $plan_id,
-                        'cupon_id' => $cupon_id,
+            $user_id = Cache::get('user_id');
+            $plan_id = Cache::get('plan_id');
+            $paymentIntentId = Cache::get('paymentIntentId');
+            if ($paymentIntentId) {
+                $confirmation = $this->confirmPayment($paymentIntentId);
+                if ($confirmation->status === 'requires_action') {
+                    $clientSecret = $confirmation->client_secret;
+                    return view('stripe.3d-secure')->with([
+                        'clientSecret' => $clientSecret,
                     ]);
                 }
-                $solicitud = PlanUser::create([
-                    'comprobante' => $transactionId,
-                    'plan_id' => $plan_id,
-                    'available' => $plan->stock,
-                    'user_id' => Auth::user()->id,
-                    'tipo' => "Stripe",
-                ]);
-                       
-            $idiomas=Idioma::get();
-
-                return view('landing.Comprar.Completado', compact('transactionId','idiomas'));
+                if ($confirmation->status === 'succeeded') {
+                    $transactionId=$confirmation->id;
+                    $name = $confirmation->charges->data[0]->billing_details->name;
+                    $currency = strtoupper($confirmation->currency);
+                    $amount = $confirmation->amount / $this->resolveFactor($currency);
+                    $this->savePaymentPlan($user_id,$plan_id,$amount,$transactionId);
+                    return view('landing.aprobado');
+                }else{
+                    return view('landing.cancelado');
+                }
+            }else{
+                return view('landing.cancelado');
             }
-        }
 
-        return redirect()
-            ->route('home')
-            ->withErrors('We were unable to confirm your payment. Try again, please');
+       
     }
 
 
