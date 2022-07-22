@@ -156,10 +156,13 @@ class PlansController extends Controller
      * @return void
      */
     public function show(Plan $plan)
-    {
-        $this->authorize('admin.plan.show', $plan);
-
-        // TODO your code goes here
+    {   
+        
+        $plan['items'] = $plan->items;
+        $plan['characteristic_plans'] = $plan->characteristic_plans;
+        $plan['characteristic_promotion_plans'] = $plan->characteristic_promotion_plans;
+       
+        return  ['data'=> $plan];
     }
 
     /**

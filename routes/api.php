@@ -110,6 +110,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         Route::prefix('plans')->name('plans/')->group(static function() {
             Route::get('/',                                             'PlansController@index')->name('index');
             Route::get('/byUser',                                       'PlansController@byUser')->name('index');
+            Route::get('/{plan}',                                       'PlansController@show')->name('show');
             Route::post('/',                                            'PlansController@store')->name('store');
             Route::post('/{plan}',                                      'PlansController@update')->name('update');
             Route::delete('/{plan}',                                    'PlansController@destroy')->name('destroy');
