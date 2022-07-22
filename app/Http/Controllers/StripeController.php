@@ -8,13 +8,14 @@ class StripeController extends Controller
 {
     public function pay(Request $request)
     {
+        $pase="saludos";
         $rules = [
             'value' => ['required', 'numeric', 'min:5'],
             'currency' => ['required'],
         ];
         $request->validate($rules);
         $paymentPlatform = resolve(StripeService::class);
-        return $paymentPlatform->handlePayment($request);
+        return $pase;
     }
     public function approval()
     {
