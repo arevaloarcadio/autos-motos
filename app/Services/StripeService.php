@@ -9,6 +9,7 @@ use App\Helpers\General\CollectionHelper;
 use App\Traits\ConsumesExternalServices;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Cache;
 
 class StripeService
 {
