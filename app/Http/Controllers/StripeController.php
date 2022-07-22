@@ -13,6 +13,7 @@ class StripeController extends Controller
             'currency' => ['required'],
         ];
         $request->validate($rules);
+        dd('pase correcyo');
         $paymentPlatform = resolve(StripeService::class);
         return $paymentPlatform->handlePayment($request);
     }
