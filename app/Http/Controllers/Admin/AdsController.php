@@ -135,45 +135,7 @@ class AdsController extends Controller
     }
 
 
-    public function searchAdvanced(Request $request)
-    {   
-        
-        $resource = ApiHelper::resource();
-        $filter_types = [];
-        $response = [];
-        
-        try {
-            
-            if ($request->types) {
-                foreach ($request->types as $type) {
-                    switch ($type) {
-                        case 'auto':
-                            array_push($response, ...$this->getAutoAd($request));
-                            break;
-                        case 'moto':
-                            array_push($response,...$this->getMotoAd($request));
-                            break;
-                        case 'mobile-home':
-                            array_push($response, ...$this->getMobileHomeAd($request));
-                            break;
-                        case 'truck':
-                            array_push($response, ...$this->getTruckAd($request));
-                            break;
-                        default:
-                            
-                            break;
-                    }
-                }
-            }
-               
-            return response()->json(['count' => count($response),'data' => $response], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
+   
 
     public function searchAdsLike(Request $request)
     {   
@@ -707,15 +669,58 @@ class AdsController extends Controller
         return null;
     }
 
+    public function searchAdvanced(Request $request)
+    {   
+        
+        $resource = ApiHelper::resource();
+        $filter_types = [];
+        $response = [];
+      
+        try {
+            
+            if ($request->types) {
+                foreach ($request->types as $type) {
+                    switch ($type) {
+                        case 'auto':
+
+                            array_push($response, ...$this->getAutoAd($request));
+                            break;
+                        case 'moto':
+                            array_push($response,...$this->getMotoAd($request));
+                            break;
+                        case 'mobile-home':
+                            array_push($response, ...$this->getMobileHomeAd($request));
+                            break;
+                        case 'truck':
+                            array_push($response, ...$this->getTruckAd($request));
+                            break;
+                        default:
+                            
+                            break;
+                    }
+                }
+            }
+               
+            return response()->json(['count' => count($response),'data' => $response], 200);
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+
     public function getAutoAd($filters)
     {
-        $auto_ad = AutoAd::query();
-
+        $auto_ad = new AutoAd;
+         
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
                 $query->orWhere('make_id',$filters->make_id);
             }
+
             if ($filters->model_id) {
                 $query->orWhere('model_id',$filters->model_id);
             }
@@ -725,8 +730,12 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -745,9 +754,6 @@ class AdsController extends Controller
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
-            }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
                 $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
@@ -777,7 +783,6 @@ class AdsController extends Controller
                 $query->orWhere('fuel_consumption',$filters->fuel_consumption);
             }
         });
-        
         if ($filters->oldest) {
             $auto_ad->orderBy('created_at','DESC');
         }
@@ -802,10 +807,7 @@ class AdsController extends Controller
         
         return $auto_ad
             ->with(['make',
-                    'model'=> function($query)
-                    {
-                        $query->with(['generation']);
-                    },
+                    'model',
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
@@ -817,7 +819,7 @@ class AdsController extends Controller
 
     public function getMotoAd($filters)
     {
-        $moto_ad = MotoAd::query();
+        $moto_ad = new MotoAd;
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             
@@ -833,8 +835,12 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -853,9 +859,6 @@ class AdsController extends Controller
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
-            }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
                 $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
@@ -908,10 +911,7 @@ class AdsController extends Controller
         }
 
         return $moto_ad
-            ->with(['make','model'=> function($query)
-                    {
-                        $query->with(['generation']);
-                    },
+            ->with(['make','model',
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
@@ -924,7 +924,7 @@ class AdsController extends Controller
 
     public function getMobileHomeAd($filters)
     {
-        $mobile_home_ad = MobileHomeAd::query();
+        $mobile_home_ad = new MobileHomeAd;
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             
@@ -940,9 +940,14 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+            }
+
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
             }
@@ -964,17 +969,11 @@ class AdsController extends Controller
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
                 $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
-            }
             if ($filters->color) {
                 $query->orWhere('color',$filters->color);
             }
             if ($filters->dealer_id) {
                 $query->orWhere('dealer_id',$filters->dealer_id);
-            }
-            if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
                 $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
@@ -1030,7 +1029,7 @@ class AdsController extends Controller
 
     public function getTruckAd($filters)
     {
-        $truck_ad = TruckAd::query();
+        $truck_ad = new TruckAd;
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             
@@ -1043,8 +1042,12 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1156,7 +1159,7 @@ class AdsController extends Controller
 
 public function getCountAutoAd($filters)
     {
-        $auto_ad = AutoAd::query();
+        $auto_ad = new AutoAd;
 
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             
@@ -1172,8 +1175,12 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1192,9 +1199,6 @@ public function getCountAutoAd($filters)
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
-            }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
                 $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
@@ -1230,7 +1234,7 @@ public function getCountAutoAd($filters)
 
     public function getCountMotoAd($filters)
     {
-        $moto_ad = MotoAd::query();
+        $moto_ad = new MotoAd;
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             
@@ -1246,8 +1250,12 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1266,9 +1274,6 @@ public function getCountAutoAd($filters)
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
-            }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
                 $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
@@ -1304,7 +1309,7 @@ public function getCountAutoAd($filters)
 
     public function getCountMobileHomeAd($filters)
     {
-        $mobile_home_ad = MobileHomeAd::query();
+        $mobile_home_ad = new MobileHomeAd;
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             
@@ -1320,8 +1325,12 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1344,14 +1353,14 @@ public function getCountAutoAd($filters)
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
                 $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
-            }
             if ($filters->color) {
                 $query->orWhere('color',$filters->color);
             }
             if ($filters->dealer_id) {
                 $query->orWhere('dealer_id',$filters->dealer_id);
+            }
+            if ($filters->inspection_valid_until_month) {
+                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_month) {
                 $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
@@ -1378,7 +1387,7 @@ public function getCountAutoAd($filters)
 
     public function getCountTruckAd($filters)
     {
-        $truck_ad = TruckAd::query();
+        $truck_ad = new TruckAd;
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             
@@ -1391,8 +1400,12 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->orWhere('city',$filters->city);
             }
-            if ($filters->mileage) {
-                $query->orWhere('mileage',$filters->mileage);
+            if ($filters->to_mileage && $filters->from_mileage) {
+                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+            }
+
+            if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
