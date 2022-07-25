@@ -402,7 +402,7 @@ class UsersController extends Controller
             }
         }
         
-        return view('landing.confirm-email');
+        return view('landing.confirmar');
     }
 
     public function uploadFile($file,$id)

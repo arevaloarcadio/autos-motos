@@ -46,8 +46,8 @@ class NewUser extends Notification
             ->subject('Bienvenido a Autos Motos')
             ->line('Hola '.$this->user->first_name.' '.$this->user->last_name)
             ->line('Te damos la Bienvenida a Autos Motos')
-            ->line('Para confirmar el correo electrónico presione el siguiente boton')
-            ->action('Confirmar Correo',url('/confirm/email').'/'.$this->user->email)
+            ->line('Para confirmar el correo electrónico presione el siguiente botón')
+            ->action('Confirmar correo',url('/confirm/email').'/'.$this->user->email)
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }
