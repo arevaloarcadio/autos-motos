@@ -257,7 +257,7 @@ class UsersController extends Controller
             $data['whatsapp_number'] = $request['whatsapp_number'] ?? $user['whatsapp_number'];
             $data['email'] =  $request['email'] ?? $user['email'];
             $data['password'] =  $request['password'] ? Hash::make($request['password']) : $user['password'];
-            $data['dealer_id'] = $request['dealer_id'] ?? $user['dealer_id'];
+            //$data['dealer_id'] = $request['dealer_id'] ?? $user['dealer_id'];
             
             $data['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
             
