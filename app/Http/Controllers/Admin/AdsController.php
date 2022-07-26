@@ -735,7 +735,7 @@ class AdsController extends Controller
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -840,7 +840,7 @@ class AdsController extends Controller
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -945,7 +945,7 @@ class AdsController extends Controller
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
 
             if ($filters->condition) {
@@ -1047,7 +1047,7 @@ class AdsController extends Controller
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1180,7 +1180,7 @@ public function getCountAutoAd($filters)
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1255,7 +1255,7 @@ public function getCountAutoAd($filters)
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1269,8 +1269,8 @@ public function getCountAutoAd($filters)
             if ($filters->drive_type_id) {
                 $query->orWhere('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->price) {
-                $query->orWhere('price',$filters->price);
+            if ($filters->from_price && $filters->to_price) {
+                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
                 $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
@@ -1330,7 +1330,7 @@ public function getCountAutoAd($filters)
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
@@ -1405,7 +1405,7 @@ public function getCountAutoAd($filters)
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->to_first_registration_year,$filters->from_first_registration_year]);
+                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
