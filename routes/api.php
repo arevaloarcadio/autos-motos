@@ -104,6 +104,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/ocassional',                                  'UsersController@updateOcassional')->name('update');
             Route::post('/update_profile',                              'UsersController@updateProfile')->name('update_profile');
             Route::get('/dealer',                                       'UsersController@getDealer')->name('show');
+            Route::get('/info',                                         'UsersController@getUserInfo')->name('show');
           
         });
         

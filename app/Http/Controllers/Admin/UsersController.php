@@ -271,12 +271,34 @@ class UsersController extends Controller
         }
     }
 
+    public function getUserInfo()
+    {
+        $resource = ApiHelper::resource();
+
+        try {
+
+            $user = Auth::user();
+            $plan_active = $user->plan_active->first();
+            
+            return response()->json([
+                    'data' => [
+                        'user'  => Auth::user(),
+                        'plan_active' => $plan_active
+                    ]
+                ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+
     public function getDealer()
     {
         $resource = ApiHelper::resource();
 
         $user = Auth::user();
-
 
         try {
 
