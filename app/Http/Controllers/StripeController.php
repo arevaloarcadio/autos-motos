@@ -9,7 +9,7 @@ class StripeController extends Controller
     public function pay(Request $request)
     {
         $rules = [
-            'value' => ['required', 'numeric', 'min:5'],
+            'value' => ['required', 'numeric', 'min:0.5'],
             'currency' => ['required'],
             'plan_id' => ['required'],
             'user_id' => ['required'],

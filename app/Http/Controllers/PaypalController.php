@@ -11,7 +11,7 @@ class PaypalController extends Controller
     {
         
         $rules = [
-            'value' => ['required', 'numeric', 'min:5'],
+            'value' => ['required', 'numeric', 'min:0.5'],
             'currency' => ['required'],
             'plan_id' => ['required'],
             'user_id' => ['required'],
@@ -23,7 +23,7 @@ class PaypalController extends Controller
     public function payAnuncio(Request $request)
     {
         $rules = [
-            'value' => ['required', 'numeric', 'min:5'],
+            'value' => ['required', 'numeric', 'min:0.5'],
             'currency' => ['required'],
             'anuncio_id' => ['required'],
             'user_id' => ['required'],

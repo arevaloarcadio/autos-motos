@@ -100,6 +100,10 @@ class User extends Authenticatable  implements JWTSubject
                   ->withPivot(['status','date_end_at']);
     }
 
+    public function plan_active(){
+      return $this->plans()->where('status','Aprobado');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
