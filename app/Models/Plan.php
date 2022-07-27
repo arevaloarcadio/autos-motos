@@ -19,11 +19,11 @@ class Plan extends Model
 
     public function characteristic_plans()
     {
-        return $this->hasMany(CharacteristicPlan::class, 'plan_id');
+        return $this->hasOne(CharacteristicPlan::class, 'plan_id');
     }
 
     public function characteristic_promotion_plans()
     {
-        return $this->hasMany(CharacteristicPromotionPlan::class, 'plan_id');
+        return $this->hasOne(CharacteristicPromotionPlan::class, 'plan_id');
     }
 }

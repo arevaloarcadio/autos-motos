@@ -740,6 +740,9 @@ class AdsController extends Controller
             if ($filters->condition) {
                 $query->orWhere('condition',$filters->condition);
             }
+            if ($filters->doors) {
+                $query->orWhere('doors',$filters->doors);
+            }
             if ($filters->fuel_type_id) {
                 $query->orWhere('ad_fuel_type_id',$filters->fuel_type_id);
             }

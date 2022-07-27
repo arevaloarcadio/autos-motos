@@ -15,12 +15,13 @@ class CreateCharacteristicPlansTable extends Migration
     {
         Schema::create('characteristic_plans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->integer('vehicle_ads');
-            $table->integer('rental_ads');
-            $table->integer('promotion_month');
+            //$table->integer('promotion_month');
             $table->integer('front_page_promotion');
             $table->integer('video_a_day');
-            $table->integer('mechanics_rental_ads');
+            $table->integer('vehicle_ads');
+            $table->integer('shop_ads');
+            $table->integer('rental_ads');
+            $table->integer('mechanic_ads');
             $table->uuid('plan_id');
             $table->timestamps();
         });
