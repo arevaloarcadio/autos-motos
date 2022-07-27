@@ -144,17 +144,3 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 });
 
 
-/* Auto-generated admin routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
-    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
-        Route::prefix('promoted-ads')->name('promoted-ads/')->group(static function() {
-            Route::get('/',                                             'PromotedAdsController@index')->name('index');
-            Route::get('/create',                                       'PromotedAdsController@create')->name('create');
-            Route::post('/',                                            'PromotedAdsController@store')->name('store');
-            Route::get('/{promotedAd}/edit',                            'PromotedAdsController@edit')->name('edit');
-            Route::post('/bulk-destroy',                                'PromotedAdsController@bulkDestroy')->name('bulk-destroy');
-            Route::post('/{promotedAd}',                                'PromotedAdsController@update')->name('update');
-            Route::delete('/{promotedAd}',                              'PromotedAdsController@destroy')->name('destroy');
-        });
-    });
-});

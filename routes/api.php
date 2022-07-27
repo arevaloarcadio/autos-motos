@@ -132,6 +132,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/',                                            'PaymentHistoriesController@store')->name('store');
             //Route::post('/{paymentHistory}',                            'PaymentHistoriesController@update')->name('update');
         });
+
+        Route::prefix('promoted-ads')->name('promoted-ads/')->group(static function() {
+            Route::post('/',                                            'PromotedAdsController@store')->name('store');
+        });
      });
 });
 
