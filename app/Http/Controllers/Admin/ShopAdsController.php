@@ -147,7 +147,7 @@ class ShopAdsController extends Controller
             'description' => $sanitized['description'],
             'thumbnail' => $sanitized['thumbnail'],
             'status' => 0,
-            'type' => 'auto',
+            'type' => 'shop',
             'is_featured' => 0,
             'user_id' => Auth::user()->id,
             'market_id' => $sanitized['market_id'],
