@@ -64,3 +64,4 @@ import './ad-user-plan';
 import './characteristic-plan';
 import './characteristic-promotion-plan';
 import './receipt';
+import './promoted-ad';

@@ -1817,5 +1817,22 @@ return [
         ],
     ],
 
+    'promoted-ad' => [
+        'title' => 'Promoted Ads',
+
+        'actions' => [
+            'index' => 'Promoted Ads',
+            'create' => 'New Promoted Ad',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'ad_id' => 'Ad',
+            'user_id' => 'User',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];
