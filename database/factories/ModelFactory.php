@@ -1270,3 +1270,15 @@ $factory->define(App\Models\CharacteristicPromotionPlan::class, static function 
         
     ];
 });
+/** @var  \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Receipt::class, static function (Faker\Generator $faker) {
+    return [
+        'plan_id' => $faker->sentence,
+        'user_id' => $faker->sentence,
+        'file' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

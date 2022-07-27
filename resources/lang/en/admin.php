@@ -1799,5 +1799,23 @@ return [
         ],
     ],
 
+    'receipt' => [
+        'title' => 'Receipts',
+
+        'actions' => [
+            'index' => 'Receipts',
+            'create' => 'New Receipt',
+            'edit' => 'Edit :name',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'plan_id' => 'Plan',
+            'user_id' => 'User',
+            'file' => 'File',
+            
+        ],
+    ],
+
     // Do not delete me :) I'm used for auto-generation
 ];

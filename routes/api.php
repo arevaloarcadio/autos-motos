@@ -108,6 +108,14 @@ Route::group(['middleware' => ['jwt.verify']], function() {
           
         });
         
+        Route::prefix('receipts')->name('receipts/')->group(static function() {
+            Route::get('/',                                             'ReceiptsController@index')->name('index');
+            Route::post('/',                                            'ReceiptsController@store')->name('store');
+            //Route::post('/bulk-destroy',                                'ReceiptsController@bulkDestroy')->name('bulk-destroy');
+            //Route::post('/{receipt}',                                   'ReceiptsController@update')->name('update');
+            //Route::delete('/{receipt}',                                 'ReceiptsController@destroy')->name('destroy');
+        });
+
         Route::prefix('plans')->name('plans/')->group(static function() {
             Route::get('/',                                             'PlansController@index')->name('index');
             Route::get('/byUser',                                       'PlansController@byUser')->name('index');
