@@ -1181,7 +1181,9 @@ public function getCountAutoAd($filters)
             if ($filters->to_mileage && $filters->from_mileage) {
                 $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
-
+            if ($filters->doors) {
+                $query->orWhere('doors',$filters->doors);
+            }
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
