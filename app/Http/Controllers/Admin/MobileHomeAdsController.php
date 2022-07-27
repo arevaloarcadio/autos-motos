@@ -205,8 +205,10 @@ class MobileHomeAdsController extends Controller
 
         try {
             
+            $slug = $this->slugAd($request['title']);
+
             $ad = Ad::create([
-                'slug' => Str::slug($request['title']),
+                'slug' => $slug,
                 'title' => $request['title'],
                 'description' => $request['description'],
                 'thumbnail' => $request['thumbnail'],
@@ -551,5 +553,18 @@ class MobileHomeAdsController extends Controller
         ]);
 
         return $path;
+    }
+
+    private function slugAd($title)
+    {   
+        $response = Str::slug($title);
+
+        $validate = Ad::where('slug',Str::slug($title))->count();  
+        
+        if ($validate  != 0) {
+            $response .= '-'.Str::uuid()->toString().'-'.$validate;
+        }
+        
+        return $response;
     }
 }

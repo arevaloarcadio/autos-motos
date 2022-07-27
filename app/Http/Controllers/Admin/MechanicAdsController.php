@@ -132,8 +132,10 @@ class MechanicAdsController extends Controller
 
             $sanitized = $request->getSanitized();
 
+            $slug = $this->slugAd($sanitized['title']);
+
             $ad = Ad::create([
-                'slug' => Str::slug($sanitized['title']),
+                'slug' => $slug,
                 'title' => $sanitized['title'],
                 'description' => $sanitized['description'],
                // 'thumbnail' => $sanitized['thumbnail'],
@@ -318,6 +320,19 @@ class MechanicAdsController extends Controller
 
        // ahora ponemos en practica el teorema de pitagora para calcular la distancia
        $distancia = sqrt(pow($diferenciaX,2) + pow($diferenciaY,2));
+    }
+
+    private function slugAd($title)
+    {   
+        $response = Str::slug($title);
+
+        $validate = Ad::where('slug',Str::slug($title))->count();  
+        
+        if ($validate  != 0) {
+            $response .= '-'.Str::uuid()->toString().'-'.$validate;
+        }
+        
+        return $response;
     }
 
 }

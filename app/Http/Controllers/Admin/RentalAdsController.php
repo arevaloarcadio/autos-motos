@@ -125,8 +125,10 @@ class RentalAdsController extends Controller
 
             $sanitized = $request->getSanitized();
 
+           $slug = $this->slugAd($sanitized['title']);
+
             $ad = Ad::create([
-                'slug' => Str::slug($sanitized['title']),
+                'slug' => $slug,
                 'title' => $sanitized['title'],
                 'description' => $sanitized['description'],
                 //'thumbnail' => $sanitized['thumbnail'],
@@ -300,5 +302,18 @@ class RentalAdsController extends Controller
         ]);
 
         return $path;
+    }
+
+    private function slugAd($title)
+    {   
+        $response = Str::slug($title);
+
+        $validate = Ad::where('slug',Str::slug($title))->count();  
+        
+        if ($validate  != 0) {
+            $response .= '-'.Str::uuid()->toString().'-'.$validate;
+        }
+        
+        return $response;
     }
 }
