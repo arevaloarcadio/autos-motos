@@ -11,7 +11,7 @@ use App\Services\PayPalService;
 use App\Traits\ConsumesExternalServices;
 use Cache;
 use Carbon\Carbon;
-use App\Models\{PaymentHistory,UserPlan};
+use App\Models\{PaymentHistory,UserPlan,Plan,User};
 
 class PayPalService
 {
@@ -92,7 +92,11 @@ class PayPalService
         if ($approvalId) {
             $this->savePaymentPlan($user_id,$plan_id,$value,$approvalId);
             $payment = $this->capturePayment($approvalId);
-            return view('landing.aprobado');
+            $plan = Plan::find($plan_id);
+            $user = User::find($user_id);
+            return view('landing.aprobado')
+                ->with('plan',$plan)
+                ->with('user',$user);
         }else{
             return view('landing.cancelado');
         }
