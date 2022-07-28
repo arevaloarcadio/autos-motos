@@ -78,7 +78,7 @@ class ReceiptsController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreReceipt $request
-     * @return array|RedirectResponse|Redirector
+     * @return array|RedirectResponse|ReStoreReceiptdirector
      */
     public function store(StoreReceipt $request)
     {
@@ -88,6 +88,7 @@ class ReceiptsController extends Controller
         
         try {
 
+
             $data = [];
             
             $user_id = Auth::user()->id;
@@ -95,15 +96,21 @@ class ReceiptsController extends Controller
 
             $data['user_id'] = $user_id;
             $data['plan_id'] = $sanitized['plan_id'];
-            /*$data['name'] = $sanitized['name'];
-            $data['email'] = $sanitized['email'];
-            $data['phone'] = $sanitized['phone'];
-            $data['country'] = $sanitized['country'];*/
             $data['file'] = $this->uploadFile($request->file('file'),$user_id);
 
 
             $receipt = Receipt::create($data);    
             
+            $billing = new Billing;
+            
+            $billing->name = $sanitized['name'];
+            $billing->email = $sanitized['email'];
+            $billing->phone = $sanitized['phone'];
+            $billing->country = $sanitized['country'];
+            $billing->user_id = Auth::user()->id;
+
+            $billing->save();
+
             $user_plan = new UserPlan;
             $user_plan->user_id = $user_id;
             $user_plan->plan_id = $sanitized['plan_id'];

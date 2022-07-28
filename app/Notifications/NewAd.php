@@ -47,6 +47,7 @@ class NewAd extends Notification
             ->line('Hola '.$this->user->first_name.' '.$this->user->last_name)
             ->line('Su anuncio ha sido creado ')
             ->line('Y está esperando la aprobación de uno de nuestros administradores')
+            ->action('Ingrese a Autos Motos','https://automotos.dattatech.com/')
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
 

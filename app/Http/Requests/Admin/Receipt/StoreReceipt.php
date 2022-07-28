@@ -30,6 +30,10 @@ class StoreReceipt extends FormRequest
             'plan_id' => 'required|string|exists:plans,id',
             //'user_id' => ['required', 'string'],
             'file' => ['required', 'file'],
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
+            'country' => 'nullable|string|max:255'
             
         ];
     }
