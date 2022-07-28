@@ -593,4 +593,16 @@ class PromotedAdsController extends Controller
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
+
+    public function deletePromoted(Request $request,$ad_id)
+    {
+       if ($request->type =='front_page') {
+           PromotedFrontPageAd::where('ad_id',$ad_id)->delete();
+       }
+       if ($request->type =='simple') {
+           PromotedSimpleAd::where('ad_id',$ad_id)->delete();
+       }
+
+       return ['data' => 'OK'];
+    }
 }
