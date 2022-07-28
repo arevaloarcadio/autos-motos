@@ -82,8 +82,6 @@ class ReceiptsController extends Controller
      */
     public function store(StoreReceipt $request)
     {
-        ini_set('max_execution_time', 0);
-
         $resource = ApiHelper::resource();
         
         $sanitized = $request->getSanitized();
@@ -97,7 +95,12 @@ class ReceiptsController extends Controller
 
             $data['user_id'] = $user_id;
             $data['plan_id'] = $sanitized['plan_id'];
+            $data['name'] = $sanitized['name'];
+            $data['email'] = $sanitized['email'];
+            $data['phone'] = $sanitized['phone'];
+            $data['country'] = $sanitized['country'];
             $data['file'] = $this->uploadFile($request->file('file'),$user_id);
+
 
             $receipt = Receipt::create($data);    
             

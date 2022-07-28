@@ -13,6 +13,10 @@ class Receipt extends Model
         'plan_id',
         'user_id',
         'file',
+        'name',
+        'email',
+        'phone',
+        'country'
     
     ];
     
