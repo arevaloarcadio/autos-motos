@@ -721,7 +721,7 @@ class AdsController extends Controller
       
         try {
             
-            array_push($response, ...$this->getPromotedAds($request->types));
+            //array_push($response, ...$this->getPromotedAds($request->types));
           
             if ($request->types) {
                 foreach ($request->types as $type) {
