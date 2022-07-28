@@ -23,11 +23,14 @@ Route::namespace('App\Http\Controllers')->group(static function() {
 });
 
 Route::group(['middleware' => ['jwt.verify']], function() {
+    
     Route::namespace('App\Http\Controllers')->group(static function() {
+        Route::post('/billings', 'BillingController@store')->name('billing-store');
         Route::post('/paypal-payments', 'PaypalController@pay')->name('paypal-payment');
         Route::post('/paypal-payments-anuncio', 'PaypalController@payAnuncio')->name('paypal-payment.anuncio');
         Route::post('/stripe-payments', 'StripeController@pay')->name('stripe-payment');
     });
+
     Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('admin')->group(static function() {

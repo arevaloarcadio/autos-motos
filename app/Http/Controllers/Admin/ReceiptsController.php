@@ -95,10 +95,10 @@ class ReceiptsController extends Controller
 
             $data['user_id'] = $user_id;
             $data['plan_id'] = $sanitized['plan_id'];
-            $data['name'] = $sanitized['name'];
+            /*$data['name'] = $sanitized['name'];
             $data['email'] = $sanitized['email'];
             $data['phone'] = $sanitized['phone'];
-            $data['country'] = $sanitized['country'];
+            $data['country'] = $sanitized['country'];*/
             $data['file'] = $this->uploadFile($request->file('file'),$user_id);
 
 
