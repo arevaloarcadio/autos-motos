@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 
 class BulkDestroyAdUserPlan extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -14,7 +15,7 @@ class BulkDestroyAdUserPlan extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.ad-user-plan.bulk-delete');
+        return true;
     }
 
     /**

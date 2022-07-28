@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 
 class DestroyAdUserPlan extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -14,7 +15,7 @@ class DestroyAdUserPlan extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.ad-user-plan.delete', $this->adUserPlan);
+        return true;
     }
 
     /**

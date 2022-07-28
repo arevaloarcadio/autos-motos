@@ -40,28 +40,13 @@ class RentalAdsController extends Controller
      */
     public function index(IndexRentalAd $request)
     {
-        if ($request->all) {
-            
-            $query = RentalAd::query();
+        $promoted_simple_ads = RentalAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
 
-            $columns = ['id', 'ad_id','address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'];
-                
-            if ($request->filters) {
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
-                        }
-                    }
-                }
-            }
-            
-            foreach (RentalAd::getRelationships() as $key => $value) {
-               $query->with($key);
-            }
-
-            return ['data' => $query->get()];
+        foreach (RentalAd::getRelationships() as $key => $value) {
+           $promoted_simple_ads->with($key);
         }
+
+        $promoted = $promoted_simple_ads->get()->toArray();
       
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(RentalAd::class)->processRequestAndGet(
@@ -97,6 +82,12 @@ class RentalAdsController extends Controller
             }
         );
         
+        $data = $data->toArray(); 
+            
+        array_push($promoted,...$data['data']);
+    
+        $data['data'] = $promoted;
+
         return ['data' => $data];
     }
 
@@ -315,5 +306,18 @@ class RentalAdsController extends Controller
         }
         
         return $response;
+    }
+
+     public function rentalAdsPromotedFrontPage(Request $request)
+    {
+        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_front_page_ads)')->where('type','rental')->inRandomOrder()->limit(25);
+
+        $data->with([
+                        'images',
+                        'rentalAd',
+                    ]
+                );
+
+        return ['data' => $data->get()];
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateAdUserPlan extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,7 +16,7 @@ class UpdateAdUserPlan extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.ad-user-plan.edit', $this->adUserPlan);
+        return true;
     }
 
     /**

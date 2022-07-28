@@ -41,29 +41,13 @@ class ShopAdsController extends Controller
      */
     public function index(IndexShopAd $request)
     {
-        if ($request->all) {
-            
-            $query = ShopAd::query();
+        $promoted_simple_ads = ShopAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
 
-            $columns =  ['id', 'ad_id', 'category', 'make_id', 'model', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
-           
-                
-            if ($request->filters) {
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
-                        }
-                    }
-                }
-            }
-
-            foreach (ShopAd::getRelationships() as $key => $value) {
-               $query->with($key);
-            }
-
-            return ['data' => $query->get()];
+        foreach (ShopAd::getRelationships() as $key => $value) {
+           $promoted_simple_ads->with($key);
         }
+
+        $promoted = $promoted_simple_ads->get()->toArray();
         
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(ShopAd::class)->processRequestAndGet(
@@ -97,6 +81,12 @@ class ShopAdsController extends Controller
             }
         );
         
+        $data = $data->toArray(); 
+            
+        array_push($promoted,...$data['data']);
+    
+        $data['data'] = $promoted;
+
         return ['data' => $data];
     }
 
@@ -526,5 +516,21 @@ class ShopAdsController extends Controller
         }
         
         return $response;
+    }
+
+    public function shopAdsPromotedFrontPage(Request $request)
+    {
+        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_front_page_ads)')->where('type','shop')->inRandomOrder()->limit(25);
+
+        $data->with([
+                        'images',
+                        'shopAd' => function($query)
+                        {
+                            $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                        }
+                    ]
+                );
+
+        return ['data' => $data->get()];
     }
 }

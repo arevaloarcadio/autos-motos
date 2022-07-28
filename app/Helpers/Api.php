@@ -21,6 +21,7 @@ class Api {
     
     public static function setException(&$resource, \Exception $exception){
         $message = $exception->getMessage();
+        $line = $exception->getLine();
 
         $resource['error']['code'] = $exception->getCode();
         if ($exception instanceof OAuthServerException) {
@@ -35,6 +36,7 @@ class Api {
             }
         }
         $resource['error']['message'] = $message;
+        $resource['error']['line'] = $line;
         $resource['error']['type']   = 'unknown';
     }
     

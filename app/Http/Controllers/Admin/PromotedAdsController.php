@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\PromotedAd\DestroyPromotedAd;
 use App\Http\Requests\Admin\PromotedAd\IndexPromotedAd;
 use App\Http\Requests\Admin\PromotedAd\StorePromotedAd;
 use App\Http\Requests\Admin\PromotedAd\UpdatePromotedAd;
-use App\Models\{PromotedAd,User,Plan,Ad};
+use App\Models\{PromotedFrontPageAd,PromotedSimpleAd,CharacteristicPlan,CharacteristicPromotionPlan,User,Plan,Ad};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -31,6 +31,7 @@ use Illuminate\Support\Str;
 class PromotedAdsController extends Controller
 {
 
+    use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -73,40 +74,279 @@ class PromotedAdsController extends Controller
      * @param StorePromotedAd $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StorePromotedAd $request)
+     public function store(StorePromotedAd $request)
     {
+        $sanitized = $request->getSanitized();
+        
         $resource = ApiHelper::resource();
 
         try {
-            return response()->json(['data' => 'EN DESARROLLO'], 200);
-            // Sanitize input
-            $data = [];
-            $sanitized = $request->getSanitized();
-            $data['user_id'] = Auth::user()->id;
-            $data['ad_id'] =  $sanitized['ad_id'];
-
+            
             $user = Auth::user();
             
-            if ($user->plan_active === null) {
-                ApiHelper::setError($resource, 0, 422, ['data' => 'Actualemente no tiene plan activo para promocionar']);
+            if (count($user->plan_active) == 0) {
+                ApiHelper::setError($resource, 0, 422, ['data' => 'Actualmente no tiene plan activo para promocionar']);
                 return $this->sendResponse($resource);
             }
             
-            $ad = Ad::find($data['ad_id']);
+            $ad = Ad::find($sanitized['ad_id']);
 
-            $plan = Plan::find($user->plan_active->id);
-
-            if ($user->type == 'Ocasional') {
-                 $plan->characteristic_promotion_plans; 
+            $plan = Plan::find($user->plan_active->first()->id);
+            
+            if ($sanitized['type'] == 'front_page') {
+                if ($user->type == 'Profesional') {
+                   $validate = $this->getFrontPageCharacteristicPlan($plan); 
+                }
+                if ($user->type == 'Ocasional') {
+                   $validate = $this->getFrontPageCharacteristicPromotionPlan($plan); 
+                }
             }
 
-            $promotedAd = PromotedAd::create($data);
+            if ($sanitized['type'] == 'simple') {
+                if ($user->type == 'Profesional') {
 
-            return response()->json(['data' => $promotedAd], 200);
+                   $validate = $this->getCharacteristicPlan($plan,$ad->type); 
+                }
+                if ($user->type == 'Ocasional') {
+                   $validate = $this->getCharacteristicPromotionPlan($plan,$ad->type); 
+                }
+            }
+            
+            if (!$validate) {
+                ApiHelper::setError($resource, 0, 422, ['data' => 'Ha alcanzado su límite para promocionar o no tiene plan para promociar ese tipo de anuncio']);
+                return $this->sendResponse($resource);
+            }
+
+            $promoted_ad = null;
+            
+            if ($validate && $sanitized['type'] == 'simple') {
+                $promoted_ad = new PromotedSimpleAd;
+                $promoted_ad->ad_id = $sanitized['ad_id'];
+                $promoted_ad->user_id = Auth::user()->id;
+                $promoted_ad->save();
+            }
+
+            if ($validate && $sanitized['type'] == 'front_page') {
+                $promoted_ad  = new PromotedFrontPageAd;
+                $promoted_ad->ad_id = $sanitized['ad_id'];
+                $promoted_ad->user_id = Auth::user()->id;
+                $promoted_ad->save();
+            }
+
+            return response()->json(['data' => $promoted_ad], 200);
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }
+    }
+    
+    public function getFrontPageCharacteristicPlan($plan)
+    {
+        $user_id = Auth::user()->id;
+
+        $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+       
+        $promoted_front_page_ad = PromotedFrontPageAd::where('user_id',$user_id)->count();
+       
+        if (($characteristic['front_page_promotion'] - $promoted_front_page_ad) > 0) {
+            return true;
+        } 
+        
+        return false;
+    }
+
+    public function getFrontPageCharacteristicPromotionPlan($plan)
+    {
+        $user_id = Auth::user()->id;
+
+        $characteristic = CharacteristicPromotionPlan::selectRaw('sum(front_page_promotion) as front_page_promotion')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('front_page_promotion')
+                    ->first();
+       
+        $promoted_front_page_ad = PromotedFrontPageAd::where('user_id',$user_id)->count();
+       
+        if (($characteristic['front_page_promotion'] - $promoted_front_page_ad) > 0) {
+            return true;
+        } 
+        
+        return false;
+    }
+
+    public function getCharacteristicPromotionPlan($plan,$ad_type)
+    {
+        $user_id = Auth::user()->id;
+        $response = false;
+        
+        $promoted_front_page_ad = PromotedSimpleAd::where('user_id',$user_id)->count();
+                
+        switch ($ad_type) {
+            case 'auto':
+                
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(vehicle_ads) as vehicle_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('vehicle_ads')
+                    ->first();
+                
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'moto':
+                
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(vehicle_ads) as vehicle_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('vehicle_ads')
+                    ->first();
+
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'mobile-home':
+                
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(vehicle_ads) as vehicle_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('vehicle_ads')
+                    ->first();
+
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'truck':
+
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(vehicle_ads) as vehicle_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('vehicle_ads')
+                    ->first();
+
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'shop':
+                
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(shop_ads) as shop_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('shop_ads')
+                    ->first();
+
+                if (($characteristic['shop_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                }
+                break;
+            case 'mechanic':
+
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(mechanic_ads) as mechanic_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('mechanic_ads')
+                    ->first();
+
+                if (($characteristic['mechanic_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                }
+                break;
+            case 'rental':
+
+                $characteristic = CharacteristicPromotionPlan::selectRaw('sum(rental_ads) as rental_ads')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user_id)
+                    ->groupBy('rental_ads')
+                    ->first();
+
+                if (($characteristic['rental_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                }
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return $response;
+    }
+
+
+    public function getCharacteristicPlan($plan,$ad_type)
+    {
+        $user_id = Auth::user()->id;
+        $response = false;
+        
+        $promoted_front_page_ad = PromotedSimpleAd::where('user_id',$user_id)->count();
+        
+        switch ($ad_type) {
+            case 'auto':
+                
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+                
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'moto':
+                
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'mobile-home':
+                
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'truck':
+
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+
+                if (($characteristic['vehicle_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                } 
+                break;
+            case 'shop':
+                
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+
+                if (($characteristic['shop_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                }
+                break;
+            case 'mechanic':
+
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+
+                if (($characteristic['mechanic_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                }
+                break;
+            case 'rental':
+
+                $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+
+                if (($characteristic['rental_ads'] - $promoted_front_page_ad) > 0) {
+                    $response = true;
+                }
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return $response;
     }
 
     /**

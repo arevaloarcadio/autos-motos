@@ -94,26 +94,6 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
     });
 });
 
-
-
-
-
-/* Auto-generated admin routes */
-Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
-    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
-        Route::prefix('ad-user-plans')->name('ad-user-plans/')->group(static function() {
-            Route::get('/',                                             'AdUserPlansController@index')->name('index');
-            Route::get('/create',                                       'AdUserPlansController@create')->name('create');
-            Route::post('/',                                            'AdUserPlansController@store')->name('store');
-            Route::get('/{adUserPlan}/edit',                            'AdUserPlansController@edit')->name('edit');
-            Route::post('/bulk-destroy',                                'AdUserPlansController@bulkDestroy')->name('bulk-destroy');
-            Route::post('/{adUserPlan}',                                'AdUserPlansController@update')->name('update');
-            Route::delete('/{adUserPlan}',                              'AdUserPlansController@destroy')->name('destroy');
-        });
-    });
-});
-
-/* Auto-generated admin routes */
 Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
     Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
         Route::prefix('characteristic-plans')->name('characteristic-plans/')->group(static function() {

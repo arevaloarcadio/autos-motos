@@ -42,6 +42,38 @@ class AdsController extends Controller
      */
     public function index(IndexAd $request)
     {   
+        $promoted = [];
+
+        $promoted_simple_ads = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
+
+        $promoted_simple_ads->with([
+                    'mechanicAd',
+                    'rentalAd',
+                    'images',
+                    'autoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'motoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'mobileHomeAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'truckAd' => function($query)
+                    {
+                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'shopAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                    }
+                ]);
+
+        $promoted = $promoted_simple_ads->get()->toArray();
+        
         $data = AdminListing::create(Ad::class)->processRequestAndGet(
             // pass the request with params
             $request,
@@ -131,6 +163,12 @@ class AdsController extends Controller
             }
         );
 
+        $data = $data->toArray(); 
+            
+        array_push($promoted,...$data['data']);
+    
+        $data['data'] = $promoted;
+      
         return ['data' => $data];
     }
 
@@ -678,11 +716,12 @@ class AdsController extends Controller
       
         try {
             
+            array_push($response, ...$this->getPromotedAds($request->types));
+          
             if ($request->types) {
                 foreach ($request->types as $type) {
                     switch ($type) {
                         case 'auto':
-
                             array_push($response, ...$this->getAutoAd($request));
                             break;
                         case 'moto':
@@ -704,12 +743,44 @@ class AdsController extends Controller
             return response()->json(['count' => count($response),'data' => $response], 200);
 
         } catch (Exception $e) {
-            dd($e->getMessage());
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }
     }
 
+
+    public function getPromotedAds($types)
+    {   
+        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)')->whereIn('type',$types)->inRandomOrder()->limit(10);
+
+        $data->with([
+                    'mechanicAd',
+                    'rentalAd',
+                    'images',
+                    'autoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'motoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'mobileHomeAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'truckAd' => function($query)
+                    {
+                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'shopAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                    }
+                ]);
+
+        return $data->get()->toArray();
+    }
 
     public function getAutoAd($filters)
     {
@@ -1497,4 +1568,102 @@ public function getCountAutoAd($filters)
         }
     }
 
+    public function getPromotedSimpleAdsByUser(Request $request)
+    {
+
+        $type = null;
+        
+        if($request->type == 'vehicle'){
+             $type = ['auto','moto','mobile-home','truck'];
+        }
+        if($request->type == 'service'){
+            $type = ['rental','shop','mechanic'];   
+        }
+        
+        $data = Ad::select('ads.*')
+            ->join('promoted_simple_ads','ads.id','promoted_simple_ads.ad_id')
+            ->where('promoted_simple_ads.user_id',Auth::user()->id);
+            
+            
+        if (!is_null($type)) {
+            $data = $data->whereIn('ads.type',$type);
+        }
+
+        $data->with([
+                    'mechanicAd',
+                    'rentalAd',
+                    'images',
+                    'autoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'motoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'mobileHomeAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'truckAd' => function($query)
+                    {
+                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'shopAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                    }
+                ]);
+
+        return ['data' => $data->get()];
+    }
+
+    public function getPromotedFrontPageAdsByUser(Request $request)
+    {
+        $type = null;
+        
+        if($request->type == 'vehicle'){
+             $type = ['auto','moto','mobile-home','truck'];
+        }
+        if($request->type == 'service'){
+            $type = ['rental','shop','mechanic'];   
+        }
+
+
+        $data = Ad::select('ads.*')
+            ->join('promoted_front_page_ads','ads.id','promoted_front_page_ads.ad_id')
+            ->where('promoted_front_page_ads.user_id',Auth::user()->id);
+        
+        if (!is_null($type)) {
+            $data = $data->whereIn('ads.type',$type);
+        } 
+
+        $data->with([
+                    'mechanicAd',
+                    'rentalAd',
+                    'images',
+                    'autoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'motoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'mobileHomeAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'truckAd' => function($query)
+                    {
+                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'shopAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                    }
+                ]);
+
+        return ['data' => $data->get()];
+    }
 }

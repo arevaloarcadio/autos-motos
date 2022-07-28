@@ -40,28 +40,13 @@ class MechanicAdsController extends Controller
      */
     public function index(IndexMechanicAd $request)
     {
-        if ($request->all) {
-            
-            $query = MechanicAd::query();
+        $promoted_simple_ads = MechanicAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
 
-            $columns = ['id', 'internal_name', 'slug', 'domain', 'default_locale_id', 'icon', 'mobile_number', 'whatsapp_number', 'email_address'];
-                
-            if ($request->filters) {
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
-                        }
-                    }
-                }
-            }
-
-            foreach (MechanicAd::getRelationships() as $key => $value) {
-               $query->with($key);
-            }
-
-            return ['data' => $query->get()];
+        foreach (MechanicAd::getRelationships() as $key => $value) {
+           $promoted_simple_ads->with($key);
         }
+
+        $promoted = $promoted_simple_ads->get()->toArray();
         
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MechanicAd::class)->processRequestAndGet(
@@ -104,6 +89,12 @@ class MechanicAdsController extends Controller
             }
         );
         
+        $data = $data->toArray(); 
+            
+        array_push($promoted,...$data['data']);
+    
+        $data['data'] = $promoted;
+
         return ['data' => $data];
     }
 
@@ -333,6 +324,19 @@ class MechanicAdsController extends Controller
         }
         
         return $response;
+    }
+
+    public function mechanicAdsPromotedFrontPage(Request $request)
+    {
+        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_front_page_ads)')->where('type','mechanic')->inRandomOrder()->limit(25);
+
+        $data->with([
+                        'images',
+                        'mechanicAd'
+                    ]
+                );
+
+        return ['data' => $data->get()];
     }
 
 }

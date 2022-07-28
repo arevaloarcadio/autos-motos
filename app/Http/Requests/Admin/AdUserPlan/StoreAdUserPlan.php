@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class StoreAdUserPlan extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,7 +16,7 @@ class StoreAdUserPlan extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.ad-user-plan.create');
+        return true;
     }
 
     /**
@@ -26,9 +27,9 @@ class StoreAdUserPlan extends FormRequest
     public function rules(): array
     {
         return [
-            'plan_user_id' => ['required', 'string'],
+            //'plan_user_id' => ['required', 'string'],
             'ad_id' => ['required', 'string'],
-            
+            'type' => 'in:simple,front_page|required|string'
         ];
     }
 

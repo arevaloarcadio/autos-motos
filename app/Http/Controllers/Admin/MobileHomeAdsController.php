@@ -41,28 +41,13 @@ class MobileHomeAdsController extends Controller
      */
     public function index(IndexMobileHomeAd $request)
     {
-        if ($request->all) {
-            
-            $query = MobileHomeAd::query();
+        $promoted_simple_ads = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
 
-            $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
-                
-            if ($request->filters) {
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
-                        }
-                    }
-                }
-            }
-
-            foreach (MobileHomeAd::getRelationships() as $key => $value) {
-               $query->with($key);
-            }
-
-            return ['data' => $query->get()];
+        foreach (MobileHomeAd::getRelationships() as $key => $value) {
+           $promoted_simple_ads->with($key);
         }
+
+        $promoted = $promoted_simple_ads->get()->toArray();
         
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MobileHomeAd::class)->processRequestAndGet(
@@ -95,6 +80,12 @@ class MobileHomeAdsController extends Controller
             }
         );
 
+        $data = $data->toArray(); 
+            
+        array_push($promoted,...$data['data']);
+    
+        $data['data'] = $promoted;
+        
         return ['data' => $data];
     }
 
@@ -566,5 +557,21 @@ class MobileHomeAdsController extends Controller
         }
         
         return $response;
+    }
+
+    public function mobileHomeAdsPromotedFrontPage(Request $request)
+    {
+        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_front_page_ads)')->where('type','mobile-home')->inRandomOrder()->limit(25);
+
+        $data->with([
+                        'images',
+                        'mobileHomeAd' => function($query)
+                        {
+                            $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                        },
+                    ]
+                );
+
+        return ['data' => $data->get()];
     }
 }

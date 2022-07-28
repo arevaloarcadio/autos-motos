@@ -28,7 +28,8 @@ class StorePromotedAd extends FormRequest
     {
         return [
             'ad_id' => ['required', 'string'],
-           // 'user_id' => ['required', 'string'],
+            'type' => 'in:simple,front_page|required|string'
+            //'user_id' => ['required', 'string'],
             
         ];
     }

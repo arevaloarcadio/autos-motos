@@ -39,29 +39,15 @@ class MotoAdsController extends Controller
      */
     public function index(IndexMotoAd $request)
     {
-        if ($request->all) {
-            
-            $query = MotoAd::query();
-
-            $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
-                
-            if ($request->filters) {
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
-                        }
-                    }
-                }
-            }
-
-            foreach (MotoAd::getRelationships() as $key => $value) {
-               $query->with($key);
-            }
-
-            return ['data' => $query->get()];
-        }
         
+        $promoted_simple_ads = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
+
+        foreach (MotoAd::getRelationships() as $key => $value) {
+           $promoted_simple_ads->with($key);
+        }
+
+        $promoted = $promoted_simple_ads->get()->toArray();
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MotoAd::class)->processRequestAndGet(
             // pass the request with params
@@ -94,6 +80,12 @@ class MotoAdsController extends Controller
             }
         );
         
+        $data = $data->toArray(); 
+            
+        array_push($promoted,...$data['data']);
+    
+        $data['data'] = $promoted;
+
         return ['data' => $data];
     }
 
@@ -561,5 +553,21 @@ class MotoAdsController extends Controller
         }
         
         return $response;
+    }
+
+     public function motoAdsPromotedFrontPage(Request $request)
+    {
+        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_front_page_ads)')->where('type','moto')->inRandomOrder()->limit(25);
+
+        $data->with([
+                        'images',
+                        'motoAd' => function($query)
+                        {
+                            $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                        }
+                    ]
+                );
+
+        return ['data' => $data->get()];
     }
 }

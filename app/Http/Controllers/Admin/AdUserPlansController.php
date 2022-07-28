@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\AdUserPlan\DestroyAdUserPlan;
 use App\Http\Requests\Admin\AdUserPlan\IndexAdUserPlan;
 use App\Http\Requests\Admin\AdUserPlan\StoreAdUserPlan;
 use App\Http\Requests\Admin\AdUserPlan\UpdateAdUserPlan;
-use App\Models\AdUserPlan;
+use App\Models\{AdUserPlan,User,Plan,Ad};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -20,9 +20,16 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
+use Illuminate\Http\Request;
+use App\Http\Resources\Data;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 class AdUserPlansController extends Controller
 {
-
+    use ApiController;
     /**
      * Display a listing of the resource.
      *
@@ -43,16 +50,7 @@ class AdUserPlansController extends Controller
             ['id', 'plan_user_id', 'ad_id']
         );
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
-
-        return view('admin.ad-user-plan.index', ['data' => $data]);
+        return ['data' => $data];
     }
 
     /**
@@ -74,21 +72,7 @@ class AdUserPlansController extends Controller
      * @param StoreAdUserPlan $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreAdUserPlan $request)
-    {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-
-        // Store the AdUserPlan
-        $adUserPlan = AdUserPlan::create($sanitized);
-
-        if ($request->ajax()) {
-            return ['redirect' => url('admin/ad-user-plans'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-        }
-
-        return redirect('admin/ad-user-plans');
-    }
-
+   
     /**
      * Display the specified resource.
      *

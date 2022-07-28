@@ -38,6 +38,7 @@ class UserController extends Controller
         }
 
         $user = Auth::user();
+        
         $plan_active = $user->plan_active->first();
     
         return response()->json([
