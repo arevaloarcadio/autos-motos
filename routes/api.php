@@ -143,6 +143,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
         Route::prefix('promoted-ads')->name('promoted-ads/')->group(static function() {
             Route::post('/',                                            'PromotedAdsController@store')->name('store');
+            Route::get('/info',                                        'PromotedAdsController@getInfoPromoted')->name('store');
         });
     });
 });

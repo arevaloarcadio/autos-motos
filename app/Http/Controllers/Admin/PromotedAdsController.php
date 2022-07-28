@@ -349,6 +349,84 @@ class PromotedAdsController extends Controller
         return $response;
     }
 
+    
+    public function getInfoPromoted(Request $request)
+    {
+        $user =  Auth::user();
+
+        if ($user->type == 'Ocasional') {
+            
+            $characteristic = CharacteristicPromotionPlan::selectRaw('sum(rental_ads) as rental_ads , sum(mechanic_ads) as mechanic_ads,sum(vehicle_ads) as vehicle_ads,sum(shop_ads) as shop_ads,sum(front_page_promotion) as front_page_promotion')
+                    ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
+                    ->where('user_id',$user->id)
+                    ->groupBy('rental_ads','mechanic_ads','vehicle_ads','shop_ads','front_page_promotion')
+                    ->first();
+            
+            $count_promoted_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
+                ->where('promoted_simple_ads.user_id',$user->id)
+                ->count();
+
+            $count_front_page_ads = Ad::join('promoted_front_page_ads','promoted_front_page_ads.ad_id','ads.id')
+                ->where('promoted_front_page_ads.user_id',$user->id)
+                ->count();
+
+            $count_rental_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
+                ->where('promoted_simple_ads.user_id',$user->id)
+                ->where('ads.type','rental')
+                ->count(); 
+
+            $count_shop_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
+                ->where('promoted_simple_ads.user_id',$user->id)
+                ->where('ads.type','shop')
+                ->count();
+
+            $count_mechanic_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
+                ->where('promoted_simple_ads.user_id',$user->id)
+                ->where('ads.type','mechanic')
+                ->count();
+
+            $count_vehicle_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
+                ->where('promoted_simple_ads.user_id',$user->id)
+                ->whereIn('ads.type',['auto','moto','shop','truck'])
+                ->count();
+
+            $response = [
+                'rental_ads' => [
+                    'total' => $characteristic['rental_ads'] - $count_rental_ads,
+                    'text' => 'Anuncios de alquiler restantes'
+                ],
+                'mechanic_ads' => [
+                    'total' => $characteristic['mechanic_ads'] - $count_mechanic_ads,
+                    'text' => 'Anuncios de taller restantes'
+                ],
+                'front_page_promotion' => [
+                    'total' => $count_front_page_ads,
+                    'text' => 'Anuncios en primera página'
+                ],
+                'shop_ads' => [
+                    'total' => $characteristic['shop_ads'] - $count_shop_ads,
+                    'text' => 'Anuncios en recambio restantes'
+                ],
+                'vehicle_ads' => [
+                    'total' => $characteristic['vehicle_ads'] - $count_vehicle_ads,
+                    'text' => 'Anuncios restantes'
+                ],
+                'promoted_ads' => [
+                    'total' => $count_promoted_ads,
+                    'text' => 'Anuncios promocionados'
+                ]
+            ];
+
+            return ['data' => $response];
+        }
+       
+        if ($user->type == 'Profesional') {
+            $plan = Plan::find($user->plan_active->first()->id);
+            
+            $characteristic = CharacteristicPlan::where('plan_id',$plan->id)->first();
+        }
+        
+    }
     /**
      * Display the specified resource.
      *

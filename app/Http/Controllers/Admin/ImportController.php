@@ -140,7 +140,7 @@ class ImportController extends Controller
                 $auto_ad = $this->findOrCreateAutoAd($data_auto_ad,$ad);
                 $count_ads++;    
 
-                $pusher = new Pusher(
+                /*$pusher = new Pusher(
                     env('PUSHER_APP_KEY'),
                     env('PUSHER_APP_SECRET'),
                     env('PUSHER_APP_ID'),
@@ -156,7 +156,7 @@ class ImportController extends Controller
                     [ 
                         'percentage' => round(($count_ads*100)/$total_ads,2).'%'
                     ]
-                );     
+                );   */  
             }
         
         } catch (Exception $e) {
