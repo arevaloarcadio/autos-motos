@@ -884,7 +884,6 @@ class AdsController extends Controller
             $auto_ad = $auto_ad->offset($offset);    
         }
 
-       dd($auto_ad->toSql()); 
         return $auto_ad
             ->with(['make',
                     'model',
