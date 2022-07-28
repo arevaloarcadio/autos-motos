@@ -721,7 +721,7 @@ class AdsController extends Controller
       
         try {
             
-            //array_push($response, ...$this->getPromotedAds($request->types));
+            array_push($response, ...$this->getPromotedAds($request->types));
           
             if ($request->types) {
                 foreach ($request->types as $type) {
@@ -795,72 +795,72 @@ class AdsController extends Controller
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
 
             if ($filters->model_id) {
-                $query->orWhere('model_id',$filters->model_id);
+                $query->where('model_id',$filters->model_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->doors) {
-                $query->orWhere('doors',$filters->doors);
+                $query->where('doors',$filters->doors);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('ad_fuel_type_id',$filters->fuel_type_id);
+                $query->where('ad_fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('ad_transmission_type_id',$filters->transmission_type_id);
+                $query->where('ad_transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->drive_type_id) {
-                $query->orWhere('ad_drive_type_id',$filters->drive_type_id);
+                $query->where('ad_drive_type_id',$filters->drive_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
-                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+                $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+                $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->exterior_color) {
-                $query->orWhere('exterior_color',$filters->exterior_color);
+                $query->where('exterior_color',$filters->exterior_color);
             }
             if ($filters->interior_color) {
-                $query->orWhere('interior_color',$filters->interior_color);
+                $query->where('interior_color',$filters->interior_color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->seats) {
-                $query->orWhere('seats',$filters->seats);
+                $query->where('seats',$filters->seats);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
         if ($filters->oldest) {
@@ -884,7 +884,7 @@ class AdsController extends Controller
             $auto_ad = $auto_ad->offset($offset);    
         }
 
-        
+       dd($auto_ad->toSql()); 
         return $auto_ad
             ->with(['make',
                     'model',
@@ -904,68 +904,68 @@ class AdsController extends Controller
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->model_id) {
-                $query->orWhere('model_id',$filters->model_id);
+                $query->where('model_id',$filters->model_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+                $query->where('fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+                $query->where('transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->drive_type_id) {
-                $query->orWhere('drive_type_id',$filters->drive_type_id);
+                $query->where('drive_type_id',$filters->drive_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
-                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+                $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+                $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
-                $query->orWhere('color',$filters->color);
+                $query->where('color',$filters->color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->cylinders) {
-                $query->orWhere('cylinders',$filters->seats);
+                $query->where('cylinders',$filters->seats);
             }
             if ($filters->gears) {
-                $query->orWhere('gears',$filters->gears);
+                $query->where('gears',$filters->gears);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
         
@@ -1009,66 +1009,66 @@ class AdsController extends Controller
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->model_id) {
-                $query->orWhere('model_id',$filters->model_id);
+                $query->where('model_id',$filters->model_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
 
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+                $query->where('fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+                $query->where('transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->drive_type_id) {
-                $query->orWhere('drive_type_id',$filters->drive_type_id);
+                $query->where('drive_type_id',$filters->drive_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
-                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+                $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+                $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
-                $query->orWhere('color',$filters->color);
+                $query->where('color',$filters->color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->cylinders) {
-                $query->orWhere('cylinders',$filters->seats);
+                $query->where('cylinders',$filters->seats);
             }
             if ($filters->gears) {
-                $query->orWhere('gears',$filters->gears);
+                $query->where('gears',$filters->gears);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
 
@@ -1113,56 +1113,56 @@ class AdsController extends Controller
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+                $query->where('fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+                $query->where('transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_kw && $filters->to_power_kw){
-                $query->orWhereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
+                $query->whereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
             }
             if ($filters->exterior_color) {
-                $query->orWhere('exterior_color',$filters->exterior_color);
+                $query->where('exterior_color',$filters->exterior_color);
             }
             if ($filters->interior_color) {
-                $query->orWhere('interior_color',$filters->interior_color);
+                $query->where('interior_color',$filters->interior_color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
         
@@ -1243,70 +1243,70 @@ public function getCountAutoAd($filters)
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->model_id) {
-                $query->orWhere('model_id',$filters->model_id);
+                $query->where('model_id',$filters->model_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
             if ($filters->doors) {
-                $query->orWhere('doors',$filters->doors);
+                $query->where('doors',$filters->doors);
             }
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('ad_fuel_type_id',$filters->fuel_type_id);
+                $query->where('ad_fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('ad_transmission_type_id',$filters->transmission_type_id);
+                $query->where('ad_transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->drive_type_id) {
-                $query->orWhere('ad_drive_type_id',$filters->drive_type_id);
+                $query->where('ad_drive_type_id',$filters->drive_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
-                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+                $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+                $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->exterior_color) {
-                $query->orWhere('exterior_color',$filters->exterior_color);
+                $query->where('exterior_color',$filters->exterior_color);
             }
             if ($filters->interior_color) {
-                $query->orWhere('interior_color',$filters->interior_color);
+                $query->where('interior_color',$filters->interior_color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->seats) {
-                $query->orWhere('seats',$filters->seats);
+                $query->where('seats',$filters->seats);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
         
@@ -1320,68 +1320,68 @@ public function getCountAutoAd($filters)
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->model_id) {
-                $query->orWhere('model_id',$filters->model_id);
+                $query->where('model_id',$filters->model_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+                $query->where('fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+                $query->where('transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->drive_type_id) {
-                $query->orWhere('drive_type_id',$filters->drive_type_id);
+                $query->where('drive_type_id',$filters->drive_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
-                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+                $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+                $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
-                $query->orWhere('color',$filters->color);
+                $query->where('color',$filters->color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->cylinders) {
-                $query->orWhere('cylinders',$filters->seats);
+                $query->where('cylinders',$filters->seats);
             }
             if ($filters->gears) {
-                $query->orWhere('gears',$filters->gears);
+                $query->where('gears',$filters->gears);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
         
@@ -1395,71 +1395,71 @@ public function getCountAutoAd($filters)
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->model_id) {
-                $query->orWhere('model_id',$filters->model_id);
+                $query->where('model_id',$filters->model_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+                $query->where('fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+                $query->where('transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->drive_type_id) {
-                $query->orWhere('drive_type_id',$filters->drive_type_id);
+                $query->where('drive_type_id',$filters->drive_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_hp && $filters->to_power_hp){
-                $query->orWhereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
+                $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
-                $query->orWhereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
+                $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
-                $query->orWhere('color',$filters->color);
+                $query->where('color',$filters->color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->cylinders) {
-                $query->orWhere('cylinders',$filters->seats);
+                $query->where('cylinders',$filters->seats);
             }
             if ($filters->gears) {
-                $query->orWhere('gears',$filters->gears);
+                $query->where('gears',$filters->gears);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
 
@@ -1473,56 +1473,56 @@ public function getCountAutoAd($filters)
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             
             if ($filters->make_id) {
-                $query->orWhere('make_id',$filters->make_id);
+                $query->where('make_id',$filters->make_id);
             }
             if ($filters->country) {
-                $query->orWhere('country',$filters->country);
+                $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->orWhere('city',$filters->city);
+                $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->orWhereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
-                $query->orWhereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+                $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
             if ($filters->condition) {
-                $query->orWhere('condition',$filters->condition);
+                $query->where('condition',$filters->condition);
             }
             if ($filters->fuel_type_id) {
-                $query->orWhere('fuel_type_id',$filters->fuel_type_id);
+                $query->where('fuel_type_id',$filters->fuel_type_id);
             }
             if ($filters->transmission_type_id) {
-                $query->orWhere('transmission_type_id',$filters->transmission_type_id);
+                $query->where('transmission_type_id',$filters->transmission_type_id);
             }
             if ($filters->from_price && $filters->to_price) {
-                $query->orWhereBetween('price',[$filters->from_price,$filters->to_price]);
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
             if ($filters->from_power_kw && $filters->to_power_kw){
-                $query->orWhereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
+                $query->whereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
             }
             if ($filters->exterior_color) {
-                $query->orWhere('exterior_color',$filters->exterior_color);
+                $query->where('exterior_color',$filters->exterior_color);
             }
             if ($filters->interior_color) {
-                $query->orWhere('interior_color',$filters->interior_color);
+                $query->where('interior_color',$filters->interior_color);
             }
             if ($filters->dealer_id) {
-                $query->orWhere('dealer_id',$filters->dealer_id);
+                $query->where('dealer_id',$filters->dealer_id);
             }
             if ($filters->inspection_valid_until_month) {
-                $query->orWhere('inspection_valid_until_month',$filters->inspection_valid_until_month);
+                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
-                $query->orWhere('inspection_valid_until_year',$filters->inspection_valid_until_year);
+                $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
             if ($filters->owners) {
-                $query->orWhere('owners',$filters->owners);
+                $query->where('owners',$filters->owners);
             }
             if ($filters->fuel_consumption) {
-                $query->orWhere('fuel_consumption',$filters->fuel_consumption);
+                $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
         
@@ -1547,13 +1547,13 @@ public function getCountAutoAd($filters)
             $mechanic_ads = $mechanic_ads->where(function($query) use ($filters){
             
                 if (isset($filters['title'])) {
-                    $query->orWhere('ads.title','LIKE', '%'.$filters['title'].'%');
+                    $query->where('ads.title','LIKE', '%'.$filters['title'].'%');
                 }
                 if (isset($filters['country'])) {
-                    $query->orWhere('mechanic_ads.country',$filters['country']);
+                    $query->where('mechanic_ads.country',$filters['country']);
                 }
                 if (isset($filters['city'])) {
-                    $query->orWhere('mechanic_ads.city','LIKE','%'.$filters['city'].'%');
+                    $query->where('mechanic_ads.city','LIKE','%'.$filters['city'].'%');
                 }
             });
             
