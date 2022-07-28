@@ -50,6 +50,7 @@ class AdsController extends Controller
                     'mechanicAd',
                     'rentalAd',
                     'images',
+                    'user',
                     'autoAd' => function($query)
                     {
                         $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
@@ -135,6 +136,7 @@ class AdsController extends Controller
                 
                 $query->with(
                     [
+                        'user',
                         'mechanicAd',
                         'rentalAd',
                         'images',
@@ -195,6 +197,7 @@ class AdsController extends Controller
 
         $ads->with(
                     [
+                        'user',
                         'mechanicAd',
                         'rentalAd',
                         'images',
@@ -259,6 +262,7 @@ class AdsController extends Controller
 
         $data->with(
                     [
+                        'user',
                         'mechanicAd',
                         'rentalAd',
                         'images',
@@ -473,6 +477,7 @@ class AdsController extends Controller
         $ad = Ad::find($id);
 
         $ad->with([
+                    'user',
                     'mechanicAd',
                     'rentalAd',
                     'images',
@@ -754,6 +759,7 @@ class AdsController extends Controller
         $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)')->whereIn('type',$types)->inRandomOrder()->limit(10);
 
         $data->with([
+                    'user',
                     'mechanicAd',
                     'rentalAd',
                     'images',
@@ -1088,14 +1094,13 @@ class AdsController extends Controller
         }
 
         return $mobile_home_ad
-            ->with(['make','model' => function($query)
-                    {
-                        $query->with(['generation']);
-                    },
+            ->with(['make','model',
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
-                    },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+                    },
+                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
+
             ->limit(25)
              ->get()
             ->toArray();
