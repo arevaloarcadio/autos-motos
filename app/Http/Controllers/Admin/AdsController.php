@@ -425,12 +425,11 @@ class AdsController extends Controller
             $ad_ =  Ad::find($ad['ad_id']);
 
             $user = User::find($ad['user_id']);
-
-            $status == 'approved' ? $user->notify(new NotifyApproved($ad_->title)) :  $user->notify(new NotifyRejected($ad_->title));
+            
+            if ($status == 'approved') {
+                $user->notify(new NotifyApproved($ad_->title));
+            }
         }
-
-        
-
         return ['data' => 'OK'];
     }
 
@@ -515,6 +514,10 @@ class AdsController extends Controller
         $rejected_comment->comment = $request->comment;
         $rejected_comment->save();
 
+        $user = User::find($ad->user_id);
+
+        $user->notify(new NotifyRejected($ad->title,$request->comment));
+
         $ad_rejected_comment = new AdRejectedComment;
         $ad_rejected_comment->ad_id = $ad->id;
         $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
@@ -532,6 +535,10 @@ class AdsController extends Controller
         $ads = Ad::where('csv_ad_id',$csv_ad_id)->get();
 
         foreach ($ads as $ad) {
+            $user = User::find($ad->user_id);
+
+            $user->notify(new NotifyRejected($ad->title,$request->comment));
+            
             $ad_rejected_comment = new AdRejectedComment;
             $ad_rejected_comment->ad_id = $ad->id;
             $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
@@ -558,6 +565,13 @@ class AdsController extends Controller
         }
         
         foreach ($request->ads as $ad) {
+
+            $ad_ = Ad::find($ad);
+            
+            $user = User::find($ad_->user_id);
+
+            $user->notify(new NotifyRejected($ad_->title,$request->comment));
+
             $ad_rejected_comment = new AdRejectedComment;
             $ad_rejected_comment->ad_id = $ad;
             $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;

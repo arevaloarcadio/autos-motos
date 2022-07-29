@@ -12,14 +12,16 @@ class NotifyRejected extends Notification
     use Queueable;
 
     public $title;
+    public $message;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($title)
+    public function __construct($title,$message)
     {
         $this->title = $title;
+        $this->message = $message;
     }
 
 
@@ -47,8 +49,9 @@ class NotifyRejected extends Notification
             ->line('Lamento informarle que su anuncio: ')
             ->line($this->title)
             ->line('Ha sido rechazado')
-            ->line('Para mas información presione')
-            ->action('Aqui','https://automotos.dattatech.com/')
+            ->line('Razón del rechazo: ')
+            ->line($this->message)
+            ->action('Ingrese a Autos Motos','https://automotos.dattatech.com/')
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }
