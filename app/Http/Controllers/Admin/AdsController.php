@@ -830,7 +830,8 @@ class AdsController extends Controller
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
 
             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
@@ -843,7 +844,7 @@ class AdsController extends Controller
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
             }
-            if ($filters->doors) {
+             if (!is_null($filters->doors)) {
                 $query->where('doors',$filters->doors);
             }
             if ($filters->fuel_type_id) {
@@ -877,13 +878,13 @@ class AdsController extends Controller
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->seats) {
+             if (!is_null($filters->seats)) {
                 $query->where('seats',$filters->seats);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -939,7 +940,8 @@ class AdsController extends Controller
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
@@ -979,16 +981,16 @@ class AdsController extends Controller
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->cylinders) {
-                $query->where('cylinders',$filters->seats);
+             if (!is_null($filters->cylinders)) {
+                $query->where('cylinders',$filters->cylinders);
             }
-            if ($filters->gears) {
+             if (!is_null($filters->gears)) {
                 $query->where('gears',$filters->gears);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -1045,7 +1047,8 @@ class AdsController extends Controller
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
              if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
@@ -1082,16 +1085,16 @@ class AdsController extends Controller
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->cylinders) {
-                $query->where('cylinders',$filters->seats);
+             if (!is_null($filters->cylinders)) {
+                $query->where('cylinders',$filters->cylinders);
             }
-            if ($filters->gears) {
+             if (!is_null($filters->gears)) {
                 $query->where('gears',$filters->gears);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -1146,7 +1149,8 @@ class AdsController extends Controller
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
              if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
@@ -1183,10 +1187,10 @@ class AdsController extends Controller
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -1288,12 +1292,13 @@ public function getCountAutoAd($filters)
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
              if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
-            if ($filters->doors) {
+             if (!is_null($filters->doors)) {
                 $query->where('doors',$filters->doors);
             }
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -1333,13 +1338,13 @@ public function getCountAutoAd($filters)
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->seats) {
+             if (!is_null($filters->seats)) {
                 $query->where('seats',$filters->seats);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -1366,7 +1371,8 @@ public function getCountAutoAd($filters)
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
@@ -1406,16 +1412,16 @@ public function getCountAutoAd($filters)
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->cylinders) {
-                $query->where('cylinders',$filters->seats);
+             if (!is_null($filters->cylinders)) {
+                $query->where('cylinders',$filters->cylinders);
             }
-            if ($filters->gears) {
+             if (!is_null($filters->gears)) {
                 $query->where('gears',$filters->gears);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -1442,7 +1448,8 @@ public function getCountAutoAd($filters)
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
@@ -1485,16 +1492,16 @@ public function getCountAutoAd($filters)
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->cylinders) {
-                $query->where('cylinders',$filters->seats);
+             if (!is_null($filters->cylinders)) {
+                $query->where('cylinders',$filters->cylinders);
             }
-            if ($filters->gears) {
+             if (!is_null($filters->gears)) {
                 $query->where('gears',$filters->gears);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
@@ -1518,7 +1525,8 @@ public function getCountAutoAd($filters)
                 $query->where('country',$filters->country);
             }
             if ($filters->city) {
-                $query->where('city',$filters->city);
+                $query->where('city','LIKE','%'.$filters->city.'%');
+                $query->where('address','LIKE','%'.$filters->city.'%');
             }
              if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
@@ -1558,10 +1566,10 @@ public function getCountAutoAd($filters)
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-            if ($filters->owners) {
+             if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if ($filters->fuel_consumption) {
+             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
