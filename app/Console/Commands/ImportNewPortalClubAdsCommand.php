@@ -114,7 +114,7 @@ class ImportPortalClubAdsCommand extends Command
             );
             /** @var User $adminUser */
             $adminUser = User::query()->where('email', '=', 'admin@autosmotos.es')->first();
-          
+
             auth()->login($adminUser);
 
             $totalAdsCounter      = 0;
@@ -178,6 +178,7 @@ class ImportPortalClubAdsCommand extends Command
                 $importedAdsIds = [];
                 foreach ($sellerAds->export->car as $ad) {
                     if ((string) $ad->genre === 'auto') {
+                        $this->info("un auto");
                         continue;
                     }
                     $totalAdsCounter++;
