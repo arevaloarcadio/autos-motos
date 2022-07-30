@@ -821,8 +821,8 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+           if ($filters->to_mileage && $filters->from_mileage) {
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -929,7 +929,7 @@ class AdsController extends Controller
                 $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -1034,7 +1034,7 @@ class AdsController extends Controller
                 $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -1135,7 +1135,7 @@ class AdsController extends Controller
                 $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -1268,7 +1268,7 @@ public function getCountAutoAd($filters)
                 $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
             if ($filters->doors) {
                 $query->where('doors',$filters->doors);
@@ -1344,8 +1344,8 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+           if ($filters->to_mileage && $filters->from_mileage) {
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -1420,7 +1420,7 @@ public function getCountAutoAd($filters)
                 $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
@@ -1495,7 +1495,7 @@ public function getCountAutoAd($filters)
                 $query->where('city',$filters->city);
             }
             if ($filters->to_mileage && $filters->from_mileage) {
-                $query->whereBetween('mileage',[$filters->to_mileage,$filters->from_mileage]);
+                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
