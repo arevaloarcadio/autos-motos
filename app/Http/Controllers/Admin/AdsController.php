@@ -820,7 +820,7 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-           if ($filters->to_mileage >= 0  && $filters->from_mileage <= 0) {
+           if ($filters->from_mileage <= 0  && $filters->to_mileage >= 0) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
