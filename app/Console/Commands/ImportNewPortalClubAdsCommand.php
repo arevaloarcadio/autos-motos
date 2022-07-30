@@ -10,6 +10,7 @@ use App\Exceptions\InvalidAdTypeInputException;
 use App\Exceptions\InvalidAdTypeProvidedException;
 use App\Models\Ad;
 use App\Models\MobileHomeAd;
+use App\Models\AdImage;
 use App\Models\MotoAd;
 use App\Models\CarBodyType;
 use App\Models\CarFuelType;
@@ -929,10 +930,10 @@ class ImportPortalClubAdsCommand extends Command
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
         ];
         
-        $adInput = Ad::create($adInput); 
+        $ad = Ad::create($adInput); 
         
         $moto_mobile_home_ad  = [
-            'ad_id'                        =>  $adInput->id,
+            'ad_id'                        =>  $ad->id,
             'price'                        => (float) $adInfo->customers_price,
             'price_contains_vat'           => (string) $adInfo->claimable_vat === '' ? false : (string) $adInfo->claimable_vat === 'true',
             'vin'                          => (string) $adInfo->vin === '' ? null : (string) $adInfo->vin,
@@ -991,28 +992,33 @@ class ImportPortalClubAdsCommand extends Command
             'co2_emission'                 => (string) $adInfo->model->CO2_emission === '' ? null : (float) $adInfo->model->CO2_emission,
             'options'                      => [],
         ];
-
-        if ($gener == 'moto') {
-            MotoAd::create($moto_mobile_home_ad);
-        }
-        
-        if ($gener == 'furgone') {
-           MobileHomeAd::create($moto_mobile_home_ad);
-        }
-
+        $key = 0;
         foreach ($adInfo->images->image as $image) {
         
-            $url                 = (string) $image->large;
+            /*$url                 = (string) $image->large;
             $parts               = explode('.', $url);
             $extension           = array_pop($parts);
             $adInput['images'][] = [
                 'url'         => (string) $image->large,
                 'extension'   => $extension,
                 'is_external' => true,
-            ];
+            ];*/
+
+            AdImage::create(['ad_id' => $ad->id,'path'=>$image->large, 'is_external' => 1, 'order_index' => $key++]);
+
         }
+
+        if ($gener == 'moto') {
+           return MotoAd::create($moto_mobile_home_ad);
+        }
+        
+        if ($gener == 'furgone') {
+           return MobileHomeAd::create($moto_mobile_home_ad);
+        }
+
+        
         //$this->adCreator = new AdCreatorOrchestrator;
 
-        return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);
+       // return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);
     }
 }
