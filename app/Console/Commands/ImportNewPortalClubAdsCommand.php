@@ -917,6 +917,7 @@ class ImportPortalClubAdsCommand extends Command
         $model            = $this->findModel((string) $adInfo->model->model, $make);
         $adInput          = [
             'title'                    => $title,
+            'slug'                     => Str::slug($title),
             'description'              => $description,
             'status'                   => ApprovalStatusEnum::APPROVED,
             'user_id'                  => $adminUser->id,
