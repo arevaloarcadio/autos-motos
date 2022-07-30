@@ -925,7 +925,7 @@ class ImportPortalClubAdsCommand extends Command
             'source'                   => AdSourceEnum::PORTAL_CLUB_IMPORT,
             'external_id'              => $externalId,
             'images'                   => [],
-            'type' => $gener =='moto' ? 'moto': 'mobile-home'; 
+            'type' => $gener =='moto' ? 'moto': 'mobile-home',
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
         ];
         
