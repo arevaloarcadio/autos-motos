@@ -820,11 +820,8 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->from_mileage && $filters->to_mileage ) {
-                $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
-            }
 
-            if ($filters->from_mileage == 0  && $filters->to_mileage == 0) {
+            if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
@@ -846,10 +843,10 @@ class AdsController extends Controller
             if ($filters->drive_type_id) {
                 $query->where('ad_drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_hp && $filters->to_power_hp){
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->from_engine_displacement && $filters->to_engine_displacement){
