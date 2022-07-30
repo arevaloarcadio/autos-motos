@@ -10,7 +10,7 @@ use App\Http\Requests\Admin\Ad\DestroyAd;
 use App\Http\Requests\Admin\Ad\IndexAd;
 use App\Http\Requests\Admin\Ad\StoreAd;
 use App\Http\Requests\Admin\Ad\UpdateAd;
-use App\Models\{Ad,CsvAd,RejectedComment,AdRejectedComment,User,AutoAd,MotoAd,MechanicAd,MobileHomeAd,ShopAd,TruckAd,RentalAd};
+use App\Models\{Ad,CsvAd,Dealer,RejectedComment,AdRejectedComment,User,AutoAd,MotoAd,MechanicAd,MobileHomeAd,ShopAd,TruckAd,RentalAd};
 use Brackets\AdminListing\Facades\AdminListing;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -725,48 +725,6 @@ class AdsController extends Controller
         return null;
     }
 
-    public function searchAdvanced(Request $request)
-    {   
-        
-        $resource = ApiHelper::resource();
-        $filter_types = [];
-        $response = [];
-      
-        try {
-            
-            array_push($response, ...$this->getPromotedAds($request->types));
-          
-            if ($request->types) {
-                foreach ($request->types as $type) {
-                    switch ($type) {
-                        case 'auto':
-                            array_push($response, ...$this->getAutoAd($request));
-                            break;
-                        case 'moto':
-                            array_push($response,...$this->getMotoAd($request));
-                            break;
-                        case 'mobile-home':
-                            array_push($response, ...$this->getMobileHomeAd($request));
-                            break;
-                        case 'truck':
-                            array_push($response, ...$this->getTruckAd($request));
-                            break;
-                        default:
-                            
-                            break;
-                    }
-                }
-            }
-               
-            return response()->json(['count' => count($response),'data' => $response], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-
     public function getPromotedAds($types)
     {   
         $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)')->whereIn('type',$types)->inRandomOrder()->limit(10);
@@ -801,11 +759,65 @@ class AdsController extends Controller
         return $data->get()->toArray();
     }
 
+    public function searchAdvanced(Request $request)
+    {   
+        
+        $resource = ApiHelper::resource();
+        $filter_types = [];
+        $response = [];
+      
+        try {
+            $dealer_id = null;
+
+            array_push($response, ...$this->getPromotedAds($request->types));
+            if ($request->dealer) {
+                $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
+                foreach ($dealers as $key => $dealer) {
+                    $dealer_id[$key] = $dealer['id'];
+                }
+            }
+
+            
+            if ($request->types) {
+                foreach ($request->types as $type) {
+                    switch ($type) {
+                        case 'auto':
+                            array_push($response, ...$this->getAutoAd($request));
+                            break;
+                        case 'moto':
+                            array_push($response,...$this->getMotoAd($request));
+                            break;
+                        case 'mobile-home':
+                            array_push($response, ...$this->getMobileHomeAd($request));
+                            break;
+                        case 'truck':
+                            array_push($response, ...$this->getTruckAd($request));
+                            break;
+                        default:
+                            
+                            break;
+                    }
+                }
+            }
+               
+            return response()->json(['count' => count($response),'data' => $response], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+
+   
     public function getAutoAd($filters)
     {
         $auto_ad = new AutoAd;
          
         $auto_ad = $auto_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -849,7 +861,7 @@ class AdsController extends Controller
             if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+            if (!is_null($filters->from_engine_displacement) && !is_null($filters->to_engine_displacement)){
                 $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->exterior_color) {
@@ -858,9 +870,7 @@ class AdsController extends Controller
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -915,6 +925,9 @@ class AdsController extends Controller
         $moto_ad = new MotoAd;
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -928,7 +941,7 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
+            if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
@@ -947,21 +960,19 @@ class AdsController extends Controller
             if ($filters->drive_type_id) {
                 $query->where('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_hp && $filters->to_power_hp){
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+            if (!is_null($filters->from_engine_displacement) && !is_null($filters->to_engine_displacement)){
                 $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1020,6 +1031,9 @@ class AdsController extends Controller
         $mobile_home_ad = new MobileHomeAd;
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1033,10 +1047,9 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
+             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
-
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
@@ -1053,21 +1066,19 @@ class AdsController extends Controller
             if ($filters->drive_type_id) {
                 $query->where('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_hp && $filters->to_power_hp){
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+            if (!is_null($filters->from_engine_displacement) && !is_null($filters->to_engine_displacement)){
                 $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
@@ -1124,6 +1135,9 @@ class AdsController extends Controller
         $truck_ad = new TruckAd;
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1134,7 +1148,7 @@ class AdsController extends Controller
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
+             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
@@ -1150,11 +1164,11 @@ class AdsController extends Controller
             if ($filters->transmission_type_id) {
                 $query->where('transmission_type_id',$filters->transmission_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_kw && $filters->to_power_kw){
-                $query->whereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
+                $query->whereBetween('power_kw',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->exterior_color) {
                 $query->where('exterior_color',$filters->exterior_color);
@@ -1162,9 +1176,7 @@ class AdsController extends Controller
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1254,6 +1266,9 @@ public function getCountAutoAd($filters)
         $auto_ad = new AutoAd;
 
         $auto_ad = $auto_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1267,7 +1282,7 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
+             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
             if ($filters->doors) {
@@ -1288,13 +1303,13 @@ public function getCountAutoAd($filters)
             if ($filters->drive_type_id) {
                 $query->where('ad_drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_hp && $filters->to_power_hp){
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+            if (!is_null($filters->from_engine_displacement) && !is_null($filters->to_engine_displacement)){
                 $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->exterior_color) {
@@ -1303,9 +1318,7 @@ public function getCountAutoAd($filters)
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1331,6 +1344,9 @@ public function getCountAutoAd($filters)
         $moto_ad = new MotoAd;
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1344,7 +1360,7 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-           if ($filters->to_mileage && $filters->from_mileage) {
+            if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
@@ -1363,21 +1379,19 @@ public function getCountAutoAd($filters)
             if ($filters->drive_type_id) {
                 $query->where('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_hp && $filters->to_power_hp){
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+            if (!is_null($filters->from_engine_displacement) && !is_null($filters->to_engine_displacement)){
                 $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1406,6 +1420,9 @@ public function getCountAutoAd($filters)
         $mobile_home_ad = new MobileHomeAd;
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1419,7 +1436,7 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
+            if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
@@ -1438,21 +1455,19 @@ public function getCountAutoAd($filters)
             if ($filters->drive_type_id) {
                 $query->where('drive_type_id',$filters->drive_type_id);
             }
-            if ($filters->from_price && $filters->to_price) {
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_hp && $filters->to_power_hp){
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
                 $query->whereBetween('power_hp',[$filters->from_power_hp,$filters->to_power_hp]);
             }
-            if ($filters->from_engine_displacement && $filters->to_engine_displacement){
+            if (!is_null($filters->from_engine_displacement) && !is_null($filters->to_engine_displacement)){
                 $query->whereBetween('engine_displacement',[$filters->from_engine_displacement,$filters->to_engine_displacement]);
             }
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1484,6 +1499,9 @@ public function getCountAutoAd($filters)
         $truck_ad = new TruckAd;
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
+            if($filters->dealer) {
+                $query->whereIn('dealer_id',$dealer_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1494,7 +1512,7 @@ public function getCountAutoAd($filters)
             if ($filters->city) {
                 $query->where('city',$filters->city);
             }
-            if ($filters->to_mileage && $filters->from_mileage) {
+             if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
 
@@ -1513,8 +1531,11 @@ public function getCountAutoAd($filters)
             if ($filters->from_price && $filters->to_price) {
                 $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
             }
-            if ($filters->from_power_kw && $filters->to_power_kw){
-                $query->whereBetween('power_hp',[$filters->from_power_kw,$filters->to_power_kw]);
+            if (!is_null($filters->from_price) && !is_null($filters->to_price)) {
+                $query->whereBetween('price',[$filters->from_price,$filters->to_price]);
+            }
+            if (!is_null($filters->from_power_hp)  && !is_null($filters->to_power_hp)){
+                $query->whereBetween('power_kw',[$filters->from_power_hp,$filters->to_power_hp]);
             }
             if ($filters->exterior_color) {
                 $query->where('exterior_color',$filters->exterior_color);
@@ -1522,9 +1543,7 @@ public function getCountAutoAd($filters)
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            if ($filters->dealer_id) {
-                $query->where('dealer_id',$filters->dealer_id);
-            }
+            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
