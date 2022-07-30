@@ -630,7 +630,7 @@ class AdsController extends Controller
      * @throws Exception
      * @return ResponseFactory|RedirectResponse|Response
      */
-    public function destroy(DestroyAd $request,$ad)
+    public function destroy(DestroyAd $request,Ad $ad)
     {   
 
         $resource = ApiHelper::resource();
