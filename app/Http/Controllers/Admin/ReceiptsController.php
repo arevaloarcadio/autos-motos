@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Receipt\DestroyReceipt;
 use App\Http\Requests\Admin\Receipt\IndexReceipt;
 use App\Http\Requests\Admin\Receipt\StoreReceipt;
 use App\Http\Requests\Admin\Receipt\UpdateReceipt;
-use App\Models\{UserPlan,Plan,PaymentHistory,Receipt};
+use App\Models\{UserPlan,Plan,PaymentHistory,Billing,Receipt};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;

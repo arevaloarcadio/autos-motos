@@ -656,7 +656,7 @@ class ImportWebmobile24AdsCommand extends Command
                         
                             if ($file[count($file)-1] == $csv_ad[2]) {
                                 $new_thumbnail = 'public/prod/'.Str::uuid()->toString().'.'.$thumbnail_format[1];
-                                Storage::disk('local')->copy($image,$new_thumbnail);
+                                Storage::disk('s3')->put($new_thumbnail,Storage::disk('local')->get($image));
                             }
                         }
 
