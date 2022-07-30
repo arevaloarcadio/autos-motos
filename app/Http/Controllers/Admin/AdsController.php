@@ -776,8 +776,8 @@ class AdsController extends Controller
                     $dealer_id[$key] = $dealer['id'];
                 }
             }
+            $request['dealer_id'] = $dealer_id;
 
-            
             if ($request->types) {
                 foreach ($request->types as $type) {
                     switch ($type) {
@@ -816,7 +816,7 @@ class AdsController extends Controller
          
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -926,7 +926,7 @@ class AdsController extends Controller
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -1032,7 +1032,7 @@ class AdsController extends Controller
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -1136,7 +1136,7 @@ class AdsController extends Controller
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -1230,6 +1230,14 @@ class AdsController extends Controller
         
 
         try {
+            $dealer_id=null;
+            if ($request->dealer) {
+                $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
+                foreach ($dealers as $key => $dealer) {
+                    $dealer_id[$key] = $dealer['id'];
+                }
+            }
+            $request['dealer_id'] = $dealer_id;
             $counts = 0;
             if ($request->types) {
                 foreach ($request->types as $type) {
@@ -1267,7 +1275,7 @@ public function getCountAutoAd($filters)
 
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -1345,7 +1353,7 @@ public function getCountAutoAd($filters)
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -1421,7 +1429,7 @@ public function getCountAutoAd($filters)
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
@@ -1500,7 +1508,7 @@ public function getCountAutoAd($filters)
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$dealer_id);
+                $query->whereIn('dealer_id',$filters->dealer_id);
             }
             
             if ($filters->make_id) {
