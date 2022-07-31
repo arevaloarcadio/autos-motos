@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Enum\Ad\AdImageVersionTypeEnum;
 use Storage;
 
+
 class Ad extends Model
 {
     use \App\Traits\TraitUuid;
@@ -36,13 +37,21 @@ class Ad extends Model
     
     ];
     
-    /*protected $appends = ['resource_url'];
+    protected $appends = ['promoted_simple','promoted_front_page'];
 
 
-    public function getResourceUrlAttribute()
-    {
-        return url('/admin/ads/'.$this->getKey());
-    }*/
+    public function getPromotedSimpleAttribute()
+    {   
+        $p = $this->join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')->where('promoted_simple_ads.ad_id',$this->getKey())->count();
+
+        return $p == 0 ? false : true;
+    }
+
+    public function getPromotedFrontPageAttribute()
+    {   
+        $p = $this->join('promoted_front_page_ads','promoted_front_page_ads.ad_id','ads.id')->where('promoted_front_page_ads.ad_id',$this->getKey())->count();
+        return $p == 0 ? false : true;
+    }
 
     public function csv_ad()
     {
