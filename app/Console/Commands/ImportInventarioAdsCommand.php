@@ -179,7 +179,7 @@ class ImportInventarioAdsCommand extends Command
                 $totalAdsCounter++;
                 $externalId       = (int) $ad->id;
                 $importedAdsIds[] = $externalId;
-                $typeAd = $this->getTypeAd($adInfo->carroceria); 
+                $typeAd = $this->getTypeAd($ad->carroceria); 
                 
                 $existingAd = Ad::query()
                                 ->where('type', '=', $typeAd)
