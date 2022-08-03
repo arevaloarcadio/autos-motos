@@ -711,6 +711,7 @@ class ImportWebmobile24AdsCommand extends Command
                                 $new_thumbnail = '/listings/'.$ad->id.'/'.Str::uuid()->toString().'.'.$thumbnail_format[1];
                                 Storage::disk('s3')->put($new_thumbnail,Storage::disk('local')->get($image));
                                 $ad->thumbnail = $new_thumbnail;
+                                $ad->save();
                             }
                         
                         }
