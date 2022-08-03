@@ -652,7 +652,7 @@ class ImportWebmobile24AdsCommand extends Command
 
                         //$this->info(var_dump($csv_ad) ); 
                         
-                        $external_id = explode('_', $csv_ad[3])[0];
+                        $external_id = explode('_', $csv_ad[2])[0];
 
                         $data_ad = [
                             'slug' => Str::slug(utf8_encode($csv_ad[5])),
