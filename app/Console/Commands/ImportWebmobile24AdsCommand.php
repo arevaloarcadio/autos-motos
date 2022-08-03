@@ -670,7 +670,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'images_processing_status' => 'SUCCESSFUL'
                         ];
                         
-
+                        $this->info($year_month);
                         $data_auto_ad = [
                             'price' => $csv_ad[15],//OK.
                             'price_contains_vat' => 0,
