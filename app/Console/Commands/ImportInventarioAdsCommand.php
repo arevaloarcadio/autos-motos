@@ -680,7 +680,7 @@ class ImportInventarioAdsCommand extends Command
     ): bool {
 
         $typeAd = $this->getTypeAd($existingAd->carroceria); 
-        
+
         $key = '';
 
         if($typeAd == 'auto'){
@@ -904,7 +904,8 @@ class ImportInventarioAdsCommand extends Command
     }
 
     public function getTypeAd($body)
-    {
+    {   
+        $this->info($body);
         $bodys_inventario = [
             'Berlina' => 'auto',
             'Cabriolet' => 'auto',
