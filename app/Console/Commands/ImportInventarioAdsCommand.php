@@ -953,7 +953,7 @@ class ImportInventarioAdsCommand extends Command
             'Cabriolet' => 'auto',
             'Deportivo' => 'auto',
             'Coche sin carnet'    => 'auto',
-            'Familiar' => 'mobile-home',
+            'Familiar' => 'auto',
             'Furgoneta' => 'mobile-home',
             'Monovolumen' => 'mobile-home',
             'Pickup' => 'auto',
