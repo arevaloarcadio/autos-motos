@@ -650,19 +650,20 @@ class ImportWebmobile24AdsCommand extends Command
 
                         $this->totalImageAdsCounter = count($images)-1;
 
-                        $this->info(var_dump($csv_ad) ); 
+                        //$this->info(var_dump($csv_ad) ); 
                         
+                        $external_id = explode('_', $csv_ad[3])[0];
 
                         $data_ad = [
                             'slug' => Str::slug(utf8_encode($csv_ad[5])),
                             'title' => utf8_encode($csv_ad[5]),
                             'description' =>utf8_encode($csv_ad[58]) ,
-                            'thumbnail' => $new_thumbnail,
+                            'thumbnail' => '.',
                             'status' => 10,
                             'type' => 'auto',
                             'user_id' => $user->id,
                             'market_id' => $market->id,
-                            'external_id' => $csv_ad[1],
+                            'external_id' => $external_id,
                             'source' => 'WEB_MOBILE_24',
                             'images_processing_status' => 'SUCCESSFUL'
                         ];
