@@ -402,13 +402,17 @@ class ImportWebmobile24AdsCommand extends Command
         if (count($external_ad) == 0) {
             throw new Exception('no_external_ad');
         }
+        
+        $external_id = explode('_', $external_ad[2])[0];
 
-            
-        $ad = Ad::create($external_ad);
-
-
+        $ad = Ad::where('external_id',$external_id)->first();
+        
+        if (is_null($ad)) {
+            $ad = Ad::create($external_ad);
+            $this->info(sprintf('Successfully registered new auto_ad %s',$external_id));
+        }
+        
         return $ad;
-        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
     private function findOrCreateAdImage($ad_id,$path,$order_index)
@@ -639,8 +643,6 @@ class ImportWebmobile24AdsCommand extends Command
                            
                         $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
                         
-                       
-                       
                         $thumbnail_format = explode('.', $csv_ad[2]);
                         
                         $images = Storage::disk('local')->files('public/'.$key);
