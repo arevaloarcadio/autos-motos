@@ -170,7 +170,12 @@ class ImportInventarioAdsCommand extends Command
             $counter        = 0;
             $importedAdsIds = [];
             foreach ($sellerAds->vehiculo as $ad) {
-                 $this->info(var_dump($ad) );
+                if ( $ad->id === '') {
+                    continue;
+                }
+
+                $this->info(var_dump($ad) );
+                
                 $totalAdsCounter++;
                 $externalId       = (int) $ad->id;
                 $importedAdsIds[] = $externalId;
