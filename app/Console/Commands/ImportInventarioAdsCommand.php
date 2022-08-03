@@ -179,9 +179,10 @@ class ImportInventarioAdsCommand extends Command
                 $totalAdsCounter++;
                 $externalId       = (int) $ad->id;
                 $importedAdsIds[] = $externalId;
-
+                $typeAd = $this->getTypeAd($adInfo->carroceria); 
+                
                 $existingAd = Ad::query()
-                                ->where('type', '=', AdTypeEnum::AUTO_SLUG)
+                                ->where('type', '=', $typeAd)
                                 ->where('external_id', '=', $externalId)
                                 ->where('source', '=', AdSourceEnum::INVENTARIO_IMPORT)
                                 ->first();
@@ -505,18 +506,18 @@ class ImportInventarioAdsCommand extends Command
     private function getBodyOptions(): array
     {
         return [
-            'berlina'             => 'sedan',
-            'cabriolet'           => 'convertible',
-            'coche sin carnet'    => null,
-            'deportivo'           => 'sport_coupe',
-            'familiar'            => 'minivan',
-            'furgoneta'           => 'minivan',
-            'monovolumen'         => 'minivan',
-            'pickup'              => 'suv_crossover',
-            'sedan'               => 'sedan',
-            'todoterreno'         => 'suv_crossover',
-            'utilitario'          => null,
-            'vehículo industrial' => null,
+            'Berlina'             => 'sedan',
+            'Cabriolet'           => 'convertible',
+            'Coche sin carnet'    => null,
+            'Deportivo'           => 'sport_coupe',
+            'Familiar'            => 'minivan',
+            'Furgoneta'           => 'minivan',
+            'Monovolumen'         => 'minivan',
+            'Pickup'              => 'suv_crossover',
+            'Sedan'               => 'sedan',
+            'Todoterreno'         => 'suv_crossover',
+            'Utilitario'          => null,
+            'Vehículo industrial' => null,
         ];
     }
 
@@ -685,7 +686,7 @@ class ImportInventarioAdsCommand extends Command
         int &$skippedAdsCounter
     ): bool {
 
-        $typeAd = $this->getTypeAd($existingAd->carroceria); 
+        $typeAd = $this->getTypeAd($ad->carroceria); 
 
         $key = '';
 
@@ -911,11 +912,11 @@ class ImportInventarioAdsCommand extends Command
 
     public function getTypeAd($body)
     {   
-        $this->info($body);
         $bodys_inventario = [
             'Berlina' => 'auto',
             'Cabriolet' => 'auto',
             'Deportivo' => 'auto',
+            'Coche sin carnet'    => 'auto',
             'Familiar' => 'mobile-home',
             'Furgoneta' => 'mobile-home',
             'Monovolumen' => 'mobile-home',
