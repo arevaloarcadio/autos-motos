@@ -650,7 +650,7 @@ class ImportWebmobile24AdsCommand extends Command
 
                         $this->totalImageAdsCounter = count($images)-1;
 
-                        $this->info(var_dump($csv_ad) ); 
+                        //$this->info(var_dump($csv_ad) ); 
                         
                         $external_id = explode('_', $csv_ad[2])[0];
 
