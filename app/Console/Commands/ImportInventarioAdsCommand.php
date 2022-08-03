@@ -170,6 +170,7 @@ class ImportInventarioAdsCommand extends Command
             $counter        = 0;
             $importedAdsIds = [];
             foreach ($sellerAds->vehiculo as $ad) {
+                 $this->info(var_dump($ad) );
                 $totalAdsCounter++;
                 $externalId       = (int) $ad->id;
                 $importedAdsIds[] = $externalId;
@@ -837,7 +838,7 @@ class ImportInventarioAdsCommand extends Command
             'co2_emission'                 => $this->formatFloatValue((string) $adInfo->emisiones_combinadas),
             'options'                      => [],
         ];
-        $this->info(var_dump($adInfo) );
+       
         $typeAd = $this->getTypeAd($adInfo->carroceria); 
         
         if($typeAd == 'auto'){
