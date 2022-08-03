@@ -818,7 +818,8 @@ class ImportInventarioAdsCommand extends Command
         $typeAd = $this->getTypeAd($adInfo->carroceria); 
         $model            = $this->findModel((string) $adInfo->modelo, $make,strtoupper($typeAd));
        
-       
+       $this->info($typeAd);
+        $this->info($adInfo->carroceria);
 
         $adInput          = [
             'title'                    => $title,
