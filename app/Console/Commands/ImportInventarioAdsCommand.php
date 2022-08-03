@@ -739,14 +739,19 @@ class ImportInventarioAdsCommand extends Command
             $existingAd[$key][$key !='autoAd' ? 'transmission_type_id' : 'ad_transmission_type_id']  = $this->findTransmissionTypeId((string) $ad->cambio);
             $changed                                     = true;
         }
-        if (null === $existingAd[$key]->bodyType) {
-            $existingAd[$key][$key !='autoAd' ? 'body_type_id' : 'ad_body_type_id']  = $this->findBodyTypeId((string) $ad->carroceria);
-            $changed                             = true;
+
+        if ($key == 'autoAd') {
+            if (null === $existingAd[$key]->bodyType) {
+                $existingAd[$key][$key !='autoAd' ? 'body_type_id' : 'ad_body_type_id']  = $this->findBodyTypeId((string) $ad->carroceria);
+                $changed                             = true;
+            }
         }
+        
         if (null === $existingAd[$key]->fuelType) {
             $existingAd[$key][$key !='autoAd' ? 'fuel_type_id' : 'ad_fuel_type_id'] = $this->findFuelTypeId((string) $ad->combustible);
             $changed                             = true;
         }
+        
         if ('other' === $existingAd[$key]->exterior_color) {
             $existingAd[$key]->exterior_color = $this->getColor((string) $ad->color);
             $changed                            = true;
