@@ -407,8 +407,8 @@ class ImportWebmobile24AdsCommand extends Command
         
         if (is_null($ad)) {
             $ad = Ad::create($external_ad);
-            
-            $this->info(sprintf('Successfully registered new auto_ad %s',$external_id['external_id']));
+
+            $this->info(sprintf('Successfully registered new ad %s',$external_id['external_id']));
         }
         
         return $ad;
@@ -457,7 +457,7 @@ class ImportWebmobile24AdsCommand extends Command
             
             $auto_ad = AutoAd::create($external_auto_ad);
 
-            $this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
         }
 
         return $auto_ad;
