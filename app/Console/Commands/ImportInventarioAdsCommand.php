@@ -852,6 +852,7 @@ class ImportInventarioAdsCommand extends Command
             'additional_vehicle_info'      => $this->generateAdditionalVehicleInfo($adInfo),
             'co2_emission'                 => $this->formatFloatValue((string) $adInfo->emisiones_combinadas),
             'options'                      => [],
+            'vehicle_category_id'          => '28867312-f460-4c0a-94b7-7b10340971ce',
         ];
        
         
