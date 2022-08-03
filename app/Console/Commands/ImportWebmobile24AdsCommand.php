@@ -763,7 +763,8 @@ class ImportWebmobile24AdsCommand extends Command
                             )
                         );
 
-                         $this->error( $e->getPrevious());
+                         $this->error($e->getPrevious());
+                         $this->error($e->getTrace());
                         continue;
                     }
                 }
