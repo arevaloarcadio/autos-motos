@@ -702,6 +702,9 @@ class ImportInventarioAdsCommand extends Command
     ): bool {
 
         $typeAd = $this->getTypeAd($ad->carroceria); 
+        
+        $this->info($typeAd);
+        $this->info($ad->carroceria);
 
         $key = '';
 
