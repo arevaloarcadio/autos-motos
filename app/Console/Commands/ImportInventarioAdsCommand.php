@@ -174,7 +174,6 @@ class ImportInventarioAdsCommand extends Command
                     continue;
                 }
 
-                $this->info($ad->carroceria.'->aqui');
                 
                 $totalAdsCounter++;
                 $externalId       = (int) $ad->id;
@@ -496,7 +495,7 @@ class ImportInventarioAdsCommand extends Command
         if (isset($bodyTypes[$externalBody])) {
             return CarBodyType::query()
                               ->where('internal_name', '=', $bodyTypes[$externalBody])
-                              ->where('ad_type', '=', 'auto')
+                              //->where('ad_type', '=', 'auto')
                               ->first()->id;
         }
 
@@ -532,7 +531,7 @@ class ImportInventarioAdsCommand extends Command
         if (isset($transmissions[$externalTransmission])) {
             return CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
-                                      ->where('ad_type', '=', 'auto')
+                                      //->where('ad_type', '=', 'auto')
                                       ->first()->id;
         }
 
@@ -568,7 +567,7 @@ class ImportInventarioAdsCommand extends Command
         $externalMake = mb_strtolower(trim($externalMake));
 
         $make = Make::query()
-                    ->where('ad_type', '=', 'auto')
+                    //->where('ad_type', '=', 'auto')
                     ->where('name', '=', $externalMake)->first();
 
         $knownMakes = [
@@ -657,7 +656,7 @@ class ImportInventarioAdsCommand extends Command
     {
         /** @var Model $instance */
         $instance = Models::query()->where('name', '=', $name)
-                         ->where('ad_type', '=', 'auto')
+                         //->where('ad_type', '=', 'auto')
                          ->where('make_id', '=', $makeId)
                          ->first();
 
@@ -928,7 +927,7 @@ class ImportInventarioAdsCommand extends Command
             'Utilitario' => 'mobile-home',
             'Vehículo Industrial' => 'truck',
         ];
-
+        $this->info($bodys_inventario[$body]);
         return $bodys_inventario[$body];
     }
     
