@@ -403,7 +403,7 @@ class ImportWebmobile24AdsCommand extends Command
             throw new Exception('no_external_ad');
         }        
 
-        $ad = Ad::where('external_id',$external_ad['external_id'])->first();
+        $ad = Ad::where('slug',$external_ad['slug'])->first();
         
         if (is_null($ad)) {
             $ad = Ad::create($external_ad);
