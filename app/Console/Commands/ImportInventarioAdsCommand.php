@@ -911,8 +911,6 @@ class ImportInventarioAdsCommand extends Command
 
     public function getTypeAd($body)
     {   
-        $this->info($body.'->aqiuui');
-
         $bodys_inventario = [
             'Berlina' => 'auto',
             'Cabriolet' => 'auto',
@@ -927,8 +925,8 @@ class ImportInventarioAdsCommand extends Command
             'Utilitario' => 'mobile-home',
             'Vehículo Industrial' => 'truck',
         ];
-        $this->info($bodys_inventario['Berlina']);
-        return $bodys_inventario[$body];
+
+        return $bodys_inventario[trim($body)];
     }
     
     private function saveXmlLocally(): string
