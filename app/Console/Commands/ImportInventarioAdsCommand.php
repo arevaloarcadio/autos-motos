@@ -713,6 +713,8 @@ class ImportInventarioAdsCommand extends Command
             return false;
         }*/
         $changed = false;
+        $this->info(var_dump($existingAd));
+        $this->info(var_dump($existingAd[$key]));
         if (null === $existingAd[$key]->transmissionType) {
             $existingAd[$key]->ad_transmission_type_id = $this->findTransmissionTypeId((string) $ad->cambio);
             $changed                                     = true;
