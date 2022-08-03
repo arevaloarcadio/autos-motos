@@ -955,11 +955,11 @@ class ImportInventarioAdsCommand extends Command
             'Coche sin carnet'    => 'auto',
             'Familiar' => 'auto',
             'Furgoneta' => 'mobile-home',
-            'Monovolumen' => 'mobile-home',
+            'Monovolumen' => 'auto',
             'Pickup' => 'auto',
             'Sedan' => 'auto',
             'Todoterreno' => 'auto',
-            'Utilitario' => 'mobile-home',
+            'Utilitario' => 'auto',
             'Vehículo Industrial' => 'truck',
         ];
 
