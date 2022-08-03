@@ -587,7 +587,7 @@ class ImportInventarioAdsCommand extends Command
         throw new Exception(sprintf('invalid_make: %s', $externalMake));
     }
 
-    private function findModel(string $externalModel, Make $make): Models
+    private function findModel(string $externalModel, Make $make,$gener): Models
     {
         if ('' === $externalModel) {
             throw new Exception('no_model');
@@ -807,9 +807,10 @@ class ImportInventarioAdsCommand extends Command
             (string) $adInfo->mes_matriculacion
         );
         $make             = $this->findMake((string) $adInfo->marca);
-        $model            = $this->findModel((string) $adInfo->modelo, $make);
-       
         $typeAd = $this->getTypeAd($adInfo->carroceria); 
+        $model            = $this->findModel((string) $adInfo->modelo, $make,strtoupper($typeAd));
+       
+       
 
         $adInput          = [
             'title'                    => $title,
