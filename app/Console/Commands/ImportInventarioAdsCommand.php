@@ -595,7 +595,7 @@ class ImportInventarioAdsCommand extends Command
         $model = $this->queryModel($externalModel, $make->id);
 
         if (null === $model) {
-            $externalModel = mb_strtolower(trim($externalModel), 'UTF-8');
+            //$externalModel = mb_strtolower(trim($externalModel), 'UTF-8');
             $model         = $this->queryModel($externalModel, $make->id);
         }
 
@@ -639,7 +639,6 @@ class ImportInventarioAdsCommand extends Command
             'discovery 4'  => 'discovery',
             'evoque'       => 'Range Rover Evoque',
             'cc'           => 'Passat CC',
-            'xc-60'        => 'xc60',
         ];
         if (null === $model && isset($knownModels[$externalModel])) {
             $model = $this->queryModel($knownModels[$externalModel], $make->id);
@@ -647,9 +646,26 @@ class ImportInventarioAdsCommand extends Command
 
         if ($model instanceof Models) {
             return $model;
+        }else{
+
+            $this->info(sprintf('Save new External Model: %s , Mark: %s', $externalModel ,$make->name));
+
+            $slug = Models::where('slug',Str::slug($externalModel))->count();
+            
+            $model = new Models;
+            $model->name = $externalModel;
+            $model->slug =  $slug == 0 ? Str::slug($externalModel) : Str::slug($externalModel).'-'.random_int(1000, 9999);
+            $model->make_id = $make->id;
+            $model->ad_type = $gener;
+            $model->external_updated_at = Carbon::now();
+            $model->save();
+
+            return $model;
         }
 
-        throw new Exception(sprintf('invalid_model for make %s: %s', $make->name, $externalModel));
+
+
+        //throw new Exception(sprintf('invalid_model for make %s: %s', $make->name, $externalModel));
     }
 
     private function queryModel(string $name, string $makeId): ?Models
