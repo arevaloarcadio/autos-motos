@@ -77,12 +77,12 @@ class MotoAdsController extends Controller
                 foreach (MotoAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
-                $query->with(
+                $query->with([
                     'ad' => function($query)
                     {
                         $query->with(['images']);
                     }
-                );
+                ]);
             }
         );
         

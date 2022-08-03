@@ -76,12 +76,12 @@ class AutoAdsController extends Controller
                 foreach (AutoAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
-                $query->with(
+                $query->with([
                     'ad' => function($query)
                     {
                         $query->with(['images']);
                     }
-                );
+                ]);
             }
         );
         $data = $data->toArray(); 
