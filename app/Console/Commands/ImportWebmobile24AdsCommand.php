@@ -699,10 +699,11 @@ class ImportWebmobile24AdsCommand extends Command
                             'seats' => $csv_ad[17], //OK
                         ];
                         
-                        $this->info(var_dump($data_auto_ad));
-                        $this->info(var_dump($data_ad));
+                        
                         $ad = $this->findOrCreateAd($data_ad);
                         
+                        $this->info(var_dump($images));
+
                         foreach ($images as $image) {
 
                             $file = explode('/', $image);
