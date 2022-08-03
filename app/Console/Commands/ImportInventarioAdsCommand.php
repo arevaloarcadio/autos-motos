@@ -786,6 +786,8 @@ class ImportInventarioAdsCommand extends Command
         );
         $make             = $this->findMake((string) $adInfo->marca);
         $model            = $this->findModel((string) $adInfo->modelo, $make);
+       
+        $typeAd = $this->getTypeAd($adInfo->carroceria); 
 
         $adInput          = [
             'title'                    => $title,
@@ -798,6 +800,7 @@ class ImportInventarioAdsCommand extends Command
             'slug'                     => Str::slug($title).'-'.random_int(1000, 9999),
             'images'                   => [],
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
+            'type' =>  $typeAd,
         ];
 
         $vehicleAd = [
@@ -845,7 +848,7 @@ class ImportInventarioAdsCommand extends Command
             'options'                      => [],
         ];
        
-        $typeAd = $this->getTypeAd($adInfo->carroceria); 
+        
         
         if($typeAd == 'auto'){
             $ad = Ad::create($adInput);
