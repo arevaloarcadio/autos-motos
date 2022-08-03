@@ -649,16 +649,9 @@ class ImportWebmobile24AdsCommand extends Command
                         $is_successful = false;
 
                         $this->totalImageAdsCounter = count($images)-1;
-                        $this->info($csv_ad[1]); 
-                        foreach ($images as $image) {
 
-                            $file = explode('/', $image);
+                        $this->info(var_dump($csv_ad) ); 
                         
-                            if ($file[count($file)-1] == $csv_ad[2]) {
-                                $new_thumbnail = '/listings/'.$ad->id.'/'.Str::uuid()->toString().'.'.$thumbnail_format[1];
-                                Storage::disk('s3')->put($new_thumbnail,Storage::disk('local')->get($image));
-                            }
-                        }
 
                         $data_ad = [
                             'slug' => Str::slug(utf8_encode($csv_ad[5])),
@@ -706,6 +699,18 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $ad = $this->findOrCreateAd($data_ad);
                         
+                        foreach ($images as $image) {
+
+                            $file = explode('/', $image);
+                        
+                            if ($file[count($file)-1] == $csv_ad[2]) {
+                                $new_thumbnail = '/listings/'.$ad->id.'/'.Str::uuid()->toString().'.'.$thumbnail_format[1];
+                                Storage::disk('s3')->put($new_thumbnail,Storage::disk('local')->get($image));
+                                $ad->thumbnail = $new_thumbnail;
+                            }
+                        
+                        }
+
                         $data_auto_ad['ad_id'] = $ad->id;
                         
                         $auto_ad = $this->findOrCreateAutoAd($data_auto_ad,$ad);
