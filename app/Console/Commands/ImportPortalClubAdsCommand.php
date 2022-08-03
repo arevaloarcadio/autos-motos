@@ -18,6 +18,10 @@ use App\Models\Dealer;
 use App\Models\DealerShowRoom;
 use App\Models\Market;
 use App\Models\User;
+use App\Models\AutoAd;
+use App\Models\MobileHomeAd;
+use App\Models\MotoAd;
+use App\Models\AdImage;
 use App\Service\Ad\AdDeleteService;
 use App\Service\Ad\Creator\AdCreatorOrchestrator;
 use App\Service\Dealer\DealerService;
@@ -145,6 +149,7 @@ class ImportPortalClubAdsCommand extends Command
 
                     $sellerInfo = $sellerAds->export->seller;
                     $dealer     = $this->findOrCreateDealer($sellerInfo, $countryName, $phonePrefix);
+                    //$user     = $this->findUser($sellerInfo,$dealer->id);
                     $showRoom   = $this->findOrCreateShowRoom(
                         $sellerInfo,
                         $dealer,
@@ -174,9 +179,10 @@ class ImportPortalClubAdsCommand extends Command
                 $counter        = 0;
                 $importedAdsIds = [];
                 foreach ($sellerAds->export->car as $ad) {
-                    if ((string) $ad->genre !== 'auto') {
+                    /*if ((string) $ad->genre !== 'auto') {
                         continue;
-                    }
+                    }*/
+           
                     $totalAdsCounter++;
                     $externalId       = (int) $ad->attributes()->id;
                     $importedAdsIds[] = $externalId;
@@ -196,7 +202,7 @@ class ImportPortalClubAdsCommand extends Command
                                 $this->getUsedMemory()
                             )
                         );
-                        $this->updateAd($existingAd, $ad, $countryCode, $updatedAdsCounter, $skippedAdsCounter);
+                        $this->updateAd($existingAd, $ad, $countryCode, $updatedAdsCounter, $skippedAdsCounter, $ad->genre);
                         $counter++;
                         $successfulAdsCounter++;
                         continue;
@@ -210,7 +216,8 @@ class ImportPortalClubAdsCommand extends Command
                             $externalId,
                             $countryCode,
                             $dealer,
-                            $showRoom
+                            $showRoom,
+                            $ad->genre
                         );
                         $endTime       = microtime(true);
                         $executionTime = ($endTime - $startTime);
@@ -354,6 +361,39 @@ class ImportPortalClubAdsCommand extends Command
         return $this->generateAdditionalVehicleInfo($ad);
     }
 
+
+    private function findUser(SimpleXMLElement $externalDealer,$dealer_id): User
+    {
+        if ('' === $externalDealer) {
+            throw new Exception('no_user');
+        }
+
+        if ('' === $dealer_id) {
+            throw new Exception('no_dealer_id');
+        }
+
+        $externalDealer = strtolower(trim($externalDealer->email));
+
+        $user = User::query()
+                    ->where('email', '=', $externalDealer->email)->first();
+
+        if (is_null($user)) {
+            
+            $user = User::create([
+                    'first_name' => $externalDealer->company_name,
+                    'last_name' => '.',
+                    'email' => $sellerInfo->email,
+                    'password' => Hash::make($externalDealer->email.'123**'),
+                    'dealer_id' => $dealer_id,
+                    'type' => 'Profesional'
+            ]);
+
+            $this->info(sprintf('Successfully registered new user %s',$externalDealer));
+        }
+
+        return $user;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
 
     private function findOrCreateDealer(SimpleXMLElement $sellerInfo, string $countryName, string $phonePrefix): Dealer
     {
@@ -524,7 +564,7 @@ class ImportPortalClubAdsCommand extends Command
 
         if (isset($fuels[$externalFuel])) {
             return CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
-                              ->where('ad_type', '=', 'auto')
+                              //->where('ad_type', '=', 'auto')
                               ->first()->id;
         }
 
@@ -572,7 +612,7 @@ class ImportPortalClubAdsCommand extends Command
         if (isset($bodyTypes[$externalBody])) {
             return CarBodyType::query()
                               ->where('internal_name', '=', $bodyTypes[$externalBody])
-                              ->where('ad_type', '=', 'auto')
+                              //->where('ad_type', '=', 'auto')
                               ->first()->id;
         }
 
@@ -648,7 +688,7 @@ class ImportPortalClubAdsCommand extends Command
         if (isset($transmissions[$externalTransmission])) {
             return CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
-                                      ->where('ad_type', '=', 'auto')
+                                      //->where('ad_type', '=', 'auto')
                                       ->first()->id;
         }
 
@@ -669,6 +709,8 @@ class ImportPortalClubAdsCommand extends Command
             'automatico' => 'automatic',
         ];
     }
+
+    
 
     private function processRegistrationDate(string $registrationDate): ?Carbon
     {
@@ -691,7 +733,7 @@ class ImportPortalClubAdsCommand extends Command
         $externalMake = strtolower(trim($externalMake));
 
         $make = Make::query()
-                    ->where('ad_type', '=', 'auto')
+                    //->where('ad_type', '=', 'auto')
                     ->where('name', '=', $externalMake)->first();
 
         $knownMakes = [
@@ -709,7 +751,7 @@ class ImportPortalClubAdsCommand extends Command
         throw new Exception(sprintf('invalid_make: %s', $externalMake));
     }
 
-    private function findModel(string $externalModel, Make $make): Models
+    private function findModel(string $externalModel, Make $make,$gener): Models
     {
         if ('' === $externalModel) {
             throw new Exception('no_model');
@@ -717,7 +759,7 @@ class ImportPortalClubAdsCommand extends Command
         $model = $this->queryModel($externalModel, $make->id);
 
         if (null === $model) {
-            $externalModel = mb_strtolower(trim($externalModel), 'UTF-8');
+            //$externalModel = mb_strtolower(trim($externalModel), 'UTF-8');
             $model         = $this->queryModel($externalModel, $make->id);
         }
 
@@ -768,16 +810,33 @@ class ImportPortalClubAdsCommand extends Command
 
         if ($model instanceof Models) {
             return $model;
+        }else{
+
+            $this->info(sprintf('Save new External Model: %s , Mark: %s', $externalModel ,$make->name));
+
+            $slug = Models::where('slug',Str::slug($externalModel))->count();
+            
+            $model = new Models;
+            $model->name = $externalModel;
+            $model->slug =  $slug == 0 ? Str::slug($externalModel) : Str::slug($externalModel).'-'.random_int(1000, 9999);
+            $model->make_id = $make->id;
+            $model->ad_type = $gener;
+            $model->external_updated_at = Carbon::now();
+            $model->save();
+
+            return $model;
         }
 
-        throw new Exception(sprintf('invalid_model for make %s: %s', $make->name, $externalModel));
+
+
+        //throw new Exception(sprintf('invalid_model for make %s: %s', $make->name, $externalModel));
     }
 
     private function queryModel(string $name, string $makeId)
     {
         /** @var Model $instance */
         $instance = Models::query()->where('name', '=', $name)
-                         ->where('ad_type', '=', 'auto')
+                         //->where('ad_type', '=', 'auto')
                          ->where('make_id', '=', $makeId)
                          ->first();
 
@@ -805,9 +864,25 @@ class ImportPortalClubAdsCommand extends Command
         SimpleXMLElement $ad,
         string $countryCode,
         int &$updatedAdsCounter,
-        int &$skippedAdsCounter
+        int &$skippedAdsCounter,
+        $gener
     ): void {
-        if ($existingAd->autoAd->updated_at >= Carbon::parse((string) $ad->last_modified)) {
+
+        $key = '';
+
+        if ($gener == 'auto') {
+           $key = 'autoAd';
+        }
+
+        if ($gener == 'moto') {
+           $key = 'motoAd';
+        }
+
+        if ($gener == 'furgone') {
+           $key = 'mobileHomeAd';
+        }
+
+        if ($existingAd[$key]->updated_at >= Carbon::parse((string) $ad->last_modified)) {
             $skippedAdsCounter++;
             $this->info(
                 sprintf(
@@ -819,36 +894,36 @@ class ImportPortalClubAdsCommand extends Command
             return;
         }
         $changed = false;
-        if (null === $existingAd->autoAd->transmissionType) {
-            $existingAd->autoAd->ad_transmission_type_id = $this->findTransmissionTypeId(
+        if (null === $existingAd[$key]->transmissionType) {
+            $existingAd[$key]->ad_transmission_type_id = $this->findTransmissionTypeId(
                 (string) $ad->gearbox,
                 $countryCode
             );
             $changed                                     = true;
         }
-        if (null === $existingAd->autoAd->bodyType) {
-            $existingAd->autoAd->ad_body_type_id = $this->findBodyTypeId(
+        if (null === $existingAd[$key]->bodyType) {
+            $existingAd[$key]->ad_body_type_id = $this->findBodyTypeId(
                 (string) $ad->model->body,
                 $countryCode
             );
             $changed                             = true;
         }
-        if (null === $existingAd->autoAd->fuelType) {
-            $existingAd->autoAd->ad_fuel_type_id = $this->findFuelTypeId(
+        if (null === $existingAd[$key]->fuelType) {
+            $existingAd[$key]->ad_fuel_type_id = $this->findFuelTypeId(
                 (string) $ad->model->fuel,
                 $countryCode
             );
             $changed                             = true;
         }
-        if ('other' === $existingAd->autoAd->exterior_color) {
-            $existingAd->autoAd->exterior_color = $this->getColor(
+        if ('other' === $existingAd[$key]->exterior_color) {
+            $existingAd[$key]->exterior_color = $this->getColor(
                 (string) $ad->exterior->color,
                 $countryCode
             );
             $changed                            = true;
         }
-        if ('other' === $existingAd->autoAd->interior_color) {
-            $existingAd->autoAd->interior_color = $this->getColor(
+        if ('other' === $existingAd[$key]->interior_color) {
+            $existingAd[$key]->interior_color = $this->getColor(
                 (string) $ad->interior->color,
                 $countryCode
             );
@@ -856,18 +931,18 @@ class ImportPortalClubAdsCommand extends Command
         }
         $price            = (float) $ad->customers_price;
         $priceContainsVat = (string) $ad->claimable_vat === '' ? false : (string) $ad->claimable_vat === 'true';
-        if ($existingAd->autoAd->price !== $price) {
-            $existingAd->autoAd->price = $price;
+        if ($existingAd[$key]->price !== $price) {
+            $existingAd[$key]->price = $price;
 
             $changed = true;
         }
-        if ($priceContainsVat !== $existingAd->autoAd->price_contains_vat) {
-            $existingAd->autoAd->price_contains_vat = $priceContainsVat;
+        if ($priceContainsVat !== $existingAd[$key]->price_contains_vat) {
+            $existingAd[$key]->price_contains_vat = $priceContainsVat;
 
             $changed = true;
         }
         if (true === $changed) {
-            $existingAd->autoAd->save();
+            $existingAd[$key]->save();
             $updatedAdsCounter++;
             $this->info(
                 sprintf(
@@ -894,29 +969,43 @@ class ImportPortalClubAdsCommand extends Command
      */
     private function createAd(
         SimpleXMLElement $adInfo,
-        User $adminUser,
+        User $user,
         string $marketId,
         int $externalId,
         string $countryCode,
         Dealer $dealer,
-        DealerShowRoom $showRoom
-    ): Ad {
+        DealerShowRoom $showRoom,
+        $gener
+    ) {
+        $type = $gener;
+
+        if ($gener == 'furgone') {
+            $type = 'mobile-home';
+        }
+
         $title            = $this->generateAdTitle($adInfo);
         $description      = (string) $adInfo->additional_informations;
         $registrationDate = $this->processRegistrationDate((string) $adInfo->registration_date);
         $make             = $this->findMake((string) $adInfo->model->make);
-        $model            = $this->findModel((string) $adInfo->model->model, $make);
-        $adInput          = [
+        $model            = $this->findModel((string) $adInfo->model->model, $make,strtoupper($type));
+        
+        $adInput = [
             'title'                    => $title,
             'description'              => $description,
+            'slug'                     => Str::slug($title).'-'.random_int(1000, 9999),
             'status'                   => ApprovalStatusEnum::APPROVED,
-            'user_id'                  => $adminUser->id,
+            'user_id'                  => $user->id,
             'market_id'                => $marketId,
             'source'                   => AdSourceEnum::PORTAL_CLUB_IMPORT,
+            //'source'                   => 'PORTAL_CLUB_IMPORT2',
             'external_id'              => $externalId,
             'images'                   => [],
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
-            'auto_ad'                  => [
+            'type' =>  $type,
+        ];
+
+
+        $vehicleAd = [
                 'price'                        => (float) $adInfo->customers_price,
                 'price_contains_vat'           => (string) $adInfo->claimable_vat === '' ? false : (string) $adInfo->claimable_vat === 'true',
                 'vin'                          => (string) $adInfo->vin === '' ? null : (string) $adInfo->vin,
@@ -958,6 +1047,21 @@ class ImportPortalClubAdsCommand extends Command
                     $countryCode
                 ),
                 'ad_drive_type_id'             => null,
+
+                'fuel_type_id'                 => $this->findFuelTypeId(
+                    (string) $adInfo->model->fuel,
+                    $countryCode
+                ),
+                'body_type_id'                 => $this->findBodyTypeId(
+                    (string) $adInfo->model->body,
+                    $countryCode
+                ),
+                'transmission_type_id'         => $this->findTransmissionTypeId(
+                    (string) $adInfo->gearbox,
+                    $countryCode
+                ),
+                'vehicle_category_id'          => '28867312-f460-4c0a-94b7-7b10340971ce',
+                'drive_type_id'                => null,
                 'first_registration_month'     => $registrationDate instanceof Carbon ? $registrationDate->month : null,
                 'first_registration_year'      => $registrationDate instanceof Carbon ? $registrationDate->year : null,
                 'engine_displacement'          => (string) $adInfo->model->cc === '' ? null : (int) $adInfo->model->cc,
@@ -973,22 +1077,60 @@ class ImportPortalClubAdsCommand extends Command
                 'equipment_id'                 => null,
                 'additional_vehicle_info'      => $this->generateAdditionalVehicleInfo($adInfo),
                 'co2_emission'                 => (string) $adInfo->model->CO2_emission === '' ? null : (float) $adInfo->model->CO2_emission,
+                'cylinders'                    => (string) $adInfo->model->cylinders === '' ? null : (float) $adInfo->model->cylinders,
                 'options'                      => [],
-            ],
-        ];
+            ];
 
-        foreach ($adInfo->images->image as $image) {
-            $url                 = (string) $image->large;
+        if ($gener == 'moto') {
+            
+            $ad = Ad::create($adInput);
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->images->image);
+            
+            return MotoAd::create($vehicleAd);
+        }
+        
+        if ($gener == 'furgone') {
+            
+            $ad = Ad::create($adInput);
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->images->image);
+            
+            return MobileHomeAd::create($vehicleAd);
+        }
+        
+        if ($gener == 'auto') {
+            
+            $ad = Ad::create($adInput);
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->images->image);
+            
+            return AutoAd::create($vehicleAd);
+        }
+    }
+    
+    public function storeAdImage($ad,$images)
+    {
+        $k = 0;
+
+        foreach ($images as $image) {
+            if ($k == 0) {
+                $ad->thumbnail = $image->large;
+                $ad->images_processing_status = 'SUCCESSFUL';
+                $ad->save();
+            }
+            /*$url                 = (string) $image->large;
             $parts               = explode('.', $url);
             $extension           = array_pop($parts);
             $adInput['images'][] = [
                 'url'         => (string) $image->large,
                 'extension'   => $extension,
                 'is_external' => true,
-            ];
+            ];*/
+            AdImage::create(['ad_id' => $ad->id,'path'=>$image->large, 'is_external' => 1, 'order_index' => $k++]);
         }
-        //$this->adCreator = new AdCreatorOrchestrator;
-
-        return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);
+        
+        $ad->images_processing_status = 'SUCCESSFUL';
+        $ad->save();
     }
 }

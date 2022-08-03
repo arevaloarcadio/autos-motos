@@ -387,7 +387,7 @@ class ImportWebmobile24AdsCommand extends Command
                     'email' => strtolower($externalDealer).'@autosmotos.es',
                     'password' => Hash::make(strtolower($externalDealer).'123**'),
                     'dealer_id' => $dealer_id,
-                    'type' => 'professional'
+                    'type' => 'Professional'
             ]);
 
             $this->info(sprintf('Successfully registered new user %s',$externalDealer));
@@ -524,7 +524,7 @@ class ImportWebmobile24AdsCommand extends Command
 
             $this->info(sprintf('Save new External Model: %s , Mark: %s', $externalModel ,$make->name));
 
-            $slug = Models::where('slug','=',Str::slug($externalModel))->first();
+            $slug = Models::whereIn('slug',[Str::slug($externalModel),Str::slug($externalModel.' '.$make->name)])->first();
             $model = new Models;
             $model->name = $externalModel;
             $model->slug = is_null($slug) ? Str::slug($externalModel) : Str::slug($externalModel.' '.$make->name);

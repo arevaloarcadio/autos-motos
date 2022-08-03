@@ -12,10 +12,15 @@ use App\Exceptions\InvalidAdTypeInputException;
 use App\Exceptions\InvalidAdTypeProvidedException;
 use App\Manager\Market\MarketManager;
 use App\Models\Ad;
+use App\Models\MotoAd;
+use App\Models\TruckAd;
+use App\Models\MobileHomeAd;
+use App\Models\AutoAd;
 use App\Models\CarBodyType;
 use App\Models\CarFuelType;
 use App\Models\CarTransmissionType;
 use App\Models\Make;
+use App\Models\AdImage;
 use App\Models\Models;
 use App\Models\Dealer;
 use App\Models\DealerShowRoom;
@@ -673,7 +678,24 @@ class ImportInventarioAdsCommand extends Command
         int &$updatedAdsCounter,
         int &$skippedAdsCounter
     ): bool {
-        if ($existingAd->autoAd->updated_at >= Carbon::parse((string) $ad->fch_modificacion)) {
+
+        $typeAd = $this->getTypeAd($existingAd->carroceria); 
+        
+        $key = '';
+
+        if($typeAd == 'auto'){
+            $key = 'autoAd';   
+        }
+
+        if($typeAd == 'mobile-home'){
+           $key = 'mobileHomeAd';
+        }
+
+        if($typeAd == 'truck'){
+            $key = 'truckAd';
+        }
+
+        if ($existingAd[$key]->updated_at >= Carbon::parse((string) $ad->fch_modificacion)) {
             $skippedAdsCounter++;
             $this->info(
                 sprintf(
@@ -685,36 +707,36 @@ class ImportInventarioAdsCommand extends Command
             return false;
         }
         $changed = false;
-        if (null === $existingAd->autoAd->transmissionType) {
-            $existingAd->autoAd->ad_transmission_type_id = $this->findTransmissionTypeId((string) $ad->cambio);
+        if (null === $existingAd[$key]->transmissionType) {
+            $existingAd[$key]->ad_transmission_type_id = $this->findTransmissionTypeId((string) $ad->cambio);
             $changed                                     = true;
         }
-        if (null === $existingAd->autoAd->bodyType) {
-            $existingAd->autoAd->ad_body_type_id = $this->findBodyTypeId((string) $ad->carroceria);
+        if (null === $existingAd[$key]->bodyType) {
+            $existingAd[$key]->ad_body_type_id = $this->findBodyTypeId((string) $ad->carroceria);
             $changed                             = true;
         }
-        if (null === $existingAd->autoAd->fuelType) {
-            $existingAd->autoAd->ad_fuel_type_id = $this->findFuelTypeId((string) $ad->combustible);
+        if (null === $existingAd[$key]->fuelType) {
+            $existingAd[$key]->ad_fuel_type_id = $this->findFuelTypeId((string) $ad->combustible);
             $changed                             = true;
         }
-        if ('other' === $existingAd->autoAd->exterior_color) {
-            $existingAd->autoAd->exterior_color = $this->getColor((string) $ad->color);
+        if ('other' === $existingAd[$key]->exterior_color) {
+            $existingAd[$key]->exterior_color = $this->getColor((string) $ad->color);
             $changed                            = true;
         }
         $price            = (float) $ad->precio;
         $priceContainsVat = (string) $ad->iva_deducible === 'True' ? true : false;
-        if ($existingAd->autoAd->price !== $price) {
-            $existingAd->autoAd->price = $price;
+        if ($existingAd[$key]->price !== $price) {
+            $existingAd[$key]->price = $price;
 
             $changed = true;
         }
-        if ($priceContainsVat !== $existingAd->autoAd->price_contains_vat) {
-            $existingAd->autoAd->price_contains_vat = $priceContainsVat;
+        if ($priceContainsVat !== $existingAd[$key]->price_contains_vat) {
+            $existingAd[$key]->price_contains_vat = $priceContainsVat;
 
             $changed = true;
         }
         if (true === $changed) {
-            $existingAd->autoAd->save();
+            $existingAd[$key]->save();
             $updatedAdsCounter++;
             $this->info(
                 sprintf(
@@ -749,7 +771,7 @@ class ImportInventarioAdsCommand extends Command
         int $externalId,
         Dealer $dealer,
         DealerShowRoom $showRoom
-    ): Ad {
+    ){
         $title            = $this->generateAdditionalVehicleInfo($adInfo);
         $description      = (string) $adInfo->descripcion;
         $registrationDate = $this->processRegistrationDate(
@@ -758,6 +780,7 @@ class ImportInventarioAdsCommand extends Command
         );
         $make             = $this->findMake((string) $adInfo->marca);
         $model            = $this->findModel((string) $adInfo->modelo, $make);
+
         $adInput          = [
             'title'                    => $title,
             'description'              => $description,
@@ -768,49 +791,80 @@ class ImportInventarioAdsCommand extends Command
             'external_id'              => $externalId,
             'images'                   => [],
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
-            'auto_ad'                  => [
-                'price'                        => (float) $adInfo->precio,
-                'price_contains_vat'           => (string) $adInfo->iva_deducible === 'True' ? true : false,
-                'vin'                          => null,
-                'doors'                        => (string) $this->formatIntValue((string) $adInfo->puertas),
-                'seats'                        => (string) $this->formatIntValue((string) $adInfo->asientos),
-                'mileage'                      => $this->formatIntValue((string) $adInfo->kilometros),
-                'exterior_color'               => $this->getColor((string) $adInfo->color),
-                'interior_color'               => null,
-                'condition'                    => $this->getCondition((string) $adInfo->tipo),
-                'dealer_id'                    => $dealer->id,
-                'dealer_show_room_id'          => $showRoom->id,
-                'email_address'                => $showRoom->email_address,
-                'address'                      => $showRoom->address,
-                'zip_code'                     => $showRoom->zip_code,
-                'city'                         => $showRoom->city,
-                'country'                      => $showRoom->country,
-                'mobile_number'                => $showRoom->mobile_number,
-                'youtube_link'                 => null,
-                'ad_fuel_type_id'              => $this->findFuelTypeId((string) $adInfo->combustible),
-                'ad_body_type_id'              => $this->findBodyTypeId((string) $adInfo->carroceria),
-                'ad_transmission_type_id'      => $this->findTransmissionTypeId((string) $adInfo->cambio),
-                'ad_drive_type_id'             => null,
-                'first_registration_month'     => $registrationDate instanceof Carbon ? $registrationDate->month : null,
-                'first_registration_year'      => $registrationDate instanceof Carbon ? $registrationDate->year : null,
-                'engine_displacement'          => $this->formatIntValue((string) $adInfo->cilindrada),
-                'power_hp'                     => (string) $this->formatIntValue((string) $adInfo->potencia),
-                'owners'                       => (string) $this->formatIntValue((string) $adInfo->duenos_anteriores),
-                'inspection_valid_until_month' => null,
-                'inspection_valid_until_year'  => null,
-                'make_id'                      => $make->id,
-                'model_id'                     => $model->id,
-                'generation_id'                => null,
-                'series_id'                    => null,
-                'trim_id'                      => null,
-                'equipment_id'                 => null,
-                'additional_vehicle_info'      => $this->generateAdditionalVehicleInfo($adInfo),
-                'co2_emission'                 => $this->formatFloatValue((string) $adInfo->emisiones_combinadas),
-                'options'                      => [],
-            ],
         ];
 
-        $images = $adInfo->imagenes;
+        $vehicleAd = [
+            'price'                        => (float) $adInfo->precio,
+            'price_contains_vat'           => (string) $adInfo->iva_deducible === 'True' ? true : false,
+            'vin'                          => null,
+            'doors'                        => (string) $this->formatIntValue((string) $adInfo->puertas),
+            'seats'                        => (string) $this->formatIntValue((string) $adInfo->asientos),
+            'mileage'                      => $this->formatIntValue((string) $adInfo->kilometros),
+            'exterior_color'               => $this->getColor((string) $adInfo->color),
+            'interior_color'               => null,
+            'condition'                    => $this->getCondition((string) $adInfo->tipo),
+            'dealer_id'                    => $dealer->id,
+            'dealer_show_room_id'          => $showRoom->id,
+            'email_address'                => $showRoom->email_address,
+            'address'                      => $showRoom->address,
+            'zip_code'                     => $showRoom->zip_code,
+            'city'                         => $showRoom->city,
+            'country'                      => $showRoom->country,
+            'mobile_number'                => $showRoom->mobile_number,
+            'youtube_link'                 => null,
+            'ad_fuel_type_id'              => $this->findFuelTypeId((string) $adInfo->combustible),
+            'ad_body_type_id'              => $this->findBodyTypeId((string) $adInfo->carroceria),
+            'ad_transmission_type_id'      => $this->findTransmissionTypeId((string) $adInfo->cambio),
+            'ad_drive_type_id'             => null,
+            'fuel_type_id'                 => $this->findFuelTypeId((string) $adInfo->combustible),
+            'body_type_id'                 => $this->findBodyTypeId((string) $adInfo->carroceria),
+            'transmission_type_id'         => $this->findTransmissionTypeId((string) $adInfo->cambio),
+            'drive_type_id'                => null,
+            'first_registration_month'     => $registrationDate instanceof Carbon ? $registrationDate->month : null,
+            'first_registration_year'      => $registrationDate instanceof Carbon ? $registrationDate->year : null,
+            'engine_displacement'          => $this->formatIntValue((string) $adInfo->cilindrada),
+            'power_hp'                     => (string) $this->formatIntValue((string) $adInfo->potencia),
+            'owners'                       => (string) $this->formatIntValue((string) $adInfo->duenos_anteriores),
+            'inspection_valid_until_month' => null,
+            'inspection_valid_until_year'  => null,
+            'make_id'                      => $make->id,
+            'model_id'                     => $model->id,
+            'generation_id'                => null,
+            'series_id'                    => null,
+            'trim_id'                      => null,
+            'equipment_id'                 => null,
+            'additional_vehicle_info'      => $this->generateAdditionalVehicleInfo($adInfo),
+            'co2_emission'                 => $this->formatFloatValue((string) $adInfo->emisiones_combinadas),
+            'options'                      => [],
+        ];
+        
+        $typeAd = $this->getTypeAd($adInfo->carroceria); 
+        
+        if($typeAd == 'auto'){
+            $ad = Ad::create($adInput);
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->imagenes->imagen);
+            
+            return AutoAd::create($vehicleAd);
+        }
+
+        if($typeAd == 'mobile-home'){
+            $ad = Ad::create($adInput);
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->imagenes->imagen);
+            
+            return MobileHomeAd::create($vehicleAd);
+        }
+
+        if($typeAd == 'truck'){
+            $ad = Ad::create($adInput);
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->imagenes->imagen);
+            
+            return TruckAd::create($vehicleAd);
+        }
+
+        /*$images = $adInfo->imagenes;
         if (count($images) === 0) {
             return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);
         }
@@ -826,9 +880,48 @@ class ImportInventarioAdsCommand extends Command
             ];
         }
 
-        return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);
+        return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);*/
     }
 
+
+    public function storeAdImage($ad,$images)
+    {
+        $k = 0;
+
+        foreach ($images as $image) {
+    
+            if ($k == 0) {
+                $ad->thumbnail = $image->large;
+                $ad->images_processing_status = 'SUCCESSFUL';
+                $ad->save();
+            }
+    
+            AdImage::create(['ad_id' => $ad->id,'path'=>$image->large, 'is_external' => 1, 'order_index' => $k++]);
+        }
+        
+        $ad->images_processing_status = 'SUCCESSFUL';
+        $ad->save();
+    }
+
+    public function getTypeAd($body)
+    {
+        $bodys_inventario = [
+            'Berlina' => 'auto',
+            'Cabriolet' => 'auto',
+            'Deportivo' => 'auto',
+            'Familiar' => 'mobile-home',
+            'Furgoneta' => 'mobile-home',
+            'Monovolumen' => 'mobile-home',
+            'Pickup' => 'auto',
+            'Sedan' => 'auto',
+            'Todoterreno' => 'auto',
+            'Utilitario' => 'mobile-home',
+            'Vehículo Industrial' => 'truck',
+        ];
+
+        return $bodys_inventario[$body];
+    }
+    
     private function saveXmlLocally(): string
     {
         $directory = '/tmp/imports';
