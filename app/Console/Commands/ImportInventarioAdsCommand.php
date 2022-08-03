@@ -925,12 +925,12 @@ class ImportInventarioAdsCommand extends Command
         foreach ($images as $image) {
     
             if ($k == 0) {
-                $ad->thumbnail = $image->large;
+                $ad->thumbnail = $image->imagen_url;
                 $ad->images_processing_status = 'SUCCESSFUL';
                 $ad->save();
             }
     
-            AdImage::create(['ad_id' => $ad->id,'path'=>$image->large, 'is_external' => 1, 'order_index' => $k++]);
+            AdImage::create(['ad_id' => $ad->id,'path'=>$image->imagen_url, 'is_external' => 1, 'order_index' => $k++]);
         }
         
         $ad->images_processing_status = 'SUCCESSFUL';

@@ -77,6 +77,13 @@ class MobileHomeAdsController extends Controller
                 foreach (MobileHomeAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
+                
+                $query->with(
+                    'ad' => function($query)
+                    {
+                        $query->with(['images']);
+                    }
+                );
             }
         );
 
