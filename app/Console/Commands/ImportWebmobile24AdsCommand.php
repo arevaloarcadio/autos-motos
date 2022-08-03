@@ -714,6 +714,7 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $i = 0;
                         
+                        $this->info($images );
                         foreach ($images as $image) {
                             $file = explode('/', $image);
                             $format = explode('.', $file[count($file)-1]);
