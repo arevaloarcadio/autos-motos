@@ -837,7 +837,7 @@ class ImportInventarioAdsCommand extends Command
             'co2_emission'                 => $this->formatFloatValue((string) $adInfo->emisiones_combinadas),
             'options'                      => [],
         ];
-        
+        $this->info(var_dump($adInfo) );
         $typeAd = $this->getTypeAd($adInfo->carroceria); 
         
         if($typeAd == 'auto'){
