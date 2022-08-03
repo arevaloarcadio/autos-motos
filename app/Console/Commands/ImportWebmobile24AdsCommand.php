@@ -761,6 +761,8 @@ class ImportWebmobile24AdsCommand extends Command
                                 $this->getUsedMemory()
                             )
                         );
+
+                         $this->error( $e->getPrevious());
                         continue;
                     }
                 }
