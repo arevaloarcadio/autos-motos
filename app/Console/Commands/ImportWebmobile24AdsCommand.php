@@ -688,8 +688,8 @@ class ImportWebmobile24AdsCommand extends Command
                             'ad_fuel_type_id' => $this->findFuelTypeId($csv_ad[12])->id, //OK
                             'ad_body_type_id' => $this->findBodyTypeId(utf8_encode($csv_ad[8]))->id, //OK
                             'ad_transmission_type_id' => $this->findTransmissionTypeId($csv_ad[7])->id, 
-                            'first_registration_year' =>   count($year_month) == 1 ? now('Y') : $year_month[1],
-                            'first_registration_month' => count($year_month) == 1 ? now('m') :  $year_month[0], 
+                            'first_registration_year' => count($year_month) == 1 ? (string) date('Y')  : $year_month[1],
+                            'first_registration_month' => count($year_month) == 1 ? (string) date('m') :  $year_month[0], 
                             'engine_displacement' => $csv_ad[18]  == '' ? 0 : $csv_ad[18], //OK
                             'power_hp' => $csv_ad[19], //OK
                             'make_id' => $this->findMake($csv_ad[3])->id, //OK
