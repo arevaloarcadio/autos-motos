@@ -174,7 +174,7 @@ class ImportInventarioAdsCommand extends Command
                     continue;
                 }
 
-                $this->info($ad->id);
+                $this->info($ad->carroceria.'->aqui');
                 
                 $totalAdsCounter++;
                 $externalId       = (int) $ad->id;
