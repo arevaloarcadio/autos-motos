@@ -180,7 +180,7 @@ class ImportInventarioAdsCommand extends Command
                 $externalId       = (int) $ad->id;
                 $importedAdsIds[] = $externalId;
                 $typeAd = $this->getTypeAd($ad->carroceria); 
-                
+
                 $existingAd = Ad::query()
                                 ->where('type', '=', $typeAd)
                                 ->where('external_id', '=', $externalId)
@@ -462,7 +462,7 @@ class ImportInventarioAdsCommand extends Command
 
         if (isset($fuels[$externalFuel])) {
             return CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
-                              ->where('ad_type', '=', 'auto')
+                              //->where('ad_type', '=', 'auto')
                               ->first()->id;
         }
 
@@ -912,6 +912,8 @@ class ImportInventarioAdsCommand extends Command
 
     public function getTypeAd($body)
     {   
+        $this->info($body.'->aqiuui');
+
         $bodys_inventario = [
             'Berlina' => 'auto',
             'Cabriolet' => 'auto',
