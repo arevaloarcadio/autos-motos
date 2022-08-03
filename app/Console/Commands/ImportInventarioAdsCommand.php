@@ -795,6 +795,7 @@ class ImportInventarioAdsCommand extends Command
             'market_id'                => $marketId,
             'source'                   => AdSourceEnum::INVENTARIO_IMPORT,
             'external_id'              => $externalId,
+            'slug'                     => Str::slug($title).'-'.random_int(1000, 9999),
             'images'                   => [],
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
         ];
