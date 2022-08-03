@@ -736,15 +736,15 @@ class ImportInventarioAdsCommand extends Command
         }
         
         if (null === $existingAd[$key]->transmissionType) {
-            $existingAd[$key]->ad_transmission_type_id = $this->findTransmissionTypeId((string) $ad->cambio);
+            $existingAd[$key][$key !='auto' ? 'transmission_type_id' : 'ad_transmission_type_id']  = $this->findTransmissionTypeId((string) $ad->cambio);
             $changed                                     = true;
         }
         if (null === $existingAd[$key]->bodyType) {
-            $existingAd[$key]->ad_body_type_id = $this->findBodyTypeId((string) $ad->carroceria);
+            $existingAd[$key][$key !='auto' ? 'body_type_id' : 'ad_body_type_id']  = $this->findBodyTypeId((string) $ad->carroceria);
             $changed                             = true;
         }
         if (null === $existingAd[$key]->fuelType) {
-            $existingAd[$key]->ad_fuel_type_id = $this->findFuelTypeId((string) $ad->combustible);
+            $existingAd[$key][$key !='auto' ? 'fuel_type_id' : 'ad_fuel_type_id'] = $this->findFuelTypeId((string) $ad->combustible);
             $changed                             = true;
         }
         if ('other' === $existingAd[$key]->exterior_color) {
