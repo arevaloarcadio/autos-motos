@@ -701,7 +701,7 @@ class ImportInventarioAdsCommand extends Command
             $key = 'truckAd';
         }
 
-        if ($existingAd[$key]->updated_at >= Carbon::parse((string) $ad->fch_modificacion)) {
+        /*if ($existingAd[$key]->updated_at >= Carbon::parse((string) $ad->fch_modificacion)) {
             $skippedAdsCounter++;
             $this->info(
                 sprintf(
@@ -711,7 +711,7 @@ class ImportInventarioAdsCommand extends Command
             );
 
             return false;
-        }
+        }*/
         $changed = false;
         if (null === $existingAd[$key]->transmissionType) {
             $existingAd[$key]->ad_transmission_type_id = $this->findTransmissionTypeId((string) $ad->cambio);
