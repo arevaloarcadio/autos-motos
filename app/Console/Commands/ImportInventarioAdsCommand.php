@@ -927,7 +927,7 @@ class ImportInventarioAdsCommand extends Command
             'Utilitario' => 'mobile-home',
             'Vehículo Industrial' => 'truck',
         ];
-        $this->info($bodys_inventario[$body]);
+        $this->info($bodys_inventario['Berlina'] == $bodys_inventario[$body] );
         return $bodys_inventario[$body];
     }
     
