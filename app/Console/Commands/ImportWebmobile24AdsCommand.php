@@ -638,7 +638,7 @@ class ImportWebmobile24AdsCommand extends Command
                     $this->totalAdsCounter++;
                     
                     try {
-
+                        $this->info("aqio"); 
                         $thumbnail =  preg_split("/_/", $csv_ad[2]);
                            
                         $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
@@ -652,7 +652,7 @@ class ImportWebmobile24AdsCommand extends Command
 
                         $this->totalImageAdsCounter = count($images)-1;
 
-                        //$this->info(var_dump($csv_ad) ); 
+                        $this->info(var_dump($csv_ad) ); 
                         
                         $external_id = explode('_', $csv_ad[2])[0];
 
@@ -670,7 +670,6 @@ class ImportWebmobile24AdsCommand extends Command
                             'images_processing_status' => 'SUCCESSFUL'
                         ];
                         
-                        $this->info($year_month);
                         $data_auto_ad = [
                             'price' => $csv_ad[15],//OK.
                             'price_contains_vat' => 0,
