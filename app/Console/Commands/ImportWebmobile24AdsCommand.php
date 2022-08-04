@@ -702,8 +702,7 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $ad = $this->findOrCreateAd($data_ad);
                         
-                        $this->info(var_dump($images));
-
+                       
                         foreach ($images as $image) {
 
                             $file = explode('/', $image);
