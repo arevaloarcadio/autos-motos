@@ -753,7 +753,7 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $this->totalAdsFailedCounter++;
 
-                        $this->error(
+                       /* $this->error(
                             sprintf(
                                 '==> Failed to load seller %s with error: %s; Line: %s,File: %s, RAM Used: %s',
                                 $csv_ad[1],
@@ -762,10 +762,10 @@ class ImportWebmobile24AdsCommand extends Command
                                 $e->getFile(),
                                 $this->getUsedMemory()
                             )
-                        );
-
-                         $this->error($e->getPrevious());
-                         $this->error($e->getTrace());
+                        );*/
+                        $this->info("Fallido". $csv_ad[1]);
+                         ///$this->error($e->getPrevious());
+                         //$this->error($e->getTrace());
                         continue;
                     }
                 }
