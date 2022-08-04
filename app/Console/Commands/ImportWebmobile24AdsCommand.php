@@ -730,11 +730,12 @@ class ImportWebmobile24AdsCommand extends Command
                             $file = explode('/', $image);
                             $format = explode('.', $file[count($file)-1]);
                             
-                            $this->info( $file.'->file');
+                            $this->info( var_dump($file));
+                            
                             if ($format[1] != 'csv'){
                                 $thumbnail = preg_split("/_/",$file[count($file)-1]);
                                 
-                                $this->info( $thumbnail  .'->thumbnail');
+                                $this->info(var_dump($thumbnail));
                                 $external_id = $csv_ad[1];  
                             
                                 if ($thumbnail[0] == $external_id) {
