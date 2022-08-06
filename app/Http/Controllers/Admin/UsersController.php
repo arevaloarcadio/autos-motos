@@ -159,6 +159,14 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
+        $user->dealer;
+        $user->payment_histories;
+        $user->plan_active;
+        
+        if (!is_null($user->dealer)) {
+           $user->dealer->showRooms;
+        }
+        
         return ['data' => $user];
     }
 
@@ -167,6 +175,14 @@ class UsersController extends Controller
         $user->status = $request->status;
         $user->save();
         
+        $user->dealer;
+        $user->payment_histories;
+        $user->plan_active;
+        
+        if (!is_null($user->dealer)) {
+           $user->dealer->showRooms;
+        }
+
         return ['data' => $user];
     }
 
@@ -217,6 +233,14 @@ class UsersController extends Controller
             // Update changed values User
             $user->update($data);
 
+            $user->dealer;
+            $user->payment_histories;
+            $user->plan_active;
+            
+            if (!is_null($user->dealer)) {
+               $user->dealer->showRooms;
+            }
+
             return response()->json(['data' => $user], 200);
 
         } catch (Exception $e) {
@@ -262,7 +286,15 @@ class UsersController extends Controller
             $data['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
             
             $user->update($data);
-
+            $user->dealer;
+            
+            if (!is_null($user->dealer)) {
+               $user->dealer->showRooms;
+            }
+            
+            $user->payment_histories;
+            $user->plan_active;
+            
             return response()->json(['data' => $user], 200);
 
         } catch (Exception $e) {
@@ -279,10 +311,19 @@ class UsersController extends Controller
 
             $user = Auth::user();
             $plan_active = $user->plan_active->first();
+            $user->dealer;
+         
+
+            if (!is_null($user->dealer)) {
+               $user->dealer->showRooms;
+            }
             
+            $user->payment_histories;
+            $user->plan_active;
+
             return response()->json([
                     'data' => [
-                        'user'  => Auth::user(),
+                        'user'  =>  $user,
                         'plan_active' => $plan_active
                     ]
                 ], 200);
@@ -304,6 +345,10 @@ class UsersController extends Controller
 
             $dealer = $user->dealer;
            
+            if (!is_null($dealer)) {
+               $dealer->showRooms;
+            }
+
             return response()->json(['data' => $dealer], 200);
 
         } catch (Exception $e) {
@@ -362,7 +407,9 @@ class UsersController extends Controller
             $sanitized['image'] = $this->uploadFile($request->file('image'),$user->id);
           
             $user->update($request->all());
-           
+            
+            $user->payment_histories;
+            $user->plan_active;
            
             return response()->json(['data' => $user], 200);
 
