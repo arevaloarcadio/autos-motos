@@ -774,7 +774,7 @@ class ImportController extends Controller
 
     public function downloadCsv()
     {
-        return Storage::download('files/export.csv');
+        return Storage::download('files/planilla.csv');
     }
 
 }
