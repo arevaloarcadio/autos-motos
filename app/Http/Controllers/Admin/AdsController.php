@@ -473,36 +473,51 @@ class AdsController extends Controller
      */
     public function show($id)
     {   
-        $ad = Ad::find($id);
+ 
+        $resource = ApiHelper::resource();
+        
+        try {
 
-        $ad->with([
-                    'user',
-                    'mechanicAd',
-                    'rentalAd',
-                    'images',
-                    'autoAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
-                    },
-                    'motoAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
-                    },
-                    'mobileHomeAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
-                    },
-                    'truckAd' => function($query)
-                    {
-                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
-                    },
-                    'shopAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
-                    }
-                ]);
+            $ad = Ad::where('id',$id);
+        
+            if (is_null($ad)) {
+                ApiHelper::setError($resource, 0, 404 ,['data' => 'Ad not found']);
+                return $this->sendResponse($resource);
+            }
 
-        return ['data' => $ad];
+            $ad->with([
+                'user',
+                'mechanicAd',
+                'rentalAd',
+                'images',
+                'autoAd' => function($query)
+                {
+                    $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                },
+                'motoAd' => function($query)
+                {
+                    $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                },
+                'mobileHomeAd' => function($query)
+                {
+                    $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                },
+                'truckAd' => function($query)
+                {
+                    $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                },
+                'shopAd' => function($query)
+                {
+                    $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                }
+            ]);
+   
+            return response()->json(['data' =>   $ad->first()], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
 
