@@ -389,7 +389,7 @@ class AdsController extends Controller
             foreach ($ads as $ad) {
                 $user = User::find($ad->user_id);
                 if ($status == 'approved') {
-                    $user->notify(new NotifyApproved($ad->title))
+                    $user->notify(new NotifyApproved($ad->title));
                 }
             }
                
