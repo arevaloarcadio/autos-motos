@@ -166,6 +166,13 @@ class UsersController extends Controller
         if (!is_null($user->dealer)) {
            $user->dealer->showRooms;
         }
+
+        $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
+
+        if(count($user['payment_histories']) != 0)
+            $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
+        else
+            $user['last_pay_method'] = null;
         
         return ['data' => $user];
     }
@@ -176,12 +183,18 @@ class UsersController extends Controller
         $user->save();
         
         $user->dealer;
-        $user->payment_histories;
         $user->plan_active;
         
         if (!is_null($user->dealer)) {
            $user->dealer->showRooms;
         }
+
+        $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
+
+        if(count($user['payment_histories']) != 0)
+            $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
+        else
+            $user['last_pay_method'] = null;
 
         return ['data' => $user];
     }
@@ -234,12 +247,18 @@ class UsersController extends Controller
             $user->update($data);
 
             $user->dealer;
-            $user->payment_histories;
             $user->plan_active;
             
             if (!is_null($user->dealer)) {
                $user->dealer->showRooms;
             }
+            
+            $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
+
+            if(count($user['payment_histories']) != 0)
+                $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
+            else
+                $user['last_pay_method'] = null;
 
             return response()->json(['data' => $user], 200);
 
@@ -292,9 +311,15 @@ class UsersController extends Controller
                $user->dealer->showRooms;
             }
             
-            $user->payment_histories;
             $user->plan_active;
             
+            $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
+
+            if(count($user['payment_histories']) != 0)
+                $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
+            else
+                $user['last_pay_method'] = null;
+
             return response()->json(['data' => $user], 200);
 
         } catch (Exception $e) {
@@ -318,8 +343,15 @@ class UsersController extends Controller
                $user->dealer->showRooms;
             }
             
-            $user->payment_histories;
+            
             $user->plan_active;
+            
+            $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
+
+            if(count($user['payment_histories']) != 0)
+                $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
+            else
+                $user['last_pay_method'] = null;
 
             return response()->json([
                     'data' => [
@@ -408,9 +440,14 @@ class UsersController extends Controller
           
             $user->update($request->all());
             
-            $user->payment_histories;
             $user->plan_active;
-           
+            $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
+
+            if(count($user['payment_histories']) != 0)
+                $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
+            else
+                $user['last_pay_method'] = null;
+
             return response()->json(['data' => $user], 200);
 
         } catch (Exception $e) {
