@@ -85,13 +85,17 @@ class MechanicAdsController extends Controller
                     foreach ($ad_ids as $key => $ad_id) {
                         $ids[$key] =  $ad_id['id'];
                     }
-                    
+
                     $query->whereIn('ad_id',$ids);
                 }
 
                 foreach (MechanicAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
+
+                $query->with(['ad' => function($query){
+                    $query->with(['images']);
+                }]);
             }
         );
         
