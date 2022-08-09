@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class UpdateReview extends FormRequest
 {
+    use \App\Traits\ErrorMessageValidations;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,7 +16,7 @@ class UpdateReview extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.review.edit', $this->review);
+        return true;
     }
 
     /**
