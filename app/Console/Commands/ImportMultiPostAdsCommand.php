@@ -124,7 +124,7 @@ class ImportMultiPostAdsCommand extends Command
             }
 
 
-            $this->info(var_dump($xml->Vehiculos->Carroceria));
+            $this->info(var_dump($xml->Vehiculos->Vehiculo));
             continue;
 
             $dealerOutput = $this->processDealerAndShowRoom($xml->Concesionario, $market);
