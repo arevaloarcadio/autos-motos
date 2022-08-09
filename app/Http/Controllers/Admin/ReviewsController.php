@@ -49,19 +49,26 @@ class ReviewsController extends Controller
             ['id', 'ad_id', 'name', 'score'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'testimony', 'name']
+            ['id', 'ad_id', 'testimony', 'name'],
+
+            function ($query) use ($request) {
+                        
+                $columns = ['id', 'ad_id', 'testimony', 'name'];
+                
+                if ($request->filters) {
+                    foreach ($columns as $column) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
+                        }
+                    }
+                }
+
+            }
         );
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
-
-        return view('admin.review.index', ['data' => $data]);
+        return ['data' => $data];
     }
 
     /**
