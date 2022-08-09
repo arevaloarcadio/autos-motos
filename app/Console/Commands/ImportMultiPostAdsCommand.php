@@ -106,6 +106,7 @@ class ImportMultiPostAdsCommand extends Command
         $this->info(sprintf('Total files: %d', $totalFiles));
 
         foreach ($files as $index => $file) {
+
             $this->info(sprintf('Processing file %s (%d/%d)...', $file, $index + 1, $totalFiles));
             try {
                 $fileContent = Storage::disk('ftp-s3')->get($file);
@@ -133,6 +134,10 @@ class ImportMultiPostAdsCommand extends Command
             $this->importedAdsIds = [];
             $this->localAdCounter = 0;
             foreach ($xml->Vehiculos->Vehiculo as $ad) {
+                
+                $this->info(var_dump($a));
+                continue;
+
                 $this->totalAdsCounter++;
                 $this->localAdCounter++;
                 try {
