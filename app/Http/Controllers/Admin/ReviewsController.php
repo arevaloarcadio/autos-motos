@@ -46,14 +46,14 @@ class ReviewsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'name', 'score'],
+            ['id', 'ad_id', 'name','testimony', 'score'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'testimony', 'name'],
+            ['id', 'ad_id', 'testimony', 'name', 'score'],
 
             function ($query) use ($request) {
                         
-                $columns = ['id', 'ad_id', 'testimony', 'name'];
+                $columns = ['id', 'ad_id', 'testimony', 'name', 'score'];
                 
                 if ($request->filters) {
                     foreach ($columns as $column) {
