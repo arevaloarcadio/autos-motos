@@ -124,7 +124,8 @@ class ImportMultiPostAdsCommand extends Command
             }
 
 
-            $this->info(var_dump($xml->Vehiculos));
+            $this->info(var_dump($xml->Vehiculos->Carroceria));
+            continue;
 
             $dealerOutput = $this->processDealerAndShowRoom($xml->Concesionario, $market);
             if (null === $dealerOutput) {
@@ -137,7 +138,7 @@ class ImportMultiPostAdsCommand extends Command
             foreach ($xml->Vehiculos->Vehiculo as $ad) {
                 
 
-                continue;
+              
 
                 $this->totalAdsCounter++;
                 $this->localAdCounter++;
