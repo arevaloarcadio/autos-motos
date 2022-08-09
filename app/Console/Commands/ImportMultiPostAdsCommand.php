@@ -135,7 +135,7 @@ class ImportMultiPostAdsCommand extends Command
             $this->localAdCounter = 0;
             foreach ($xml->Vehiculos->Vehiculo as $ad) {
                 
-                $this->info(var_dump($a));
+                $this->info(var_dump($ad));
                 continue;
 
                 $this->totalAdsCounter++;
