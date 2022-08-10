@@ -742,38 +742,79 @@ class AdsController extends Controller
         return null;
     }
 
-    public function getPromotedAds($types)
+    public function getPromotedAds($type)
     {   
-        $data = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)')->whereIn('type',$types)->inRandomOrder()->limit(10);
+        $data = null;
+        switch ($type[0]) {
+            case 'auto':
+                
+                $data = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                        ->with(['make',
+                            'model',
+                            'ad'=> function($query)
+                            {
+                                $query->with(['images']);
+                            },
+                            'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+                    ->inRandomOrder()
+                    ->limit(10)
+                    ->get()
+                    ->toArray();
 
-        $data->with([
-                    'user',
-                    'mechanicAd',
-                    'rentalAd',
-                    'images',
-                    'autoAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
-                    },
-                    'motoAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
-                    },
-                    'mobileHomeAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
-                    },
-                    'truckAd' => function($query)
-                    {
-                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
-                    },
-                    'shopAd' => function($query)
-                    {
-                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
-                    }
-                ]);
+                break;
+            case 'moto':
 
-        return $data->get()->toArray();
+                $data = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->with(['make','model',
+                    'ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    } ,
+                    'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+                    ->inRandomOrder()
+                    ->limit(10)
+                    ->get()
+                    ->toArray();
+
+                break;
+            case 'mobile-home':
+
+                $data = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                    ->with(['make','model',
+                    'ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },
+                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
+                    ->inRandomOrder()
+                    ->limit(10)
+                    ->get()
+                    ->toArray();
+
+                break;
+            case 'truck':
+                
+                $data = TruckAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                ->with(['make','fuelType','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },
+                'transmissionType','dealer','dealerShowRoom'])
+                ->inRandomOrder()
+                ->limit(10)
+                ->get()
+                ->toArray();
+                
+                break;
+            default:
+                # code...
+                break;
+        }
+
+        if (!is_null($data)) {
+            return $data;
+        }
+
+        return null;
     }
 
     public function searchAdvanced(Request $request)
@@ -785,8 +826,13 @@ class AdsController extends Controller
       
         try {
             $dealer_id = null;
-
-            array_push($response, ...$this->getPromotedAds($request->types));
+            
+            $promotedAds = $this->getPromotedAds($request->types);
+            
+            if (!is_null($promotedAds)) {
+                array_push($response, ...$promotedAds);
+            }
+           
             if ($request->dealer) {
                 $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
                 foreach ($dealers as $key => $dealer) {
