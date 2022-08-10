@@ -58,6 +58,10 @@ class UserController extends Controller
             
             $authenticate = false;
             
+            if (is_null($admin)) {
+                return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
+            }
+
             foreach ($admin->roles as $role) {
                 $authenticate = $role['name'] == 'ADMIN' ? true : false;
              
