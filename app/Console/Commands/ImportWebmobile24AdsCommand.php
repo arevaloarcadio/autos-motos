@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use ZipArchive;
 use Illuminate\Support\Facades\Log;
-use App\Models\{Ad,AutoAd,AdImage,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
+use App\Models\{Ad,AutoAd,AdImage,MotoAd,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
 
 class ImportWebmobile24AdsCommand extends Command
 {
@@ -106,6 +106,9 @@ class ImportWebmobile24AdsCommand extends Command
         
         $conditions = [
             'Gebraucht' => "used", 
+            'Jahreswagen' => "used", 
+            'Tageszulassung' => "new", 
+            'Vorführfahrzeug' => "new", 
             'Oldtimer' => "classic", 
             'Neu' => "new"
         ];
@@ -123,7 +126,7 @@ class ImportWebmobile24AdsCommand extends Command
     {
         $bodys = [
             'Limousine' =>  ['internal_name' => 'limousine', 'ad_type' => 'AUTO'], //limousine
-            'Van/Kleinbus' =>  ['internal_name' => 'minivan', 'ad_type' => 'AUTO'], //van/minibus
+            'Van/Kleinbus' =>  ['internal_name' => 'minivan', 'ad_type' => 'TRUCK'], //van/minibus
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
             'SUV/Geländewagen' => ['internal_name' => 'off_road_vehicle', 'ad_type' => 'AUTO'], //SUV/off-road vehicle
             'Kombi' =>  ['internal_name' => 'wagon', 'ad_type' => 'AUTO'], //station wagon
@@ -132,7 +135,7 @@ class ImportWebmobile24AdsCommand extends Command
             'Sportwagen/Coupé' => ['internal_name' => 'sport_coupe', 'ad_type' => 'AUTO'], //sports car/coupe
             'Sonstige Moto' => ['internal_name' => 'other_moto', 'ad_type' => 'MOTO'], //Other Moto
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
-            'Lieferwagen' => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'AUTO'],  //delivery trucks
+            'Lieferwagen' => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'TRUCK'],  //delivery trucks
         ];
 
         return $bodys;
@@ -149,7 +152,7 @@ class ImportWebmobile24AdsCommand extends Command
         if (isset($fuels[$externalFuel])) {
             
             $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
-                              ->where('ad_type', '=', 'auto')
+                              //->where('ad_type', '=', 'auto')
                               ->first();
         
             if (is_null($car_fuel_type)) {
@@ -167,7 +170,7 @@ class ImportWebmobile24AdsCommand extends Command
         }
 
         $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
-                              ->where('ad_type', '=', 'auto')
+                              //->where('ad_type', '=', 'auto')
                               ->first();
 
         if (is_null($car_fuel_type)) {
@@ -218,7 +221,7 @@ class ImportWebmobile24AdsCommand extends Command
 
         $car_body_type = CarBodyType::query()
                               ->where('internal_name', '=', strtolower(trim($externalBody)))
-                              ->where('ad_type', '=', 'AUTO')
+                              //->where('ad_type', '=', 'AUTO')
                               ->first();
 
         if (is_null($car_body_type)) {
@@ -265,7 +268,7 @@ class ImportWebmobile24AdsCommand extends Command
         $externalMake = strtolower(trim($externalMake));
 
         $make = Make::query()
-                    ->where('ad_type', '=', 'auto')
+                    //->where('ad_type', '=', 'auto')
                     ->where('name', '=', $externalMake)->first();
 
         $knownMakes = [
@@ -464,6 +467,26 @@ class ImportWebmobile24AdsCommand extends Command
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
+    private function findOrCreateMotoAd($external_auto_ad,$ad): MotoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $moto_ad = MotoAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($moto_ad)) {
+            
+            $moto_ad = MotoAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }
+
+        return $moto_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
     private function findModel(string $externalModel, Make $make): Models
     {
         if ('' === $externalModel) {
@@ -548,7 +571,7 @@ class ImportWebmobile24AdsCommand extends Command
     {
         /** @var Model $instance */
         $instance = Models::query()->where('name', '=', $name)
-                         ->where('ad_type', '=', 'auto')
+                        // ->where('ad_type', '=', 'auto')
                          ->where('make_id', '=', $makeId)
                          ->first();
 
@@ -637,7 +660,7 @@ class ImportWebmobile24AdsCommand extends Command
                     $this->totalAdsCounter++;
                     
                     try {
-                        $this->info("aqio"); 
+
                         $thumbnail =  preg_split("/_/", $csv_ad[2]);
                            
                         $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
@@ -669,15 +692,17 @@ class ImportWebmobile24AdsCommand extends Command
                             'images_processing_status' => 'SUCCESSFUL'
                         ];
 
-                        $data_auto_ad = [
+                        $body = $this->findBodyTypeId(utf8_encode($csv_ad[8]));
+
+                        $vehicleAd = [
                             'price' => $csv_ad[15],//OK.
                             'price_contains_vat' => 0,
                             'vin' => null,
-                            'doors' => $csv_ad[16] == '' ? 0 : $csv_ad[16], //OK
+                            'doors' => trim($csv_ad[16]) == '' ? 0 : (int) $csv_ad[16], //OK
                             'mileage' => $csv_ad[14]== '' ? 0 : $csv_ad[14], ///OK
-                            'exterior_color' => utf8_encode($csv_ad[9]),
-                            'interior_color' => $this->getColor($csv_ad[9]),
-                            'condition' =>  $this->getCondition($csv_ad[6]) , //OK
+                            'exterior_color' => $this->getColor(trim(utf8_encode($csv_ad[9]))),
+                            'interior_color' => $this->getColor(trim(utf8_encode($csv_ad[91]))),
+                            'condition' =>  $this->getCondition(trim(utf8_encode($csv_ad[6]))), //OK
                             'dealer_id' => $dealer->id,
                             'dealer_show_room_id' => $dealer_show_room->id,
                             'email_address' => $dealer->email_address,
@@ -686,15 +711,18 @@ class ImportWebmobile24AdsCommand extends Command
                             'city' => '.',
                             'country' => '.',
                             'mobile_number' => '+000000000',
-                            'ad_fuel_type_id' => $this->findFuelTypeId($csv_ad[12])->id, //OK
-                            'ad_body_type_id' => $this->findBodyTypeId(utf8_encode($csv_ad[8]))->id, //OK
-                            'ad_transmission_type_id' => $this->findTransmissionTypeId($csv_ad[7])->id, 
+                            'ad_fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
+                            'ad_body_type_id' => $body->id, //OK
+                            'ad_transmission_type_id' => $this->findTransmissionTypeId(trim(utf8_encode($csv_ad[7])))->id, 
+                            'fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
+                            'body_type_id' => $body->id, //OK
+                            'transmission_type_id' => $this->findTransmissionTypeId(trim(utf8_encode($csv_ad[7])))->id, 
                             'first_registration_year' => count($year_month) == 1 ? (string) date('Y')  : $year_month[1],
                             'first_registration_month' => count($year_month) == 1 ? (string) date('m') :  $year_month[0], 
                             'engine_displacement' => $csv_ad[18]  == '' ? 0 : $csv_ad[18], //OK
                             'power_hp' => $csv_ad[19], //OK
-                            'make_id' => $this->findMake($csv_ad[3])->id, //OK
-                            'model_id' => $this->findModel($csv_ad[4],$this->findMake($csv_ad[3]))->id, //OK
+                            'make_id' => $this->findMake(trim(utf8_encode($csv_ad[3])))->id, //OK
+                            'model_id' => $this->findModel(trim(utf8_encode($csv_ad[4])),$this->findMake(trim(utf8_encode($csv_ad[3]))))->id, //OK
                             'additional_vehicle_info' => utf8_encode($csv_ad[5]), //OK
                             'seats' => $csv_ad[17], //OK
                         ];
@@ -716,10 +744,22 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         }
 
-                        $data_auto_ad['ad_id'] = $ad->id;
+                        $vehicleAd['ad_id'] = $ad->id;
+
+                        if ($body['ad_type'] == 'AUTO') {
+                            $this->findOrCreateAutoAd($vehicleAd,$ad);
+                        }
+
+                        if ($body['ad_type'] == 'MOTO') {
+                            $vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
+                            $this->findOrCreateMotoAd($vehicleAd,$ad);
+                        }
                         
-                        $auto_ad = $this->findOrCreateAutoAd($data_auto_ad,$ad);
-                        
+                        if ($body['ad_type'] == 'TRUCK') {
+                            $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                            $this->findOrCreateMotoAd($vehicleAd,$ad);
+                        }
+
                         $images = Storage::disk('local')->files('public/'.$key);
                         
                         $i = 0;

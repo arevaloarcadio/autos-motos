@@ -1060,7 +1060,7 @@ class ImportPortalClubAdsCommand extends Command
                     (string) $adInfo->gearbox,
                     $countryCode
                 ),
-                'vehicle_category_id'          => '28867312-f460-4c0a-94b7-7b10340971ce',
+                'vehicle_category_id'          => 'b0578de4-8c44-4ef9-ae74-cd736062f93a',
                 'drive_type_id'                => null,
                 'first_registration_month'     => $registrationDate instanceof Carbon ? $registrationDate->month : null,
                 'first_registration_year'      => $registrationDate instanceof Carbon ? $registrationDate->year : null,
