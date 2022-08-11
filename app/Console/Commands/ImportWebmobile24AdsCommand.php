@@ -857,14 +857,14 @@ class ImportWebmobile24AdsCommand extends Command
 
                 Storage::disk('local')->delete($zip_file);
                 
-                $files = glob($directory.$key.'/*'); //obtenemos todos los nombres de los ficheros
+                $files = glob(storage_path('app/').$key.'/*'); //obtenemos todos los nombres de los ficheros
                 
                 foreach($files as $file){
                     if(is_file($file))
                         unlink($file); //elimino el fichero
                 }
 
-                rmdir($directory.$key);
+                rmdir(storage_path('app/').$key);
 
             } else {
                 $this->totalZipNotDecompressed++;
