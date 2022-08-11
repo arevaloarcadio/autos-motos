@@ -694,8 +694,8 @@ class ImportWebmobile24AdsCommand extends Command
 
                         $this->totalImageAdsCounter = count($images)-1;
 
-                        $this->info(count($year_month)); 
-                        
+                        $body = $this->findBodyTypeId(utf8_encode($csv_ad[8]));
+
                         $external_id = explode('_', $csv_ad[2])[0];
 
                         $data_ad = [
@@ -712,7 +712,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'images_processing_status' => 'SUCCESSFUL'
                         ];
 
-                        $body = $this->findBodyTypeId(utf8_encode($csv_ad[8]));
+                        
 
                         $vehicleAd = [
                             'price' => $csv_ad[15],//OK.
