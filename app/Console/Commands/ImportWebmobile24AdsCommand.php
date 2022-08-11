@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use ZipArchive;
 use Illuminate\Support\Facades\Log;
-use App\Models\{Ad,AutoAd,AdImage,MotoAd,TruckAd,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
+use App\Models\{Ad,AutoAd,AdImage,MotoAd,MobileHomeAd,TruckAd,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
 
 class ImportWebmobile24AdsCommand extends Command
 {
@@ -136,6 +136,8 @@ class ImportWebmobile24AdsCommand extends Command
             'Sonstige Moto' => ['internal_name' => 'other_moto', 'ad_type' => 'MOTO'], //Other Moto
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
             'Lieferwagen' => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'TRUCK'],  //delivery trucks
+            'Wohnmobil sonstige' => ['internal_name' => 'wohnmobil_sonstige' , 'ad_type' => 'MOBILE-HOME'],
+            
         ];
 
         return $bodys;
@@ -507,6 +509,26 @@ class ImportWebmobile24AdsCommand extends Command
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
+    private function findOrCreateMobileHomeAd($external_auto_ad,$ad): MotoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $mobile_home_ad = MobileHomeAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($moto_ad)) {
+            
+            $mobile_home_ad = MobileHomeAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }
+
+        return $mobile_home_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
     private function findModel(string $externalModel, Make $make): Models
     {
         if ('' === $externalModel) {
@@ -688,7 +710,7 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $thumbnail_format = explode('.', $csv_ad[2]);
                         
-                        $images = Storage::disk('local')->files('public/'.$key);
+                        $images = Storage::disk('local')->files($key);
                         
                         $new_thumbnail;
                         $is_successful = false;
@@ -752,7 +774,6 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $ad = $this->findOrCreateAd($data_ad);
                         
-                       
                         $vehicleAd['ad_id'] = $ad->id;
 
                         if ($body['ad_type'] == 'AUTO') {
@@ -764,12 +785,16 @@ class ImportWebmobile24AdsCommand extends Command
                             $this->findOrCreateMotoAd($vehicleAd,$ad);
                         }
                         
+                        if ($body['ad_type'] == 'MOBILE-HOME') {
+                            $vehicleAd['vehicle_category_id'] ='02d4cd46-6692-4c2b-9455-4683b961630d';
+                            $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
+                        }
                         if ($body['ad_type'] == 'TRUCK') {
                             $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
                             $this->findOrCreateTruckAd($vehicleAd,$ad);
                         }
 
-                        $images = Storage::disk('local')->files('public/'.$key);
+                        $images = Storage::disk('local')->files($key);
                         
                         $i = 0;
                         
