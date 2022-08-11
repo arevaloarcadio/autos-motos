@@ -1017,6 +1017,10 @@ class ImportPortalClubAdsCommand extends Command
                     (string) $adInfo->exterior->color,
                     $countryCode
                 ),
+                'color'               => $this->getColor(
+                    (string) $adInfo->exterior->color,
+                    $countryCode
+                ),
                 'interior_color'               => $this->getColor(
                     (string) $adInfo->interior->color,
                     $countryCode

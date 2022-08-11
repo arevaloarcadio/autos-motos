@@ -202,7 +202,7 @@ class ImportWebmobile24AdsCommand extends Command
             
             $car_body_type = CarBodyType::query()
                               ->where('internal_name', '=', $bodyTypes[$externalBody]['internal_name'])
-                              ->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
+                              //->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
                               ->first();
 
            if (is_null($car_body_type)) {
@@ -721,6 +721,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'doors' => trim($csv_ad[16]) == '' ? 0 : (int) $csv_ad[16], //OK
                             'mileage' => $csv_ad[14]== '' ? 0 : $csv_ad[14], ///OK
                             'exterior_color' => $this->getColor(trim(utf8_encode($csv_ad[9]))),
+                            'color' => $this->getColor(trim(utf8_encode($csv_ad[9]))),
                             'interior_color' => $this->getColor(trim(utf8_encode($csv_ad[91]))),
                             'condition' =>  $this->getCondition(trim(utf8_encode($csv_ad[6]))), //OK
                             'dealer_id' => $dealer->id,
