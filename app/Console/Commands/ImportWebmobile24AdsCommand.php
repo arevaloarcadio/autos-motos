@@ -757,11 +757,8 @@ class ImportWebmobile24AdsCommand extends Command
                             $file = explode('/', $image);
                         
                             if ($file[count($file)-1] == $csv_ad[2]) {
+
                                 
-                                $new_thumbnail = '/listings/'.$ad->id.'/'.Str::uuid()->toString().'.'.$thumbnail_format[1];
-                                Storage::disk('s3')->put($new_thumbnail,Storage::disk('local')->get($image));
-                                $ad->thumbnail = $new_thumbnail;
-                                $ad->save();
                             }
                         
                         }
@@ -792,6 +789,8 @@ class ImportWebmobile24AdsCommand extends Command
                             $file = explode('/', $image);
                             $format = explode('.', $file[count($file)-1]);
                             
+
+                            
                             //$this->info( var_dump($file));
 
                             if ($format[1] != 'csv'){
@@ -806,6 +805,12 @@ class ImportWebmobile24AdsCommand extends Command
                                     $this->findOrCreateAdImage($ad->id,$directory,$i);
 
                                     if (!Storage::disk('s3')->exists($directory)) {
+                                        
+                                        if ($i == 1) {
+                                            $ad->thumbnail = $directory;
+                                            $ad->save();
+                                        }
+                                        
                                         $import = Storage::disk('s3')->put($directory,Storage::disk('local')->get($image));
                                         $import ? $this->totalImageAdsImportedCounter++ : $this->totalImageAdsFailedCounter++;
                                     }
