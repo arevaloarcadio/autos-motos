@@ -498,7 +498,7 @@ class ImportWebmobile24AdsCommand extends Command
         $truck_ad = TruckAd::query()
                     ->where('ad_id', '=', $ad['id'])->first();
 
-        if (is_null($moto_ad)) {
+        if (is_null($truck_ad)) {
             
             $truck_ad = TruckAd::create($external_auto_ad);
 
@@ -518,7 +518,7 @@ class ImportWebmobile24AdsCommand extends Command
         $mobile_home_ad = MobileHomeAd::query()
                     ->where('ad_id', '=', $ad['id'])->first();
 
-        if (is_null($moto_ad)) {
+        if (is_null($mobile_home_ad)) {
             
             $mobile_home_ad = MobileHomeAd::create($external_auto_ad);
 
