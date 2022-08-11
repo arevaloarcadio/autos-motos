@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use ZipArchive;
 use Illuminate\Support\Facades\Log;
-use App\Models\{Ad,AutoAd,AdImage,MotoAd,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
+use App\Models\{Ad,AutoAd,AdImage,MotoAd,TruckAd,User,CarBodyType,Market,CarFuelType,CarTransmissionType,Dealer,DealerShowRoom,Make,Models};
 
 class ImportWebmobile24AdsCommand extends Command
 {
@@ -487,6 +487,26 @@ class ImportWebmobile24AdsCommand extends Command
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
+    private function findOrCreateTruckAd($external_auto_ad,$ad): MotoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $truck_ad = TruckAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($moto_ad)) {
+            
+            $truck_ad = TruckAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }
+
+        return $truck_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
     private function findModel(string $externalModel, Make $make): Models
     {
         if ('' === $externalModel) {
@@ -757,7 +777,7 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         if ($body['ad_type'] == 'TRUCK') {
                             $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
-                            $this->findOrCreateMotoAd($vehicleAd,$ad);
+                            $this->findOrCreateTruckAd($vehicleAd,$ad);
                         }
 
                         $images = Storage::disk('local')->files('public/'.$key);
