@@ -650,7 +650,7 @@ class ImportWebmobile24AdsCommand extends Command
             
             if ($compressed === TRUE) {
                 
-                $directory = storage_path('app/public/');
+                $directory = storage_path('app/');
 
                 $zip->extractTo($directory.$key);
 
@@ -832,7 +832,7 @@ class ImportWebmobile24AdsCommand extends Command
 
                 Storage::disk('local')->delete($zip_file);
                 
-                Storage::disk('local')->delete('public/'.$key);
+                Storage::disk('local')->delete($key);
 
             } else {
                 $this->totalZipNotDecompressed++;
