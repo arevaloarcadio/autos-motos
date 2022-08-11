@@ -745,6 +745,7 @@ class AdsController extends Controller
     public function getPromotedAds($type)
     {   
         $data = null;
+        
         switch ($type[0]) {
             case 'auto':
                 

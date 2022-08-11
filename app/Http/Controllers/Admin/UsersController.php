@@ -161,7 +161,7 @@ class UsersController extends Controller
     {
         $user->dealer;
         $user->payment_histories;
-        $user->plan_active;
+        $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
         
         if (!is_null($user->dealer)) {
            $user->dealer->showRooms;
@@ -183,7 +183,7 @@ class UsersController extends Controller
         $user->save();
         
         $user->dealer;
-        $user->plan_active;
+        $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
         
         if (!is_null($user->dealer)) {
            $user->dealer->showRooms;
@@ -247,7 +247,7 @@ class UsersController extends Controller
             $user->update($data);
 
             $user->dealer;
-            $user->plan_active;
+            $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
             
             if (!is_null($user->dealer)) {
                $user->dealer->showRooms;
@@ -311,7 +311,7 @@ class UsersController extends Controller
                $user->dealer->showRooms;
             }
             
-            $user->plan_active;
+            $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
             
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
 
@@ -335,7 +335,7 @@ class UsersController extends Controller
         try {
 
             $user = Auth::user();
-            $plan_active = $user->plan_active->first();
+            $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
             $user->dealer;
          
 
@@ -344,7 +344,7 @@ class UsersController extends Controller
             }
             
             
-            $user->plan_active;
+            $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
             
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
 
@@ -440,7 +440,8 @@ class UsersController extends Controller
           
             $user->update($request->all());
             
-            $user->plan_active;
+            $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
+
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
 
             if(count($user['payment_histories']) != 0)

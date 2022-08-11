@@ -188,7 +188,7 @@ class ImportPortalClubAdsCommand extends Command
                     $importedAdsIds[] = $externalId;
 
                     $existingAd = Ad::query()
-                                    ->where('type', '=', AdTypeEnum::AUTO_SLUG)
+                                    ->where('type', '=', $ad->genre)
                                     ->where('external_id', '=', $externalId)
                                     ->where('source', '=', AdSourceEnum::PORTAL_CLUB_IMPORT)
                                     ->first();
@@ -992,7 +992,8 @@ class ImportPortalClubAdsCommand extends Command
         $adInput = [
             'title'                    => $title,
             'description'              => $description,
-            'slug'                     => Str::slug($title).'-'.random_int(1000, 9999),
+            //'slug'                     => Str::slug($title).'-'.random_int(1000, 9999),
+            'slug'                     => Str::slug($title),
             'status'                   => ApprovalStatusEnum::APPROVED,
             'user_id'                  => $user->id,
             'market_id'                => $marketId,
