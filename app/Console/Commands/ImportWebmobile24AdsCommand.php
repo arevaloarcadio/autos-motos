@@ -695,13 +695,15 @@ class ImportWebmobile24AdsCommand extends Command
                         $this->totalImageAdsCounter = count($images)-1;
 
                         $body = $this->findBodyTypeId(utf8_encode($csv_ad[8]));
-
+                        
+                        $model =  $this->findModel(trim(utf8_encode($csv_ad[4])),$this->findMake(trim(utf8_encode($csv_ad[3]))));
+                        
                         $external_id = explode('_', $csv_ad[2])[0];
 
                         $data_ad = [
-                            'slug' => Str::slug(utf8_encode($csv_ad[5])),
-                            'title' => utf8_encode($csv_ad[5]),
-                            'description' =>utf8_encode($csv_ad[58]) ,
+                            'slug' => Str::slug(utf8_encode($csv_ad[5])) == '' ? $model->name : Str::slug(utf8_encode($csv_ad[5])),
+                            'title' => utf8_encode($csv_ad[5]) == '' ? $model->name : utf8_encode($csv_ad[5]),
+                            'description' => utf8_encode($csv_ad[58]),
                             'thumbnail' => '.',
                             'status' => 10,
                             'type' => strtolower($body['ad_type']),
@@ -711,8 +713,6 @@ class ImportWebmobile24AdsCommand extends Command
                             'source' => 'WEB_MOBILE_24',
                             'images_processing_status' => 'SUCCESSFUL'
                         ];
-
-                        
 
                         $vehicleAd = [
                             'price' => $csv_ad[15],//OK.
@@ -743,7 +743,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'engine_displacement' => $csv_ad[18]  == '' ? 0 : $csv_ad[18], //OK
                             'power_hp' => $csv_ad[19], //OK
                             'make_id' => $this->findMake(trim(utf8_encode($csv_ad[3])))->id, //OK
-                            'model_id' => $this->findModel(trim(utf8_encode($csv_ad[4])),$this->findMake(trim(utf8_encode($csv_ad[3]))))->id, //OK
+                            'model_id' => $model->id, //OK
                             'additional_vehicle_info' => utf8_encode($csv_ad[5]), //OK
                             'seats' => $csv_ad[17], //OK
                         ];
