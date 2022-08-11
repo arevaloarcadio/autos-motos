@@ -704,7 +704,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'description' =>utf8_encode($csv_ad[58]) ,
                             'thumbnail' => '.',
                             'status' => 10,
-                            'type' => 'auto',
+                            'type' => strtolower($body['ad_type']),
                             'user_id' => $user->id,
                             'market_id' => $market->id,
                             'external_id' => $external_id,
@@ -730,7 +730,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'address' => '.',
                             'zip_code' => '.',
                             'city' => '.',
-                            'country' => '.',
+                            'country' => 'Alemania',
                             'mobile_number' => '+000000000',
                             'ad_fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
                             'ad_body_type_id' => $body->id, //OK
@@ -757,6 +757,7 @@ class ImportWebmobile24AdsCommand extends Command
                             $file = explode('/', $image);
                         
                             if ($file[count($file)-1] == $csv_ad[2]) {
+                                
                                 $new_thumbnail = '/listings/'.$ad->id.'/'.Str::uuid()->toString().'.'.$thumbnail_format[1];
                                 Storage::disk('s3')->put($new_thumbnail,Storage::disk('local')->get($image));
                                 $ad->thumbnail = $new_thumbnail;
