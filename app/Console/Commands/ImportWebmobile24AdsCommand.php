@@ -200,28 +200,28 @@ class ImportWebmobile24AdsCommand extends Command
        
         $bodyTypes    = $this->getBodyOptions();
     
-        if (isset($bodyTypes[$externalBody])) {
+        if (isset($bodyTypes[trim($externalBody)])) {
             
             $car_body_type = CarBodyType::query()
-                              ->where('internal_name', '=', $bodyTypes[$externalBody]['internal_name'])
+                              ->where('internal_name', '=', $bodyTypes[trim($externalBody)]['internal_name'])
                               //->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
                               ->first();
 
            if (is_null($car_body_type)) {
                 
-                $this->info('Save new car body type: '.$bodyTypes[$externalBody]['internal_name']);
+                $this->info('Save new car body type: '.$bodyTypes[trim($externalBody)]['internal_name']);
                 
                 $car_body_type = new CarBodyType;
-                $car_body_type->internal_name = $bodyTypes[$externalBody]['internal_name'];
-                $car_body_type->ad_type = $bodyTypes[$externalBody]['ad_type'];
-                $car_body_type->slug = Str::slug($bodyTypes[$externalBody]['internal_name']);
+                $car_body_type->internal_name = $bodyTypes[trim($externalBody)]['internal_name'];
+                $car_body_type->ad_type = $bodyTypes[trim($externalBody)]['ad_type'];
+                $car_body_type->slug = Str::slug($bodyTypes[trim($externalBody)]['internal_name']);
                 $car_body_type->save();
             }
 
             return $car_body_type;
         }
 
-        $car_body_type = CarBodyType::query()
+        /*$car_body_type = CarBodyType::query()
                               ->where('internal_name', '=', strtolower(trim($externalBody)))
                               //->where('ad_type', '=', 'AUTO')
                               ->first();
@@ -235,9 +235,9 @@ class ImportWebmobile24AdsCommand extends Command
             $car_body_type->ad_type = 'AUTO';
             $car_body_type->slug = Str::slug($externalBody); 
             $car_body_type->save();
-        }
+        }*/
 
-        return $car_body_type;
+        return null;
     }
 
     private function findTransmissionTypeId(string $externalTransmission)
@@ -729,7 +729,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'description' => utf8_encode($csv_ad[58]),
                             'thumbnail' => '.',
                             'status' => 10,
-                            'type' => strtolower($body['ad_type']),
+                            'type' =>  $body == null ? '' : strtolower($body['ad_type']),
                             'user_id' => $user->id,
                             'market_id' => $market->id,
                             'external_id' => $external_id,
@@ -756,10 +756,10 @@ class ImportWebmobile24AdsCommand extends Command
                             'country' => 'Alemania',
                             'mobile_number' => '+000000000',
                             'ad_fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
-                            'ad_body_type_id' => $body->id, //OK
+                            'ad_body_type_id' => $body == null ? '' : $body['id'], //OK
                             'ad_transmission_type_id' => $this->findTransmissionTypeId(trim(utf8_encode($csv_ad[7])))->id, 
                             'fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
-                            'body_type_id' => $body->id, //OK
+                            'body_type_id' => $body == null ? '' : $body['id'], //OK
                             'transmission_type_id' => $this->findTransmissionTypeId(trim(utf8_encode($csv_ad[7])))->id, 
                             'first_registration_year' => count($year_month) == 1 ? (string) date('Y')  : $year_month[1],
                             'first_registration_month' => count($year_month) == 1 ? (string) date('m') :  $year_month[0], 
