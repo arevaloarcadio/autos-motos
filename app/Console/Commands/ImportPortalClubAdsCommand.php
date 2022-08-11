@@ -1090,6 +1090,7 @@ class ImportPortalClubAdsCommand extends Command
             
             $ad = Ad::create($adInput);
             $vehicleAd['ad_id'] = $ad->id;
+            $vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
             $this->storeAdImage($ad,$adInfo->images->image);
             
             return MotoAd::create($vehicleAd);
@@ -1099,9 +1100,10 @@ class ImportPortalClubAdsCommand extends Command
             
             $ad = Ad::create($adInput);
             $vehicleAd['ad_id'] = $ad->id;
+            $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
             $this->storeAdImage($ad,$adInfo->images->image);
             
-            return MobileHomeAd::create($vehicleAd);
+            return TruckAd::create($vehicleAd);
         }
         
         if ($gener == 'auto') {

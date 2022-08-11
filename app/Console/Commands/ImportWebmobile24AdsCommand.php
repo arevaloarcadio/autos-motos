@@ -752,17 +752,6 @@ class ImportWebmobile24AdsCommand extends Command
                         $ad = $this->findOrCreateAd($data_ad);
                         
                        
-                        foreach ($images as $image) {
-
-                            $file = explode('/', $image);
-                        
-                            if ($file[count($file)-1] == $csv_ad[2]) {
-
-                                
-                            }
-                        
-                        }
-
                         $vehicleAd['ad_id'] = $ad->id;
 
                         if ($body['ad_type'] == 'AUTO') {
@@ -800,7 +789,7 @@ class ImportWebmobile24AdsCommand extends Command
                                 
                                 if ($thumbnail[0] == $external_id) {
                                     $i++;
-                                    $directory = '/listings/'.$ad->id.'/'.$ad->id.'_'.$i.'.'.$format[1];
+                                    $directory = 'listings/'.$ad->id.'/'.$ad->id.'_'.$i.'.'.$format[1];
                                     
                                     $this->findOrCreateAdImage($ad->id,$directory,$i);
 
