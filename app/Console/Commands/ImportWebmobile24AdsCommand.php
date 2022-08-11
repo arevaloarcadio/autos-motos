@@ -832,7 +832,7 @@ class ImportWebmobile24AdsCommand extends Command
 
                 Storage::disk('local')->delete($zip_file);
                 
-                unlink($directory.$key);
+                rmdir($directory.$key);
 
             } else {
                 $this->totalZipNotDecompressed++;
