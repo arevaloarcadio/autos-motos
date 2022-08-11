@@ -646,6 +646,7 @@ class ImportWebmobile24AdsCommand extends Command
             Storage::disk('local')->put($zip_file, Storage::disk('ftp-s3')->get($zip_file));
            
             $compressed = $zip->open(storage_path('app/'.$zip_file));
+
             
             if ($compressed === TRUE) {
                 
@@ -828,6 +829,10 @@ class ImportWebmobile24AdsCommand extends Command
                 }
                 
                 $zip->close();
+
+                Storage::disk('local')->delete($zip_file);
+                
+                Storage::disk('local')->delete('public/'.$key);
 
             } else {
                 $this->totalZipNotDecompressed++;
