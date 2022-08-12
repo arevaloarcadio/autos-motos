@@ -233,22 +233,70 @@ class MechanicAdsController extends Controller
      * @param MechanicAd $mechanicAd
      * @return array|RedirectResponse|Redirector
      */
-    public function update(UpdateMechanicAd $request, MechanicAd $mechanicAd)
+    public function update(UpdateMechanicAd $request, $id)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        try {
 
-        // Update changed values MechanicAd
-        $mechanicAd->update($sanitized);
+            $sanitized = $request->getSanitized();
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/mechanic-ads'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
+            $slug = $this->slugAd($sanitized['title']);
+
+            $ad = Ad::where('id',$id)->update([
+                'slug' => $slug,
+                'title' => $sanitized['title'],
+                'description' => $sanitized['description'],
+               // 'thumbnail' => $sanitized['thumbnail'],
+                'status' => 0,
+                'type' => 'mechanic',
+                'is_featured' => 0,
+                'user_id' => Auth::user()->id,
+                'market_id' => $sanitized['market_id'],
+                'external_id' =>null,
+                'source' => null,
+                'images_processing_status' => 'SUCCESSFUL',
+                'images_processing_status_text' => null,
+            ]);
+            
+            $thumbnail = '';
+            $i = 0;
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $mechanicAd = MechanicAd::where('ad_id',$id)->update([
+                'ad_id' =>  $ad->id,
+                'address' => $sanitized['address'],
+                'latitude' => $sanitized['latitude'] ?? null,
+                'longitude' => $sanitized['longitude'] ?? null,
+                'zip_code' => $sanitized['zip_code'],
+                'city' => $sanitized['city'],
+                'country' =>$sanitized['country'],
+                'mobile_number' => $sanitized['mobile_number'],
+                'whatsapp_number' => $sanitized['whatsapp_number'],
+                'website_url' => $sanitized['website_url'],
+                'email_address' => $sanitized['email_address'],
+                'geocoding_status' => $sanitized['geocoding_status'] ?? null
+            ]);
+
+            
+            $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
+
+
+            $images = AdImage::where('ad_id',$ad->id)->get();
+
+            return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
         }
-
-        return redirect('admin/mechanic-ads');
     }
 
     /**
