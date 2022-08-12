@@ -587,7 +587,7 @@ class AutoAdsController extends Controller
         }
     }
 
-    public function add_details_contacts(Request $request,$id)
+    public function add_details_contacts(Request $request)
     {
         $resource = ApiHelper::resource();
 
