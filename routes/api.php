@@ -53,64 +53,64 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         });
 
         Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
-            Route::post('/principal_data',                           'AutoAdsController@principal_data')->name('principal_data');
-            Route::post('/details_ads',                              'AutoAdsController@details_ads')->name('details_ads');
-            Route::post('/add_sub_characteristic_ads',               'AutoAdsController@add_sub_characteristic_ads')->name('details_ads');
-            Route::post('/add_details_contacts',                     'AutoAdsController@add_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data',                           'AutoAdsController@principal_data');
+            Route::post('/details_ads',                              'AutoAdsController@details_ads');
+            Route::post('/add_sub_characteristic_ads',               'AutoAdsController@add_sub_characteristic_ads');
+            Route::post('/add_details_contacts',                     'AutoAdsController@add_details_contacts');
             
-            Route::post('/principal_data/{id}',                      'AutoAdsController@update_principal_data')->name('principal_data');
-            Route::post('/details_ads/{id}',                         'AutoAdsController@update_details_ads')->name('details_ads');
-            Route::post('/update_sub_characteristic_ads/{id}',       'AutoAdsController@update_sub_characteristic_ads')->name('details_ads');
-            Route::post('/update_details_contacts/{id}',                    'AutoAdsController@update_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data/{id}',                      'AutoAdsController@update_principal_data');
+            Route::post('/details_ads/{id}',                         'AutoAdsController@update_details_ads');
+            Route::post('/update_sub_characteristic_ads/{id}',       'AutoAdsController@update_sub_characteristic_ads');
+            Route::post('/update_details_contacts/{id}',                    'AutoAdsController@update_details_contacts');
         });
 
         Route::prefix('moto-ads')->name('moto-ads/')->group(static function() {
-            Route::post('/principal_data',                           'MotoAdsController@principal_data')->name('principal_data');
-            Route::post('/details_ads',                              'MotoAdsController@details_ads')->name('details_ads');
-            Route::post('/add_sub_characteristic_ads',               'MotoAdsController@add_sub_characteristic_ads')->name('details_ads');
-            Route::post('/add_details_contacts',                     'MotoAdsController@add_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data',                           'MotoAdsController@principal_data');
+            Route::post('/details_ads',                              'MotoAdsController@details_ads');
+            Route::post('/add_sub_characteristic_ads',               'MotoAdsController@add_sub_characteristic_ads');
+            Route::post('/add_details_contacts',                     'MotoAdsController@add_details_contacts');
 
-            Route::post('/principal_data/{id}',                           'MotoAdsController@update_principal_data')->name('principal_data');
-            Route::post('/details_ads/{id}',                              'MotoAdsController@update_details_ads')->name('details_ads');
-            Route::post('/update_sub_characteristic_ads/{id}',               'MotoAdsController@update_sub_characteristic_ads')->name('details_ads');
-            Route::post('/update_details_contacts/{id}',                     'MotoAdsController@update_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data/{id}',                           'MotoAdsController@update_principal_data');
+            Route::post('/details_ads/{id}',                              'MotoAdsController@update_details_ads');
+            Route::post('/update_sub_characteristic_ads/{id}',               'MotoAdsController@update_sub_characteristic_ads');
+            Route::post('/update_details_contacts/{id}',                     'MotoAdsController@update_details_contacts');
 
         });
 
         Route::prefix('mobile-home-ads')->name('mobile-home-ads/')->group(static function() {
-            Route::post('/principal_data',                           'MobileHomeAdsController@principal_data')->name('principal_data');
-            Route::post('/details_ads',                              'MobileHomeAdsController@details_ads')->name('details_ads');
-            Route::post('/add_sub_characteristic_ads',               'MobileHomeAdsController@add_sub_characteristic_ads')->name('details_ads');
-            Route::post('/add_details_contacts',                     'MobileHomeAdsController@add_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data',                           'MobileHomeAdsController@principal_data');
+            Route::post('/details_ads',                              'MobileHomeAdsController@details_ads');
+            Route::post('/add_sub_characteristic_ads',               'MobileHomeAdsController@add_sub_characteristic_ads');
+            Route::post('/add_details_contacts',                     'MobileHomeAdsController@add_details_contacts');
             
-            Route::post('/principal_data/{id}',                           'MobileHomeAdsController@update_principal_data')->name('principal_data');
-            Route::post('/details_ads/{id}',                              'MobileHomeAdsController@update_details_ads')->name('details_ads');
-            Route::post('/update_sub_characteristic_ads/{id}',               'MobileHomeAdsController@update_sub_characteristic_ads')->name('details_ads');
-            Route::post('/update_details_contacts/{id}',                     'MobileHomeAdsController@update_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data/{id}',                           'MobileHomeAdsController@update_principal_data');
+            Route::post('/details_ads/{id}',                              'MobileHomeAdsController@update_details_ads');
+            Route::post('/update_sub_characteristic_ads/{id}',               'MobileHomeAdsController@update_sub_characteristic_ads');
+            Route::post('/update_details_contacts/{id}',                     'MobileHomeAdsController@update_details_contacts');
         
         });
 
         Route::prefix('truck-ads')->name('truck-ads/')->group(static function() {
-            Route::post('/principal_data',                           'TruckAdsController@principal_data')->name('principal_data');
-            Route::post('/details_ads',                              'TruckAdsController@details_ads')->name('details_ads');
-            Route::post('/add_sub_characteristic_ads',               'TruckAdsController@add_sub_characteristic_ads')->name('details_ads');
-            Route::post('/add_details_contacts',                     'TruckAdsController@add_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data',                           'TruckAdsController@principal_data');
+            Route::post('/details_ads',                              'TruckAdsController@details_ads');
+            Route::post('/add_sub_characteristic_ads',               'TruckAdsController@add_sub_characteristic_ads');
+            Route::post('/add_details_contacts',                     'TruckAdsController@add_details_contacts');
             
-            Route::post('/principal_data/{id}',                           'TruckAdsController@update_principal_data')->name('principal_data');
-            Route::post('/details_ads/{id}',                              'TruckAdsController@update_details_ads')->name('details_ads');
-            Route::post('/update_sub_characteristic_ads/{id}',               'TruckAdsController@update_sub_characteristic_ads')->name('details_ads');
-            Route::post('/update_details_contacts/{id}',                     'TruckAdsController@update_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data/{id}',                           'TruckAdsController@update_principal_data');
+            Route::post('/details_ads/{id}',                              'TruckAdsController@update_details_ads');
+            Route::post('/update_sub_characteristic_ads/{id}',               'TruckAdsController@update_sub_characteristic_ads');
+            Route::post('/update_details_contacts/{id}',                     'TruckAdsController@update_details_contacts');
         
         });
 
         Route::prefix('shop-ads')->name('mobile-home-ads/')->group(static function() {
-            Route::post('/principal_data',                           'ShopAdsController@principal_data')->name('principal_data');
-            Route::post('/details_ads',                              'ShopAdsController@details_ads')->name('details_ads');
-            Route::post('/add_details_contacts',                     'ShopAdsController@add_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data',                           'ShopAdsController@principal_data');
+            Route::post('/details_ads',                              'ShopAdsController@details_ads');
+            Route::post('/add_details_contacts',                     'ShopAdsController@add_details_contacts');
             
-            Route::post('/principal_data/{id}',                           'ShopAdsController@update_principal_data')->name('principal_data');
-            Route::post('/details_ads/{id}',                              'ShopAdsController@update_details_ads')->name('details_ads');
-            Route::post('/update_details_contacts/{id}',                     'ShopAdsController@update_details_contacts')->name('add_details_contacts');
+            Route::post('/principal_data/{id}',                           'ShopAdsController@update_principal_data');
+            Route::post('/details_ads/{id}',                              'ShopAdsController@update_details_ads');
+            Route::post('/update_details_contacts/{id}',                     'ShopAdsController@update_details_contacts');
         
         });
         
