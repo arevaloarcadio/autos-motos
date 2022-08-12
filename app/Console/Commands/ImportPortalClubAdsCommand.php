@@ -882,6 +882,8 @@ class ImportPortalClubAdsCommand extends Command
            $key = 'mobileHomeAd';
         }
 
+        $this->info($gener.'->'.$key);
+
         if ($existingAd[$key]->updated_at >= Carbon::parse((string) $ad->last_modified)) {
             $skippedAdsCounter++;
             $this->info(

@@ -370,7 +370,7 @@ class ShopAdsController extends Controller
             
             $slug = $this->slugAd($request['title']);
 
-            $ad = Ad::create([
+            $ad = Ad::where('id',$id)->update([
                 'slug' => $slug,
                 'title' => $request['title'],
                 'description' => $request['description'],
