@@ -185,7 +185,8 @@ class AdsController extends Controller
     public function searchAdsLike(Request $request)
     {   
         $validator = \Validator::make($request->all(), [
-            'filter' => 'required'
+            'filter' => 'required',
+            'type' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -193,15 +194,14 @@ class AdsController extends Controller
         }
 
         $filter = $request->filter;
+        $type = $request->type;
         
         $ads = Ad::where(function ($query) use ($filter){
                 $query->where('ads.title','LIKE','%'. $filter.'%')
                       ->orWhere('ads.description','LIKE','%'.$filter.'%')
-                      ->orWhere('ads.type','LIKE','%'.$filter.'%');
-            })->limit(50);
+            })->where('ads.type',$type);
 
-        $ads->with(
-                    [
+        $ads->with([
                         'user',
                         'mechanicAd',
                         'rentalAd',
@@ -230,8 +230,8 @@ class AdsController extends Controller
                 );
 
         return response()->json([
-            'data' => $ads->get(),
-            'total' => count($ads->get()) 
+            'data' => $ads->limit(50)->get(),
+            'total' => $ads->count() 
         ]);
     }
 
@@ -956,6 +956,9 @@ class AdsController extends Controller
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }
         });
         if ($filters->oldest) {
             $auto_ad->orderBy('created_at','DESC');
@@ -1062,6 +1065,9 @@ class AdsController extends Controller
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }
         });
         
         if ($filters->oldest) {
@@ -1151,6 +1157,10 @@ class AdsController extends Controller
                 $query->where('color',$filters->color);
             }
             
+            if (!is_null($filters->sleeping_places)) {
+                $query->where('sleeping_places',$filters->sleeping_places);
+            }
+            
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
@@ -1165,6 +1175,9 @@ class AdsController extends Controller
             }
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
+            }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
             }
         });
 
@@ -1262,6 +1275,9 @@ class AdsController extends Controller
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }
         });
         
         if ($filters->oldest) {
@@ -1279,6 +1295,7 @@ class AdsController extends Controller
         if ($filters->lower_price) {
             $truck_ad->orderBy('price','ASC');
         }
+
 
         if (isset($filters->page)) {
             $offset = $filters->page * 25;
@@ -1416,6 +1433,9 @@ public function getCountAutoAd($filters)
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }
         });
         
         return $auto_ad->count();
@@ -1493,6 +1513,9 @@ public function getCountAutoAd($filters)
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }
         });
         
         return $moto_ad->count();;
@@ -1551,6 +1574,13 @@ public function getCountAutoAd($filters)
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
+            if (!is_null($filters->sleeping_places)) {
+                $query->where('sleeping_places',$filters->sleeping_places);
+            }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }
+            
             
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
@@ -1637,6 +1667,9 @@ public function getCountAutoAd($filters)
             }
              if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
+            }
+            if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
             }
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
