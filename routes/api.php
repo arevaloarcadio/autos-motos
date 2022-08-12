@@ -232,6 +232,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             
             Route::post('/search_ads_like',                             'AdsController@searchAdsLike')->name('search_ads_like');
 
+            Route::post('/search_ads_like_title',                       'AdsController@searchAdsLikeTitle')->name('search_ads_like');
+
          
             Route::post('/{ad_id}/rejected_comment',                    'AdsController@storeCommentRejected')->name('storeCommentRejected');
             Route::post('/rejected_comment_individual_ads',             'AdsController@storeCommentsRejectedIndividual')->name('storeCommentRejected');

@@ -205,6 +205,8 @@ class AdsController extends Controller
             $ads = $ads->where('ads.type',$type);
         }
 
+        $ad_ids = [];
+
         $ads->with([
             'user',
             'mechanicAd',
@@ -237,6 +239,100 @@ class AdsController extends Controller
         ]);
     }
 
+    public function searchAdsLikeTitle(Request $request)
+    {   
+        $validator = \Validator::make($request->all(), [
+            'filter' => 'required',
+            'type' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => $validator->errors()],422);
+        }
+
+        $filter = $request->filter;
+        $type = $request->type;
+        
+        $ads = Ad::select('id')->where(function ($query) use ($filter){
+            $query->where('ads.title','LIKE','%'. $filter.'%')
+                  ->orWhere('ads.description','LIKE','%'.$filter.'%');
+        })->limit(25)->get();
+
+        $ad_ids = [];
+
+        foreach ($ads as $ad) {
+            array_push($ad_ids, $ad['id']);
+        }
+        
+        $response = [];
+        
+        switch ($type) {
+            case 'auto':
+                $response = AutoAd::whereIn('ad_id',$ad_ids)
+                    ->with(['make',
+                            'model',
+                            'ad'=> function($query)
+                            {
+                                $query->with(['images']);
+                            },
+                            'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                break;
+            case 'moto':
+                $response = MotoAd::whereIn('ad_id',$ad_ids)
+                    ->with(['make','model',
+                    'ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    } ,
+                    'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                break;
+            case 'mobile-home':
+                $response = MobileHomeAd::whereIn('ad_id',$ad_ids)
+                    ->with(['make','model',
+                    'ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },
+                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                break;
+            case 'truck':
+                $response = TruckAd::whereIn('ad_id',$ad_ids)
+                    ->with(['make','fuelType','ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    },
+                'transmissionType','dealer','dealerShowRoom']);
+                break;
+            case 'rental':
+                $response = RentalAd::whereIn('ad_id',$ad_ids)->with([
+                    'ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    }]);
+                break;  
+            case 'shop':
+                $response = ShopAd::whereIn('ad_id',$ad_ids)
+                    ->with(['make','model','ad'=> function($query)
+                        {
+                            $query->with(['images']);
+                        },
+                    'dealer','dealerShowRoom']);
+                break;
+            case 'mechanic':
+                $response = MechanicAd::whereIn('ad_id',$ad_ids)->with([
+                    'ad'=> function($query)
+                    {
+                        $query->with(['images']);
+                    }]);
+                break;     
+            default:
+
+                break;
+        }
+        return response()->json([
+            'data' => $response->paginate(25)
+        ]);
+    }
     public function bySource(Request $request)
     {
 
