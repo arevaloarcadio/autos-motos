@@ -73,6 +73,7 @@ class TruckAdsController extends Controller
                             }
                         }
                     }
+                    $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)');
 
                 foreach (TruckAd::getRelationships() as $key => $value) {
                    $query->with($key);

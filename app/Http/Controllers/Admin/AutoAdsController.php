@@ -76,6 +76,9 @@ class AutoAdsController extends Controller
                 foreach (AutoAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
+                
+                $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)');
+
                 $query->with([
                     'ad' => function($query)
                     {

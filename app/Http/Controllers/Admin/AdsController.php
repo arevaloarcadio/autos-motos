@@ -42,9 +42,14 @@ class AdsController extends Controller
      */
     public function index(IndexAd $request)
     {   
-        $promoted = [];
+        /*$promoted = [];
 
-        $promoted_simple_ads = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
+
+        $promoted_simple_ads = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)');
+        
+        if (isset($request->filters['type'])) {
+            $promoted_simple_ads =  $promoted_simple_ads->where('type',$request->filters['type']); 
+        }
 
         $promoted_simple_ads->with([
                     'mechanicAd',
@@ -73,7 +78,7 @@ class AdsController extends Controller
                     }
                 ]);
 
-        $promoted = $promoted_simple_ads->get()->toArray();
+        $promoted = $promoted_simple_ads->inRandomOrder()->limit(25)->get()->toArray();*/
         
         $data = AdminListing::create(Ad::class)->processRequestAndGet(
             // pass the request with params
@@ -165,11 +170,11 @@ class AdsController extends Controller
             }
         );
 
-        $data = $data->toArray(); 
+        //$data = $data->toArray(); 
             
-        array_push($promoted,...$data['data']);
+        //array_push($promoted,...$data['data']);
     
-        $data['data'] = $promoted;
+        //$data['data'] = $promoted;
       
         return ['data' => $data];
     }
