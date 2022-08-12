@@ -198,7 +198,7 @@ class AdsController extends Controller
         
         $ads = Ad::where(function ($query) use ($filter){
                 $query->where('ads.title','LIKE','%'. $filter.'%')
-                      ->orWhere('ads.description','LIKE','%'.$filter.'%')
+                      ->orWhere('ads.description','LIKE','%'.$filter.'%');
             })->where('ads.type',$type);
 
         $ads->with([
