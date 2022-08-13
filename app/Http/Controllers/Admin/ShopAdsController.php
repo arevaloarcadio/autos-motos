@@ -417,16 +417,15 @@ class ShopAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
             }
 
-            ShopAd::where('id',$request['shop_ad_id'])->update([
-                'ad_id' =>  $ad->id,
+            ShopAd::where('ad_id',$id)->update([
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
@@ -435,9 +434,9 @@ class ShopAdsController extends Controller
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
             
-            $shopAd = ShopAd::find($request['shop_ad_id']);
+            $shopAd = ShopAd::where('ad_id',$id)->first();
 
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'shop_ad' => $shopAd,'images' => $images]], 200);
 
@@ -596,7 +595,7 @@ class ShopAdsController extends Controller
 
         try {
             
-            ShopAd::where('id',$request['shop_ad_id'])->update([
+            ShopAd::where('ad_id',$id)->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,
@@ -608,7 +607,7 @@ class ShopAdsController extends Controller
                 'whatsapp_number' =>  $request->whatsapp_number,
             ]);
 
-            $shopAd = ShopAd::find($request['shop_ad_id']);
+            $shopAd = ShopAd::where('ad_id',$id)->first();
             
             //$user = Auth::user();
 
