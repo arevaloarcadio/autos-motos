@@ -360,7 +360,7 @@ class PromotedAdsController extends Controller
                     ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
                     ->where('user_id',$user->id)
                     ->where('user_plans.status','Aprobado')
-                    ->get();
+                    ->first();
             
             $count_promoted_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
                 ->where('promoted_simple_ads.user_id',$user->id)
