@@ -295,7 +295,6 @@ class RentalAdsController extends Controller
             }
             
             $rental_ad = RentalAd::where('ad_id',$id)->update([
-                'ad_id' =>  $ad->id,
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
                 'longitude' => $sanitized['longitude'] ?? null,
