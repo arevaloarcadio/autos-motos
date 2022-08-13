@@ -412,12 +412,11 @@ class MobileHomeAdsController extends Controller
             }
 
             MobileHomeAd::where('ad_id',$id)->update([
-                'ad_id' =>  $id,
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
 
-            $mobile_home_ad = MobileHomeAd::find($request['mobile_home_ad_id']);
+            $mobile_home_ad =  MobileHomeAd::where('ad_id',$id)->first();
 
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
@@ -581,7 +580,7 @@ class MobileHomeAdsController extends Controller
 
         try {
             
-            MobileHomeAd::where('id',$request['mobile_home_ad_id'])->update([
+            MobileHomeAd::where('id',$id)->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,
@@ -593,7 +592,7 @@ class MobileHomeAdsController extends Controller
                 'whatsapp_number' =>  $request->whatsapp_number,
             ]);
 
-            $mobile_home_ad = MobileHomeAd::find($request['mobile_home_ad_id']);
+            $mobile_home_ad = MobileHomeAd::where('ad_id',$id)->first();
             
             //$user = Auth::user();
 
