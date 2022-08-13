@@ -403,16 +403,16 @@ class MobileHomeAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
             }
 
-            MobileHomeAd::where('id',$request['mobile_home_ad_id'])->update([
-                'ad_id' =>  $ad->id,
+            MobileHomeAd::where('ad_id',$id)->update([
+                'ad_id' =>  $id,
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
@@ -422,7 +422,7 @@ class MobileHomeAdsController extends Controller
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
             
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'mobile_home_ad' =>$mobile_home_ad,'images' => $images]], 200);
 
