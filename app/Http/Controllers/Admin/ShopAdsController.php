@@ -27,7 +27,7 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\{Ad,ShopAd,DealerShowRoom,AdImage};
+use App\Models\{Ad,ShopAd,DealerShowRoom,AdImage,Models};
 
 class ShopAdsController extends Controller
 {
@@ -179,7 +179,7 @@ class ShopAdsController extends Controller
         $shopAd = ShopAd::create([
             'category' => $sanitized['category'],
             'make_id' => $sanitized['make_id'],
-            'model' => $sanitized['model'],
+            'model' => Models::find($sanitized['model_id'])->name,
             'manufacturer' => $sanitized['manufacturer'],
             'code' => $sanitized['code'],
             'condition' => $sanitized['condition'],
@@ -239,7 +239,7 @@ class ShopAdsController extends Controller
                 'price' =>  0,
                 'category' => $request['category'],
                 'make_id' => $request['make_id'],
-                'model_id' => $request['model_id'],
+                'model' => Models::find($request['model_id'])->name,
                 'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
                 'manufacturer' => $request['manufacturer'],
                 'code' => $request['code'],
@@ -282,7 +282,7 @@ class ShopAdsController extends Controller
             $shopAd = ShopAd::where('ad_id',$id)->update([
                 'category' => $request['category'],
                 'make_id' => $request['make_id'],
-                'model_id' => $request['model_id'],
+                'model' => Models::find($request['model_id'])->name,
                 'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
                 'manufacturer' => $request['manufacturer'],
                 'code' => $request['code'],

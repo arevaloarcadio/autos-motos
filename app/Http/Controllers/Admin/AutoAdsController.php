@@ -511,15 +511,15 @@ class AutoAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
             }
 
-            AutoAd::where('id',$request['auto_ad_id'])->update([
+            AutoAd::where('ad_id',$id)->update([
                 'ad_id' =>  $ad->id,
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
@@ -527,9 +527,9 @@ class AutoAdsController extends Controller
 
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
-            $autoAd = AutoAd::find($request['auto_ad_id']);
+            $autoAd = AutoAd::where('ad_id',$id)->first();
 
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'auto_ad' => $autoAd,'images' => $images]], 200);
 
@@ -637,7 +637,7 @@ class AutoAdsController extends Controller
 
         try {
             
-            AutoAd::where('id',$request['auto_ad_id'])->update([
+            AutoAd::where('ad_id',$id)->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,
@@ -649,7 +649,7 @@ class AutoAdsController extends Controller
                 'whatsapp_number' =>  $request->whatsapp_number,
             ]);
 
-            $autoAd = AutoAd::find($request['auto_ad_id']);
+            $autoAd = AutoAd::where('ad_id',$id)->first();
             
             $user = Auth::user();
 
@@ -687,7 +687,7 @@ class AutoAdsController extends Controller
 
         try {
             
-            AutoAd::where('id',$request['auto_ad_id'])->update([
+            AutoAd::where('ad_id',$id)->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,

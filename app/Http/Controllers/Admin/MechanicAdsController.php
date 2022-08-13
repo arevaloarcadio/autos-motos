@@ -284,16 +284,15 @@ class MechanicAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
             }
 
             $mechanicAd = MechanicAd::where('ad_id',$id)->update([
-                'ad_id' =>  $ad->id,
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
                 'longitude' => $sanitized['longitude'] ?? null,
@@ -311,7 +310,7 @@ class MechanicAdsController extends Controller
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
 
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
 

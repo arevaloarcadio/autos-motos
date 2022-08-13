@@ -28,7 +28,7 @@ class UpdateMechanicAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['sometimes', Rule::unique('mechanic_ads', 'ad_id')->ignore($this->mechanicAd->getKey(), $this->mechanicAd->getKeyName()), 'string'],
+            'ad_id' => ['sometimes', 'string'],
             'address' => ['sometimes', 'string'],
             'latitude' => ['nullable', 'string'],
             'longitude' => ['nullable', 'string'],
