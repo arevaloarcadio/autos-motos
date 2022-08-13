@@ -360,8 +360,7 @@ class PromotedAdsController extends Controller
                     ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
                     ->where('user_id',$user->id)
                     ->where('user_plans.status','Aprobado')
-                    ->groupBy('rental_ads','mechanic_ads','vehicle_ads','shop_ads','front_page_promotion')
-                    ->first();
+                    ->get();
             
             $count_promoted_ads = Ad::join('promoted_simple_ads','promoted_simple_ads.ad_id','ads.id')
                 ->where('promoted_simple_ads.user_id',$user->id)
@@ -391,7 +390,6 @@ class PromotedAdsController extends Controller
                 ->whereIn('ads.type',['auto','moto','shop','truck'])
                 ->count();
 
-                dd($characteristic. '-'. $count_vehicle_ads);
             $response = [
                 'rental_ads' => [
                     'total' => $characteristic['rental_ads'] - $count_rental_ads,
