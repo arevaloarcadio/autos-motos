@@ -286,9 +286,9 @@ class RentalAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
@@ -311,7 +311,7 @@ class RentalAdsController extends Controller
 
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
             
             $user = Auth::user();
 
