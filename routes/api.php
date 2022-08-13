@@ -564,7 +564,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('mechanic-ads')->name('mechanic-ads/')->group(static function() {
             Route::get('/',                                             'MechanicAdsController@index')->name('index');
             Route::get('/promoted',                                     'MechanicAdsController@mechanicAdsPromotedFrontPage')->name('mechanicAdsPromotedFrontPage');
-            Route::post('/search',                                   'MechanicAdsController@searchLike');
+            Route::post('/search/like',                                   'MechanicAdsController@searchLike');
             
             //Route::get('/create',                                       'MechanicAdsController@create')->name('create');
             //Route::get('/{mechanicAd}/edit',                            'MechanicAdsController@edit')->name('edit');
