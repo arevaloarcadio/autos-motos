@@ -883,7 +883,11 @@ class ImportPortalClubAdsCommand extends Command
         }
 
         $this->info($gener.'->'.$key);
-
+        
+        if (is_null($existingAd[$key])) {
+            return;
+        }
+        
         if ($existingAd[$key]->updated_at >= Carbon::parse((string) $ad->last_modified)) {
             $skippedAdsCounter++;
             $this->info(

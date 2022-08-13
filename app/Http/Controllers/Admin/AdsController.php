@@ -256,7 +256,10 @@ class AdsController extends Controller
         $ads = Ad::select('id')->where(function ($query) use ($filter){
             $query->where('ads.title','LIKE','%'. $filter.'%')
                   ->orWhere('ads.description','LIKE','%'.$filter.'%');
-        })->limit(25)->get();
+        })
+        ->where('type',$type)
+        ->limit(25)
+        ->get();
 
         $ad_ids = [];
 
@@ -264,6 +267,7 @@ class AdsController extends Controller
             array_push($ad_ids, $ad['id']);
         }
         
+
         $response = [];
         
         switch ($type) {
