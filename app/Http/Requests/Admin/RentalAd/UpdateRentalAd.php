@@ -29,6 +29,8 @@ class UpdateRentalAd extends FormRequest
     {
         return [
             'ad_id' => ['sometimes', 'string'],
+            'title' => ['sometimes', 'string'],
+            'description' => ['sometimes', 'string'],
             'address' => ['sometimes', 'string'],
             'latitude' => ['nullable', 'string'],
             'longitude' => ['nullable', 'string'],
