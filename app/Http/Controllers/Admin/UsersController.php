@@ -502,6 +502,10 @@ class UsersController extends Controller
         if ($email) {
 
             $user = User::where('email',$email)->first();
+            
+            if (is_null($user)) {
+               return view('confirmar');
+            }
 
             if ($user->email_verified_at == null) {
                 $user->email_verified_at = Carbon::now();
@@ -509,7 +513,7 @@ class UsersController extends Controller
             }
         }
         
-        return view('landing.confirmar');
+        return view('confirmar');
     }
 
     public function uploadFile($file,$id)

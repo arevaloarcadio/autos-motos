@@ -33,7 +33,7 @@
             <br>
             <br>
             <button onclick="back()" style="background: #ED1C24;border-radius: 100px;font-family: 'Ubuntu';font-style: normal;font-weight: 700;font-size: 15.5px;line-height: 16px;align-items: center;text-align: center;letter-spacing: 1.25px;text-transform: uppercase;width: 400px;height:56px;color: #FFFFFF;">
-                Volver a Inicio
+                Volver a inicio
             </button>
         </center>
     </body>

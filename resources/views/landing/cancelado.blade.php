@@ -33,12 +33,12 @@
             <br>
             <br>
             <button onclick="backPlan()" style="background: #ED1C24;border-radius: 100px;font-family: 'Ubuntu';font-style: normal;font-weight: 700;font-size: 15.5px;line-height: 16px;align-items: center;text-align: center;letter-spacing: 1.25px;text-transform: uppercase;width: 400px;height:56px;color: #FFFFFF;">
-                volver a intentar
+                Volver a intentar
             </button>
             <br>
             <br>
             <button onclick="cancel()" style="background: #ed1c2447;border-radius: 100px;font-family: 'Ubuntu';font-style: normal;font-weight: 700;font-size: 15.5px;line-height: 16px;align-items: center;text-align: center;letter-spacing: 1.25px;text-transform: uppercase;width: 400px;height:56px;color: #ED1C24;">
-                cancelar
+                Cancelar
             </button>
         </center>
     </body>
