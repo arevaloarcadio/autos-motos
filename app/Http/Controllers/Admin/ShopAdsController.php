@@ -655,6 +655,10 @@ class ShopAdsController extends Controller
                 $shop_ads = $shop_ads->whereBetween('price',[$request->from_price,$request->to_price]);
             }
 
+            foreach (ShopAd::getRelationships() as $key => $value) {
+                   $shop_ads->with($key);
+            }
+            
             return response()->json(['data' => $shop_ads->paginate(25)], 200);
 
         } catch (Exception $e) {

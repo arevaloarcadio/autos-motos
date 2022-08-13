@@ -359,6 +359,7 @@ class PromotedAdsController extends Controller
             $characteristic = CharacteristicPromotionPlan::selectRaw('sum(rental_ads) as rental_ads , sum(mechanic_ads) as mechanic_ads,sum(vehicle_ads) as vehicle_ads,sum(shop_ads) as shop_ads,sum(front_page_promotion) as front_page_promotion')
                     ->join('user_plans','user_plans.plan_id','characteristic_promotion_plans.plan_id')
                     ->where('user_id',$user->id)
+                    ->where('user_plans.status','Aprobado')
                     ->groupBy('rental_ads','mechanic_ads','vehicle_ads','shop_ads','front_page_promotion')
                     ->first();
             
