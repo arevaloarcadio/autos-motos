@@ -58,6 +58,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/add_sub_characteristic_ads',               'AutoAdsController@add_sub_characteristic_ads');
             Route::post('/add_details_contacts',                     'AutoAdsController@add_details_contacts');
             
+            
             Route::post('/principal_data/{id}',                      'AutoAdsController@update_principal_data');
             Route::post('/details_ads/{id}',                         'AutoAdsController@update_details_ads');
             Route::post('/update_sub_characteristic_ads/{id}',       'AutoAdsController@update_sub_characteristic_ads');
@@ -70,8 +71,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/add_sub_characteristic_ads',               'MotoAdsController@add_sub_characteristic_ads');
             Route::post('/add_details_contacts',                     'MotoAdsController@add_details_contacts');
 
-            Route::post('/principal_data/{id}',                           'MotoAdsController@update_principal_data');
-            Route::post('/details_ads/{id}',                              'MotoAdsController@update_details_ads');
+            Route::post('/principal_data/{id}',                      'MotoAdsController@update_principal_data');
+            
+            
+            Route::post('/details_ads/{id}',                         'MotoAdsController@update_details_ads');
             Route::post('/update_sub_characteristic_ads/{id}',               'MotoAdsController@update_sub_characteristic_ads');
             Route::post('/update_details_contacts/{id}',                     'MotoAdsController@update_details_contacts');
 
@@ -83,6 +86,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/add_sub_characteristic_ads',               'MobileHomeAdsController@add_sub_characteristic_ads');
             Route::post('/add_details_contacts',                     'MobileHomeAdsController@add_details_contacts');
             
+            Route::post('/search',                                   'MobileHomeAdsController@searchLike');
+
             Route::post('/principal_data/{id}',                           'MobileHomeAdsController@update_principal_data');
             Route::post('/details_ads/{id}',                              'MobileHomeAdsController@update_details_ads');
             Route::post('/update_sub_characteristic_ads/{id}',               'MobileHomeAdsController@update_sub_characteristic_ads');
@@ -96,6 +101,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/add_sub_characteristic_ads',               'TruckAdsController@add_sub_characteristic_ads');
             Route::post('/add_details_contacts',                     'TruckAdsController@add_details_contacts');
             
+            Route::post('/search',                                   'TruckAdsController@searchLike');
+
             Route::post('/principal_data/{id}',                           'TruckAdsController@update_principal_data');
             Route::post('/details_ads/{id}',                              'TruckAdsController@update_details_ads');
             Route::post('/update_sub_characteristic_ads/{id}',               'TruckAdsController@update_sub_characteristic_ads');
@@ -108,6 +115,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::post('/details_ads',                              'ShopAdsController@details_ads');
             Route::post('/add_details_contacts',                     'ShopAdsController@add_details_contacts');
             
+            Route::post('/search',                                   'ShopAdsController@searchLike');
+
             Route::post('/principal_data/{id}',                           'ShopAdsController@update_principal_data');
             Route::post('/details_ads/{id}',                              'ShopAdsController@update_details_ads');
             Route::post('/update_details_contacts/{id}',                     'ShopAdsController@update_details_contacts');
@@ -116,11 +125,14 @@ Route::group(['middleware' => ['jwt.verify']], function() {
         
         Route::prefix('mechanic-ads')->name('mechanic-ads/')->group(static function() {
             Route::post('/',                                          'MechanicAdsController@store')->name('store');
+            Route::post('/search',                                   'MechanicAdsController@searchLike');
             Route::post('/{id}',                                       'MechanicAdsController@update')->name('store');
+
         });  
 
         Route::prefix('rental-ads')->name('rental-ads/')->group(static function() {
             Route::post('/',                                           'RentalAdsController@store')->name('store');
+            Route::post('/search',                                   'RentalAdsController@searchLike');
             Route::post('/{id}',                                        'RentalAdsController@update')->name('store');
         });
 
@@ -308,6 +320,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'AutoAdsController@autoAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
             //Route::get('/create',                                       'AutoAdsController@create')->name('create');
             Route::post('/',                                            'AutoAdsController@store')->name('store');
+            Route::post('/search',                                   'AutoAdsController@searchLike');
             
             //Route::get('/{autoAd}/edit',                                'AutoAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AutoAdsController@bulkDestroy')->name('bulk-destroy');
@@ -556,6 +569,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('mechanic-ads')->name('mechanic-ads/')->group(static function() {
             Route::get('/',                                             'MechanicAdsController@index')->name('index');
             Route::get('/promoted',                                     'MechanicAdsController@mechanicAdsPromotedFrontPage')->name('mechanicAdsPromotedFrontPage');
+            Route::post('/search',                                   'MechanicAdsController@searchLike');
+            
             //Route::get('/create',                                       'MechanicAdsController@create')->name('create');
             //Route::get('/{mechanicAd}/edit',                            'MechanicAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'MechanicAdsController@bulkDestroy')->name('bulk-destroy');
@@ -589,6 +604,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'MobileHomeAdsController@mobileHomeAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
             //Route::get('/create',                                       'MobileHomeAdsController@create')->name('create');
             Route::post('/',                                            'MobileHomeAdsController@store')->name('store');
+            Route::post('/search',                                   'MobileHomeAdsController@searchLike');
+
             //Route::get('/{mobileHomeAd}/edit',                          'MobileHomeAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'MobileHomeAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{mobileHomeAd}',                              'MobileHomeAdsController@update')->name('update');
@@ -612,6 +629,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'MotoAdsController@motoAdsPromotedFrontPage')->name('motoAdsPromotedFrontPage');
             //Route::get('/create',                                       'MotoAdsController@create')->name('create');
             Route::post('/',                                            'MotoAdsController@store')->name('store');
+            Route::post('/search',                                   'MotoAdsController@searchLike');
             //Route::get('/{motoAd}/edit',                                'MotoAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'MotoAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{motoAd}',                                    'MotoAdsController@update')->name('update');
@@ -647,6 +665,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('rental-ads')->name('rental-ads/')->group(static function() {
             Route::get('/',                                             'RentalAdsController@index')->name('index');
             Route::get('/promoted',                                     'RentalAdsController@rentalAdsPromotedFrontPage')->name('motoAdsPromotedFrontPage');
+            Route::post('/search',                                   'RentalAdsController@searchLike');
+            
             //Route::get('/create',                                       'RentalAdsController@create')->name('create');
             //Route::get('/{rentalAd}/edit',                              'RentalAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'RentalAdsController@bulkDestroy')->name('bulk-destroy');
@@ -686,6 +706,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             //Route::get('/create',                                       'ShopAdsController@create')->name('create');
             Route::post('/',                                            'ShopAdsController@store')->name('store');
             Route::post('/search_advanced',                             'ShopAdsController@search_advanced')->name('store');
+            Route::post('/search',                                   'ShopAdsController@searchLike');
+
             //Route::get('/{shopAd}/edit',                                'ShopAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'ShopAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{shopAd}',                                    'ShopAdsController@update')->name('update');
@@ -747,6 +769,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'TruckAdsController@truckAdsPromotedFrontPage')->name('truckAdsPromotedFrontPage');
             //Route::get('/create',                                       'TruckAdsController@create')->name('create');
             Route::post('/',                                            'TruckAdsController@store')->name('store');
+            Route::post('/search',                                   'TruckAdsController@searchLike');
+
             //Route::get('/{truckAd}/edit',                               'TruckAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'TruckAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{truckAd}',                                   'TruckAdsController@update')->name('update');

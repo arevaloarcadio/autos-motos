@@ -94,6 +94,29 @@ class ShopAdsController extends Controller
         return ['data' => $data];
     }
 
+    public function searchLike(Request $request)
+    {
+        $validator = \Validator::make($request->all(), [
+            'filter' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => $validator->errors()],422);
+        }
+
+        $filter = $request->filter;
+
+        $data = ShopAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'shop')")
+                    ->with(['make','model','ad'=> function($query)
+                        {
+                            $query->with(['images']);
+                        },
+                    'dealer','dealerShowRoom'])->paginate(25);
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      *

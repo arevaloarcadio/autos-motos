@@ -272,7 +272,7 @@ class AdsController extends Controller
         
         switch ($type) {
             case 'auto':
-                $response = AutoAd::whereIn('ad_id',$ad_ids)
+                $response = AutoAd::whereRaw("ad_id in (SELECT id FROM ads where ads.title LIKE '%".$filter."%'  and ads.description '%".$filter."%')")
                     ->with(['make',
                             'model',
                             'ad'=> function($query)
