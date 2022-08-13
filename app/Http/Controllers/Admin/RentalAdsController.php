@@ -74,9 +74,26 @@ class RentalAdsController extends Controller
                             }
                         }
                     }
+                    
+                    if(isset($request->filters['title'])){
+                        $ad_ids = Ad::select('id')
+                            ->where('title','LIKE','%'.$request->filters['title'].'%' )
+                            ->where('type','rental')
+                            ->get()
+                            ->toArray();
+                        
+                        $ids = [];
+
+                        foreach ($ad_ids as $key => $ad_id) {
+                            $ids[$key] =  $ad_id['id'];
+                        }
+
+                        $query->whereIn('ad_id',$ids);
+                    }
+                    
                     $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)');
 
-                   $query->with(['ad' => function ($query)
+                    $query->with(['ad' => function ($query)
                         {
                             $query->with(['images']);
                         }
