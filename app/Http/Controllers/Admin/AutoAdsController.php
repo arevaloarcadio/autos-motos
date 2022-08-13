@@ -40,7 +40,7 @@ class AutoAdsController extends Controller
      */
     public function index(IndexAutoAd $request)
     {
-        $promoted_simple_ads = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
+        $promoted_simple_ads = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
         foreach (AutoAd::getRelationships() as $key => $value) {
            $promoted_simple_ads->with($key);

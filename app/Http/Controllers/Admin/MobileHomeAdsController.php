@@ -41,7 +41,7 @@ class MobileHomeAdsController extends Controller
      */
     public function index(IndexMobileHomeAd $request)
     {
-        $promoted_simple_ads = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->inRandomOrder()->limit(25);
+        $promoted_simple_ads = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
         foreach (MobileHomeAd::getRelationships() as $key => $value) {
            $promoted_simple_ads->with($key);
