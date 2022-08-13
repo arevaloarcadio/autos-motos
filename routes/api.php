@@ -685,6 +685,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'ShopAdsController@shopAdsPromotedFrontPage')->name('shopAdsPromotedFrontPage');
             //Route::get('/create',                                       'ShopAdsController@create')->name('create');
             Route::post('/',                                            'ShopAdsController@store')->name('store');
+            Route::post('/search_advanced',                             'ShopAdsController@search_advanced')->name('store');
             //Route::get('/{shopAd}/edit',                                'ShopAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'ShopAdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{shopAd}',                                    'ShopAdsController@update')->name('update');

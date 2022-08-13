@@ -598,6 +598,48 @@ class ShopAdsController extends Controller
             return $this->sendResponse($resource);
         }
     }
+
+
+    public function search_advanced(Request $request)
+    {
+        $resource = ApiHelper::resource();
+
+        try {
+            
+            $shop_ads = new ShopAd;
+
+            if ($request->category) {
+                $shop_ads = $shop_ads->whereIn('category',$request->category);
+            }
+            
+            if ($request->make_id) {
+                $shop_ads = $shop_ads->where('make_id',$request->make_id);
+            }
+
+            if ($request->country) {
+                $shop_ads = $shop_ads->where('country',$request->country);
+            }
+
+            if ($request->manufacturer) {
+                $shop_ads = $shop_ads->where('manufacturer','LIKE','%'.$request->manufacturer.'%');
+            }
+
+            if ($request->condition) {
+                $shop_ads = $shop_ads->where('condition',$request->condition);
+            }
+
+            if (!is_null($request->from_price) && !is_null($request->to_price)) {
+                $shop_ads = $shop_ads->whereBetween('price',[$request->from_price,$request->to_price]);
+            }
+
+            return response()->json(['data' => $shop_ads->paginate(25)], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
