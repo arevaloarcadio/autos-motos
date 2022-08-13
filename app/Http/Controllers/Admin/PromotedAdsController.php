@@ -457,7 +457,7 @@ class PromotedAdsController extends Controller
                 ->where('promoted_simple_ads.user_id',$user->id)
                 ->whereIn('ads.type',['auto','moto','shop','truck'])
                 ->count();
-                dd($characteristic['vehicle_ads']. '-'. $count_vehicle_ads);
+                
             $response = [
                 'rental_ads' => [
                     'total' => $characteristic['rental_ads'] - $count_rental_ads,
