@@ -849,7 +849,7 @@ class AdsController extends Controller
         return null;
     }
 
-    public function getPromotedAds($type)
+    public function getPromotedAds($type,$make_id)
     {   
         $data = null;
         
@@ -857,6 +857,7 @@ class AdsController extends Controller
             case 'auto':
                 
                 $data = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                        ->where('make_id',$make_id)
                         ->with(['make',
                             'model',
                             'ad'=> function($query)
@@ -872,7 +873,8 @@ class AdsController extends Controller
                 break;
             case 'moto':
 
-                $data = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->with(['make','model',
+                $data = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                ->where('make_id',$make_id)->with(['make','model',
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
@@ -887,6 +889,7 @@ class AdsController extends Controller
             case 'mobile-home':
 
                 $data = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                    ->where('make_id',$make_id)
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
@@ -902,6 +905,7 @@ class AdsController extends Controller
             case 'truck':
                 
                 $data = TruckAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+                ->where('make_id',$make_id)
                 ->with(['make','fuelType','ad'=> function($query)
                     {
                         $query->with(['images']);
@@ -935,7 +939,7 @@ class AdsController extends Controller
         try {
             $dealer_id = null;
             
-            $promotedAds = $this->getPromotedAds($request->types);
+            $promotedAds = $this->getPromotedAds($request->types,$request->make_id);
             
             if (!is_null($promotedAds)) {
                 array_push($response, ...$promotedAds);
