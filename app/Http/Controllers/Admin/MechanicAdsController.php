@@ -271,7 +271,6 @@ class MechanicAdsController extends Controller
                 'status' => 0,
                 'type' => 'mechanic',
                 'is_featured' => 0,
-                'user_id' => Auth::user()->id,
                 'market_id' => $sanitized['market_id'],
                 'external_id' =>null,
                 'source' => null,

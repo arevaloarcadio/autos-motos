@@ -435,25 +435,25 @@ class TruckAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
             }
 
-            TruckAd::where('id',$request['truck_ad_id'])->update([
+            TruckAd::where('ad_id',$id)->update([
                 'ad_id' =>  $ad->id,
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
 
-            $truck_ad = TruckAd::find($request['truck_ad_id']);
+            $truck_ad = TruckAd::where('ad_id',$id)->first();
             
             Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
             
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
             
             return response()->json(['data' => ['ad' => $ad,'truck_ad' =>$truck_ad,'images' => $images]], 200);
 
@@ -508,21 +508,20 @@ class TruckAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
-                        $this->uploadFile($file,$ad->id,$i);
+                        $this->uploadFile($file,$id,$i);
                     }
                     $i++;
                 }
             }
 
-            TruckAd::where('id',$request['truck_ad_id'])->update([
-                'ad_id' =>  $ad->id,
+            TruckAd::where('ad_id',$id)->update([
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
 
-            $truck_ad = TruckAd::find($request['truck_ad_id']);
+            $truck_ad = TruckAd::where('ad_id',$id)->first();
             
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
             

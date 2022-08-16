@@ -489,7 +489,7 @@ class MotoAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$id,$i);
                     }else{
                         $this->uploadFile($file,$ad->id,$i);
                     }
@@ -498,17 +498,16 @@ class MotoAdsController extends Controller
             }
 
 
-            MotoAd::where('id',$request['moto_ad_id'])->update([
-                'ad_id' =>  $ad->id,
+            MotoAd::where('ad_id',$id)->update([
                 'youtube_link' =>  $request->youtube_link,
                 'price' =>  $request->price,
             ]);
 
-            $motoAd = MotoAd::find($request['moto_ad_id']);
+            $motoAd = MotoAd::where('ad_id',$id)->first();
             
             $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
             
-            $images = AdImage::where('ad_id',$ad->id)->get();
+            $images = AdImage::where('ad_id',$id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'moto_ad' =>$motoAd,'images' => $images]], 200);
 
@@ -666,7 +665,7 @@ class MotoAdsController extends Controller
 
         try {
             
-            MotoAd::where('id',$request['moto_ad_id'])->update([
+            MotoAd::where('ad_id',$id)->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,
@@ -678,7 +677,7 @@ class MotoAdsController extends Controller
                 'whatsapp_number' =>  $request->whatsapp_number,
             ]);
 
-            $motoAd = MotoAd::find($request['moto_ad_id']);
+            $motoAd = MotoAd::where('ad_id',$id)->first();
             
             $user = Auth::user();
 

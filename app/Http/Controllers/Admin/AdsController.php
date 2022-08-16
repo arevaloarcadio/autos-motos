@@ -111,10 +111,6 @@ class AdsController extends Controller
                 
                 $where_ad_id = null;
 
-                if ($request->input('types')) {
-                    $query->whereIn('type',$request->input('types'));
-                }
-               
                 $i = 1;
                 $type_ads = [
                     'auto_ads',
@@ -139,6 +135,8 @@ class AdsController extends Controller
                   
                 $query->whereRaw($where_ad_id); 
                 
+                $query->where('thumbnail','!=',NULL);
+
                 $query->with(
                     [
                         'user',
@@ -990,8 +988,9 @@ class AdsController extends Controller
         $auto_ad = new AutoAd;
          
         $auto_ad = $auto_ad->where(function($query) use ($filters){
+            
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
             
             if ($filters->make_id) {
@@ -1025,6 +1024,15 @@ class AdsController extends Controller
             if ($filters->fuel_type_id) {
                 $query->where('ad_fuel_type_id',$filters->fuel_type_id);
             }
+
+            if ($filters->fuel_type_id) {
+                $query->where('ad_fuel_type_id',$filters->fuel_type_id);
+            }
+
+            if ($filters->body_type_id) {
+                $query->where('ad_body_type_id',$filters->body_type_id);
+            }
+
             if ($filters->transmission_type_id) {
                 $query->where('ad_transmission_type_id',$filters->transmission_type_id);
             }
@@ -1046,26 +1054,26 @@ class AdsController extends Controller
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
-             if (!is_null($filters->seats)) {
+            if (!is_null($filters->seats)) {
                 $query->where('seats',$filters->seats);
             }
-             if (!is_null($filters->owners)) {
+            if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-             if (!is_null($filters->fuel_consumption)) {
+            if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
             if (!is_null($filters->co2_emissions)) {
                 $query->where('co2_emissions',$filters->co2_emissions);
             }
         });
+
         if ($filters->oldest) {
             $auto_ad->orderBy('created_at','DESC');
         }
@@ -1105,8 +1113,9 @@ class AdsController extends Controller
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
+            
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1133,6 +1142,9 @@ class AdsController extends Controller
             }
             if ($filters->fuel_type_id) {
                 $query->where('fuel_type_id',$filters->fuel_type_id);
+            }
+            if ($filters->body_type_id) {
+                $query->where('body_type_id',$filters->body_type_id);
             }
             if ($filters->transmission_type_id) {
                 $query->where('transmission_type_id',$filters->transmission_type_id);
@@ -1215,8 +1227,9 @@ class AdsController extends Controller
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
+            
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
@@ -1327,9 +1340,8 @@ class AdsController extends Controller
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1471,9 +1483,8 @@ public function getCountAutoAd($filters)
 
         $auto_ad = $auto_ad->where(function($query) use ($filters){
             if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1501,6 +1512,9 @@ public function getCountAutoAd($filters)
             }
             if ($filters->fuel_type_id) {
                 $query->where('ad_fuel_type_id',$filters->fuel_type_id);
+            }
+            if ($filters->body_type_id) {
+                $query->where('body_type_id',$filters->body_type_id);
             }
             if ($filters->transmission_type_id) {
                 $query->where('ad_transmission_type_id',$filters->transmission_type_id);
@@ -1552,10 +1566,9 @@ public function getCountAutoAd($filters)
         $moto_ad = new MotoAd;
 
         $moto_ad = $moto_ad->where(function($query) use ($filters){
-            if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+             if($filters->dealer) {
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1564,6 +1577,9 @@ public function getCountAutoAd($filters)
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
+            }
+            if ($filters->body_type_id) {
+                $query->where('body_type_id',$filters->body_type_id);
             }
             if ($filters->city) {
                 $query->where('city','LIKE','%'.$filters->city.'%');
@@ -1632,10 +1648,9 @@ public function getCountAutoAd($filters)
         $mobile_home_ad = new MobileHomeAd;
 
         $mobile_home_ad = $mobile_home_ad->where(function($query) use ($filters){
-            if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+             if($filters->dealer) {
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1719,8 +1734,8 @@ public function getCountAutoAd($filters)
         $truck_ad = new TruckAd;
 
         $truck_ad = $truck_ad->where(function($query) use ($filters){
-            if($filters->dealer) {
-                $query->whereIn('dealer_id',$filters->dealer_id);
+             if($filters->dealer) {
+                $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
             
             if ($filters->make_id) {
