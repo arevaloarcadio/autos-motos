@@ -91,8 +91,8 @@ class RentalAdsController extends Controller
                         $query->whereIn('ad_id',$ids);
                     }
                     
-                    $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)');
-
+                    $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
+                
                     $query->with(['ad' => function ($query)
                         {
                             $query->with(['images']);

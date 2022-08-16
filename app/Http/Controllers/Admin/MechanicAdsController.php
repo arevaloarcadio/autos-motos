@@ -72,7 +72,9 @@ class MechanicAdsController extends Controller
                         }
                     }
                 }
-                $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)');
+                
+                $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
+                
 
                 if(isset($request->filters['title'])){
                     $ad_ids = Ad::select('id')
