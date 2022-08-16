@@ -1074,6 +1074,8 @@ class AdsController extends Controller
             }
         });
 
+        $auto_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+
         if ($filters->oldest) {
             $auto_ad->orderBy('created_at','DESC');
         }
@@ -1188,6 +1190,8 @@ class AdsController extends Controller
             }
         });
         
+        $moto_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+
         if ($filters->oldest) {
             $moto_ad->orderBy('created_at','DESC');
         }
@@ -1300,6 +1304,8 @@ class AdsController extends Controller
             }
         });
 
+        $mobile_home_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+
         if ($filters->oldest) {
             $mobile_home_ad->orderBy('created_at','DESC');
         }
@@ -1320,6 +1326,7 @@ class AdsController extends Controller
             $offset = $filters->page * 25;
             $mobile_home_ad = $mobile_home_ad->offset($offset);    
         }
+
 
         return $mobile_home_ad
             ->with(['make','model',
@@ -1398,6 +1405,8 @@ class AdsController extends Controller
             }
         });
         
+        $truck_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+
         if ($filters->oldest) {
             $truck_ad->orderBy('created_at','DESC');
         }
@@ -1558,6 +1567,8 @@ public function getCountAutoAd($filters)
             }
         });
         
+        $auto_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+        
         return $auto_ad->count();
     }
 
@@ -1640,6 +1651,8 @@ public function getCountAutoAd($filters)
             }
         });
         
+        $moto_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+
         return $moto_ad->count();;
     }
 
@@ -1726,6 +1739,8 @@ public function getCountAutoAd($filters)
             }
         });
 
+        $mobile_home_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
+
         return $mobile_home_ad->count();
     }
 
@@ -1796,6 +1811,8 @@ public function getCountAutoAd($filters)
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
+        
+        $truck_ad->whereRaw('ad_id IN (SELECT id FROM ads WHERE thumbnail is not null)');
         
         return $truck_ad->count();
     }
