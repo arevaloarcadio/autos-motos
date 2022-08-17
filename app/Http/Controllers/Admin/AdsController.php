@@ -1102,7 +1102,7 @@ class AdsController extends Controller
                     'model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','user']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->limit(25)
             ->get()
@@ -1217,7 +1217,7 @@ class AdsController extends Controller
             ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','user']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->limit(25)
@@ -1332,7 +1332,7 @@ class AdsController extends Controller
             ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','user']);
                     },
                     'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
 
@@ -1432,7 +1432,7 @@ class AdsController extends Controller
         return $truck_ad
             ->with(['make','fuelType','ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','user']);
                     },
                 'transmissionType','dealer','dealerShowRoom'])
             ->limit(25)

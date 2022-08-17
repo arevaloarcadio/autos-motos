@@ -42,6 +42,8 @@ class User extends Authenticatable  implements JWTSubject
     
     ];
     
+    protected $appends = ['review_ratings'];
+
     //protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */
@@ -51,6 +53,20 @@ class User extends Authenticatable  implements JWTSubject
         return url('/admin/users/'.$this->getKey());
     }*/
 
+
+    public function getReviewRatingsAttribute()
+    {
+        $score = Review::selectRaw('FORMAT(AVG(score),2) as ratings')
+                ->join('ads','ads.id','reviews.ad_id')
+                ->where('ads.user_id',$this->getKey())
+                ->first();
+
+        if (is_null($score)) {
+            return null;
+        }
+
+        return $score['ratings'];
+    }
 
     public function dealer()
     {

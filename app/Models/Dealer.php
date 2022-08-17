@@ -33,14 +33,16 @@ class Dealer extends Model
     
     ];
     
-    protected $appends = ['resource_url'];
-
+    //protected $appends = ['resource_url'];
+   
     /* ************************ ACCESSOR ************************* */
 
-    public function getResourceUrlAttribute()
+    /*public function getResourceUrlAttribute()
     {
         return url('/admin/dealers/'.$this->getKey());
-    }
+    }*/
+
+    
 
     /**
      * @return HasMany
