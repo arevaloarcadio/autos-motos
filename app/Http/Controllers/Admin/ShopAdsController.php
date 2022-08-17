@@ -41,7 +41,7 @@ class ShopAdsController extends Controller
      */
     public function index(IndexShopAd $request)
     {
-        $promoted_simple_ads = ShopAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+    /*    $promoted_simple_ads = ShopAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
             ->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')
             ->inRandomOrder()
             ->limit(25);
@@ -50,7 +50,7 @@ class ShopAdsController extends Controller
            $promoted_simple_ads->with($key);
         }
 
-        $promoted = $promoted_simple_ads->get()->toArray();
+        $promoted = $promoted_simple_ads->get()->toArray();*/
         
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(ShopAd::class)->processRequestAndGet(
@@ -92,11 +92,11 @@ class ShopAdsController extends Controller
             }
         );
         
-        $data = $data->toArray(); 
+        /*$data = $data->toArray(); 
             
         array_push($promoted,...$data['data']);
     
-        $data['data'] = $promoted;
+        $data['data'] = $promoted;*/
 
         return ['data' => $data];
     }
