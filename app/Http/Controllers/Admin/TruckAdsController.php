@@ -78,12 +78,13 @@ class TruckAdsController extends Controller
                 foreach (TruckAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
-                $query->with([
-                    'ad' => function($query)
-                    {
-                        $query->with(['images']);
-                    }
-                ]);
+                
+                $query->with(['ad' => function ($query)
+                        {
+                            $query->with(['images','user']);
+                        }
+                    ]);
+
             }
         );
 

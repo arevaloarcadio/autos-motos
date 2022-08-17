@@ -97,7 +97,7 @@ class MechanicAdsController extends Controller
                 }
 
                 $query->with(['ad' => function($query){
-                    $query->with(['images']);
+                    $query->with(['images','user']);
                 }]);
             }
         );

@@ -84,6 +84,11 @@ class ShopAdsController extends Controller
                 foreach (ShopAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
+                $query->with(['ad' => function ($query)
+                        {
+                            $query->with(['images','user']);
+                        }
+                    ]);
             }
         );
         
