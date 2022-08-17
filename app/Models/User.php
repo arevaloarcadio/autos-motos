@@ -62,7 +62,7 @@ class User extends Authenticatable  implements JWTSubject
                 ->first();
 
         if (is_null($score)) {
-            return null;
+            return 0;
         }
 
         return $score['ratings'];
