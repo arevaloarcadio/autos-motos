@@ -431,7 +431,7 @@ class AutoAdsController extends Controller
                 'images_processing_status_text' => null,
             ]);
 
-            $thumbnail = '';
+            $thumbnail = null;
             $i = 0;
             if ($request->file()) {
                 foreach ($request->file() as $file) {
