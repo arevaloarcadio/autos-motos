@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\{SellerStore,User,UserRole,tore,Company};
+use App\Models\{SellerStore,User,UserRole,tore,Company,RecoveryCode};
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Data;
 use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
+use App\Notifications\RecoveryPassword;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -194,6 +196,133 @@ class UserController extends Controller
         }
     }
 
+    public function recovery_email(Request $request)
+    {   
+        $resource = ApiHelper::resource();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+
+            $user = User::where('email',$request->email)->first();
+
+            if (is_null($user)) {
+                ApiHelper::setError($resource, 0, 422, ['data' => 'El correo no es encuentra en nuestros registros']);
+                return $this->sendResponse($resource);
+            }
+
+            $recovery_code = new RecoveryCode;
+            $recovery_code->user_id = $user->id;
+            $recovery_code->code = strval(random_int(1000, 9999));
+            $recovery_code->expiret_at = Carbon::now()->addHours(2);
+            $recovery_code->save();
+
+            $user->notify(new RecoveryPassword($user,$recovery_code->code));
+
+            return response()->json(['data' => 'OK'], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+    public function recovery_code(Request $request)
+    {   
+        $resource = ApiHelper::resource();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+            'code' => 'required|string|min:4|max:4',
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+
+            $user = User::where('email',$request->email)->first();
+
+            if (is_null($user)) {
+                ApiHelper::setError($resource, 0, 422, ['data' => 'El correo no es encuentra en nuestros registros']);
+                return $this->sendResponse($resource);
+            }
+
+            $recovery_code = RecoveryCode::where('user_id',$user->id)
+                ->where('code',$request->code)
+                ->first();
+
+            if (is_null($recovery_code)) {
+                ApiHelper::setError($resource, 0, 422, ['data' => 'Código incorrecto']);
+                return $this->sendResponse($resource);
+            }
+
+            
+            if ($recovery_code->expiret_at < Carbon::now()) {
+                $recovery_code->delete();
+                ApiHelper::setError($resource, 0, 422, ['data' => 'Código expirado, inténtelo nuevamente']);
+                return $this->sendResponse($resource);
+            }
+
+
+            return response()->json(['data' => 'OK'], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+    public function recovery_password(Request $request)
+    {   
+        $resource = ApiHelper::resource();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:6|confirmed',
+            'code' => 'required|string|min:4|max:4',
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+
+            $user = User::where('email',$request->email)->first();
+
+            $recovery_code = RecoveryCode::where('user_id',$user->id)
+                ->where('code',$request->code)
+                ->first();
+            
+            if (is_null($recovery_code)) {
+                ApiHelper::setError($resource, 0, 422, ['data' => 'Código incorrecto']);
+                return $this->sendResponse($resource);
+            }
+
+            $user = User::where('email',$request->email)->first();
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            $recovery_code->delete();
+            
+            return response()->json(['data' => 'OK'], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
     public function logout()
     {
         Auth::guard('api')->logout();
