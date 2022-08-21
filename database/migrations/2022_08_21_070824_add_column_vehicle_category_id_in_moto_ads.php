@@ -14,7 +14,7 @@ class AddColumnVehicleCategoryIdInMotoAds extends Migration
     public function up()
     {
         Schema::table('moto_ads', function (Blueprint $table) {
-             $table->uuid('vehicle_category_id ')->nullable();
+             $table->uuid('vehicle_category_id')->nullable();
         });
     }
 
