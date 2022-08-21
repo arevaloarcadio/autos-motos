@@ -237,7 +237,8 @@ class MotoAdsController extends Controller
             'fuel_consumption' => ['nullable', 'numeric'],
             'co2_emissions' => ['nullable', 'numeric'],
             'doors' => ['nullable', 'integer'],
-            'seats' => ['nullable', 'integer']
+            'seats' => ['nullable', 'integer'],
+            'vehicle_category_id' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -264,6 +265,7 @@ class MotoAdsController extends Controller
                 'doors' => $request['doors'],
                 'mileage' => $request['mileage'],
                 'exterior_color' => $request['exterior_color'],
+                'vehicle_category_id' => $request['vehicle_category_id'],
                 'interior_color' =>$request['interior_color'],
                 'condition' => $request['condition'],
                 'dealer_id' => Auth::user()->dealer_id ?? null,
