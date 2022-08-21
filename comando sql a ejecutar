@@ -50,3 +50,5 @@ UPDATE  users set type= 'Profesional' where dealer_id  is not null
 
 
 UPDATE  users set type= 'Ocasional' where dealer_id  is  null
+
+SELECT REPLACE(CONCAT(UPPER(LEFT(internal_name , 1)), LOWER(SUBSTRING(internal_name, 2))),'_',' ' ) FROM `car_transmission_types`;

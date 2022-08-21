@@ -80,6 +80,7 @@ class ImportWebmobile24AdsCommand extends Command
     {
         $fuel_types = [
             'Diesel' => 'diesel',
+            'Elektro/Diesel' => 'hybrid_diesel_electric',
             'Elektro/Benzin' => 'hybrid_petrol_electric',
             'Benzin' => 'petrol',
             'Elektro' => 'electric',
@@ -151,7 +152,7 @@ class ImportWebmobile24AdsCommand extends Command
         //$externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions();
 
-        if (isset($fuels[$externalFuel])) {
+        if (isset($fuels[trim($externalFuel)])) {
             
             $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
                               //->where('ad_type', '=', 'auto')
@@ -251,7 +252,7 @@ class ImportWebmobile24AdsCommand extends Command
         if (isset($transmissions[$externalTransmission])) {
             $car_transmission_type = CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
-                                      ->where('ad_type', '=', 'auto')
+                                     // ->where('ad_type', '=', 'auto')
                                       ->first();
             
             return $car_transmission_type;                       

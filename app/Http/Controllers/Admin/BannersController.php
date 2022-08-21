@@ -66,16 +66,8 @@ class BannersController extends Controller
             ['id', 'location', 'image_path', 'link']
         );
 
-        if ($request->ajax()) {
-            if ($request->has('bulk')) {
-                return [
-                    'bulkItems' => $data->pluck('id')
-                ];
-            }
-            return ['data' => $data];
-        }
-
-        return view('admin.banner.index', ['data' => $data]);
+        
+        return ['data' => $data];
     }
 
     /**
