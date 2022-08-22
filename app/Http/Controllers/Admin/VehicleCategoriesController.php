@@ -35,7 +35,7 @@ class VehicleCategoriesController extends Controller
             
             $query = VehicleCategory::query();
 
-            $columns =  ['id', 'internal_name', 'slug', 'ad_type'];
+            $columns =  ['id', 'internal_name', 'slug', 'category','icon_url', 'ad_type'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -60,10 +60,10 @@ class VehicleCategoriesController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'internal_name', 'ad_type'],
+            ['id', 'internal_name','category','icon_url',  'ad_type',],
 
             // set columns to searchIn
-            ['id', 'internal_name', 'slug', 'ad_type'],
+            ['id', 'internal_name', 'slug', 'category','icon_url', 'ad_type'],
 
             function ($query) use ($request) {
                         

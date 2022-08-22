@@ -61,7 +61,7 @@ class User extends Authenticatable  implements JWTSubject
                 ->where('ads.user_id',$this->getKey())
                 ->first();
 
-        if (is_null($score)) {
+        if ($score['ratings'] == null) {
             return 0;
         }
 

@@ -52,3 +52,10 @@ UPDATE  users set type= 'Profesional' where dealer_id  is not null
 UPDATE  users set type= 'Ocasional' where dealer_id  is  null
 
 SELECT REPLACE(CONCAT(UPPER(LEFT(internal_name , 1)), LOWER(SUBSTRING(internal_name, 2))),'_',' ' ) FROM `car_transmission_types`;
+
+SELECT *
+FROM `car_body_types` WHERE ad_type not in ('MOTO','MOBILE-HOME');
+
+UPDATE `vehicle_categories` set ad_type =  'TRUCK' WHERE ad_type not in ('MOTO','MOBILE-HOME');
+
+
