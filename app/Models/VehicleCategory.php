@@ -13,7 +13,8 @@ class VehicleCategory extends Model
         'internal_name',
         'slug',
         'ad_type',
-    
+        'icon_url',
+        'category'
     ];
     
     

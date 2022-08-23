@@ -7,19 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NotifyApproved extends Notification
+class InviteUserPassword extends Notification
 {
     use Queueable;
-
-    public $title;
+    public $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($title)
+    public function __construct($user)
     {
-        $this->title = $title;
+        $this->user = $user;
     }
 
     /**
@@ -42,10 +41,11 @@ class NotifyApproved extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Su anuncio ha sido aprobado')
-            ->line('Nos complace informar que su anuncio: ')
-            ->line($this->title)
-            ->line('Ha sido aprobado')
+            ->subject('Invitación a Autos Motos')
+            ->line('Hola '.$this->user->first_name.' '.$this->user->last_name)
+            ->line('Te invitamos para que ingreses a nuestra web')
+            ->line('Y para asegurar que difrutes al maximo nuestros servicios')
+            ->line('Te recomendamos que restablezca tu contraseña')
             ->action('Ingrese a Autos Motos',env('URL_FRONT'))
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');

@@ -1000,6 +1000,7 @@ class AdsController extends Controller
             if ($filters->model_id) {
                 $query->where('model_id',$filters->model_id);
             }
+
             if ($filters->country) {
                 $query->where('country',$filters->country);
             }
@@ -1117,13 +1118,15 @@ class AdsController extends Controller
             if($filters->dealer) {
                 $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
+            if ($filters->model_id) {
+                $query->where('model_id',$filters->model_id);
+            }
             
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
-            if ($filters->model_id) {
-                $query->where('model_id',$filters->model_id);
+            if ($filters->vehicle_category_id) {
+                $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
@@ -1234,7 +1237,9 @@ class AdsController extends Controller
                 $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
             
-            
+            if ($filters->vehicle_category_id) {
+                $query->where('vehicle_category_id',$filters->vehicle_category_id);
+            }
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1351,6 +1356,9 @@ class AdsController extends Controller
             }
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
+            }
+            if ($filters->vehicle_category_id) {
+                $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
@@ -1500,6 +1508,7 @@ public function getCountAutoAd($filters)
             if ($filters->model_id) {
                 $query->where('model_id',$filters->model_id);
             }
+
             if ($filters->country) {
                 $query->where('country',$filters->country);
             }
@@ -1589,6 +1598,9 @@ public function getCountAutoAd($filters)
             if ($filters->country) {
                 $query->where('country',$filters->country);
             }
+            if ($filters->vehicle_category_id) {
+                $query->where('vehicle_category_id',$filters->vehicle_category_id);
+            }
             if ($filters->body_type_id) {
                 $query->where('body_type_id',$filters->body_type_id);
             }
@@ -1669,6 +1681,9 @@ public function getCountAutoAd($filters)
             }
             if ($filters->model_id) {
                 $query->where('model_id',$filters->model_id);
+            }
+            if ($filters->vehicle_category_id) {
+                $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
@@ -1758,6 +1773,9 @@ public function getCountAutoAd($filters)
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
+            }
+            if ($filters->vehicle_category_id) {
+                $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
             if ($filters->city) {
                 $query->where('city','LIKE','%'.$filters->city.'%');

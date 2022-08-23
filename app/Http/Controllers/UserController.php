@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\Data;
 use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
-use App\Notifications\RecoveryPassword;
+use App\Notifications\{RecoveryPassword,InviteUserPassword};
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -323,6 +323,35 @@ class UserController extends Controller
             return $this->sendResponse($resource);
         }
     }
+
+    public function recovery_password_admin(Request $request)
+    {   
+        $resource = ApiHelper::resource();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+            'id' => 'required|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+
+            $user = User::where('email',$request->email)->first();
+
+            $user->notify(new InviteUserPassword($user));
+
+            return response()->json(['data' => 'OK'], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
     public function logout()
     {
         Auth::guard('api')->logout();
