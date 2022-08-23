@@ -850,8 +850,8 @@ class AdsController extends Controller
     public function getPromotedAds($type,$make_id)
     {   
         $data = null;
-        
-        switch ($type[0]) {
+       
+        switch ($type) {
             case 'auto':
                 
                 $data = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
@@ -937,7 +937,7 @@ class AdsController extends Controller
         try {
             $dealer_id = null;
             
-            $promotedAds = $this->getPromotedAds($request->types,$request->make_id);
+            $promotedAds = $this->getPromotedAds($request->type,$request->make_id);
             
             if (!is_null($promotedAds)) {
                 array_push($response, ...$promotedAds);
@@ -951,32 +951,32 @@ class AdsController extends Controller
             }
             $request['dealer_id'] = $dealer_id;
 
-            if ($request->types) {
-                foreach ($request->types as $type) {
-                    switch ($type) {
-                        case 'auto':
-                            array_push($response, ...$this->getAutoAd($request));
-                            break;
-                        case 'moto':
-                            array_push($response,...$this->getMotoAd($request));
-                            break;
-                        case 'mobile-home':
-                            array_push($response, ...$this->getMobileHomeAd($request));
-                            break;
-                        case 'truck':
-                            array_push($response, ...$this->getTruckAd($request));
-                            break;
-                        default:
-                            
-                            break;
-                    }
+            if ($request->type) {
+                
+                switch ($request->type) {
+                    case 'auto':
+                        $response = $this->getAutoAd($request);
+                        break;
+                    case 'moto':
+                        $response = $this->getMotoAd($request);
+                        break;
+                    case 'mobile-home':
+                        $response = $this->getMobileHomeAd($request);
+                        break; 
+                    case 'truck':
+                        $response = $this->getTruckAd($request);
+                        break;
+                    default:
+                        
+                        break;
                 }
+                
             }
                
-            return response()->json(['count' => count($response),'data' => $response], 200);
+            return response()->json(['data' => $response], 200);
 
         } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().' '.$e->getLine());
             return $this->sendResponse($resource);
         }
     }
@@ -1020,7 +1020,7 @@ class AdsController extends Controller
                 $query->where('condition',$filters->condition);
             }
              if (!is_null($filters->doors)) {
-                $query->whereBetween('doors',$filters->doors,$filters->doors+1);
+                $query->whereBetween('doors',[$filters->doors,$filters->doors+1]);
             }
             if ($filters->fuel_type_id) {
                 $query->where('ad_fuel_type_id',$filters->fuel_type_id);
@@ -1093,11 +1093,6 @@ class AdsController extends Controller
             $auto_ad->orderBy('price','ASC');
         }
 
-        if (isset($filters->page)) {
-            $offset = $filters->page * 25;
-            $auto_ad = $auto_ad->offset($offset);    
-        }
-
         return $auto_ad
             ->with(['make',
                     'model',
@@ -1105,8 +1100,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','user']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->limit(25)
-            ->get()
+            ->paginate(25)
             ->toArray();
     }
 
@@ -1211,10 +1205,6 @@ class AdsController extends Controller
             $moto_ad->orderBy('price','ASC');
         }
 
-        if (isset($filters->page)) {
-            $offset = $filters->page * 25;
-            $moto_ad = $moto_ad->offset($offset);    
-        }
 
         return $moto_ad
             ->with(['make','model',
@@ -1223,8 +1213,7 @@ class AdsController extends Controller
                         $query->with(['images','user']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->limit(25)
-            ->get()
+            ->paginate(25)
             ->toArray();
     }
 
@@ -1327,10 +1316,7 @@ class AdsController extends Controller
             $mobile_home_ad->orderBy('price','ASC');
         }
 
-        if (isset($filters->page)) {
-            $offset = $filters->page * 25;
-            $mobile_home_ad = $mobile_home_ad->offset($offset);    
-        }
+        
 
 
         return $mobile_home_ad
@@ -1341,8 +1327,7 @@ class AdsController extends Controller
                     },
                     'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
 
-            ->limit(25)
-             ->get()
+            ->paginate(25)
             ->toArray();
     }
 
@@ -1432,10 +1417,6 @@ class AdsController extends Controller
         }
 
 
-        if (isset($filters->page)) {
-            $offset = $filters->page * 25;
-            $truck_ad = $truck_ad->offset($offset);    
-        }
 
         return $truck_ad
             ->with(['make','fuelType','ad'=> function($query)
@@ -1443,8 +1424,7 @@ class AdsController extends Controller
                         $query->with(['images','user']);
                     },
                 'transmissionType','dealer','dealerShowRoom'])
-            ->limit(25)
-            ->get()
+            ->paginate(25)
             ->toArray();
     }
     
