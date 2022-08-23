@@ -85,10 +85,10 @@ class ShopAdsController extends Controller
                    $query->with($key);
                 }
                 $query->with(['ad' => function ($query)
-                        {
-                            $query->with(['images','user']);
-                        }
-                    ]);
+                    {
+                        $query->with(['images','user']);
+                    }
+                ]);
             }
         );
         
@@ -244,6 +244,8 @@ class ShopAdsController extends Controller
                 'city' =>  '.',
                 'country' =>  '.',
                 'price' =>  0,
+                'dealer_id' => Auth::user()->dealer_id ?? null,
+                'dealer_show_room_id' => $dealer_show_room_id,
                 'category' => $request['category'],
                 'make_id' => $request['make_id'],
                 'model' => Models::find($request['model_id'])->name,
