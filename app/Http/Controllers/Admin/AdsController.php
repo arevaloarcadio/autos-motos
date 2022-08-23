@@ -1020,7 +1020,7 @@ class AdsController extends Controller
                 $query->where('condition',$filters->condition);
             }
              if (!is_null($filters->doors)) {
-                $query->where('doors',$filters->doors);
+                $query->whereBetween('doors',$filters->doors,$filters->doors+1);
             }
             if ($filters->fuel_type_id) {
                 $query->where('ad_fuel_type_id',$filters->fuel_type_id);
@@ -1519,8 +1519,8 @@ public function getCountAutoAd($filters)
              if (!is_null($filters->from_mileage) && !is_null($filters->to_mileage)) {
                 $query->whereBetween('mileage',[$filters->from_mileage ,$filters->to_mileage]);
             }
-             if (!is_null($filters->doors)) {
-                $query->where('doors',$filters->doors);
+            if (!is_null($filters->doors)) {
+                $query->whereBetween('doors',$filters->doors,$filters->doors+1);
             }
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
