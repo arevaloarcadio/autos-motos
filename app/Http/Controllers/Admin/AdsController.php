@@ -1665,7 +1665,7 @@ public function getCountAutoAd($filters)
         
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
-        return $moto_ad->count();;
+        return $moto_ad->count();
     }
 
     public function getCountMobileHomeAd($filters)

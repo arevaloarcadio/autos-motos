@@ -46,7 +46,7 @@ class InviteUserPassword extends Notification
             ->line('Te invitamos para que ingreses a nuestra web')
             ->line('Y para asegurar que difrutes al maximo nuestros servicios')
             ->line('Te recomendamos que restablezca tu contraseña')
-            ->action('Ingrese a Autos Motos',env('URL_FRONT'))
+            ->action('Ingrese a Autos Motos',env('URL_FRONT').'?email='.$this->user->email)
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }
