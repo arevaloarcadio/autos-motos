@@ -637,7 +637,7 @@ class AutoAdsController extends Controller
 
         try {
             
-            AutoAd::where('ad_id',$id)->update([
+            AutoAd::where('ad_id', $request->auto_ad_id)->update([
                 'first_name' =>  $request->first_name,
                 'last_name' =>  $request->last_name,
                 'email_address' =>  $request->email_address,
@@ -649,7 +649,7 @@ class AutoAdsController extends Controller
                 'whatsapp_number' =>  $request->whatsapp_number,
             ]);
 
-            $autoAd = AutoAd::where('ad_id',$id)->first();
+            $autoAd = AutoAd::where('ad_id', $request->auto_ad_id)->first();
             
             $user = Auth::user();
 
