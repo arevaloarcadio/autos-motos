@@ -132,7 +132,7 @@ class MobileHomeAdsController extends Controller
             'model_id' => ['required', 'string'],
             'first_registration_month' => ['required', 'integer'],
             'first_registration_year' => ['required', 'integer'],
-            'generation_id' => ['nullable', 'string'],
+            'generation' => ['nullable', 'string'],
             'mileage' => ['required', 'integer'],
             'condition' => ['required', 'string'],
             'exterior_color' => ['required', 'string'],
