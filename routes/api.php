@@ -838,6 +838,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('vehicle-categories')->name('vehicle-categories/')->group(static function() {
             Route::get('/',                                             'VehicleCategoriesController@index')->name('index');
+            Route::get('/category',                                             'VehicleCategoriesController@indexCategory')->name('indexCategory');
             //Route::get('/create',                                       'VehicleCategoriesController@create')->name('create');
             Route::post('/',                                            'VehicleCategoriesController@store')->name('store');
             //Route::get('/{vehicleCategory}/edit',                       'VehicleCategoriesController@edit')->name('edit');

@@ -67,7 +67,7 @@ class VehicleCategoriesController extends Controller
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'internal_name', 'slug', 'ad_type'];
+                $columns =  ['id', 'internal_name', 'slug', 'category','icon_url', 'ad_type'];
                 
                 foreach ($columns as $column) {
                         if ($request->filters) {
@@ -88,6 +88,27 @@ class VehicleCategoriesController extends Controller
         return ['data' => $data];
     }
 
+
+    public function indexCategory(IndexVehicleCategory $request)
+    {
+        $data = VehicleCategory::select('category')
+            ->groupBy('category')
+            ->orderBy('category');
+
+        $columns =  ['id', 'internal_name', 'slug', 'category','icon_url', 'ad_type'];
+            
+        if ($request->filters) {
+            foreach ($columns as $column) {
+                foreach ($request->filters as $key => $filter) {
+                    if ($column == $key) {
+                       $data->where($key,$filter);
+                    }
+                }
+            }
+        }
+
+        return ['data' => $data->get()];
+    }
     /**
      * Show the form for creating a new resource.
      *

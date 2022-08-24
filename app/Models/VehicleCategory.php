@@ -24,12 +24,4 @@ class VehicleCategory extends Model
     
     ];
     
-    protected $appends = ['resource_url'];
-
-    /* ************************ ACCESSOR ************************* */
-
-    public function getResourceUrlAttribute()
-    {
-        return url('/admin/vehicle-categories/'.$this->getKey());
-    }
 }
