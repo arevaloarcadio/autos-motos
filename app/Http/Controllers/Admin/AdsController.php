@@ -135,7 +135,7 @@ class AdsController extends Controller
                   
                 $query->whereRaw($where_ad_id); 
                 
-                $query->where('thumbnail','!=',NULL);
+                //$query->where('thumbnail','!=',NULL);
 
                 $query->with(
                     [
