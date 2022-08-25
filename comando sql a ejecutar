@@ -58,4 +58,6 @@ FROM `car_body_types` WHERE ad_type not in ('MOTO','MOBILE-HOME');
 
 UPDATE `vehicle_categories` set ad_type =  'TRUCK' WHERE ad_type not in ('MOTO','MOBILE-HOME');
 
+alter TABLE truck_ads  add column drive_type_id varchar(36)
+alter TABLE mobile_home_ads  add column drive_type_id varchar(36)
 

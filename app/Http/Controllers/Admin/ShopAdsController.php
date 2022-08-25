@@ -158,58 +158,121 @@ class ShopAdsController extends Controller
      * @param StoreShopAd $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreShopAd $request)
+    public function store(Request $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-
-        $slug = $this->slugAd($sanitized['title']);
-
-        $ad = Ad::create([
-            'slug' => $slug,
-            'title' =>  $sanitized['title'],
-            'description' => $sanitized['description'],
-            'thumbnail' => $sanitized['thumbnail'],
-            'status' => 0,
-            'type' => 'shop',
-            'is_featured' => 0,
-            'user_id' => Auth::user()->id,
-            'market_id' => $sanitized['market_id'],
-            'external_id' =>null,
-            'source' => null,
-            'images_processing_status' => 'SUCCESSFUL',
-            'images_processing_status_text' => null,
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'market_id' => ['required', 'string'],
+            'category' => ['required', 'string'],
+            'make_id' => ['required', 'string'],
+            'model' => ['nullable', 'string'],
+            'manufacturer' => ['required', 'string'],
+            'code' => ['nullable', 'string'],
+            'condition' => ['required', 'string'],
+            'price' => ['required', 'numeric'],
+            'first_name' => ['nullable', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email_address' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'zip_code' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'latitude' => ['nullable', 'string'],
+            'longitude' => ['nullable', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'youtube_link' => ['nullable', 'string'],
         ]);
 
-        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id']  : null;
-        // Store the ShopAd
-        $shopAd = ShopAd::create([
-            'category' => $sanitized['category'],
-            'make_id' => $sanitized['make_id'],
-            'model' => Models::find($sanitized['model_id'])->name,
-            'manufacturer' => $sanitized['manufacturer'],
-            'code' => $sanitized['code'],
-            'condition' => $sanitized['condition'],
-            'price' => $sanitized['price'],
-            'price_contains_vat' => $sanitized['price_contains_vat'],
-            'dealer_id' => Auth::user()->dealer_id ?? null,
-            'dealer_show_room_id' => $dealer_show_room_id,
-            'first_name' => $sanitized['first_name'],
-            'last_name' => $sanitized['last_name'],
-            'email_address' => $sanitized['email_address'],
-            'address' => $sanitized['address'],
-            'zip_code' =>$sanitized['zip_code'],
-            'city' => $sanitized['city'],
-            'country' => $sanitized['country'],
-            'latitude' => $sanitized['latitude'],
-            'longitude' => $sanitized['longitude'],
-            'mobile_number' => $sanitized['mobile_number'],
-            'landline_number' => $sanitized['landline_number'],
-            'whatsapp_number' => $sanitized['whatsapp_number'],
-            'youtube_link' => $sanitized['youtube_link']
-        ]);
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
 
-        return ['data' =>['ad' =>$ad,'shop_ad' => $shopAd]];
+        try {
+            
+            $slug = $this->slugAd($request['title']);
+
+            $ad = new Ad;
+            $ad->slug =  $slug;
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->type =  'mobile-home';
+            $ad->is_featured =  0;
+            $ad->user_id =  Auth::user()->id;
+            $ad->market_id = $request['market_id'];
+            $ad->images_processing_status = $request->file() !== null ? 'SUCCESSFUL' : 'N/A';
+            $ad->images_processing_status_text = null;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $thumbnail = null;
+
+            $i = 0;
+
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $shopAd = new ShopAd;
+            $shopAd->ad_id = $ad->id;
+            $shopAd->category = $request['category'];
+            $shopAd->make_id = $request['make_id'];
+            $shopAd->model = $request['model'];
+            $shopAd->manufacturer = $request['manufacturer'];
+            $shopAd->code = $request['code'];
+            $shopAd->condition = $request['condition'];
+            $shopAd->price = $request['price'];
+            $shopAd->price_contains_vat = 0;
+            $shopAd->first_name = $request['first_name'];
+            $shopAd->last_name = $request['last_name'];
+            $shopAd->email_address = $request['email_address'];
+            $shopAd->address = $request['address'];
+            $shopAd->zip_code = $request['zip_code'];
+            $shopAd->dealer_id =  Auth::user()->dealer_id ?? null;
+            $shopAd->dealer_show_room_id = $dealer_show_room_id;
+            $shopAd->city = $request['city'];
+            $shopAd->country = $request['country'];
+            $shopAd->latitude = $request['latitude'];
+            $shopAd->longitude = $request['longitude'];
+            $shopAd->mobile_number = $request['mobile_number'];
+            $shopAd->landline_number = $request['landline_number'];
+            $shopAd->whatsapp_number = $request['whatsapp_number'];
+            $shopAd->youtube_link = $request['youtube_link'];
+            $shopAd->save();
+            
+
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
+            return response()->json([
+                'data' => [
+                    'ad' => $ad,
+                    'shop_ad' =>  $shopAd
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
+            return $this->sendResponse($resource);
+        }
     }
 
     public function principal_data(Request $request)

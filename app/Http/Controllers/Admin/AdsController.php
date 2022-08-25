@@ -1119,9 +1119,6 @@ class AdsController extends Controller
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
-            if ($filters->vehicle_category_id) {
-                $query->where('vehicle_category_id',$filters->vehicle_category_id);
-            }
             if ($filters->country) {
                 $query->where('country',$filters->country);
             }
@@ -1577,9 +1574,6 @@ public function getCountAutoAd($filters)
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
-            }
-            if ($filters->vehicle_category_id) {
-                $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
             if ($filters->body_type_id) {
                 $query->where('body_type_id',$filters->body_type_id);

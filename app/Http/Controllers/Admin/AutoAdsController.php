@@ -141,82 +141,165 @@ class AutoAdsController extends Controller
      * @param StoreAutoAd $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreAutoAd $request)
+    public function store(Request $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-
-        $slug = $this->slugAd($sanitized['title']);
-
-            $ad = Ad::create([
-            'slug' => $slug,
-            'title' => $sanitized['title'],
-            'description' => $sanitized['description'],
-            'thumbnail' => $sanitized['thumbnail'],
-            'status' => 0,
-            'type' => 'auto',
-            'is_featured' => 0,
-            'user_id' => Auth::user()->id,
-            'market_id' => $sanitized['market_id'],
-            'external_id' =>null,
-            'source' => null,
-            'images_processing_status' => 'SUCCESSFUL',
-            'images_processing_status_text' => null,
+   
+         $validator = Validator::make($request->all(), [
+            'make_id' => ['required', 'string'],
+            'model_id' => ['required', 'string'],
+            'first_registration_month' => ['required', 'integer'],
+            'first_registration_year' => ['required', 'integer'],
+            'generation_id' => ['nullable', 'string'],
+            'mileage' => ['required', 'integer'],
+            'condition' => ['required', 'string'],
+            'exterior_color' => ['required', 'string'],
+            'interior_color' => ['nullable', 'string'],
+            'inspection_valid_until_month' => ['nullable', 'integer'],
+            'inspection_valid_until_year' => ['nullable', 'integer'],
+            'additional_vehicle_info' => ['nullable', 'string'],
+            'ad_fuel_type_id' => ['nullable', 'string'],
+            'ad_transmission_type_id' => ['nullable', 'string'],
+            'ad_drive_type_id' => ['nullable', 'string'],
+            'engine_displacement' => ['nullable', 'integer'],
+            'power_hp' => ['nullable', 'integer'],
+            'fuel_consumption' => ['nullable', 'numeric'],
+            'co2_emissions' => ['nullable', 'numeric'],
+            'sub_characteristic_ids' => ['required', 'array'],
+            'doors' => ['nullable', 'integer'],
+            'seats' => ['nullable', 'integer'],
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'market_id' => ['nullable', 'string'],
+            'youtube_link' => ['nullable', 'string'],
+            'price' => ['required', 'numeric'],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
+            'email_address' => ['required', 'string'],
+            'zip_code' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'mobile_number' => ['required', 'string'],
+            'whatsapp_number' => ['required', 'string']
         ]);
-        
-        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
 
-        $autoAd = AutoAd::create([
-            'ad_id' =>  $ad->id,
-            'price' => $sanitized['price'],
-            'price_contains_vat' => 0,
-            'vin' => null,
-            'doors' => $sanitized['doors'],
-            'mileage' => $sanitized['mileage'],
-            'exterior_color' => $sanitized['exterior_color'],
-            'interior_color' =>$sanitized['interior_color'],
-            'condition' => $sanitized['condition'],
-            'dealer_id' => Auth::user()->dealer_id ?? null,
-            'dealer_show_room_id' => $dealer_show_room_id,
-            'first_name' =>  $sanitized['first_name'],
-            'last_name' =>  $sanitized['last_name'],
-            'email_address' =>  $sanitized['email_address'],
-            'address' =>  $sanitized['address'],
-            'zip_code' =>  $sanitized['zip_code'],
-            'city' =>  $sanitized['city'],
-            'country' =>  $sanitized['country'],
-            'mobile_number' =>  $sanitized['mobile_number'],
-            'landline_number' =>  $sanitized['landline_number'],
-            'whatsapp_number' => $sanitized['whatsapp_number'],
-            'youtube_link' => $sanitized['youtube_link'],
-            'ad_fuel_type_id' =>  $sanitized['ad_fuel_type_id'],
-            'ad_body_type_id' =>  $sanitized['ad_body_type_id'],
-            'ad_transmission_type_id' =>  $sanitized['ad_transmission_type_id'],
-            'ad_drive_type_id' =>  $sanitized['ad_drive_type_id'],
-            'first_registration_month' =>  $sanitized['first_registration_month'],
-            'first_registration_year' =>  $sanitized['first_registration_year'],
-            'engine_displacement' =>  $sanitized['engine_displacement'],
-            'power_hp' => $sanitized['power_hp'],
-            'owners' =>  $sanitized['owners'],
-            'inspection_valid_until_month' =>  $sanitized['inspection_valid_until_month'],
-            'inspection_valid_until_year' => $sanitized['inspection_valid_until_year'],
-            'make_id' =>  $sanitized['make_id'],
-            'model_id' => $sanitized['model_id'],
-            'generation_id' =>  $sanitized['generation_id'],
-            'series_id' =>  $sanitized['series_id'],
-            'trim_id' => $sanitized['trim_id'],
-            'equipment_id' =>  $sanitized['equipment_id'],
-            'additional_vehicle_info' =>  $sanitized['additional_vehicle_info'],
-            'seats' =>  $sanitized['seats'],
-            'fuel_consumption' =>  $sanitized['fuel_consumption'],
-            'co2_emissions' => $sanitized['co2_emissions'],
-            'latitude' =>  $sanitized['latitude'],
-            'longitude' =>  $sanitized['longitude'],
-            'geocoding_status' =>  $sanitized['geocoding_status'],
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        try {
             
-        ]);
+            
+            $slug = $this->slugAd($request['title']);
 
-        return ['data' => ['ad' => $ad,'auto_ad' =>$autoAd]];
+            $ad = new Ad;
+            $ad->slug =  $slug;
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->type =  'auto';
+            $ad->is_featured =  0;
+            $ad->user_id =  Auth::user()->id;
+            $ad->market_id = $request['market_id'];
+            $ad->images_processing_status = $request->file() !== null ? 'SUCCESSFUL' : 'N/A';
+            $ad->images_processing_status_text = null;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $thumbnail = null;
+
+            $i = 0;
+
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            
+            $autoAd = new AutoAd;
+            $autoAd->ad_id = $ad->id;
+            $autoAd->price = $request['price'];
+            $autoAd->price_contains_vat = 0;
+            $autoAd->doors = $request['doors'];
+            $autoAd->mileage = $request['mileage'];
+            $autoAd->exterior_color = $request['exterior_color'];
+            $autoAd->interior_color = $request['interior_color'];
+            $autoAd->condition = $request['condition'] ;
+            $autoAd->dealer_id =  Auth::user()->dealer_id ?? null;
+            $autoAd->dealer_show_room_id = $dealer_show_room_id;
+            $autoAd->first_name =  $request['first_name'];
+            $autoAd->last_name =$request['last_name'] ;
+            $autoAd->email_address = $request['email_address'];
+            $autoAd->address = $request['address'];
+            $autoAd->zip_code = $request['zip_code'];
+            $autoAd->city = $request['city'];
+            $autoAd->country = $request['country'];
+            $autoAd->mobile_number = $request['mobile_number'];
+            $autoAd->landline_number = $request['landline_number'];
+            $autoAd->whatsapp_number = $request['whatsapp_number'];
+            $autoAd->youtube_link = $request['youtube_link'];
+            $autoAd->ad_fuel_type_id = $request['ad_fuel_type_id'];
+            $autoAd->ad_body_type_id = $request['ad_body_type_id'];
+            $autoAd->ad_transmission_type_id = $request['ad_transmission_type_id'];
+            $autoAd->ad_drive_type_id = $request['ad_drive_type_id'];
+            $autoAd->first_registration_month = $request['first_registration_month'];
+            $autoAd->first_registration_year = $request['first_registration_year'];
+            $autoAd->engine_displacement = $request['engine_displacement'];
+            $autoAd->power_hp = $request['power_hp'];
+            $autoAd->owners = $request['owners'];
+            $autoAd->inspection_valid_until_month = $request['inspection_valid_until_month'];
+            $autoAd->inspection_valid_until_year = $request['inspection_valid_until_year'];
+            $autoAd->make_id = $request['make_id'];
+            $autoAd->model_id = $request['model_id'];
+            $autoAd->generation_id = $request['generation_id'];
+            $autoAd->series_id = $request['series_id'];
+            $autoAd->additional_vehicle_info = $request['additional_vehicle_info'];
+            $autoAd->seats = $request['seats'];
+            $autoAd->fuel_consumption = $request['fuel_consumption'];
+            $autoAd->co2_emissions = $request['co2_emissions'];
+            $autoAd->latitude = $request['latitude'];
+            $autoAd->longitude = $request['longitude'];
+            $autoAd->geocoding_status = $request['geocoding_status'];
+            $autoAd->save();
+            
+            $ad_sub_characteristics = [];
+
+            foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
+                $ad_sub_characteristic =  new AdSubCharacteristic;
+                $ad_sub_characteristic->ad_id = $ad->id;
+                $ad_sub_characteristic->sub_characteristic_id = $sub_characteristic_id;
+                $ad_sub_characteristic->save();
+                array_push($ad_sub_characteristics, $ad_sub_characteristic);
+            }
+
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
+            return response()->json([
+                'data' => [
+                    'ad' => $ad,
+                    'auto_ad' =>  $autoAd, 
+                    'ad_sub_characteristics' => $ad_sub_characteristics
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**
@@ -250,9 +333,7 @@ class AutoAdsController extends Controller
             'engine_displacement' => ['nullable', 'integer'],
             'power_hp' => ['nullable', 'integer'],
             'fuel_consumption' => ['nullable', 'numeric'],
-            'co2_emissions' => ['nullable', 'numeric'],
-            'doors' => ['nullable', 'integer'],
-            'seats' => ['nullable', 'integer']
+            'co2_emissions' => ['nullable', 'numeric']
         ]);
 
         if ($validator->fails()) {

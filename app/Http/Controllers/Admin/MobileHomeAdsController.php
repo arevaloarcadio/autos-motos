@@ -629,79 +629,176 @@ class MobileHomeAdsController extends Controller
      * @param StoreMobileHomeAd $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreMobileHomeAd $request)
+    public function store(Request $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-
-        $ad = Ad::create([
-            'slug' => Str::slug($sanitized['title']),
-            'title' => $sanitized['title'],
-            'description' => $sanitized['description'],
-            'thumbnail' => $sanitized['thumbnail'],
-            'status' => 0,
-            'type' => 'mobile-home',
-            'is_featured' => 0,
-            'user_id' => Auth::user()->id,
-            'market_id' => $sanitized['market_id'],
-            'external_id' =>null,
-            'source' => null,
-            'images_processing_status' => 'SUCCESSFUL',
-            'images_processing_status_text' => null,
-        ]);
-        
-        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id']  : null;
-        // Store the MobileHomeAd
-        $mobile_home_ad = MobileHomeAd::create([
-            'ad_id' =>  $ad->id,
-            'make_id' => $sanitized['make_id'],
-            'custom_make' => $sanitized['custom_make'],
-            'model_id' => $sanitized['model_id'],
-            'custom_model' => $sanitized['custom_model'],
-            'fuel_type_id' =>$sanitized['fuel_type_id'],
-            'vehicle_category_id' => $sanitized['vehicle_category_id'],
-            'transmission_type_id' => $sanitized['transmission_type_id'],
-            'construction_year' => $sanitized['construction_year'],
-            'first_registration_month' =>$sanitized['first_registration_month'],
-            'first_registration_year' => $sanitized['first_registration_year'],
-            'inspection_valid_until_month' => $sanitized['inspection_valid_until_month'],
-            'inspection_valid_until_year' => $sanitized['inspection_valid_until_year'],
-            'owners' => $sanitized['owners'],
-            'length_cm' => $sanitized['length_cm'],
-            'width_cm' => $sanitized['width_cm'],
-            'height_cm' => $sanitized['height_cm'],
-            'max_weight_allowed_kg' => $sanitized['max_weight_allowed_kg'],
-            'payload_kg' => $sanitized['payload_kg'],
-            'engine_displacement' => $sanitized['engine_displacement'],
-            'mileage' => $sanitized['mileage'],
-            'power_kw' => $sanitized['power_kw'],
-            'axes' => $sanitized['axes'],
-            'seats' => $sanitized['seats'],
-            'sleeping_places' => $sanitized['sleeping_places'],
-            'beds' => $sanitized['beds'],
-            'emission_class' => $sanitized['emission_class'],
-            'fuel_consumption' => $sanitized['fuel_consumption'],
-            'co2_emissions' => $sanitized['co2_emissions'],
-            'condition' => $sanitized['condition'],
-            'color' => $sanitized['color'],
-            'price' => $sanitized['price'],
-            'price_contains_vat' =>$sanitized['price_contains_vat'],
-            'dealer_id' => Auth::user()->dealer_id ?? null,
-            'dealer_show_room_id' => $dealer_show_room_id,
-            'first_name' => $sanitized['first_name'],
-            'last_name' => $sanitized['last_name'],
-            'email_address' =>$sanitized['email_address'],
-            'address' => $sanitized['address'],
-            'zip_code' => $sanitized['zip_code'],
-            'city' => $sanitized['city'],
-            'country' => $sanitized['country'],
-            'mobile_number' =>$sanitized['mobile_number'],
-            'landline_number' => $sanitized['landline_number'],
-            'whatsapp_number' => $sanitized['whatsapp_number'],
-            'youtube_link' => $sanitized['youtube_link']
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'thumbnail' => ['nullable', 'string'],
+            'market_id' => ['required', 'string'],
+            'make_id' => ['nullable', 'string'],
+            'custom_make' => ['nullable', 'string'],
+            'model_id' => ['nullable', 'string'],
+            'custom_model' => ['nullable', 'string'],
+            'fuel_type_id' => ['required', 'string'],
+            'vehicle_category_id' => ['required', 'string'],
+            'transmission_type_id' => ['nullable', 'string'],
+            'construction_year' => ['nullable', 'integer'],
+            'first_registration_month' => ['required', 'integer'],
+            'first_registration_year' => ['required', 'integer'],
+            'inspection_valid_until_month' => ['nullable', 'integer'],
+            'inspection_valid_until_year' => ['nullable', 'integer'],
+            'owners' => ['nullable', 'integer'],
+            'length_cm' => ['nullable', 'numeric'],
+            'width_cm' => ['nullable', 'numeric'],
+            'height_cm' => ['nullable', 'numeric'],
+            'max_weight_allowed_kg' => ['nullable', 'numeric'],
+            'payload_kg' => ['nullable', 'numeric'],
+            'engine_displacement' => ['nullable', 'integer'],
+            'mileage' => ['required', 'integer'],
+            'power_hp' => ['nullable', 'integer'],
+            'axes' => ['nullable', 'integer'],
+            'seats' => ['nullable', 'integer'],
+            'sleeping_places' => ['nullable', 'integer'],
+            'beds' => ['nullable', 'string'],
+            'emission_class' => ['nullable', 'string'],
+            'fuel_consumption' => ['nullable', 'numeric'],
+            'co2_emissions' => ['nullable', 'numeric'],
+            'condition' => ['required', 'string'],
+            'color' => ['nullable', 'string'],
+            'price' => ['required', 'numeric'],
+            'first_name' => ['nullable', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email_address' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'zip_code' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'youtube_link' => ['nullable', 'string'],
         ]);
 
-        return ['data' => ['ad' => $ad, 'mobile_home_ad' => $mobile_home_ad]];
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+            
+            $slug = $this->slugAd($request['title']);
+
+            $ad = new Ad;
+            $ad->slug =  $slug;
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->type =  'mobile-home';
+            $ad->is_featured =  0;
+            $ad->user_id =  Auth::user()->id;
+            $ad->market_id = $request['market_id'];
+            $ad->images_processing_status = $request->file() !== null ? 'SUCCESSFUL' : 'N/A';
+            $ad->images_processing_status_text = null;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $thumbnail = null;
+
+            $i = 0;
+
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $mobileHomeAd = new MobileHomeAd;
+            $mobileHomeAd->ad_id = $ad->id;
+            $mobileHomeAd->make_id = $request['make_id'];
+            $mobileHomeAd->custom_make = $request['custom_make'];
+            $mobileHomeAd->model_id = $request['model_id'];
+            $mobileHomeAd->custom_model = $request['custom_model'];
+            $mobileHomeAd->fuel_type_id = $request['fuel_type_id'];
+            $mobileHomeAd->vehicle_category_id = $request['vehicle_category_id'];
+            $mobileHomeAd->transmission_type_id = $request['transmission_type_id'];
+            $mobileHomeAd->construction_year = $request['construction_year'];
+            $mobileHomeAd->first_registration_month = $request['first_registration_month'];
+            $mobileHomeAd->first_registration_year = $request['first_registration_year'];
+            $mobileHomeAd->inspection_valid_until_month = $request['inspection_valid_until_month'];
+            $mobileHomeAd->inspection_valid_until_year = $request['inspection_valid_until_year'];
+            $mobileHomeAd->owners = $request['owners'];
+            $mobileHomeAd->dealer_id =  Auth::user()->dealer_id ?? null;
+            $mobileHomeAd->dealer_show_room_id = $dealer_show_room_id;
+            $mobileHomeAd->length_cm = $request['length_cm'];
+            $mobileHomeAd->width_cm = $request['width_cm'];
+            $mobileHomeAd->height_cm = $request['height_cm'];
+            $mobileHomeAd->max_weight_allowed_kg = $request['max_weight_allowed_kg'];
+            $mobileHomeAd->engine_displacement = $request['engine_displacement'];
+            $mobileHomeAd->mileage = $request['mileage'];
+            $mobileHomeAd->power_kw = $request['power_hp'];
+            $mobileHomeAd->axes = $request['axes'];
+            $mobileHomeAd->seats = $request['seats'];
+            $mobileHomeAd->sleeping_places = $request['sleeping_places'];
+            $mobileHomeAd->beds = $request['beds'];
+            $mobileHomeAd->emission_class = $request['emission_class'];
+            $mobileHomeAd->fuel_consumption = $request['fuel_consumption'];
+            $mobileHomeAd->co2_emissions = $request['co2_emissions'];
+            $mobileHomeAd->condition = $request['condition'];
+            $mobileHomeAd->color = $request['color'];
+            $mobileHomeAd->price = $request['price'];
+            $mobileHomeAd->first_name = $request['first_name'];
+            $mobileHomeAd->last_name = $request['last_name'];
+            $mobileHomeAd->email_address = $request['email_address'];
+            $mobileHomeAd->address = $request['address'];
+            $mobileHomeAd->zip_code = $request['zip_code'];
+            $mobileHomeAd->city = $request['city'];
+            $mobileHomeAd->country = $request['country'];
+            $mobileHomeAd->zip_code = $request['zip_code'];
+            $mobileHomeAd->mobile_number = $request['mobile_number'];
+            $mobileHomeAd->landline_number = $request['landline_number'];
+            $mobileHomeAd->whatsapp_number = $request['whatsapp_number'];
+            $mobileHomeAd->youtube_link = $request['youtube_link'];
+            $mobileHomeAd->save();
+            
+            $ad_sub_characteristics = [];
+
+            foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
+                $ad_sub_characteristic =  new AdSubCharacteristic;
+                $ad_sub_characteristic->ad_id = $ad->id;
+                $ad_sub_characteristic->sub_characteristic_id = $sub_characteristic_id;
+                $ad_sub_characteristic->save();
+                array_push($ad_sub_characteristics, $ad_sub_characteristic);
+            }
+
+
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
+            return response()->json([
+                'data' => [
+                    'ad' => $ad,
+                    'mobile_home_ad' =>  $mobileHomeAd, 
+                    'ad_sub_characteristics' => $ad_sub_characteristics
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
+            return $this->sendResponse($resource);
+        }
     }
 
     /**

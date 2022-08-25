@@ -27,7 +27,7 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use App\Models\{Ad,TruckAd,DealerShowRoom,AdSubCharacteristic,AdImage};
+use App\Models\{Ad,TruckAd,DealerShowRoom,AdSubCharacteristic,AdImage,VehicleCategory};
 
 class TruckAdsController extends Controller
 {   
@@ -142,91 +142,201 @@ class TruckAdsController extends Controller
      * @param StoreTruckAd $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreTruckAd $request)
+    public function store(Request $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-
-        $ad = Ad::create([
-            'slug' => Str::slug($sanitized['title']),
-            'title' => $sanitized['title'],
-            'description' => $sanitized['description'],
-            'thumbnail' => $sanitized['thumbnail'],
-            'status' => 0,
-            'type' => 'truck',
-            'is_featured' => 0,
-            'user_id' => Auth::user()->id,
-            'market_id' => $sanitized['market_id'],
-            'external_id' =>null,
-            'source' => null,
-            'images_processing_status' => 'SUCCESSFUL',
-            'images_processing_status_text' => null,
-        ]);
-        
-        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id']  : null;
-        // Store the TruckAd
-        $truck_ad = TruckAd::create([
-            'ad_id' =>  $ad->id,
-            'make_id' => $sanitized['make_id'],
-            'custom_make' => $sanitized['custom_make'],
-            'model' => $sanitized['model'],
-            'truck_type' => $sanitized['truck_type'],
-            'fuel_type_id' => $sanitized['fuel_type_id'],
-            'vehicle_category_id' => $sanitized['vehicle_category_id'],
-            'transmission_type_id' => $sanitized['transmission_type_id'],
-            'cab' => $sanitized['cab'],
-            'construction_year' => $sanitized['construction_year'],
-            'first_registration_month' => $sanitized['first_registration_month'],
-            'first_registration_year' => $sanitized['first_registration_year'],
-            'inspection_valid_until_month' => $sanitized['inspection_valid_until_month'],
-            'inspection_valid_until_year' => $sanitized['inspection_valid_until_year'],
-            'owners' => $sanitized['owners'],
-            'construction_height_mm' => $sanitized['construction_height_mm'],
-            'lifting_height_mm' => $sanitized['lifting_height_mm'],
-            'lifting_capacity_kg_m' => $sanitized['lifting_capacity_kg_m'],
-            'permanent_total_weight_kg' => $sanitized['permanent_total_weight_kg'],
-            'allowed_pulling_weight_kg' => $sanitized['allowed_pulling_weight_kg'],
-            'payload_kg' => $sanitized['payload_kg'],
-            'max_weight_allowed_kg' => $sanitized['max_weight_allowed_kg'],
-            'empty_weight_kg' => $sanitized['empty_weight_kg'],
-            'loading_space_length_mm' =>$sanitized['loading_space_length_mm'],
-            'loading_space_width_mm' => $sanitized['loading_space_width_mm'],
-            'loading_space_height_mm' =>  $sanitized['loading_space_height_mm'],
-            'loading_volume_m3' => $sanitized['loading_volume_m3'],
-            'load_capacity_kg' =>$sanitized['load_capacity_kg'],
-            'operating_weight_kg' => $sanitized['operating_weight_kg'],
-            'operating_hours' => $sanitized['operating_hours'],
-            'axes' => $sanitized['axes'],
-            'wheel_formula' => $sanitized['wheel_formula'],
-            'hydraulic_system' => $sanitized['hydraulic_system'],
-            'seats' => $sanitized['seats'],
-            'mileage' => $sanitized['mileage'],
-            'power_kw' => $sanitized['power_kw'],
-            'emission_class' => $sanitized['emission_class'],
-            'fuel_consumption' => $sanitized['fuel_consumption'],
-            'co2_emissions' => $sanitized['co2_emissions'],
-            'condition' => $sanitized['condition'],
-            'interior_color' => $sanitized['interior_color'],
-            'exterior_color' => $sanitized['exterior_color'],
-            'price' => $sanitized['price'],
-            'price_contains_vat' => $sanitized['price_contains_vat'],
-            'dealer_id' => Auth::user()->dealer_id ?? null,
-            'dealer_show_room_id' => $dealer_show_room_id,
-            'first_name' => $sanitized['first_name'],
-            'last_name' => $sanitized['last_name'],
-            'email_address' => $sanitized['email_address'],
-            'address' => $sanitized['address'],
-            'zip_code' => $sanitized['zip_code'],
-            'city' => $sanitized['city'],
-            'country' => $sanitized['country'],
-            'mobile_number' => $sanitized['mobile_number'],
-            'landline_number' => $sanitized['landline_number'],
-            'whatsapp_number' => $sanitized['whatsapp_number'],
-            'youtube_link' => $sanitized['youtube_link'],
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'thumbnail' => ['nullable', 'string'],
+            'market_id' => ['required', 'string'],
+            
+            'make_id' => ['nullable', 'string'],
+            'custom_make' => ['nullable', 'string'],
+            'model' => ['required', 'string'],
+            'fuel_type_id' => ['nullable', 'string'],
+            'vehicle_category_id' => ['required', 'string'],
+            'transmission_type_id' => ['nullable', 'string'],
+            'cab' => ['nullable', 'string'],
+            'construction_year' => ['nullable', 'integer'],
+            'first_registration_month' => ['nullable', 'integer'],
+            'first_registration_year' => ['nullable', 'integer'],
+            'inspection_valid_until_month' => ['nullable', 'integer'],
+            'inspection_valid_until_year' => ['nullable', 'integer'],
+            'owners' => ['nullable', 'integer'],
+            'construction_height_mm' => ['nullable', 'numeric'],
+            'lifting_height_mm' => ['nullable', 'numeric'],
+            'lifting_capacity_kg_m' => ['nullable', 'numeric'],
+            'permanent_total_weight_kg' => ['nullable', 'numeric'],
+            'allowed_pulling_weight_kg' => ['nullable', 'numeric'],
+            'payload_kg' => ['nullable', 'numeric'],
+            'max_weight_allowed_kg' => ['nullable', 'numeric'],
+            'empty_weight_kg' => ['nullable', 'numeric'],
+            'loading_space_length_mm' => ['nullable', 'numeric'],
+            'loading_space_width_mm' => ['nullable', 'numeric'],
+            'loading_space_height_mm' => ['nullable', 'numeric'],
+            'loading_volume_m3' => ['nullable', 'numeric'],
+            'load_capacity_kg' => ['nullable', 'numeric'],
+            'operating_weight_kg' => ['nullable', 'numeric'],
+            'operating_hours' => ['nullable', 'integer'],
+            'axes' => ['nullable', 'integer'],
+            'wheel_formula' => ['nullable', 'string'],
+            'hydraulic_system' => ['nullable', 'string'],
+            'seats' => ['nullable', 'integer'],
+            'mileage' => ['nullable', 'integer'],
+            'power_kw' => ['nullable', 'integer'],
+            'emission_class' => ['nullable', 'string'],
+            'fuel_consumption' => ['nullable', 'numeric'],
+            'co2_emissions' => ['nullable', 'numeric'],
+            'condition' => ['required', 'string'],
+            'interior_color' => ['nullable', 'string'],
+            'exterior_color' => ['nullable', 'string'],
+            'price' => ['required', 'numeric'],
+            'dealer_id' => ['nullable', 'string'],
+            'dealer_show_room_id' => ['nullable', 'string'],
+            'first_name' => ['nullable', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email_address' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'zip_code' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'youtube_link' => ['nullable', 'string'],
             
         ]);
 
-        return ['data' => ['ad' => $ad,'truck_ad' => $truck_ad]];
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+         try {
+            
+            $slug = $this->slugAd($request['title']);
+
+            $ad = new Ad;
+            $ad->slug =  $slug;
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->type =  'truck';
+            $ad->is_featured =  0;
+            $ad->user_id =  Auth::user()->id;
+            $ad->market_id = $request['market_id'];
+            $ad->images_processing_status = $request->file() !== null ? 'SUCCESSFUL' : 'N/A';
+            $ad->images_processing_status_text = null;
+            $ad->save();
+
+            
+            $thumbnail = null;
+
+            $i = 0;
+
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $truckAd = new TruckAd;
+            $truckAd->ad_id = $ad->id;
+            $truckAd->make_id = $request['make_id'];
+            $truckAd->custom_make = $request['custom_make'];
+            $truckAd->model = $request['model'];
+            $truckAd->truck_type = VehicleCategory::find($request['vehicle_category_id'])->category;
+            $truckAd->fuel_type_id = $request['fuel_type_id'];
+            $truckAd->vehicle_category_id = $request['vehicle_category_id'];
+            $truckAd->transmission_type_id = $request['transmission_type_id'];
+            $truckAd->cab = $request['cab'];
+            $truckAd->construction_year = $request['construction_year'];
+            $truckAd->first_registration_month = $request['first_registration_month'];
+            $truckAd->first_registration_year = $request['first_registration_year'];
+            $truckAd->inspection_valid_until_month = $request['inspection_valid_until_month'];
+            $truckAd->inspection_valid_until_year = $request['inspection_valid_until_year'];
+            $truckAd->dealer_id =  Auth::user()->dealer_id ?? null;
+            $truckAd->dealer_show_room_id = $dealer_show_room_id;
+            $truckAd->owners = $request['owners'];
+            $truckAd->construction_height_mm = $request['construction_height_mm'];
+            $truckAd->lifting_height_mm = $request['lifting_height_mm'];
+            $truckAd->lifting_capacity_kg_m = $request['lifting_capacity_kg_m'];
+            $truckAd->permanent_total_weight_kg = $request['permanent_total_weight_kg'];
+            $truckAd->allowed_pulling_weight_kg = $request['allowed_pulling_weight_kg'];
+            $truckAd->payload_kg = $request['payload_kg'];
+            $truckAd->max_weight_allowed_kg = $request['max_weight_allowed_kg'];
+            $truckAd->empty_weight_kg = $request['empty_weight_kg'];
+            $truckAd->loading_space_length_mm = $request['loading_space_length_mm'];
+            $truckAd->loading_space_width_mm = $request['loading_space_width_mm'];
+            $truckAd->loading_space_height_mm = $request['loading_space_height_mm'];
+            $truckAd->loading_volume_m3 = $request['loading_volume_m3'];
+            $truckAd->load_capacity_kg = $request['load_capacity_kg'];
+            $truckAd->operating_weight_kg = $request['operating_weight_kg'];
+            $truckAd->operating_hours = $request['operating_hours'];
+            $truckAd->axes = $request['axes'];
+            $truckAd->wheel_formula = $request['wheel_formula'];
+            $truckAd->hydraulic_system = $request['hydraulic_system'];
+            $truckAd->email_address = $request['email_address'];
+            $truckAd->seats = $request['seats'];
+            $truckAd->mileage = $request['mileage'];
+            $truckAd->power_kw = $request['power_hp'];
+            $truckAd->emission_class = $request['emission_class'];
+            $truckAd->fuel_consumption = $request['fuel_consumption'];
+            $truckAd->co2_emissions = $request['co2_emissions'];
+            $truckAd->condition = $request['condition'];
+            $truckAd->interior_color = $request['interior_color'];
+            $truckAd->exterior_color = $request['exterior_color'];
+            $truckAd->price = $request['price'];
+            $truckAd->price_contains_vat = 0;
+            $truckAd->first_name = $request['first_name'];
+            $truckAd->last_name = $request['last_name'];
+            $truckAd->email_address = $request['email_address'];
+            $truckAd->address = $request['address'];
+            $truckAd->zip_code = $request['zip_code'];
+            $truckAd->city = $request['city'];
+            $truckAd->country = $request['country'];
+            $truckAd->mobile_number = $request['mobile_number'];
+            $truckAd->landline_number = $request['landline_number'];
+            $truckAd->whatsapp_number = $request['whatsapp_number'];
+            $truckAd->youtube_link = $request['youtube_link'];
+            $truckAd->save();
+            
+            $ad_sub_characteristics = [];
+
+            foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
+                $ad_sub_characteristic =  new AdSubCharacteristic;
+                $ad_sub_characteristic->ad_id = $ad->id;
+                $ad_sub_characteristic->sub_characteristic_id = $sub_characteristic_id;
+                $ad_sub_characteristic->save();
+                array_push($ad_sub_characteristics, $ad_sub_characteristic);
+            }
+
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
+            return response()->json([
+                'data' => [
+                    'ad' => $ad,
+                    'truck_ad' =>  $truckAd, 
+                    'ad_sub_characteristics' => $ad_sub_characteristics
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
+            return $this->sendResponse($resource);
+        }
     }
 
 
@@ -249,7 +359,7 @@ class TruckAdsController extends Controller
             'additional_vehicle_info' => ['nullable', 'string'],
             'fuel_type_id' => ['nullable', 'string'],
             'transmission_type_id' => ['nullable', 'string'],
-            //'drive_type_id' => ['nullable', 'string'],
+            'drive_type_id' => ['nullable', 'string'],
             'engine_displacement' => ['nullable', 'integer'],
             'power_hp' => ['nullable', 'integer'],
             'fuel_consumption' => ['nullable', 'numeric'],
@@ -290,7 +400,7 @@ class TruckAdsController extends Controller
                 'fuel_type_id' =>  $request['fuel_type_id'],
                 'transmission_type_id' =>  $request['transmission_type_id'],
                 'vehicle_category_id' =>  $request['vehicle_category_id'],
-                //'drive_type_id' =>  $request['drive_type_id'],
+                'drive_type_id' =>  $request['drive_type_id'],
                 'first_registration_month' =>  $request['first_registration_month'],
                 'first_registration_year' =>  $request['first_registration_year'],
                 'engine_displacement' =>  $request['engine_displacement'],

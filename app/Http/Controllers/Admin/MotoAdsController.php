@@ -140,75 +140,161 @@ class MotoAdsController extends Controller
      * @param StoreMotoAd $request
      * @return array|RedirectResponse|Redirector
      */
-    public function store(StoreMotoAd $request)
+    public function store(Request $request)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
-
-        $ad = Ad::create([
-            'slug' => Str::slug($sanitized['title']),
-            'title' => $sanitized['title'],
-            'description' => $sanitized['description'],
-            'thumbnail' => $sanitized['thumbnail'],
-            'status' => 0,
-            'type' => 'moto',
-            'is_featured' => 0,
-            'user_id' => Auth::user()->id,
-            'market_id' => $sanitized['market_id'],
-            'external_id' =>null,
-            'source' => null,
-            'images_processing_status' => 'SUCCESSFUL',
-            'images_processing_status_text' => null,
-        ]);
-        
-        $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id']  : null;
-        // Store the MotoAd
-        $motoAd = MotoAd::create([
-            'ad_id' =>  $ad->id,
-            'make_id' => $sanitized['make_id'],
-            'custom_make' => $sanitized['custom_make'],
-            'model_id' => $sanitized['model_id'],
-            'custom_model' => $sanitized['custom_model'],
-            'fuel_type_id' => $sanitized['fuel_type_id'],
-            'body_type_id' => $sanitized['body_type_id'],
-            'transmission_type_id' => $sanitized['transmission_type_id'],
-            'drive_type_id' => $sanitized['drive_type_id'],
-            'first_registration_month' => $sanitized['first_registration_month'],
-            'first_registration_year' => $sanitized['first_registration_year'],
-            'inspection_valid_until_month' => $sanitized['inspection_valid_until_month'],
-            'inspection_valid_until_year' => $sanitized['inspection_valid_until_year'],
-            'last_customer_service_month' => $sanitized['last_customer_service_month'],
-            'last_customer_service_year' => $sanitized['last_customer_service_year'],
-            'owners' => $sanitized['owners'],
-            'weight_kg' => $sanitized['weight_kg'],
-            'engine_displacement' => $sanitized['engine_displacement'],
-            'mileage' =>$sanitized['mileage'],
-            'power_kw' => $sanitized['power_kw'],
-            'gears' => $sanitized['gears'],
-            'cylinders' => $sanitized['cylinders'],
-            'emission_class' => $sanitized['emission_class'],
-            'fuel_consumption' => $sanitized['fuel_consumption'],
-            'co2_emissions' => $sanitized['co2_emissions'],
-            'condition' =>$sanitized['condition'],
-            'color' =>$sanitized['color'],
-            'price' =>$sanitized['price'],
-            'price_contains_vat' => $sanitized['price_contains_vat'],
-            'dealer_id' => Auth::user()->dealer_id ?? null,
-            'dealer_show_room_id' => $dealer_show_room_id,
-            'first_name' => $sanitized['first_name'],
-            'last_name' => $sanitized['last_name'],
-            'email_address' => $sanitized['email_address'],
-            'address' => $sanitized['address'],
-            'zip_code' => $sanitized['zip_code'],
-            'city' => $sanitized['city'],
-            'country' =>$sanitized['country'],
-            'mobile_number' => $sanitized['mobile_number'],
-            'landline_number' =>$sanitized['landline_number'],
-            'whatsapp_number' => $sanitized['whatsapp_number'],
-            'youtube_link' =>$sanitized['youtube_link']
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'thumbnail' => ['nullable', 'string'],
+            'market_id' => ['required', 'string'],
+            'make_id' => ['nullable', 'string'],
+            'custom_make' => ['nullable', 'string'],
+            'model_id' => ['nullable', 'string'],
+            'custom_model' => ['nullable', 'string'],
+            'fuel_type_id' => ['required', 'string'],
+            'body_type_id' => ['required', 'string'],
+            'transmission_type_id' => ['nullable', 'string'],
+            'drive_type_id' => ['nullable', 'string'],
+            'first_registration_month' => ['required', 'integer'],
+            'first_registration_year' => ['required', 'integer'],
+            'inspection_valid_until_month' => ['nullable', 'integer'],
+            'inspection_valid_until_year' => ['nullable', 'integer'],
+            'last_customer_service_month' => ['nullable', 'integer'],
+            'last_customer_service_year' => ['nullable', 'integer'],
+            'owners' => ['nullable', 'integer'],
+            'weight_kg' => ['nullable', 'numeric'],
+            'engine_displacement' => ['nullable', 'integer'],
+            'mileage' => ['required', 'integer'],
+            'power_hp' => ['nullable', 'integer'],
+            'gears' => ['nullable', 'integer'],
+            'cylinders' => ['nullable', 'integer'],
+            'emission_class' => ['nullable', 'string'],
+            'fuel_consumption' => ['nullable', 'numeric'],
+            'co2_emissions' => ['nullable', 'numeric'],
+            'condition' => ['required', 'string'],
+            'color' => ['required', 'string'],
+            'price' => ['required', 'numeric'],
+            'first_name' => ['nullable', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email_address' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'zip_code' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'youtube_link' => ['nullable', 'string'],
         ]);
 
-        return ['data' => ['ad' => $ad, 'moto_ad' => $motoAd]];
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+            
+            $slug = $this->slugAd($request['title']);
+
+            $ad = new Ad;
+            $ad->slug =  $slug;
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->type =  'moto';
+            $ad->is_featured =  0;
+            $ad->user_id =  Auth::user()->id;
+            $ad->market_id = $request['market_id'];
+            $ad->images_processing_status = $request->file() !== null ? 'SUCCESSFUL' : 'N/A';
+            $ad->images_processing_status_text = null;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+           $thumbnail = null;
+
+            $i = 0;
+
+            if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
+
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
+            $motoAd = new MotoAd;
+            $motoAd->ad_id = $ad->id;
+            $motoAd->price = $request['price'];
+            $motoAd->price_contains_vat = 0;
+            $motoAd->mileage = $request['mileage'];
+            $motoAd->color = $request['color'];
+            $motoAd->condition = $request['condition'] ;
+            $motoAd->dealer_id =  Auth::user()->dealer_id ?? null;
+            $motoAd->dealer_show_room_id = $dealer_show_room_id;
+            $motoAd->first_name =  $request['first_name'];
+            $motoAd->last_name =$request['last_name'] ;
+            $motoAd->email_address = $request['email_address'];
+            $motoAd->address = $request['address'];
+            $motoAd->zip_code = $request['zip_code'];
+            $motoAd->city = $request['city'];
+            $motoAd->country = $request['country'];
+            $motoAd->mobile_number = $request['mobile_number'];
+            $motoAd->landline_number = $request['landline_number'];
+            $motoAd->whatsapp_number = $request['whatsapp_number'];
+            $motoAd->youtube_link = $request['youtube_link'];
+            $motoAd->fuel_type_id = $request['fuel_type_id'];
+            $motoAd->body_type_id = $request['body_type_id'];
+            $motoAd->transmission_type_id = $request['transmission_type_id'];
+            $motoAd->drive_type_id = $request['drive_type_id'];
+            $motoAd->first_registration_month = $request['first_registration_month'];
+            $motoAd->first_registration_year = $request['first_registration_year'];
+            $motoAd->engine_displacement = $request['engine_displacement'];
+            $motoAd->power_kw = $request['power_hp'];
+            $motoAd->owners = $request['owners'];
+            $motoAd->inspection_valid_until_month = $request['inspection_valid_until_month'];
+            $motoAd->inspection_valid_until_year = $request['inspection_valid_until_year'];
+            $motoAd->make_id = $request['make_id'];
+            $motoAd->model_id = $request['model_id'];
+            $motoAd->fuel_consumption = $request['fuel_consumption'];
+            $motoAd->co2_emissions = $request['co2_emissions'];
+            $motoAd->save();
+            
+            $ad_sub_characteristics = [];
+
+            foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
+                $ad_sub_characteristic =  new AdSubCharacteristic;
+                $ad_sub_characteristic->ad_id = $ad->id;
+                $ad_sub_characteristic->sub_characteristic_id = $sub_characteristic_id;
+                $ad_sub_characteristic->save();
+                array_push($ad_sub_characteristics, $ad_sub_characteristic);
+            }
+
+
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
+            return response()->json([
+                'data' => [
+                    'ad' => $ad,
+                    'moto_ad' =>  $motoAd, 
+                    'ad_sub_characteristics' => $ad_sub_characteristics
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
+            return $this->sendResponse($resource);
+        }
     }
 
     public function principal_data(Request $request)
