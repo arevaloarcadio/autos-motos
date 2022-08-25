@@ -200,7 +200,7 @@ class ShopAdsController extends Controller
             $ad->title =  $request['title'];
             $ad->description =  $request['description'];
             $ad->status =  0;
-            $ad->type =  'mobile-home';
+            $ad->type =  'shop';
             $ad->is_featured =  0;
             $ad->user_id =  Auth::user()->id;
             $ad->market_id = $request['market_id'];
@@ -261,7 +261,7 @@ class ShopAdsController extends Controller
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
