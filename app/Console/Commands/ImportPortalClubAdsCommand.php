@@ -563,9 +563,14 @@ class ImportPortalClubAdsCommand extends Command
         $fuels        = $this->getFuelOptions($countryCode);
 
         if (isset($fuels[$externalFuel])) {
-            return CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
                               //->where('ad_type', '=', 'auto')
-                              ->first()->id;
+                              ->first();
+                              
+            if (!is_null($car_fuel_type)) {
+               return $car_fuel_type['id'];
+            }
+             
         }
 
         return null;
