@@ -397,6 +397,68 @@ class AdsController extends Controller
         return ['data' => $data->get()];
     }
 
+    public function byDealer(Request $request,$dealer_id)
+    {
+        $data = Ad::select('ads.*');
+
+        switch ($request->filter) {
+            case 'autos':
+                $data = $data->where(function($query) use ($dealer_id){
+                            $query->whereRaw("(
+                                id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or
+                                id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or 
+                                id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."') or
+                                id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."')
+                            )");
+                        });
+                break;
+            case 'mechanic':
+                $data = $data->join('mechanic_ads','mechanic_ads.ad_id','ads.id')
+                    ->where('dealer_id',$dealer_id);
+                break;
+            case 'rental':
+                $data = $data->join('rental_ads','rental_ads.ad_id','ads.id')
+                    ->where('dealer_id',$dealer_id);
+                break;
+            case 'shop':
+                $data = $data ->join('shop_ads','shop_ads.ad_id','ads.id')
+                    ->where('dealer_id',$dealer_id);
+                break;
+            default:
+                
+                break;
+        }
+
+        $data->with([
+            'user',
+            'mechanicAd',
+            'rentalAd',
+            'images',
+            'autoAd' => function($query)
+            {
+                $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+            },
+            'motoAd' => function($query)
+            {
+                $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+            },
+            'mobileHomeAd' => function($query)
+            {
+                $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+            },
+            'truckAd' => function($query)
+            {
+                $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+            },
+            'shopAd' => function($query)
+            {
+                $query->with(['make','model','ad','dealer','dealerShowRoom']);
+            }
+        ]);
+      
+        return ['data' => $data->paginate(10)];
+    }
+
     public function byCsv(Request $request,$csv_ad_id)
     {
         $ads = Ad::where('source','CSV')
