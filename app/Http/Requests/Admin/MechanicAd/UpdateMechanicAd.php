@@ -28,7 +28,6 @@ class UpdateMechanicAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['sometimes', 'string'],
             'title' => ['sometimes', 'string'],
             'description' => ['sometimes', 'string'],
             'address' => ['sometimes', 'string'],
@@ -42,7 +41,8 @@ class UpdateMechanicAd extends FormRequest
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
             'geocoding_status' => ['nullable', 'string'],
-            
+            'image_ids' => ['nullable', 'array'],
+            'eliminated_thumbnail' => ['required', 'boolean']
         ];
     }
 

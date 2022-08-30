@@ -181,7 +181,9 @@ class MechanicAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                        $ad->thumbnail = $thumbnail;
+                        $ad->save();
                     }else{
                         $this->uploadFile($file,$ad->id,$i);
                     }
@@ -203,10 +205,6 @@ class MechanicAdsController extends Controller
                 'email_address' => $sanitized['email_address'],
                 'geocoding_status' => $sanitized['geocoding_status'] ?? null
             ]);
-
-            
-            $ad->thumbnail = $thumbnail;
-            $ad->save();
 
             $images = AdImage::where('ad_id',$ad->id)->get();
 
@@ -262,32 +260,32 @@ class MechanicAdsController extends Controller
         try {
 
             $sanitized = $request->getSanitized();
-
-            $slug = $this->slugAd($sanitized['title']);
-
-            $ad = Ad::where('id',$id)->update([
-                'slug' => $slug,
-                'title' => $sanitized['title'],
-                'description' => $sanitized['description'],
-               // 'thumbnail' => $sanitized['thumbnail'],
-                'status' => 0,
-                'type' => 'mechanic',
-                'is_featured' => 0,
-                'market_id' => $sanitized['market_id'],
-                'external_id' =>null,
-                'source' => null,
-                'images_processing_status' => 'SUCCESSFUL',
-                'images_processing_status_text' => null,
-            ]);
+            
+            $ad =  Ad::where('id',$id)->first();
+            $ad->title =  $sanitized['title'];
+            $ad->description =  $sanitized['description'];
+            $ad->status =  0;
+            $ad->save();
             
             $thumbnail = '';
             $i = 0;
+
+            if ($request->image_ids) {
+                AdImage::whereIn('id',$request->image_ids)->delete();
+            }
+
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$id,$i);
+                        if ($request->eliminated_thumbnail) {
+                            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                            $ad->thumbnail = $thumbnail;
+                            $ad->save();
+                        }else{
+                            $this->uploadFile($file,$ad->id,$i);
+                        }
                     }else{
-                        $this->uploadFile($file,$id,$i);
+                        $this->uploadFile($file,$ad->id,$i);
                     }
                     $i++;
                 }
@@ -299,24 +297,22 @@ class MechanicAdsController extends Controller
                 'longitude' => $sanitized['longitude'] ?? null,
                 'zip_code' => $sanitized['zip_code'],
                 'city' => $sanitized['city'],
-                'country' =>$sanitized['country'],
+                'country' => $sanitized['country'],
                 'mobile_number' => $sanitized['mobile_number'],
                 'whatsapp_number' => $sanitized['whatsapp_number'],
                 'website_url' => $sanitized['website_url'],
                 'email_address' => $sanitized['email_address'],
                 'geocoding_status' => $sanitized['geocoding_status'] ?? null
             ]);
-
             
-            $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
-
+            $mechanicAd = MechanicAd::where('ad_id',$id)->first();
 
             $images = AdImage::where('ad_id',$id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
 
         } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line '.$e->getLine());
             return $this->sendResponse($resource);
         }
     }
@@ -362,7 +358,7 @@ class MechanicAdsController extends Controller
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
 
-    public function uploadFile($file,$ad_id,$order_index)
+    public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
     {   
         $path = null;
         
@@ -372,13 +368,15 @@ class MechanicAdsController extends Controller
             );
         }
         
-        AdImage::create([
-            'ad_id' => $ad_id,
-            'path' => $path, 
-            'is_external' => 1, 
-            'order_index' => $order_index
-        ]);
-
+        if (!$thumbnail) {
+           AdImage::create([
+                'ad_id' => $ad_id,
+                'path' => $path, 
+                'is_external' => 1, 
+                'order_index' => $order_index
+            ]);
+        }
+        
         return $path;
     }
 

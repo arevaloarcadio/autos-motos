@@ -28,7 +28,8 @@ class UpdateShopAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['sometimes', Rule::unique('shop_ads', 'ad_id')->ignore($this->shopAd->getKey(), $this->shopAd->getKeyName()), 'string'],
+            'title' => ['sometimes', 'string'],
+            'description' => ['sometimes', 'string'],
             'category' => ['sometimes', 'string'],
             'make_id' => ['sometimes', 'string'],
             'model' => ['nullable', 'string'],

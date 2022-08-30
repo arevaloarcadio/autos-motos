@@ -28,7 +28,6 @@ class UpdateRentalAd extends FormRequest
     public function rules(): array
     {
         return [
-            'ad_id' => ['sometimes', 'string'],
             'title' => ['sometimes', 'string'],
             'description' => ['sometimes', 'string'],
             'address' => ['sometimes', 'string'],
@@ -41,6 +40,8 @@ class UpdateRentalAd extends FormRequest
             'whatsapp_number' => ['nullable', 'string'],
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
+            'image_ids' => ['nullable', 'array'],
+            'eliminated_thumbnail' => ['required', 'boolean']
             
         ];
     }

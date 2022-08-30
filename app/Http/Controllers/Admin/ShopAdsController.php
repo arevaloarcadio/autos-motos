@@ -217,7 +217,7 @@ class ShopAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
                     }else{
                         $this->uploadFile($file,$ad->id,$i);
                     }
@@ -271,424 +271,6 @@ class ShopAdsController extends Controller
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function principal_data(Request $request)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'category' => ['required', 'string'],
-            'make_id' => ['required', 'string'],
-            'model_id' => ['nullable', 'string'],
-            'manufacturer' => ['required', 'string'],
-            'code' => ['nullable', 'string'],
-            'condition' => ['required', 'string']
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-            
-            //INSERT INTO `ads` (`id`, `slug`, `title`, `description`, `thumbnail`, `status`, `type`, `is_featured`, `user_id`, `market_id`, `created_at`, `updated_at`, `external_id`, `source`, `images_processing_status`, `images_processing_status_text`, `csv_ad_id`) VALUES ('.', '.', '.', '.', '.', '0', '', '0', '23bcf97c-296b-46c9-bdd5-8057e052bfce', '5b8fa498-efe4-4c19-90a8-7285901b4585', '2022-07-02 09:28:15', '2021-05-15 09:28:15', '26409', NULL, 'N/A', NULL, NULL);
-
-            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
-
-            $shopAd = ShopAd::create([
-                'ad_id' =>  '.',
-                'email_address' =>  '.',
-                'address' =>  '.',
-                'zip_code' =>  '.',
-                'city' =>  '.',
-                'country' =>  '.',
-                'price' =>  0,
-                'dealer_id' => Auth::user()->dealer_id ?? null,
-                'dealer_show_room_id' => $dealer_show_room_id,
-                'category' => $request['category'],
-                'make_id' => $request['make_id'],
-                'model' => Models::find($request['model_id'])->name,
-                'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
-                'manufacturer' => $request['manufacturer'],
-                'code' => $request['code'],
-                'condition' => $request['condition'],
-               
-            ]);
-
-            return response()->json(['data' => $shopAd], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function update_principal_data(Request $request,$id)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'category' => ['sometimes', 'string'],
-            'make_id' => ['sometimes', 'string'],
-            'model_id' => ['sometimes', 'string'],
-            'manufacturer' => ['sometimes', 'string'],
-            'code' => ['sometimes', 'string'],
-            'condition' => ['sometimes', 'string']
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-            
-            //INSERT INTO `ads` (`id`, `slug`, `title`, `description`, `thumbnail`, `status`, `type`, `is_featured`, `user_id`, `market_id`, `created_at`, `updated_at`, `external_id`, `source`, `images_processing_status`, `images_processing_status_text`, `csv_ad_id`) VALUES ('.', '.', '.', '.', '.', '0', '', '0', '23bcf97c-296b-46c9-bdd5-8057e052bfce', '5b8fa498-efe4-4c19-90a8-7285901b4585', '2022-07-02 09:28:15', '2021-05-15 09:28:15', '26409', NULL, 'N/A', NULL, NULL);
-
-            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
-
-            $shopAd = ShopAd::where('ad_id',$id)->update([
-                'category' => $request['category'],
-                'make_id' => $request['make_id'],
-                'model' => Models::find($request['model_id'])->name,
-                'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
-                'manufacturer' => $request['manufacturer'],
-                'code' => $request['code'],
-                'condition' => $request['condition'],
-               
-            ]);
-
-            return response()->json(['data' => $shopAd], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function details_ads(Request $request)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'shop_ad_id' => ['required', 'string'],
-            'title' => ['required', 'string'],
-            'description' => ['required', 'string'],
-            //'thumbnail' => ['nullable', 'string'],
-            //'market_id' => ['required', 'string'],
-            'youtube_link' => ['nullable', 'string'],
-            'price' => ['required', 'numeric'],
-            //'files' => ['required','array']
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-            
-            $slug = $this->slugAd($request['title']);
-
-            $ad = Ad::create([
-                'slug' => $slug,
-                'title' => $request['title'],
-                'description' => $request['description'],
-                //'thumbnail' => $request['thumbnail'],
-                'status' => 0,
-                'type' => 'shop',
-                'is_featured' => 0,
-                'user_id' => Auth::user()->id,
-                'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
-                'external_id' =>null,
-                'source' => null,
-                'images_processing_status' => 'N/A',
-                'images_processing_status_text' => null,
-            ]);
-
-            $thumbnail = '';
-            $i = 0;
-            if ($request->file()) {
-                foreach ($request->file() as $file) {
-                    if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
-                    }else{
-                        $this->uploadFile($file,$ad->id,$i);
-                    }
-                    $i++;
-                }
-            }
-
-            ShopAd::where('id',$request['shop_ad_id'])->update([
-                'ad_id' =>  $ad->id,
-                'youtube_link' =>  $request->youtube_link,
-                'price' =>  $request->price,
-            ]);
-
-            $ad->thumbnail = $thumbnail;
-            $ad->save();
-            
-            $shopAd = ShopAd::find($request['shop_ad_id']);
-
-            $images = AdImage::where('ad_id',$ad->id)->get();
-
-            return response()->json(['data' => ['ad' => $ad,'shop_ad' => $shopAd,'images' => $images]], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function update_details_ads(Request $request,$id)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'shop_ad_id' => ['sometimes', 'string'],
-            'title' => ['sometimes', 'string'],
-            'description' => ['sometimes', 'string'],
-            //'thumbnail' => ['nullable', 'string'],
-            //'market_id' => ['required', 'string'],
-            'youtube_link' => ['sometimes', 'string'],
-            'price' => ['sometimes', 'numeric'],
-            //'files' => ['required','array']
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-            
-            $slug = $this->slugAd($request['title']);
-
-            $ad = Ad::where('id',$id)->update([
-                'slug' => $slug,
-                'title' => $request['title'],
-                'description' => $request['description'],
-                //'thumbnail' => $request['thumbnail'],
-                'status' => 0,
-                'type' => 'shop',
-                'is_featured' => 0,
-                'user_id' => Auth::user()->id,
-                'market_id' => '5b8fa498-efe4-4c19-90a8-7285901b4585',
-                'external_id' =>null,
-                'source' => null,
-                'images_processing_status' => 'N/A',
-                'images_processing_status_text' => null,
-            ]);
-
-            $thumbnail = '';
-            $i = 0;
-            if ($request->file()) {
-                foreach ($request->file() as $file) {
-                    if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$id,$i);
-                    }else{
-                        $this->uploadFile($file,$id,$i);
-                    }
-                    $i++;
-                }
-            }
-
-            ShopAd::where('ad_id',$id)->update([
-                'youtube_link' =>  $request->youtube_link,
-                'price' =>  $request->price,
-            ]);
-
-            
-            $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
-
-            
-            $shopAd = ShopAd::where('ad_id',$id)->first();
-
-            $images = AdImage::where('ad_id',$id)->get();
-
-            return response()->json(['data' => ['ad' => $ad,'shop_ad' => $shopAd,'images' => $images]], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-
-    public function add_sub_characteristic_ads(Request $request)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'sub_characteristics' => ['required', 'array'],
-            'sub_characteristics.*.ad_id' => ['required', 'string'],
-            'sub_characteristics.*.sub_characteristic_id' => ['required', 'string']
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-           // dd($request->sub_characteristics);
-            $response = [];
-
-            foreach ($request->sub_characteristics as  $sub_characteristics) {
-                $ad_sub_characteristic =  new AdSubCharacteristic;
-                $ad_sub_characteristic->ad_id = $sub_characteristics['ad_id'];
-                $ad_sub_characteristic->sub_characteristic_id = $sub_characteristics['sub_characteristic_id'];
-                $ad_sub_characteristic->save();
-
-                array_push($response, $ad_sub_characteristic);
-            }
-            
-            return response()->json(['data' => $response], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function update_sub_characteristic_ads(Request $request,$id)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'sub_characteristics' => ['sometimes', 'array'],
-            'sub_characteristics.*.ad_id' => ['sometimes', 'string'],
-            'sub_characteristics.*.sub_characteristic_id' => ['sometimes', 'string']
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-           // dd($request->sub_characteristics);
-            $response = [];
-
-            AdSubCharacteristic::where('ad_id',$id)->delete();
-
-            foreach ($request->sub_characteristics as  $sub_characteristics) {
-                $ad_sub_characteristic =  new AdSubCharacteristic;
-                $ad_sub_characteristic->ad_id = $sub_characteristics['ad_id'];
-                $ad_sub_characteristic->sub_characteristic_id = $sub_characteristics['sub_characteristic_id'];
-                $ad_sub_characteristic->save();
-
-                array_push($response, $ad_sub_characteristic);
-            }
-            
-            return response()->json(['data' => $response], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function add_details_contacts(Request $request)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'shop_ad_id' => ['required', 'string'],
-            'first_name' => ['required', 'string'],
-            'last_name' => ['required', 'string'],
-            'email_address' => ['required', 'string'],
-            'zip_code' => ['required', 'string'],
-            'city' => ['required', 'string'],
-            'country' => ['required', 'string'],
-            'address' => ['required', 'string'],
-            'mobile_number' => ['required', 'string'],
-            'whatsapp_number' => ['required', 'string'],
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-            
-            ShopAd::where('id',$request['shop_ad_id'])->update([
-                'first_name' =>  $request->first_name,
-                'last_name' =>  $request->last_name,
-                'email_address' =>  $request->email_address,
-                'zip_code' =>  $request->zip_code,
-                'city' =>  $request->city,
-                'country' =>  $request->country,
-                'address' =>  $request->address,
-                'mobile_number' =>  $request->mobile_number,
-                'whatsapp_number' =>  $request->whatsapp_number,
-            ]);
-
-            $shopAd = ShopAd::find($request['shop_ad_id']);
-            
-            $user = Auth::user();
-
-            $user->notify(new \App\Notifications\NewAd($user));
-
-            return response()->json(['data' => $shopAd], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
-            return $this->sendResponse($resource);
-        }
-    }
-
-    public function update_details_contacts(Request $request,$id)
-    {
-        $resource = ApiHelper::resource();
-
-        $validator = Validator::make($request->all(), [
-            'shop_ad_id' => ['sometimes', 'string'],
-            'first_name' => ['sometimes', 'string'],
-            'last_name' => ['sometimes', 'string'],
-            'email_address' => ['sometimes', 'string'],
-            'zip_code' => ['sometimes', 'string'],
-            'city' => ['sometimes', 'string'],
-            'country' => ['sometimes', 'string'],
-            'address' => ['sometimes', 'string'],
-            'mobile_number' => ['sometimes', 'string'],
-            'whatsapp_number' => ['sometimes', 'string'],
-        ]);
-
-        if ($validator->fails()) {
-            ApiHelper::setError($resource, 0, 422, $validator->errors());
-            return $this->sendResponse($resource);
-        }
-
-        try {
-            
-            ShopAd::where('ad_id',$id)->update([
-                'first_name' =>  $request->first_name,
-                'last_name' =>  $request->last_name,
-                'email_address' =>  $request->email_address,
-                'zip_code' =>  $request->zip_code,
-                'city' =>  $request->city,
-                'country' =>  $request->country,
-                'address' =>  $request->address,
-                'mobile_number' =>  $request->mobile_number,
-                'whatsapp_number' =>  $request->whatsapp_number,
-            ]);
-
-            $shopAd = ShopAd::where('ad_id',$id)->first();
-            
-            //$user = Auth::user();
-
-            //$user->notify(new \App\Notifications\NewAd($user));
-
-            return response()->json(['data' => $shopAd], 200);
-
-        } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }
     }
@@ -776,22 +358,116 @@ class ShopAdsController extends Controller
      * @param ShopAd $shopAd
      * @return array|RedirectResponse|Redirector
      */
-    public function update(UpdateShopAd $request, ShopAd $shopAd)
+    public function update(Request $request, $id)
     {
-        // Sanitize input
-        $sanitized = $request->getSanitized();
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'market_id' => ['required', 'string'],
+            'category' => ['required', 'string'],
+            'make_id' => ['required', 'string'],
+            'model' => ['nullable', 'string'],
+            'manufacturer' => ['required', 'string'],
+            'code' => ['nullable', 'string'],
+            'condition' => ['required', 'string'],
+            'price' => ['required', 'numeric'],
+            'first_name' => ['nullable', 'string'],
+            'last_name' => ['nullable', 'string'],
+            'email_address' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'zip_code' => ['required', 'string'],
+            'city' => ['required', 'string'],
+            'country' => ['required', 'string'],
+            'latitude' => ['nullable', 'string'],
+            'longitude' => ['nullable', 'string'],
+            'mobile_number' => ['nullable', 'string'],
+            'landline_number' => ['nullable', 'string'],
+            'whatsapp_number' => ['nullable', 'string'],
+            'youtube_link' => ['nullable', 'string'],
+            'image_ids' => ['nullable', 'array'],
+            'eliminated_thumbnail' => ['required', 'boolean']
+        ]);
 
-        // Update changed values ShopAd
-        $shopAd->update($sanitized);
-
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/shop-ads'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
         }
 
-        return redirect('admin/shop-ads');
+        try {
+            
+
+            $ad = Ad::where('id',$id)->first();
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->save();
+
+            $thumbnail = null;
+
+            $i = 0;
+
+            
+            if ($request->image_ids) {
+                AdImage::whereIn('id',$request->image_ids)->delete();
+            }
+
+           if ($request->file()) {
+                foreach ($request->file() as $file) {
+                    if ($i == 0) {
+                        if ($request->eliminated_thumbnail) {
+                            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                            $ad->thumbnail = $thumbnail;
+                            $ad->save();
+                        }else{
+                            $this->uploadFile($file,$ad->id,$i);
+                        }
+                    }else{
+                        $this->uploadFile($file,$ad->id,$i);
+                    }
+                    $i++;
+                }
+            }
+
+            $shopAd = ShopAd::where('ad_id',$id)->first();
+            $shopAd->category = $request['category'];
+            $shopAd->make_id = $request['make_id'];
+            $shopAd->model = $request['model'];
+            $shopAd->manufacturer = $request['manufacturer'];
+            $shopAd->code = $request['code'];
+            $shopAd->condition = $request['condition'];
+            $shopAd->price = $request['price'];
+            $shopAd->first_name = $request['first_name'];
+            $shopAd->last_name = $request['last_name'];
+            $shopAd->email_address = $request['email_address'];
+            $shopAd->address = $request['address'];
+            $shopAd->zip_code = $request['zip_code'];
+            $shopAd->city = $request['city'];
+            $shopAd->country = $request['country'];
+            $shopAd->latitude = $request['latitude'];
+            $shopAd->longitude = $request['longitude'];
+            $shopAd->mobile_number = $request['mobile_number'];
+            $shopAd->landline_number = $request['landline_number'];
+            $shopAd->whatsapp_number = $request['whatsapp_number'];
+            $shopAd->youtube_link = $request['youtube_link'];
+            $shopAd->save();
+            
+
+            //$user = Auth::user();
+
+            //$user->notify(new \App\Notifications\NewAd($user));
+
+            return response()->json([
+                'data' => [
+                    'ad' => $ad,
+                    'shop_ad' =>  $shopAd
+                ]
+            ], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
+            return $this->sendResponse($resource);
+        }
+
     }
 
     /**
@@ -835,7 +511,7 @@ class ShopAdsController extends Controller
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
 
-    public function uploadFile($file,$ad_id,$order_index)
+    public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
     {   
         $path = null;
         
@@ -845,13 +521,15 @@ class ShopAdsController extends Controller
             );
         }
         
-        AdImage::create([
-            'ad_id' => $ad_id,
-            'path' => $path, 
-            'is_external' => 1, 
-            'order_index' => $order_index
-        ]);
-
+        if (!$thumbnail) {
+           AdImage::create([
+                'ad_id' => $ad_id,
+                'path' => $path, 
+                'is_external' => 1, 
+                'order_index' => $order_index
+            ]);
+        }
+        
         return $path;
     }
 

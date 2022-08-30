@@ -164,7 +164,6 @@ class RentalAdsController extends Controller
                 'slug' => $slug,
                 'title' => $sanitized['title'],
                 'description' => $sanitized['description'],
-                //'thumbnail' => $sanitized['thumbnail'],
                 'status' => 0,
                 'type' => 'rental',
                 'is_featured' => 0,
@@ -181,7 +180,7 @@ class RentalAdsController extends Controller
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i);
+                        $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
                     }else{
                         $this->uploadFile($file,$ad->id,$i);
                     }
@@ -263,32 +262,33 @@ class RentalAdsController extends Controller
 
             $sanitized = $request->getSanitized();
 
-           $slug = $this->slugAd($sanitized['title']);
-
-            $ad = Ad::where('id',$id)->update([
-                'slug' => $slug,
-                'title' => $sanitized['title'],
-                'description' => $sanitized['description'],
-                //'thumbnail' => $sanitized['thumbnail'],
-                'status' => 0,
-                'type' => 'rental',
-                'is_featured' => 0,
-                'user_id' => Auth::user()->id,
-                'market_id' => $sanitized['market_id'],
-                'external_id' =>null,
-                'source' => null,
-                'images_processing_status' => 'SUCCESSFUL',
-                'images_processing_status_text' => null,
-            ]);
+           
+            $ad =  Ad::where('id',$id)->first();
+            $ad->title =  $request['title'];
+            $ad->description =  $request['description'];
+            $ad->status =  0;
+            $ad->save();
             
-            $thumbnail = '';
+            $thumbnail = null;
+
             $i = 0;
+            
+            if ($request->image_ids) {
+                AdImage::whereIn('id',$request->image_ids)->delete();
+            }
+
             if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$id,$i);
+                        if ($request->eliminated_thumbnail) {
+                            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                            $ad->thumbnail = $thumbnail;
+                            $ad->save();
+                        }else{
+                            $this->uploadFile($file,$ad->id,$i);
+                        }
                     }else{
-                        $this->uploadFile($file,$id,$i);
+                        $this->uploadFile($file,$ad->id,$i);
                     }
                     $i++;
                 }
@@ -305,21 +305,19 @@ class RentalAdsController extends Controller
                 'whatsapp_number' => $sanitized['whatsapp_number'],
                 'website_url' => $sanitized['website_url'],
                 'email_address' => $sanitized['email_address'],
-                'geocoding_status' => $sanitized['geocoding_status'] ?? null
             ]);
-
-            $thumbnail != '' ? Ad::where('id',$id)->update(['thumbnail' => $thumbnail]) : null;
 
             $images = AdImage::where('ad_id',$id)->get();
             
-            $user = Auth::user();
+            //$user = Auth::user();
 
+            $rental_ad = RentalAd::where('ad_id',$id)->first();
             //$user->notify(new \App\Notifications\NewAd($user));
 
             return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad,'images' => $images]], 200);
 
         } catch (Exception $e) {
-            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line '. $e->getLine());
             return $this->sendResponse($resource);
         }
     }
@@ -365,7 +363,7 @@ class RentalAdsController extends Controller
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
 
-    public function uploadFile($file,$ad_id,$order_index)
+    public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
     {   
         $path = null;
         
@@ -375,13 +373,15 @@ class RentalAdsController extends Controller
             );
         }
         
-        AdImage::create([
-            'ad_id' => $ad_id,
-            'path' => $path, 
-            'is_external' => 1, 
-            'order_index' => $order_index
-        ]);
-
+        if (!$thumbnail) {
+           AdImage::create([
+                'ad_id' => $ad_id,
+                'path' => $path, 
+                'is_external' => 1, 
+                'order_index' => $order_index
+            ]);
+        }
+        
         return $path;
     }
 
