@@ -279,7 +279,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/',                                             'AutoAdsController@index')->name('index');
             Route::get('/promoted',                                     'AutoAdsController@autoAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
             //Route::get('/create',                                       'AutoAdsController@create')->name('create');
-            Route::post('/search',                                   'AutoAdsController@searchLike');
+            Route::post('/search/like',                                   'AutoAdsController@searchLike');
             
             //Route::get('/{autoAd}/edit',                                'AutoAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AutoAdsController@bulkDestroy')->name('bulk-destroy');
@@ -562,7 +562,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'MobileHomeAdsController@mobileHomeAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
             //Route::get('/create',                                       'MobileHomeAdsController@create')->name('create');
             
-            Route::post('/search',                                   'MobileHomeAdsController@searchLike');
+            Route::post('/search/like',                                   'MobileHomeAdsController@searchLike');
 
             //Route::get('/{mobileHomeAd}/edit',                          'MobileHomeAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'MobileHomeAdsController@bulkDestroy')->name('bulk-destroy');
@@ -586,7 +586,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'MotoAdsController@motoAdsPromotedFrontPage')->name('motoAdsPromotedFrontPage');
             //Route::get('/create',                                       'MotoAdsController@create')->name('create');
            
-            Route::post('/search',                                   'MotoAdsController@searchLike');
+            Route::post('/search/like',                                   'MotoAdsController@searchLike');
             //Route::get('/{motoAd}/edit',                                'MotoAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'MotoAdsController@bulkDestroy')->name('bulk-destroy');
             Route::delete('/{motoAd}',                                  'MotoAdsController@destroy')->name('destroy');
@@ -621,7 +621,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
         Route::prefix('rental-ads')->name('rental-ads/')->group(static function() {
             Route::get('/',                                             'RentalAdsController@index')->name('index');
             Route::get('/promoted',                                     'RentalAdsController@rentalAdsPromotedFrontPage')->name('motoAdsPromotedFrontPage');
-            Route::post('/search',                                   'RentalAdsController@searchLike');
+            Route::post('/search/like',                                   'RentalAdsController@searchLike');
             
             //Route::get('/create',                                       'RentalAdsController@create')->name('create');
             //Route::get('/{rentalAd}/edit',                              'RentalAdsController@edit')->name('edit');
@@ -660,7 +660,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'ShopAdsController@shopAdsPromotedFrontPage')->name('shopAdsPromotedFrontPage');
             //Route::get('/create',                                       'ShopAdsController@create')->name('create');
             Route::post('/search_advanced',                             'ShopAdsController@search_advanced')->name('store');
-            Route::post('/search',                                   'ShopAdsController@searchLike');
+            Route::post('/search/like',                                   'ShopAdsController@searchLike');
 
             //Route::get('/{shopAd}/edit',                                'ShopAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'ShopAdsController@bulkDestroy')->name('bulk-destroy');
@@ -722,7 +722,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::get('/promoted',                                     'TruckAdsController@truckAdsPromotedFrontPage')->name('truckAdsPromotedFrontPage');
             //Route::get('/create',                                       'TruckAdsController@create')->name('create');
             
-            Route::post('/search',                                   'TruckAdsController@searchLike');
+            Route::post('/search/like',                                   'TruckAdsController@searchLike');
 
             //Route::get('/{truckAd}/edit',                               'TruckAdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'TruckAdsController@bulkDestroy')->name('bulk-destroy');
