@@ -153,7 +153,7 @@ class MobileHomeAdsController extends Controller
             'make_id' => ['nullable', 'string'],
             'custom_make' => ['nullable', 'string'],
             'model_id' => ['nullable', 'string'],
-            'custom_model' => ['nullable', 'string'],
+            'model' => ['nullable', 'string'],
             'fuel_type_id' => ['required', 'string'],
             'vehicle_category_id' => ['required', 'string'],
             'transmission_type_id' => ['nullable', 'string'],
@@ -243,7 +243,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->make_id = $request['make_id'];
             $mobileHomeAd->custom_make = $request['custom_make'];
             $mobileHomeAd->model_id = $request['model_id'];
-            $mobileHomeAd->custom_model = $request['custom_model'];
+            $mobileHomeAd->custom_model = $request['model'];
             $mobileHomeAd->fuel_type_id = $request['fuel_type_id'];
             $mobileHomeAd->vehicle_category_id = $request['vehicle_category_id'];
             $mobileHomeAd->transmission_type_id = $request['transmission_type_id'];
