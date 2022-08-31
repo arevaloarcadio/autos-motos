@@ -169,7 +169,7 @@ class AutoAdsController extends Controller
             'seats' => ['nullable', 'integer'],
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'market_id' => ['nullable', 'string'],
+            'market_id' => ['required', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
             'first_name' => ['required', 'string'],

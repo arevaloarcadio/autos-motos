@@ -728,7 +728,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'slug' => Str::slug(utf8_encode($csv_ad[5])) == '' ? $model->name : Str::slug(utf8_encode($csv_ad[5])),
                             'title' => utf8_encode($csv_ad[5]) == '' ? $model->name : utf8_encode($csv_ad[5]),
                             'description' => utf8_encode($csv_ad[58]),
-                            'thumbnail' => '.',
+                            'thumbnail' => null,
                             'status' => 10,
                             'type' =>  $body == null ? '' : strtolower($body['ad_type']),
                             'user_id' => $user->id,

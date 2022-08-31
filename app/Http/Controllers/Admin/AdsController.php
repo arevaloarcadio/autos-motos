@@ -188,15 +188,15 @@ class AdsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['data' => json_decode($validator->errors()->toJson())],422);
+            return response()->json(['data' => $validator->errors()],422);
         }
 
         $filter = $request->filter;
         $type = $request->type;
         
         $ads = Ad::where(function ($query) use ($filter){
-            $query->where('ads.title','LIKE','%'. $filter.'%')
-                  ->orWhere('ads.description','LIKE','%'.$filter.'%');
+            $query->where('ads.title','LIKE','%'. $filter.'%');
+            //->orWhere('ads.description','LIKE','%'.$filter.'%')
         });
 
         if ($type != 'all') {
