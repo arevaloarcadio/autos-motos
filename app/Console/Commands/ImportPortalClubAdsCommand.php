@@ -994,7 +994,8 @@ class ImportPortalClubAdsCommand extends Command
         if ($gener == 'furgone') {
             $type = 'mobile-home';
         }
-
+        $this->info(  $adInfo->model->body);
+       
         $title            = $this->generateAdTitle($adInfo);
         $description      = (string) $adInfo->additional_informations;
         $registrationDate = $this->processRegistrationDate((string) $adInfo->registration_date);
