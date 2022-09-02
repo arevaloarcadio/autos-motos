@@ -1086,6 +1086,7 @@ class ImportPortalClubAdsCommand extends Command
                 'power_hp'                     => (string) $adInfo->model->hp === '' ? null : (string) $adInfo->model->hp,
                 'owners'                       => (string) $adInfo->previous_owners === '' ? null : (string) $adInfo->previous_owners,
                 'model' => $adInfo->model->model,
+                'truck_type' => 'Car transporter',
                 'inspection_valid_until_month' => null,
                 'inspection_valid_until_year'  => null,
                 'make_id'                      => $make->id,
@@ -1101,7 +1102,7 @@ class ImportPortalClubAdsCommand extends Command
             ];
 
         $this->info($gener);
-        
+
         if ($gener == 'moto') {
             
             $ad = Ad::create($adInput);
