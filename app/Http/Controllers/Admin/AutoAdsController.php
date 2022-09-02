@@ -145,8 +145,8 @@ class AutoAdsController extends Controller
     {
    
         $validator = Validator::make($request->all(), [
-            'make_id' => ['required', 'string'],
-            'model_id' => ['required', 'string'],
+            'make_id' => 'required|string|exists:makes,id',
+            'model_id' => 'required|string|exists:models,id',
             'first_registration_month' => ['required', 'integer'],
             'first_registration_year' => ['required', 'integer'],
             'generation_id' => ['nullable', 'string'],
@@ -157,9 +157,10 @@ class AutoAdsController extends Controller
             'inspection_valid_until_month' => ['nullable', 'integer'],
             'inspection_valid_until_year' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
-            'ad_fuel_type_id' => ['nullable', 'string'],
-            'ad_transmission_type_id' => ['nullable', 'string'],
-            'ad_drive_type_id' => ['nullable', 'string'],
+            'ad_fuel_type_id' => 'nullable|string|exists:car_fuel_types,id',
+            'ad_transmission_type_id' => 'nullable|string|exists:car_transmission_types,id',
+            'ad_drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
+            'ad_body_type_id' => 'nullable|string|exists:car_body_types,id',
             'engine_displacement' => ['nullable', 'integer'],
             'power_hp' => ['nullable', 'integer'],
             'fuel_consumption' => ['nullable', 'numeric'],
@@ -169,7 +170,7 @@ class AutoAdsController extends Controller
             'seats' => ['nullable', 'integer'],
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'market_id' => ['required', 'string'],
+            'market_id' => 'required|string|exists:markets,id',
             'youtube_link' => ['nullable', 'string'],
             'price' => ['required', 'numeric'],
             'first_name' => ['required', 'string'],

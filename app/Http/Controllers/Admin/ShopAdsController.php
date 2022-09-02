@@ -163,9 +163,9 @@ class ShopAdsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'market_id' => ['required', 'string'],
+            'market_id' => 'required|string|exists:markets,id',
             'category' => ['required', 'string'],
-            'make_id' => ['required', 'string'],
+            'make_id' => 'required|string|exists:makes,id',
             'model' => ['nullable', 'string'],
             'manufacturer' => ['required', 'string'],
             'code' => ['nullable', 'string'],
