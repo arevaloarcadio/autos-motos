@@ -1085,6 +1085,7 @@ class ImportPortalClubAdsCommand extends Command
                 'engine_displacement'          => (string) $adInfo->model->cc === '' ? null : (int) $adInfo->model->cc,
                 'power_hp'                     => (string) $adInfo->model->hp === '' ? null : (string) $adInfo->model->hp,
                 'owners'                       => (string) $adInfo->previous_owners === '' ? null : (string) $adInfo->previous_owners,
+                'model' => $adInfo->model->model,
                 'inspection_valid_until_month' => null,
                 'inspection_valid_until_year'  => null,
                 'make_id'                      => $make->id,
@@ -1099,6 +1100,8 @@ class ImportPortalClubAdsCommand extends Command
                 'options'                      => [],
             ];
 
+        $this->info($gener);
+        
         if ($gener == 'moto') {
             
             $ad = Ad::create($adInput);
