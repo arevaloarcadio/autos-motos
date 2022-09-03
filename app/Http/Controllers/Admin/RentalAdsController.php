@@ -189,6 +189,7 @@ class RentalAdsController extends Controller
             }
             
             $rental_ad = RentalAd::create([
+                'ad_id'  => $ad->id, 
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
                 'longitude' => $sanitized['longitude'] ?? null,
