@@ -21,7 +21,7 @@ class Characteristic extends Model
     
     ];
     
-    protected $appends = ['resource_url'];
+    //protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */
 

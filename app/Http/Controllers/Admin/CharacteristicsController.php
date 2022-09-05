@@ -35,7 +35,7 @@ class CharacteristicsController extends Controller
             
             $query = Characteristic::query();
 
-            $columns = ['id', 'name'];
+            $columns = ['id', 'name','ad_type'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -60,13 +60,13 @@ class CharacteristicsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'name'],
+            ['id', 'name','ad_type'],
 
             // set columns to searchIn
-            ['id', 'name'],
+            ['id', 'name','ad_type'],
             function ($query) use ($request) {
                         
-                $columns =   ['id', 'name'];
+                $columns =   ['id', 'name','ad_type'];
                 
                 foreach ($columns as $column) {
                         if ($request->filters) {
