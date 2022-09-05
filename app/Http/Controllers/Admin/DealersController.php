@@ -148,7 +148,9 @@ class DealersController extends Controller
         $resource = ApiHelper::resource();
         
         try {
-            
+            $dealer->users;
+            $dealer->showRooms;
+
             return response()->json(['data' => $dealer] , 200);
         
         } catch (Exception $e) {

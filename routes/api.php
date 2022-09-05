@@ -431,6 +431,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('dealers')->name('dealers/')->group(static function() {
             Route::get('/',                                             'DealersController@index')->name('index');
+            Route::get('/{dealer}',                                      'DealersController@show')->name('show');
             //Route::get('/create',                                       'DealersController@create')->name('create');
             Route::post('/',                                            'DealersController@store')->name('store');
             //Route::get('/{dealer}/edit',                                'DealersController@edit')->name('edit');
