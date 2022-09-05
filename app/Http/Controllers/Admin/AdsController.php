@@ -140,8 +140,14 @@ class AdsController extends Controller
                 $query->with(
                     [
                         'user',
-                        'mechanicAd',
-                        'rentalAd',
+                        'mechanicAd'=> function($query)
+                        {
+                            $query->with(['dealer','dealerShowRoom']);
+                        },
+                        'rentalAd' => function($query)
+                        {
+                            $query->with(['dealer','dealerShowRoom']);
+                        },
                         'images',
                         'autoAd' => function($query)
                         {
@@ -207,8 +213,14 @@ class AdsController extends Controller
 
         $ads->with([
             'user',
-            'mechanicAd',
-            'rentalAd',
+            'mechanicAd' => function($query)
+            {
+                $query->with(['dealer','dealerShowRoom']);
+            },
+            'rentalAd' => function($query)
+            {
+                $query->with(['dealer','dealerShowRoom']);
+            },
             'images',
             'autoAd' => function($query)
             {
@@ -310,7 +322,8 @@ class AdsController extends Controller
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
-                    }]);
+                    },
+                    'dealer','dealerShowRoom']);
                 break;  
             case 'shop':
                 $response = ShopAd::whereIn('ad_id',$ad_ids)
@@ -325,7 +338,8 @@ class AdsController extends Controller
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
-                    }]);
+                    },
+                    'dealer','dealerShowRoom']);
                 break;     
             default:
 
@@ -365,11 +379,16 @@ class AdsController extends Controller
             }
         } 
 
-        $data->with(
-                    [
+        $data->with([
                         'user',
-                        'mechanicAd',
-                        'rentalAd',
+                        'mechanicAd' => function($query)
+                        {
+                            $query->with(['dealer','dealerShowRoom']);
+                        },
+                        'rentalAd' => function($query)
+                        {
+                            $query->with(['dealer','dealerShowRoom']);
+                        },
                         'images',
                         'autoAd' => function($query)
                         {
@@ -431,8 +450,14 @@ class AdsController extends Controller
 
         $data->with([
             'user',
-            'mechanicAd',
-            'rentalAd',
+            'mechanicAd' => function($query)
+            {
+                $query->with(['dealer','dealerShowRoom']);
+            },
+            'rentalAd' => function($query)
+            {
+                $query->with(['dealer','dealerShowRoom']);
+            },
             'images',
             'autoAd' => function($query)
             {
@@ -656,8 +681,14 @@ class AdsController extends Controller
 
             $ad->with([
                 'user',
-                'mechanicAd',
-                'rentalAd',
+                'mechanicAd' => function($query)
+                {
+                    $query->with(['dealer','dealerShowRoom']);
+                },
+                'rentalAd' => function($query)
+                {
+                    $query->with(['dealer','dealerShowRoom']);
+                },
                 'images',
                 'autoAd' => function($query)
                 {
@@ -1897,7 +1928,7 @@ public function getCountAutoAd($filters)
                 if (isset($filters['city'])) {
                     $query->where('mechanic_ads.city','LIKE','%'.$filters['city'].'%');
                 }
-            });
+            })->with(['dealer','dealerShowRoom']);
             
             if (isset($filters['oldest'])) {
                 $mechanic_ads->orderBy('created_at','DESC');
@@ -1937,8 +1968,15 @@ public function getCountAutoAd($filters)
         }
 
         $data->with([
-                    'mechanicAd',
-                    'rentalAd',
+                    'user',
+                    'mechanicAd' => function($query)
+                    {
+                        $query->with(['dealer','dealerShowRoom']);
+                    },
+                    'rentalAd' => function($query)
+                    {
+                        $query->with(['dealer','dealerShowRoom']);
+                    },
                     'images',
                     'autoAd' => function($query)
                     {
@@ -1962,7 +2000,7 @@ public function getCountAutoAd($filters)
                     }
                 ]);
 
-        return ['data' => $data->get()];
+        return ['data' => $data->paginate(25)];
     }
 
     public function getPromotedFrontPageAdsByUser(Request $request)
@@ -1986,8 +2024,15 @@ public function getCountAutoAd($filters)
         } 
 
         $data->with([
-                    'mechanicAd',
-                    'rentalAd',
+                    'user',
+                    'mechanicAd' => function($query)
+                    {
+                        $query->with(['dealer','dealerShowRoom']);
+                    },
+                    'rentalAd' => function($query)
+                    {
+                        $query->with(['dealer','dealerShowRoom']);
+                    },
                     'images',
                     'autoAd' => function($query)
                     {
@@ -2011,6 +2056,6 @@ public function getCountAutoAd($filters)
                     }
                 ]);
 
-        return ['data' => $data->get()];
+        return ['data' => $data->paginate(25)];
     }
 }

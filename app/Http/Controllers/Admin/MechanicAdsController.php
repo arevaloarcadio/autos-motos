@@ -415,7 +415,10 @@ class MechanicAdsController extends Controller
 
         $data->with([
                         'images',
-                        'mechanicAd'
+                        'mechanicAd' => function($query)
+                        {
+                            $query->with(['dealer','dealerShowRoom']);
+                        }
                     ]
                 );
 

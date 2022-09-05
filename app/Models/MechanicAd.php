@@ -47,6 +47,19 @@ class MechanicAd extends Model
     }
 
 
+    public function dealer()
+    {
+        return $this->belongsTo(Dealer::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function dealerShowRoom()
+    {
+        return $this->belongsTo(DealerShowRoom::class);
+    }
+    
     /**
      * @return string
      */

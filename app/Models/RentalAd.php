@@ -47,6 +47,19 @@ class RentalAd extends Model
         return $this->belongsTo(Ad::class);
     }
 
+    public function dealer()
+    {
+        return $this->belongsTo(Dealer::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function dealerShowRoom()
+    {
+        return $this->belongsTo(DealerShowRoom::class);
+    }
+    
     /**
      * @return string
      */

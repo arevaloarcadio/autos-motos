@@ -409,7 +409,10 @@ class RentalAdsController extends Controller
 
         $data->with([
                         'images',
-                        'rentalAd',
+                        'rentalAd' => function($query)
+                        {
+                            $query->with(['dealer','dealerShowRoom']);
+                        },
                     ]
                 );
 
