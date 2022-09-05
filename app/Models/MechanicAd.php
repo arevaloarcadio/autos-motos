@@ -14,6 +14,8 @@ class MechanicAd extends Model
         'latitude',
         'longitude',
         'zip_code',
+        'dealer_id',
+        'dealer_show_room_id',
         'city',
         'country',
         'mobile_number',

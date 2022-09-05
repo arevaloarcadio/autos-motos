@@ -188,12 +188,16 @@ class RentalAdsController extends Controller
                 }
             }
             
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
             $rental_ad = RentalAd::create([
                 'ad_id'  => $ad->id, 
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
                 'longitude' => $sanitized['longitude'] ?? null,
                 'zip_code' => $sanitized['zip_code'],
+                'dealer_id' => Auth::user()->dealer_id ?? null,
+                'dealer_show_room_id' => $dealer_show_room_id,
                 'city' => $sanitized['city'],
                 'country' =>$sanitized['country'],
                 'mobile_number' => $sanitized['mobile_number'],

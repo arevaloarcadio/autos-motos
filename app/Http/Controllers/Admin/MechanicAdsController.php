@@ -191,6 +191,8 @@ class MechanicAdsController extends Controller
                 }
             }
 
+            $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+
             $mechanicAd = MechanicAd::create([
                 'ad_id' =>  $ad->id,
                 'address' => $sanitized['address'],
@@ -199,6 +201,8 @@ class MechanicAdsController extends Controller
                 'zip_code' => $sanitized['zip_code'],
                 'city' => $sanitized['city'],
                 'country' =>$sanitized['country'],
+                'dealer_id' => Auth::user()->dealer_id ?? null,
+                'dealer_show_room_id' => $dealer_show_room_id,
                 'mobile_number' => $sanitized['mobile_number'],
                 'whatsapp_number' => $sanitized['whatsapp_number'],
                 'website_url' => $sanitized['website_url'],
