@@ -134,9 +134,17 @@ class AdsController extends Controller
                 }
                   
                 $query->whereRaw($where_ad_id); 
-                
-                //$query->where('thumbnail','!=',NULL);
 
+                $filter_like = $request->filter_like;
+                
+                if (!is_null($filter_like)) {
+                    $query->where(function($query1) use ($filter_like){
+                        $query1->where('title','LIKE','%'.$filter_like.'%')
+                            ->orWhereRaw("user_id IN(SELECT id FROM users WHERE CONCAT(first_name,' ',last_name) LIKE '%".$filter_like."%')")
+                            ->orWhereRaw("user_id IN(SELECT id FROM users WHERE email LIKE '%".$filter_like."%')");
+                    });
+                }
+                
                 $query->with(
                     [
                         'user',
@@ -515,6 +523,16 @@ class AdsController extends Controller
 
         if ($request->sort) {
             $ads->where('csv_ads.status',$request->sort);
+        }
+
+        if (!is_null($request->filter_like)) {
+            
+            $filter_like = $request->filter_like;
+
+            $ads->where(function($query1) use ($filter_like){
+                $query1->orWhereRaw("user_id IN(SELECT id FROM users WHERE CONCAT(first_name,' ',last_name) LIKE '%".$filter_like."%')")
+                    ->orWhereRaw("user_id IN(SELECT id FROM users WHERE email LIKE '%".$filter_like."%')");
+            });
         }
 
         return ['data' => $ads->paginate(25)];
