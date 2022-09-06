@@ -97,6 +97,17 @@ class UsersController extends Controller
                      $query->where('created_at','LIKE','%'.$request->dateStart.'%');
                 }     
 
+                if ($request->filter_like) {
+                    
+                    $filter =  $request->filter_like;
+                    
+                    $query->where(function ($query1) use ($filter){
+                        $query1->where('first_name','LIKE','%'.$filter.'%')
+                            ->orWhere('last_name','LIKE','%'.$filter.'%')
+                            ->orWhere('email','LIKE','%'.$filter.'%');
+                    });
+                }
+
                 foreach (User::getRelationships() as $key => $value) {
                    $query->with($key);
                 }

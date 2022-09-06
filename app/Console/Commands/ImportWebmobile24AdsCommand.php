@@ -164,11 +164,11 @@ class ImportWebmobile24AdsCommand extends Command
                 
                 $this->info('Save new car fuel type: '.$externalFuel);
                 
-               /* $car_fuel_type = new CarFuelType;
+                /*$car_fuel_type = new CarFuelType;
                 $car_fuel_type->internal_name = $externalFuel;
                 $car_fuel_type->ad_type = 'AUTO';
                 $car_fuel_type->slug = Str::slug($externalFuel);
-                $car_fuel_type->save();
+                $car_fuel_type->save();*/
             }
 
             return $car_fuel_type;
