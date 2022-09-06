@@ -82,8 +82,10 @@ class ImportWebmobile24AdsCommand extends Command
             'Diesel' => 'diesel',
             'Elektro/Diesel' => 'hybrid_diesel_electric',
             'Elektro/Benzin' => 'hybrid_petrol_electric',
+            'Elektro/ Benzin' => 'hybrid_petrol_electric',
             'Benzin' => 'petrol',
             'Elektro' => 'electric',
+            'Andere' => 'other',
             'LPG' => 'lpg', 
             //..  existen: 'Elektro/ Diesel'? CNG? Hidrógeno?..
         ];
