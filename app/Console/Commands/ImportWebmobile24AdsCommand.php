@@ -212,11 +212,11 @@ class ImportWebmobile24AdsCommand extends Command
                 
                 $this->info('Save new car body type: '.$bodyTypes[trim($externalBody)]['internal_name']);
                 
-                $car_body_type = new CarBodyType;
+               /* $car_body_type = new CarBodyType;
                 $car_body_type->internal_name = $bodyTypes[trim($externalBody)]['internal_name'];
                 $car_body_type->ad_type = $bodyTypes[trim($externalBody)]['ad_type'];
                 $car_body_type->slug = Str::slug($bodyTypes[trim($externalBody)]['internal_name']);
-                $car_body_type->save();
+                $car_body_type->save();*/
             }
 
             return $car_body_type;
