@@ -149,6 +149,7 @@ class AdsController extends Controller
                 $query->with(
                     [
                         'user',
+                        'characteristics',
                         'mechanicAd'=> function($query)
                         {
                             $query->with(['dealer','dealerShowRoom']);
@@ -222,6 +223,7 @@ class AdsController extends Controller
 
         $ads->with([
             'user',
+            'characteristics',
             'mechanicAd' => function($query)
             {
                 $query->with(['dealer','dealerShowRoom']);
@@ -294,9 +296,10 @@ class AdsController extends Controller
                 $response = AutoAd::whereRaw("ad_id in (SELECT id FROM ads where ads.title LIKE '%".$filter."%'  and ads.description '%".$filter."%')")
                     ->with(['make',
                             'model',
+
                             'ad'=> function($query)
                             {
-                                $query->with(['images']);
+                                $query->with(['images','characteristics']);
                             },
                             'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                 break;
@@ -305,7 +308,7 @@ class AdsController extends Controller
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
                 break;
@@ -314,7 +317,7 @@ class AdsController extends Controller
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     },
                     'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
                 break;
@@ -322,7 +325,7 @@ class AdsController extends Controller
                 $response = TruckAd::whereIn('ad_id',$ad_ids)
                     ->with(['make','fuelType','ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     },
                 'transmissionType','dealer','dealerShowRoom']);
                 break;
@@ -330,7 +333,7 @@ class AdsController extends Controller
                 $response = RentalAd::whereIn('ad_id',$ad_ids)->with([
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     },
                     'dealer','dealerShowRoom']);
                 break;  
@@ -338,7 +341,7 @@ class AdsController extends Controller
                 $response = ShopAd::whereIn('ad_id',$ad_ids)
                     ->with(['make','model','ad'=> function($query)
                         {
-                            $query->with(['images']);
+                            $query->with(['images','characteristics']);
                         },
                     'dealer','dealerShowRoom']);
                 break;
@@ -346,7 +349,7 @@ class AdsController extends Controller
                 $response = MechanicAd::whereIn('ad_id',$ad_ids)->with([
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     },
                     'dealer','dealerShowRoom']);
                 break;     
@@ -390,6 +393,7 @@ class AdsController extends Controller
 
         $data->with([
                         'user',
+                        'characteristics',
                         'mechanicAd' => function($query)
                         {
                             $query->with(['dealer','dealerShowRoom']);
@@ -459,6 +463,7 @@ class AdsController extends Controller
 
         $data->with([
             'user',
+            'characteristics',
             'mechanicAd' => function($query)
             {
                 $query->with(['dealer','dealerShowRoom']);
@@ -700,6 +705,7 @@ class AdsController extends Controller
 
             $ad->with([
                 'user',
+                'characteristics',
                 'mechanicAd' => function($query)
                 {
                     $query->with(['dealer','dealerShowRoom']);
@@ -972,7 +978,7 @@ class AdsController extends Controller
                             'model',
                             'ad'=> function($query)
                             {
-                                $query->with(['images']);
+                                $query->with(['images','characteristics']);
                             },
                             'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
                     ->inRandomOrder()
@@ -987,7 +993,7 @@ class AdsController extends Controller
                 ->where('make_id',$make_id)->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
                     ->inRandomOrder()
@@ -1003,7 +1009,7 @@ class AdsController extends Controller
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     },
                     'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
                     ->inRandomOrder()
@@ -1018,7 +1024,7 @@ class AdsController extends Controller
                 ->where('make_id',$make_id)
                 ->with(['make','fuelType','ad'=> function($query)
                     {
-                        $query->with(['images']);
+                        $query->with(['images','characteristics']);
                     },
                 'transmissionType','dealer','dealerShowRoom'])
                 ->inRandomOrder()
@@ -1319,7 +1325,7 @@ class AdsController extends Controller
             ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images','user']);
+                        $query->with(['images','user','characteristics']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
             ->paginate(25)
@@ -1432,7 +1438,7 @@ class AdsController extends Controller
             ->with(['make','model',
                     'ad'=> function($query)
                     {
-                        $query->with(['images','user']);
+                        $query->with(['images','user','characteristics']);
                     },
                     'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
 
@@ -1530,7 +1536,7 @@ class AdsController extends Controller
         return $truck_ad
             ->with(['make','fuelType','ad'=> function($query)
                     {
-                        $query->with(['images','user']);
+                        $query->with(['images','user','characteristics']);
                     },
                 'transmissionType','dealer','dealerShowRoom'])
             ->paginate(25)
@@ -1988,6 +1994,7 @@ public function getCountAutoAd($filters)
 
         $data->with([
                     'user',
+                    'characteristics',
                     'mechanicAd' => function($query)
                     {
                         $query->with(['dealer','dealerShowRoom']);
@@ -2044,6 +2051,7 @@ public function getCountAutoAd($filters)
 
         $data->with([
                     'user',
+                    'characteristics',
                     'mechanicAd' => function($query)
                     {
                         $query->with(['dealer','dealerShowRoom']);

@@ -207,7 +207,7 @@ class Ad extends Model
     }
 
     public function characteristics(){
-      return $this->belongsToMany(SubCharacteristic::class)
+        return $this->belongsToMany(SubCharacteristic::class)
                   ->using(AdSubCharacteristic::class);
     }
 

@@ -149,7 +149,7 @@ class AutoAdsController extends Controller
             'model_id' => 'required|string|exists:models,id',
             'first_registration_month' => ['required', 'integer'],
             'first_registration_year' => ['required', 'integer'],
-            'generation_id' => ['nullable', 'string'],
+            'generation_id' => 'nullable|string|exists:generations,id',
             'mileage' => ['required', 'integer'],
             'condition' => ['required', 'string'],
             'exterior_color' => ['required', 'string'],
@@ -197,7 +197,7 @@ class AutoAdsController extends Controller
             $ad = new Ad;
             $ad->slug =  $slug;
             $ad->title =  $request['title'];
-            $ad->description =  $request['description'];
+            $ad->description = $request['description'];
             $ad->status =  0;
             $ad->type =  'auto';
             $ad->is_featured =  0;

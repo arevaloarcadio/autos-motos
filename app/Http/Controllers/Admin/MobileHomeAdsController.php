@@ -41,13 +41,13 @@ class MobileHomeAdsController extends Controller
      */
     public function index(IndexMobileHomeAd $request)
     {
-        $promoted_simple_ads = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
+        /*$promoted_simple_ads = MobileHomeAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
         foreach (MobileHomeAd::getRelationships() as $key => $value) {
            $promoted_simple_ads->with($key);
         }
 
-        $promoted = $promoted_simple_ads->get()->toArray();
+        $promoted = $promoted_simple_ads->get()->toArray();*/
         
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MobileHomeAd::class)->processRequestAndGet(
@@ -89,11 +89,11 @@ class MobileHomeAdsController extends Controller
             }
         );
 
-        $data = $data->toArray(); 
+        //$data = $data->toArray(); 
             
-        array_push($promoted,...$data['data']);
+        //array_push($promoted,...$data['data']);
     
-        $data['data'] = $promoted;
+        //$data['data'] = $promoted;
         
         return ['data' => $data];
     }

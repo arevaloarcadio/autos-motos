@@ -20,12 +20,5 @@ class AdSubCharacteristic extends Pivot
     
     ];
     
-    protected $appends = ['resource_url'];
-
-    /* ************************ ACCESSOR ************************* */
-
-    public function getResourceUrlAttribute()
-    {
-        return url('/admin/ad-sub-characteristics/'.$this->getKey());
-    }
+    
 }
