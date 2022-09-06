@@ -29,7 +29,6 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-
 class AdsController extends Controller
 {
       use ApiController;
@@ -42,6 +41,8 @@ class AdsController extends Controller
      */
     public function index(IndexAd $request)
     {   
+
+       
         /*$promoted = [];
 
 

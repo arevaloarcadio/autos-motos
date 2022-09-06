@@ -779,12 +779,14 @@ class ImportWebmobile24AdsCommand extends Command
                         
                         $vehicleAd['ad_id'] = $ad->id;
 
+                         \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($body['ad_type']);
+
                         if ($body['ad_type'] == 'AUTO') {
                             $this->findOrCreateAutoAd($vehicleAd,$ad);
                         }
 
                         if ($body['ad_type'] == 'MOTO') {
-                            $vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
+                           // $vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
                             $this->findOrCreateMotoAd($vehicleAd,$ad);
                         }
                         
@@ -850,6 +852,15 @@ class ImportWebmobile24AdsCommand extends Command
                                 $this->getUsedMemory()
                             )
                         );
+
+                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug(sprintf(
+                                '==> Failed to load seller %s with error: %s; Line: %s,File: %s, RAM Used: %s',
+                                $csv_ad[1],
+                                $e->getMessage(),
+                                $e->getLine(),
+                                $e->getFile(),
+                                $this->getUsedMemory()
+                            ));
                          ///$this->error($e->getPrevious());
                          //$this->error($e->getTrace());
                         continue;
@@ -886,6 +897,15 @@ class ImportWebmobile24AdsCommand extends Command
                 )
             );
 
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug(sprintf(
+                    '====> Total ads created: %d/%d of : %d/%d .zip; RAM Used: %s.',
+                    $this->totalAdsCounter ,
+                    $this->totalAdsCounter + $this->totalAdsFailedCounter,
+                    $this->totalZipDecompressed,
+                    $this->totalZipDecompressed+$this->totalZipNotDecompressed,
+                    $this->getUsedMemory()
+                ));
+
         $this->info(
                 sprintf(
                     '====> Total image ads imported: %d/%d ; failed : %d RAM Used: %s.',
@@ -895,6 +915,14 @@ class ImportWebmobile24AdsCommand extends Command
                     $this->getUsedMemory()
                 )
             );
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug(sprintf(
+                    '====> Total image ads imported: %d/%d ; failed : %d RAM Used: %s.',
+                    $this->totalImageAdsImportedCounter,
+                    $this->totalImageAdsCounter,
+                    $this->totalImageAdsFailedCounter,
+                    $this->getUsedMemory()
+                ));
 
         $this->info(sprintf('Command ended at %s', (new DateTime())->format('Y-m-d H:i:s')));
     }

@@ -992,7 +992,7 @@ class ImportPortalClubAdsCommand extends Command
         $type = $gener;
 
         if ($gener == 'furgone') {
-            $type = 'mobile-home';
+            $type = 'truck';
         }
         $this->info(  $adInfo->model->body);
        
@@ -1101,35 +1101,47 @@ class ImportPortalClubAdsCommand extends Command
                 'options'                      => [],
             ];
 
-        $this->info($gener);
+        
+        try{
 
-        if ($gener == 'moto') {
+            \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($gener);
+
+            if ($gener == 'moto') {
+                
+                $ad = Ad::create($adInput);
+                $vehicleAd['ad_id'] = $ad->id;
+                //$vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
+                $this->storeAdImage($ad,$adInfo->images->image);
+                
+                return MotoAd::create($vehicleAd);
+            }
             
-            $ad = Ad::create($adInput);
-            $vehicleAd['ad_id'] = $ad->id;
-            $vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
-            $this->storeAdImage($ad,$adInfo->images->image);
+            if ($gener == 'furgone') {
+                
+                $ad = Ad::create($adInput);
+                $vehicleAd['ad_id'] = $ad->id;
+                $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                $this->storeAdImage($ad,$adInfo->images->image);
+                
+                return TruckAd::create($vehicleAd);
+            }
             
-            return MotoAd::create($vehicleAd);
-        }
-        
-        if ($gener == 'furgone') {
-            
-            $ad = Ad::create($adInput);
-            $vehicleAd['ad_id'] = $ad->id;
-            $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
-            $this->storeAdImage($ad,$adInfo->images->image);
-            
-            return TruckAd::create($vehicleAd);
-        }
-        
-        if ($gener == 'auto') {
-            
-            $ad = Ad::create($adInput);
-            $vehicleAd['ad_id'] = $ad->id;
-            $this->storeAdImage($ad,$adInfo->images->image);
-            
-            return AutoAd::create($vehicleAd);
+            if ($gener == 'auto') {
+                
+                $ad = Ad::create($adInput);
+                $vehicleAd['ad_id'] = $ad->id;
+                $this->storeAdImage($ad,$adInfo->images->image);
+                
+                return AutoAd::create($vehicleAd);
+            }
+        }catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug(sprintf(
+                    '==>Error: %s , %s, %s ,%s',
+                    $e->getMessage(),
+                    $e->getLine(),
+                    $e->getFile(),
+                    $this->getUsedMemory()
+                ));
         }
     }
     
