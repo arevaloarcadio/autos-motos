@@ -218,6 +218,7 @@ class RentalAdsController extends Controller
             return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad,'images' => $images]], 200);
 
         } catch (Exception $e) {
+            $ad->delete();
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }

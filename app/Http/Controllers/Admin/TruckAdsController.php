@@ -332,6 +332,7 @@ class TruckAdsController extends Controller
             ], 200);
 
         } catch (Exception $e) {
+            $ad->delete();
             ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line: '.$e->getLine());
             return $this->sendResponse($resource);
         }

@@ -162,7 +162,7 @@ class ImportWebmobile24AdsCommand extends Command
         
             if (is_null($car_fuel_type)) {
                 
-                $this->info('Save new car fuel type: '.$externalFuel);
+                $this->info($externalFuel.' '.strtolower(trim($externalFuel)));
                 
                 /*$car_fuel_type = new CarFuelType;
                 $car_fuel_type->internal_name = $externalFuel;
@@ -170,7 +170,7 @@ class ImportWebmobile24AdsCommand extends Command
                 $car_fuel_type->slug = Str::slug($externalFuel);
                 $car_fuel_type->save();*/
             }
-
+            $car_fuel_type->id = null;
             return $car_fuel_type;
         }
 
@@ -180,13 +180,17 @@ class ImportWebmobile24AdsCommand extends Command
 
         if (is_null($car_fuel_type)) {
                 
-            $this->info('Save new car fuel type: '.strtolower(trim($externalFuel)));
+            
+            $this->info($externalFuel.' '.strtolower(trim($externalFuel)));
             
            /* $car_fuel_type = new CarFuelType;
             $car_fuel_type->internal_name = strtolower(trim($externalFuel));
             $car_fuel_type->ad_type = 'AUTO';
             $car_fuel_type->slug = Str::slug($externalFuel);
             $car_fuel_type->save();*/
+
+            $car_fuel_type->id = null;
+            return $car_fuel_type;
         }
 
         return $car_fuel_type;
