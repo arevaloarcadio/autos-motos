@@ -170,7 +170,7 @@ class ImportWebmobile24AdsCommand extends Command
                 $car_fuel_type->slug = Str::slug($externalFuel);
                 $car_fuel_type->save();*/
             }
-            $car_fuel_type->id = null;
+            $car_fuel_type['id'] = null;
             return $car_fuel_type;
         }
 
@@ -189,7 +189,8 @@ class ImportWebmobile24AdsCommand extends Command
             $car_fuel_type->slug = Str::slug($externalFuel);
             $car_fuel_type->save();*/
 
-            $car_fuel_type->id = null;
+            
+            $car_fuel_type['id'] = null;
             return $car_fuel_type;
         }
 
@@ -762,10 +763,10 @@ class ImportWebmobile24AdsCommand extends Command
                             'city' => '.',
                             'country' => 'Alemania',
                             'mobile_number' => '+000000000',
-                            'ad_fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
+                            'ad_fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))['id'], //OK
                             'ad_body_type_id' => $body == null ? '' : $body['id'], //OK
                             'ad_transmission_type_id' => $this->findTransmissionTypeId(trim(utf8_encode($csv_ad[7])))->id, 
-                            'fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))->id, //OK
+                            'fuel_type_id' => $this->findFuelTypeId(trim(utf8_encode($csv_ad[12])))['id'], //OK
                             'body_type_id' => $body == null ? '' : $body['id'], //OK
                             'transmission_type_id' => $this->findTransmissionTypeId(trim(utf8_encode($csv_ad[7])))->id, 
                             'first_registration_year' => count($year_month) == 1 ? (string) date('Y')  : $year_month[1],
