@@ -172,7 +172,7 @@ class MotoAdsController extends Controller
             'co2_emissions' => ['nullable', 'numeric'],
             'condition' => ['required', 'string'],
             'color' => ['required', 'string'],
-            'price' => ['required', 'numeric'],
+            'price' => ['required', 'numeric','max:99999999'],
             'first_name' => ['nullable', 'string'],
             'last_name' => ['nullable', 'string'],
             'email_address' => ['required', 'string'],

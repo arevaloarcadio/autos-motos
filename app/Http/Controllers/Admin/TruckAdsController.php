@@ -188,7 +188,7 @@ class TruckAdsController extends Controller
             'condition' => ['required', 'string'],
             'interior_color' => ['nullable', 'string'],
             'exterior_color' => ['nullable', 'string'],
-            'price' => ['required', 'numeric'],
+            'price' => ['required', 'numeric','max:99999999'],
             'dealer_id' => ['nullable', 'string'],
             'dealer_show_room_id' => ['nullable', 'string'],
             'first_name' => ['nullable', 'string'],
