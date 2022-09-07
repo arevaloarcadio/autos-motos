@@ -771,6 +771,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'make_id' => $this->findMake(trim(utf8_encode($csv_ad[3])))->id, //OK
                             'model_id' => $model->id, //OK
                             'model' => $model->name, //OK
+                            'truck_type' => 'truck', //OK
                             'additional_vehicle_info' => utf8_encode($csv_ad[5]), //OK
                             'seats' => $csv_ad[17], //OK
                         ];
