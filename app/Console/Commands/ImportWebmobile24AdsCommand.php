@@ -156,7 +156,7 @@ class ImportWebmobile24AdsCommand extends Command
 
         if (isset($fuels[trim($externalFuel)])) {
             
-            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
                               //->where('ad_type', '=', 'auto')
                               ->first();
         
