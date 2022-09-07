@@ -164,7 +164,7 @@ class ImportWebmobile24AdsCommand extends Command
         
             if (is_null($car_fuel_type)) {
                 //$this->info($externalFuel.' '.strtolower(trim($externalFuel)).'LINE 166');
-                $car_fuel_type['id'] = null;
+                $car_fuel_type['id'] = 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
             }
             
             return $car_fuel_type;
@@ -175,7 +175,7 @@ class ImportWebmobile24AdsCommand extends Command
 
         if (is_null($car_fuel_type)) {
             //$this->info($car_fuel_type.' '.strtolower(trim($externalFuel)).'LINE 177');
-            $car_fuel_type['id'] = null;
+            $car_fuel_type['id'] = 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
         }
 
         return $car_fuel_type;
@@ -864,7 +864,7 @@ class ImportWebmobile24AdsCommand extends Command
                                 $e->getFile(),
                                 $this->getUsedMemory()
                             ));
-                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug("Type Ad =>".$csv_ad[8]);
+                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug("Ad =>".$csv_ad);
                          ///$this->error($e->getPrevious());
                          //$this->error($e->getTrace());
                         continue;
