@@ -140,7 +140,8 @@ class ImportWebmobile24AdsCommand extends Command
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
             'Lieferwagen' => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'TRUCK'],  //delivery trucks
             'Wohnmobil sonstige' => ['internal_name' => 'wohnmobil_sonstige' , 'ad_type' => 'MOBILE-HOME'],
-            
+            'wohnmobil_sonstige' => ['internal_name' => 'wohnmobil_sonstige' , 'ad_type' => 'MOBILE-HOME'],
+             
         ];
 
         return $bodys;
@@ -156,44 +157,25 @@ class ImportWebmobile24AdsCommand extends Command
 
         if (isset($fuels[trim($externalFuel)])) {
             
-            $this->info($fuels[trim($externalFuel)].' '.strtolower(trim($externalFuel)));
+            $this->info($fuels[trim($externalFuel)].' '.strtolower(trim($externalFuel)).'LINE 160');
             
             $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
-                              //->where('ad_type', '=', 'auto')
                               ->first();
         
             if (is_null($car_fuel_type)) {
-                
-                $this->info($externalFuel.' '.strtolower(trim($externalFuel)));
-                
-                /*$car_fuel_type = new CarFuelType;
-                $car_fuel_type->internal_name = $externalFuel;
-                $car_fuel_type->ad_type = 'AUTO';
-                $car_fuel_type->slug = Str::slug($externalFuel);
-                $car_fuel_type->save();*/
+                $this->info($externalFuel.' '.strtolower(trim($externalFuel)).'LINE 166');
+                $car_fuel_type['id'] = null;
             }
-            $car_fuel_type['id'] = null;
+            
             return $car_fuel_type;
         }
 
         $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
-                              //->where('ad_type', '=', 'auto')
                               ->first();
 
         if (is_null($car_fuel_type)) {
-                
-            
-            $this->info($externalFuel.' '.strtolower(trim($externalFuel)));
-            
-           /* $car_fuel_type = new CarFuelType;
-            $car_fuel_type->internal_name = strtolower(trim($externalFuel));
-            $car_fuel_type->ad_type = 'AUTO';
-            $car_fuel_type->slug = Str::slug($externalFuel);
-            $car_fuel_type->save();*/
-
-            
+            $this->info($car_fuel_type.' '.strtolower(trim($externalFuel)).'LINE 177');
             $car_fuel_type['id'] = null;
-            return $car_fuel_type;
         }
 
         return $car_fuel_type;
