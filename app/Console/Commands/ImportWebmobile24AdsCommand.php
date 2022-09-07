@@ -864,7 +864,7 @@ class ImportWebmobile24AdsCommand extends Command
                                 $e->getFile(),
                                 $this->getUsedMemory()
                             ));
-                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug("Ad =>".$csv_ad);
+                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug("Ad =>". var_dump($csv_ad));
                          ///$this->error($e->getPrevious());
                          //$this->error($e->getTrace());
                         continue;
