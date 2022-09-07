@@ -770,6 +770,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'power_hp' => $csv_ad[19], //OK
                             'make_id' => $this->findMake(trim(utf8_encode($csv_ad[3])))->id, //OK
                             'model_id' => $model->id, //OK
+                            'model' => $model->name, //OK
                             'additional_vehicle_info' => utf8_encode($csv_ad[5]), //OK
                             'seats' => $csv_ad[17], //OK
                         ];
@@ -861,6 +862,7 @@ class ImportWebmobile24AdsCommand extends Command
                                 $e->getFile(),
                                 $this->getUsedMemory()
                             ));
+                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug("Type Ad =>".$csv_ad[8]);
                          ///$this->error($e->getPrevious());
                          //$this->error($e->getTrace());
                         continue;
