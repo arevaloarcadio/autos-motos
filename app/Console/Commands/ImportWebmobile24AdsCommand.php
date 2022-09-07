@@ -486,7 +486,7 @@ class ImportWebmobile24AdsCommand extends Command
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
-    private function findOrCreateTruckAd($external_auto_ad,$ad): MotoAd
+    private function findOrCreateTruckAd($external_auto_ad,$ad): TruckAd
     {
         if (count($external_auto_ad) == 0) {
             throw new Exception('external_auto_ad');
@@ -509,7 +509,7 @@ class ImportWebmobile24AdsCommand extends Command
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
-    private function findOrCreateMobileHomeAd($external_auto_ad,$ad): MotoAd
+    private function findOrCreateMobileHomeAd($external_auto_ad,$ad): MobileHomeAd
     {
         if (count($external_auto_ad) == 0) {
             throw new Exception('external_auto_ad');
@@ -524,7 +524,7 @@ class ImportWebmobile24AdsCommand extends Command
 
             //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
         }else{
-            $truck_ad->update($external_auto_ad); 
+            $mobile_home_ad->update($external_auto_ad); 
             $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
         }
 
