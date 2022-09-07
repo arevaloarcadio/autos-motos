@@ -139,8 +139,8 @@ class ImportWebmobile24AdsCommand extends Command
             'Sonstige Moto' => ['internal_name' => 'other_moto', 'ad_type' => 'MOTO'], //Other Moto
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
             'Lieferwagen' => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'TRUCK'],  //delivery trucks
-            'Wohnmobil sonstige' => ['internal_name' => 'wohnmobil_sonstige' , 'ad_type' => 'MOBILE-HOME'],
-            'wohnmobil_sonstige' => ['internal_name' => 'wohnmobil_sonstige' , 'ad_type' => 'MOBILE-HOME'],
+            'Wohnmobil sonstige' => ['internal_name' => 'other_mobile_home' , 'ad_type' => 'MOBILE-HOME'],
+            'wohnmobil_sonstige' => ['internal_name' => 'other_mobile_home' , 'ad_type' => 'MOBILE-HOME'],
              
         ];
 
@@ -201,15 +201,16 @@ class ImportWebmobile24AdsCommand extends Command
 
            if (is_null($car_body_type)) {
                 
-                $this->info('Save new car body type: '.$bodyTypes[trim($externalBody)]['internal_name']);
+                /*$this->info('Save new car body type: '.$bodyTypes[trim($externalBody)]['internal_name']);
                 
-               /* $car_body_type = new CarBodyType;
+                $car_body_type = new CarBodyType;
                 $car_body_type->internal_name = $bodyTypes[trim($externalBody)]['internal_name'];
-                $car_body_type->ad_type = $bodyTypes[trim($externalBody)]['ad_type'];
+                $car_body_type->ad_type =  $bodyTypes[trim($externalBody)]['ad_type'];
                 $car_body_type->slug = Str::slug($bodyTypes[trim($externalBody)]['internal_name']);
                 $car_body_type->save();*/
             }
 
+            $car_body_type['id'] = null;
             return $car_body_type;
         }
 
@@ -228,8 +229,8 @@ class ImportWebmobile24AdsCommand extends Command
             $car_body_type->slug = Str::slug($externalBody); 
             $car_body_type->save();
         }*/
-
-        return null;
+        $car_body_type['id'] = null;
+        return $car_body_type;
     }
 
     private function findTransmissionTypeId(string $externalTransmission)
@@ -405,7 +406,7 @@ class ImportWebmobile24AdsCommand extends Command
         if (is_null($ad)) {
             $ad = Ad::create($external_ad);
 
-            $this->info(sprintf('Successfully registered new ad %s',$external_ad['external_id']));
+            $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
         }
         
         return $ad;
