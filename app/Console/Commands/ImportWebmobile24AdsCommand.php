@@ -159,11 +159,11 @@ class ImportWebmobile24AdsCommand extends Command
             
             $this->info($fuels[trim($externalFuel)].' '.strtolower(trim($externalFuel)).'LINE 160');
             
-            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[trim($externalFuel)])
                               ->first();
         
             if (is_null($car_fuel_type)) {
-                $this->info($externalFuel.' '.strtolower(trim($externalFuel)).'LINE 166');
+                //$this->info($externalFuel.' '.strtolower(trim($externalFuel)).'LINE 166');
                 $car_fuel_type['id'] = null;
             }
             
@@ -174,7 +174,7 @@ class ImportWebmobile24AdsCommand extends Command
                               ->first();
 
         if (is_null($car_fuel_type)) {
-            $this->info($car_fuel_type.' '.strtolower(trim($externalFuel)).'LINE 177');
+            //$this->info($car_fuel_type.' '.strtolower(trim($externalFuel)).'LINE 177');
             $car_fuel_type['id'] = null;
         }
 
@@ -453,8 +453,10 @@ class ImportWebmobile24AdsCommand extends Command
         if (is_null($auto_ad)) {
             
             $auto_ad = AutoAd::create($external_auto_ad);
-
             //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $auto_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify auto_ad %s',$ad['external_id']));
         }
 
         return $auto_ad;
@@ -475,6 +477,9 @@ class ImportWebmobile24AdsCommand extends Command
             $moto_ad = MotoAd::create($external_auto_ad);
 
             //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $moto_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify moto_ad %s',$ad['external_id']));
         }
 
         return $moto_ad;
@@ -495,6 +500,9 @@ class ImportWebmobile24AdsCommand extends Command
             $truck_ad = TruckAd::create($external_auto_ad);
 
             //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $truck_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
         }
 
         return $truck_ad;
@@ -515,6 +523,9 @@ class ImportWebmobile24AdsCommand extends Command
             $mobile_home_ad = MobileHomeAd::create($external_auto_ad);
 
             //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $truck_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
         }
 
         return $mobile_home_ad;
