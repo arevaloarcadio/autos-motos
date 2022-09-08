@@ -384,7 +384,7 @@ class AdsController extends Controller
                     ->limit(20);
         
         if ($request->filter) {
-            if ($request->filter == 'autos') {
+            if ($request->filter == 'auto') {
                 $data = $data->whereIn('type',['auto','mobile-home','moto','truck']);
             }else{
                 $data = $data->where('type',$request->filter);
