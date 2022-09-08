@@ -979,6 +979,92 @@ class ImportPortalClubAdsCommand extends Command
      * @throws InvalidAdTypeProvidedException
      * @throws Throwable
      */
+
+    private function findOrCreateAd($external_ad): Ad
+    {
+        if (count($external_ad) == 0) {
+            throw new Exception('no_external_ad');
+        }        
+
+        $ad = Ad::where('slug',$external_ad['slug'])->first();
+        
+        if (is_null($ad)) {
+            $ad = Ad::create($external_ad);
+
+            $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+        }
+        
+        return $ad;
+    }
+
+    private function findOrCreateAutoAd($external_auto_ad,$ad): AutoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $auto_ad = AutoAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($auto_ad)) {
+            
+            $auto_ad = AutoAd::create($external_auto_ad);
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $auto_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify auto_ad %s',$ad['external_id']));
+        }
+
+        return $auto_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
+    private function findOrCreateMotoAd($external_auto_ad,$ad): MotoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $moto_ad = MotoAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($moto_ad)) {
+            
+            $moto_ad = MotoAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $moto_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify moto_ad %s',$ad['external_id']));
+        }
+
+        return $moto_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
+    private function findOrCreateTruckAd($external_auto_ad,$ad): TruckAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $truck_ad = TruckAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($truck_ad)) {
+            
+            $truck_ad = TruckAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $truck_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
+        }
+
+        return $truck_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
     private function createAd(
         SimpleXMLElement $adInfo,
         User $user,
@@ -1108,31 +1194,34 @@ class ImportPortalClubAdsCommand extends Command
 
             if ($gener == 'moto') {
                 
-                $ad = Ad::create($adInput);
+                $ad = $this->findOrCreateAd($adInput);
                 $vehicleAd['ad_id'] = $ad->id;
                 //$vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
                 $this->storeAdImage($ad,$adInfo->images->image);
                 
-                return MotoAd::create($vehicleAd);
+               return $this->findOrCreateMotoAd($vehicleAd,$ad);
             }
             
             if ($gener == 'furgone') {
                 
-                $ad = Ad::create($adInput);
+                $ad = $this->findOrCreateAd($adInput);
+                
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                
                 $this->storeAdImage($ad,$adInfo->images->image);
                 
-                return TruckAd::create($vehicleAd);
+                return $this->findOrCreateTruckAd($vehicleAd,$ad);
             }
             
             if ($gener == 'auto') {
                 
-                $ad = Ad::create($adInput);
+                $ad = $this->findOrCreateAd($adInput);
+                
                 $vehicleAd['ad_id'] = $ad->id;
                 $this->storeAdImage($ad,$adInfo->images->image);
-                
-                return AutoAd::create($vehicleAd);
+           
+                return $this->findOrCreateAutoAd($vehicleAd,$ad);
             }
         }catch (Exception $e) {
             \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug(sprintf(
