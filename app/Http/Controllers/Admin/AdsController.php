@@ -434,7 +434,7 @@ class AdsController extends Controller
         $data = Ad::select('ads.*');
 
         switch ($request->filter) {
-            case 'autos':
+            case 'auto':
                 $data = $data->where(function($query) use ($dealer_id){
                             $query->whereRaw("(
                                 id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or

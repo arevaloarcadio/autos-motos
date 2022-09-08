@@ -1185,6 +1185,7 @@ class ImportPortalClubAdsCommand extends Command
                 'co2_emission'                 => (string) $adInfo->model->CO2_emission === '' ? null : (float) $adInfo->model->CO2_emission,
                 'cylinders'                    => (string) $adInfo->model->cylinders === '' ? null : (float) $adInfo->model->cylinders,
                 'options'                      => [],
+
             ];
 
         
@@ -1199,7 +1200,7 @@ class ImportPortalClubAdsCommand extends Command
                 //$vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
                 $this->storeAdImage($ad,$adInfo->images->image);
                 
-               return $this->findOrCreateMotoAd($vehicleAd,$ad);
+                return $this->findOrCreateMotoAd($vehicleAd,$ad);
             }
             
             if ($gener == 'furgone') {
@@ -1223,6 +1224,7 @@ class ImportPortalClubAdsCommand extends Command
            
                 return $this->findOrCreateAutoAd($vehicleAd,$ad);
             }
+            
         }catch (Exception $e) {
             \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug(sprintf(
                     '==>Error: %s , %s, %s ,%s',
