@@ -1328,7 +1328,7 @@ class AdsController extends Controller
                         $query->with(['images','user','characteristics']);
                     } ,
                     'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->paginate(25)
+            ->paginate(24)
             ->toArray();
     }
 
@@ -1442,7 +1442,7 @@ class AdsController extends Controller
                     },
                     'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
 
-            ->paginate(25)
+            ->paginate(24)
             ->toArray();
     }
 
@@ -1539,7 +1539,7 @@ class AdsController extends Controller
                         $query->with(['images','user','characteristics']);
                     },
                 'transmissionType','dealer','dealerShowRoom'])
-            ->paginate(25)
+            ->paginate(24)
             ->toArray();
     }
     
@@ -1963,7 +1963,7 @@ public function getCountAutoAd($filters)
                 $mechanic_ads->orderBy('created_at','ASC');
             }
 
-            return response()->json(['data' => $mechanic_ads->paginate(25)], 200);
+            return response()->json(['data' => $mechanic_ads->paginate(24)], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
@@ -2026,7 +2026,7 @@ public function getCountAutoAd($filters)
                     }
                 ]);
 
-        return ['data' => $data->paginate(25)];
+        return ['data' => $data->paginate(24)];
     }
 
     public function getPromotedFrontPageAdsByUser(Request $request)
@@ -2083,6 +2083,6 @@ public function getCountAutoAd($filters)
                     }
                 ]);
 
-        return ['data' => $data->paginate(25)];
+        return ['data' => $data->paginate(24)];
     }
 }
