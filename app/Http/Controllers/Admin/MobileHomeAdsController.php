@@ -421,6 +421,11 @@ class MobileHomeAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
+        if (count($request->file()) > 3) {
+            ApiHelper::setError($resource, 0, 422,['files' => 'Has excedido el numero maximos de imagenes']);
+            return $this->sendResponse($resource);
+        }
+
         try {
             
             $ad =  Ad::where('id',$id)->first();
