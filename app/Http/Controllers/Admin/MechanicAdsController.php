@@ -210,6 +210,11 @@ class MechanicAdsController extends Controller
                 'geocoding_status' => $sanitized['geocoding_status'] ?? null
             ]);
 
+            $user = Auth::user();
+
+            $user->notify(new \App\Notifications\NewAd($user));
+            
+
             $images = AdImage::where('ad_id',$ad->id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
