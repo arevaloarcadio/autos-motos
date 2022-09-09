@@ -188,6 +188,7 @@ class TruckAdsController extends Controller
             'condition' => ['required', 'string'],
             'interior_color' => ['nullable', 'string'],
             'exterior_color' => ['nullable', 'string'],
+            'engine_displacement' => ['nullable', 'integer'],
             'price' => ['required', 'numeric','max:99999999'],
             'dealer_id' => ['nullable', 'string'],
             'dealer_show_room_id' => ['nullable', 'string'],
@@ -293,6 +294,7 @@ class TruckAdsController extends Controller
             $truckAd->operating_hours = $request['operating_hours'];
             $truckAd->axes = $request['axes'];
             $truckAd->wheel_formula = $request['wheel_formula'];
+            $truckAd->engine_displacement = $request['engine_displacement'];
             $truckAd->hydraulic_system = $request['hydraulic_system'];
             $truckAd->email_address = $request['email_address'];
             $truckAd->seats = $request['seats'];
@@ -479,7 +481,7 @@ class TruckAdsController extends Controller
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
 
-            /*if ($request->file()) {
+            if ($request->file()) {
                 foreach ($request->file() as $file) {
                     if ($i == 0) {
                         if ($request->eliminated_thumbnail) {
@@ -494,7 +496,7 @@ class TruckAdsController extends Controller
                     }
                     $i++;
                 }
-            }*/
+            }
 
             $truckAd = TruckAd::where('ad_id',$id)->first();
             $truckAd->make_id = $request['make_id'];
@@ -533,6 +535,7 @@ class TruckAdsController extends Controller
             $truckAd->seats = $request['seats'];
             $truckAd->mileage = $request['mileage'];
             $truckAd->power_kw = $request['power_hp'];
+            $truckAd->engine_displacement = $request['engine_displacement'];
             $truckAd->emission_class = $request['emission_class'];
             $truckAd->fuel_consumption = $request['fuel_consumption'];
             $truckAd->co2_emissions = $request['co2_emissions'];
