@@ -215,6 +215,10 @@ class TruckAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
+        if (count($request->file())  == 0) {
+            ApiHelper::setError($resource, 0, 422,['files' => 'Debe enviar minimo 1 imagen para publicar']);
+            return $this->sendResponse($resource);
+        }
 
         try {
             
@@ -457,11 +461,6 @@ class TruckAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
-        if (count($request->file())  == 0) {
-            ApiHelper::setError($resource, 0, 422,['files' => 'Debe enviar minimo 1 imagen para publicar']);
-            return $this->sendResponse($resource);
-        }
-        
         try {
 
             $ad = Ad::where('id',$id)->first();
