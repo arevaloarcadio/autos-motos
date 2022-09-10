@@ -622,7 +622,7 @@ class ImportPortalClubAdsCommand extends Command
                               ->first()->id;
         }
 
-        return null;
+        return '1492cecf-2568-4704-8d46-297f4d41fb9c';
     }
 
     private function getBodyOptions(string $countryCode): array
