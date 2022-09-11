@@ -574,7 +574,7 @@ class ImportPortalClubAdsCommand extends Command
              
         }
 
-        return null;
+        return 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
     }
 
     private function getFuelOptions(string $countryCode): array
@@ -616,10 +616,14 @@ class ImportPortalClubAdsCommand extends Command
         $bodyTypes    = $this->getBodyOptions($countryCode);
 
         if (isset($bodyTypes[$externalBody])) {
-            return CarBodyType::query()
+            $body = CarBodyType::query()
                               ->where('internal_name', '=', $bodyTypes[$externalBody])
                               //->where('ad_type', '=', 'auto')
-                              ->first()->id;
+                              ->first();
+
+            if (!is_null($body)) {
+                return $body['id'];
+            }
         }
 
         return '1492cecf-2568-4704-8d46-297f4d41fb9c';
@@ -692,10 +696,13 @@ class ImportPortalClubAdsCommand extends Command
         $transmissions        = $this->getTransmissionOptions($countryCode);
 
         if (isset($transmissions[$externalTransmission])) {
-            return CarTransmissionType::query()
+            $transmissions =  CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
                                       //->where('ad_type', '=', 'auto')
-                                      ->first()->id;
+                                      ->first();
+            if (!is_null($transmissions)) {
+                $transmissions['id'];
+            }
         }
 
         return null;
@@ -1209,6 +1216,18 @@ class ImportPortalClubAdsCommand extends Command
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                
+                $this->storeAdImage($ad,$adInfo->images->image);
+                
+                return $this->findOrCreateTruckAd($vehicleAd,$ad);
+            }
+
+            if ($gener == 'bus') {
+                
+                $ad = $this->findOrCreateAd($adInput);
+                
+                $vehicleAd['ad_id'] = $ad->id;
+                $vehicleAd['vehicle_category_id'] ='9f49d041-efd8-4797-95f2-4742b50442a8';
                 
                 $this->storeAdImage($ad,$adInfo->images->image);
                 
