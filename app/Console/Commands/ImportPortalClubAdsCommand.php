@@ -188,7 +188,7 @@ class ImportPortalClubAdsCommand extends Command
                     $externalId       = (int) $ad->attributes()->id;
                     $importedAdsIds[] = $externalId;
 
-                    $existingAd = Ad::query()
+                    /*$existingAd = Ad::query()
                                     ->where('type', '=', $ad->genre)
                                     ->where('external_id', '=', $externalId)
                                     ->where('source', '=', AdSourceEnum::PORTAL_CLUB_IMPORT)
@@ -207,7 +207,7 @@ class ImportPortalClubAdsCommand extends Command
                         $counter++;
                         $successfulAdsCounter++;
                         continue;
-                    }
+                    }*/
                     try {
                         $startTime = microtime(true);
                         $this->createAd(
