@@ -1191,7 +1191,7 @@ class ImportPortalClubAdsCommand extends Command
         
         try{
 
-            \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($gener);
+            \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($gener.' - body '.$adInfo->model->body.' - fuel'.$adInfo->model->fuel);
 
             if ($gener == 'moto') {
                 
