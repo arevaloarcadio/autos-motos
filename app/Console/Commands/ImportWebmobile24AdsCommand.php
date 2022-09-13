@@ -309,16 +309,16 @@ class ImportWebmobile24AdsCommand extends Command
         if (is_null($dealer)) {
             
             $dealer = Dealer::create([
-                    'slug' => Str::slug(trim($externalDealer)),
-                    'company_name' => trim(strtoupper($externalDealer)),
-                    'address' => '.',
-                    'country' => 'Alemania',
-                    'zip_code' => '.',
-                    'city' => '.',
-                    'email_address' => strtolower($externalDealer).'@autosmotos.es',
-                    'phone_number' => '+00000000000',
-                    'status' => 10,
-                    'source' => 'WEB_MOBILE_24',
+                'slug' => Str::slug(trim($externalDealer)),
+                'company_name' => trim(strtoupper($externalDealer)),
+                'address' => '.',
+                'country' => 'Alemania',
+                'zip_code' => '.',
+                'city' => '.',
+                'email_address' => strtolower($externalDealer).'@autosmotos.es',
+                'phone_number' => '+00000000000',
+                'status' => 10,
+                'source' => 'WEB_MOBILE_24',
             ]);
 
             $this->info(sprintf('Successfully registered new dealer %s',$externalDealer));

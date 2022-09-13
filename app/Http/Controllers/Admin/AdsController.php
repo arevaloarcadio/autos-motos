@@ -1218,7 +1218,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','user']);
                     },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
-            ->paginate(25)
+            ->paginate(24)
             ->toArray();
     }
 
@@ -1530,8 +1530,6 @@ class AdsController extends Controller
         if ($filters->lower_price) {
             $truck_ad->orderBy('price','ASC');
         }
-
-
 
         return $truck_ad
             ->with(['make','fuelType','ad'=> function($query)

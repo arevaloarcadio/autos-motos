@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnVehicleCategoryIdInMotoAds extends Migration
+class AddColumnAdditionalVehicleInfoInTruckAdsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnVehicleCategoryIdInMotoAds extends Migration
      */
     public function up()
     {
-        Schema::table('moto_ads', function (Blueprint $table) {
-             //$table->uuid('vehicle_category_id')->nullable();
+        Schema::table('truck_ads', function (Blueprint $table) {
+            $table->string('additional_vehicle_info')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AddColumnVehicleCategoryIdInMotoAds extends Migration
      */
     public function down()
     {
-        Schema::table('moto_ads', function (Blueprint $table) {
+        Schema::table('truck_ads', function (Blueprint $table) {
             //
         });
     }
