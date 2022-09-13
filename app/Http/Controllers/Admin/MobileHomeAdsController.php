@@ -191,6 +191,7 @@ class MobileHomeAdsController extends Controller
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
+            'doors' => ['nullable', 'integer'],
         ]);
 
         if ($validator->fails()) {
@@ -293,6 +294,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->landline_number = $request['landline_number'];
             $mobileHomeAd->whatsapp_number = $request['whatsapp_number'];
             $mobileHomeAd->youtube_link = $request['youtube_link'];
+            $mobileHomeAd->doors = $request['doors'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];
@@ -413,7 +415,8 @@ class MobileHomeAdsController extends Controller
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
-            'eliminated_thumbnail' => ['required', 'boolean']
+            'eliminated_thumbnail' => ['required', 'boolean'],
+            'doors' => ['nullable', 'integer'],
         ]);
 
         if ($validator->fails()) {
@@ -503,6 +506,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->landline_number = $request['landline_number'];
             $mobileHomeAd->whatsapp_number = $request['whatsapp_number'];
             $mobileHomeAd->youtube_link = $request['youtube_link'];
+            $mobileHomeAd->doors = $request['doors'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];
