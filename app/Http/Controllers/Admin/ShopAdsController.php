@@ -58,14 +58,14 @@ class ShopAdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'category', 'make_id', 'model', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
+            ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'category', 'make_id', 'model', 'manufacturer', 'code', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
+            ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'ad_id', 'category', 'make_id', 'model', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
+                $columns =  ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
                 
                 
                     if ($request->filters) {
@@ -166,7 +166,7 @@ class ShopAdsController extends Controller
             'market_id' => 'required|string|exists:markets,id',
             'category' => ['required', 'string'],
             'make_id' => 'required|string|exists:makes,id',
-            'model' => ['nullable', 'string'],
+            'model_id' => 'required|string|exists:models,id',
             'manufacturer' => ['required', 'string'],
             'code' => ['nullable', 'string'],
             'condition' => ['required', 'string'],
@@ -243,7 +243,7 @@ class ShopAdsController extends Controller
             $shopAd->ad_id = $ad->id;
             $shopAd->category = $request['category'];
             $shopAd->make_id = $request['make_id'];
-            $shopAd->model = $request['model'];
+            $shopAd->model_id = $request['model_id'];
             $shopAd->manufacturer = $request['manufacturer'];
             $shopAd->code = $request['code'];
             $shopAd->condition = $request['condition'];
@@ -376,7 +376,7 @@ class ShopAdsController extends Controller
             'market_id' => ['required', 'string'],
             'category' => ['required', 'string'],
             'make_id' => ['required', 'string'],
-            'model' => ['nullable', 'string'],
+            'model_id' => ['required', 'string'],
             'manufacturer' => ['required', 'string'],
             'code' => ['nullable', 'string'],
             'condition' => ['required', 'string'],
@@ -446,7 +446,7 @@ class ShopAdsController extends Controller
             $shopAd = ShopAd::where('ad_id',$id)->first();
             $shopAd->category = $request['category'];
             $shopAd->make_id = $request['make_id'];
-            $shopAd->model = $request['model'];
+            $shopAd->model_id = $request['model_id'];
             $shopAd->manufacturer = $request['manufacturer'];
             $shopAd->code = $request['code'];
             $shopAd->condition = $request['condition'];

@@ -8,7 +8,8 @@ use App\Http\Requests\Admin\User\DestroyUser;
 use App\Http\Requests\Admin\User\IndexUser;
 use App\Http\Requests\Admin\User\StoreUser;
 use App\Http\Requests\Admin\User\UpdateUser;
-use App\Models\{Ad,User};
+use Illuminate\Validation\Rule;
+use App\Models\{Ad,User,Dealer,DealerShowRoom};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Support\Facades\Hash;
@@ -159,6 +160,134 @@ class UsersController extends Controller
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }
+    }
+
+     public function store_professional(Request $request)
+    {
+
+        $resource = ApiHelper::resource();
+        
+        $validator = \Validator::make($request->all(), [
+            'user_first_name' => ['required', 'string'],
+            'user_last_name' => ['required', 'string'],
+            'user_mobile_number' => ['nullable', 'string'],
+            'user_landline_number' => ['nullable', 'string'],
+            'user_whatsapp_number' => ['nullable', 'string'],
+            'user_email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
+            //'user_image' => ['nullable'],
+            'user_password' => ['required', 'confirmed', 'min:7', 'string'],
+            //dealer
+            'dealer_company_name' => ['required', Rule::unique('dealers', 'company_name'), 'string'],
+            'dealer_vat_number' => ['nullable', 'string'],
+            'dealer_address' => ['required', 'string'],
+            'dealer_zip_code' => ['required', 'string'],
+            'dealer_city' => ['required', 'string'],
+            'dealer_country' => ['required', 'string'],
+            'dealer_logo_path' => ['nullable', 'file'],
+            'dealer_email_address' => ['required', 'email', 'string'],
+            'dealer_phone_number' => ['required', 'string'],
+            'dealer_description' => ['nullable', 'string'],
+            'dealer_whatsapp_number' => ['nullable', 'string'],
+            //dealer_show_room
+            'dealer_show_room_name' => ['required', 'string'],
+            'dealer_show_room_address' => ['required', 'string'],
+            'dealer_show_room_zip_code' => ['required', 'string'],
+            'dealer_show_room_city' => ['required', 'string'],
+            'dealer_show_room_country' => ['required', 'string'],
+            'dealer_show_room_latitude' => ['nullable', 'string'],
+            'dealer_show_room_longitude' => ['nullable', 'string'],
+            'dealer_show_room_email_address' => ['required', 'email', 'string'],
+            'dealer_show_room_mobile_number' => ['required', 'string'],
+            'dealer_show_room_landline_number' => ['nullable', 'string'],
+            'dealer_show_room_whatsapp_number' => ['nullable', 'string'],
+            'dealer_show_room_market_id' => ['nullable', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        try {
+            
+            $dealer = new Dealer;
+            $dealer->company_name = $request['dealer_company_name'];
+            $dealer->vat_number = $request['dealer_vat_number'];
+            $dealer->address = $request['dealer_address'];
+            $dealer->zip_code = $request['dealer_zip_code'];
+            $dealer->city = $request['dealer_city'];
+            $dealer->country = $request['dealer_country'];
+            $dealer->logo_path = $this->uploadFile($request->file('dealer_logo_path'),$request['dealer_company_name']);
+            $dealer->email_address = $request['dealer_email_address'];
+            $dealer->phone_number = $request['dealer_phone_number'];
+            $dealer->description = $request['dealer_description'];
+            $dealer->save();
+
+            $dealerShowRoom = new DealerShowRoom;
+            $dealerShowRoom->name = $request['dealer_show_room_name'];
+            $dealerShowRoom->address = $request['dealer_show_room_address'];
+            $dealerShowRoom->zip_code = $request['dealer_show_room_zip_code'];
+            $dealerShowRoom->city = $request['dealer_show_room_city'];
+            $dealerShowRoom->country = $request['dealer_show_room_country'];
+            $dealerShowRoom->latitude = $request['dealer_show_room_latitude'];
+            $dealerShowRoom->longitude = $request['dealer_show_room_longitude'];
+            $dealerShowRoom->email_address = $request['dealer_show_room_email_address'];
+            $dealerShowRoom->mobile_number = $request['dealer_show_room_mobile_number'];
+            $dealerShowRoom->landline_number = $request['dealer_show_room_landline_number'];
+            $dealerShowRoom->whatsapp_number = $request['dealer_show_room_whatsapp_number'];
+            $dealerShowRoom->market_id = $request['dealer_show_room_market_id'];
+            $dealerShowRoom->dealer_id = $dealer->id;
+            $dealerShowRoom->save();
+
+            $user = new User;
+            $user->first_name = $request['user_first_name'];
+            $user->last_name = $request['user_last_name'];
+            $user->mobile_number = $request['user_mobile_number'];
+            $user->landline_number = $request['user_landline_number'];
+            $user->whatsapp_number = $request['user_whatsapp_number'];
+            $user->email = $request['user_email'];
+            $user->password = Hash::make($request['user_password']);
+            $user->status = 'Pendiente';
+            $user->image ='users/user-default-ocassional.png';
+            $user->type = 'Profesional';
+            $user->dealer_id = $dealer->id;
+
+            $user->save();
+
+            $user->notify(new NewUser($user));
+            
+            return response()->json([
+                'data' => [
+                    'user' => $user, 
+                    'dealer' => $dealer, 
+                    'dealer_show_room' => $dealerShowRoom 
+                ] 
+            ], 200);
+
+        } catch (Exception $e) {
+            
+            \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            isset($dealerShowRoom) ? $dealerShowRoom->delete() : false;
+            isset($dealer) ? $dealer->delete(): false;
+            isset($user) ? $user->delete(): false;
+            \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+            
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
+
+    public function uploadFile($file,$name)
+    {   
+        $path = null;
+        
+        if ($file) {
+            $path = $file->store(
+                'dealers/'.Str::slug($name), 's3'
+            );
+        }
+        
+        return $path;
     }
 
     /**
@@ -527,16 +656,5 @@ class UsersController extends Controller
         return view('confirmar');
     }
 
-    public function uploadFile($file,$id)
-    {   
-        $path = null;
-        
-        if ($file) {
-            $path = $file->store(
-                'users/'.$id, 's3'
-            );
-        }
-        
-        return $path;
-    }
+   
 }

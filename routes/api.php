@@ -740,6 +740,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
           
             //Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');
+            Route::post('/professional',                                'UsersController@store_professional')->name('store_professional');
             Route::post('/{user}/status',                               'UsersController@setStatus')->name('setStatus');
             Route::post('/{user}',                                      'UsersController@update')->name('update');
             //Route::get('/{user}/edit',                                  'UsersController@edit')->name('edit');
