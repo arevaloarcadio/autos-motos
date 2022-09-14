@@ -349,11 +349,11 @@ class AutoAdsController extends Controller
     {
         
         $validator = Validator::make($request->all(), [
-            'make_id' => ['required', 'string'],
-            'model_id' => ['required', 'string'],
+            'make_id' => 'required|string|exists:makes,id',
+            'model_id' => 'required|string|exists:models,id',
             'first_registration_month' => ['required', 'integer'],
             'first_registration_year' => ['required', 'integer'],
-            'generation_id' => ['nullable', 'string'],
+            'generation_id' =>  'nullable|string|exists:generations,id',
             'mileage' => ['required', 'integer'],
             'condition' => ['required', 'string'],
             'exterior_color' => ['required', 'string'],
