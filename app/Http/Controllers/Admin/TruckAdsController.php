@@ -182,7 +182,7 @@ class TruckAdsController extends Controller
             'hydraulic_system' => ['nullable', 'string'],
             'seats' => ['nullable', 'integer'],
             'mileage' => ['nullable', 'integer'],
-            'power_kw' => ['nullable', 'integer'],
+            'power_hp' => ['nullable', 'integer'],
             'emission_class' => ['nullable', 'string'],
             'fuel_consumption' => ['nullable', 'numeric'],
             'co2_emissions' => ['nullable', 'numeric'],
