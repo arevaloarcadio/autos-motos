@@ -165,7 +165,7 @@ class StripeService
         $payment_history->mount = $value;
         $payment_history->status = 'Aprobado';
         $payment_history->user_id = $user_id;
-        $payment_history->way_to_pay = 'Stripe';
+        $payment_history->way_to_pay = 'Pago con tarjeta';
         $payment_history->transaction_number = $approvalId;
 
         $payment_history->save();
