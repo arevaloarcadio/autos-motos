@@ -61,3 +61,7 @@ UPDATE `vehicle_categories` set ad_type =  'TRUCK' WHERE ad_type not in ('MOTO',
 alter TABLE truck_ads  add column drive_type_id varchar(36)
 alter TABLE mobile_home_ads  add column drive_type_id varchar(36)
 
+ALTER TABLE autosmotos_dev.moto_ads MODIFY COLUMN body_type_id char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;
+ALTER TABLE autosmotos_dev.moto_ads MODIFY COLUMN transmission_type_id char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
+
+
