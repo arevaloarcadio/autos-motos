@@ -1008,7 +1008,7 @@ class ImportPortalClubAdsCommand extends Command
             
             if (is_null($ad)) {
 
-                $external_ad['slug'] .= random_int(1000, 9999)
+                $external_ad['slug'] .= random_int(1000, 9999);
                 
                 $ad = Ad::create($external_ad);
 
