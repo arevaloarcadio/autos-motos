@@ -169,7 +169,7 @@ class AdsController extends Controller
                         },
                         'mobileHomeAd' => function($query)
                         {
-                            $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                            $query->with(['make','driveType','generation','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
                         },
                         'truckAd' => function($query)
                         {
@@ -243,7 +243,7 @@ class AdsController extends Controller
             },
             'mobileHomeAd' => function($query)
             {
-                $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                $query->with(['make','model','driveType','generation','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
             },
             'truckAd' => function($query)
             {
@@ -319,7 +319,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','characteristics']);
                     },
-                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    'make','model','ad','driveType','generation','fuelType','transmissionType','dealer','dealerShowRoom']);
                 break;
             case 'truck':
                 $response = TruckAd::whereIn('ad_id',$ad_ids)
@@ -413,7 +413,7 @@ class AdsController extends Controller
                         },
                         'mobileHomeAd' => function($query)
                         {
-                            $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                            $query->with(['make','model','driveType','generation','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
                         },
                         'truckAd' => function($query)
                         {
@@ -483,7 +483,7 @@ class AdsController extends Controller
             },
             'mobileHomeAd' => function($query)
             {
-                $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                $query->with(['make','model','ad','driveType','generation','fuelType','transmissionType','dealer','dealerShowRoom']);
             },
             'truckAd' => function($query)
             {
@@ -725,7 +725,7 @@ class AdsController extends Controller
                 },
                 'mobileHomeAd' => function($query)
                 {
-                    $query->with(['make','model','ad','vehicleCategory','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    $query->with(['make','model','ad','driveType','generation','vehicleCategory','fuelType','transmissionType','dealer','dealerShowRoom']);
                 },
                 'truckAd' => function($query)
                 {
@@ -1011,7 +1011,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','characteristics']);
                     },
-                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
+                    'make','model','ad','fuelType','driveType','generation','transmissionType','dealer','dealerShowRoom'])
                     ->inRandomOrder()
                     ->limit(10)
                     ->get()
@@ -1440,7 +1440,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','user','characteristics']);
                     },
-                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])
+                    'make','model','ad','driveType','generation','fuelType','transmissionType','dealer','dealerShowRoom'])
 
             ->paginate(24)
             ->toArray();
@@ -2012,7 +2012,7 @@ public function getCountAutoAd($filters)
                     },
                     'mobileHomeAd' => function($query)
                     {
-                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                        $query->with(['make','model','driveType','generation','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
                     },
                     'truckAd' => function($query)
                     {
@@ -2069,7 +2069,7 @@ public function getCountAutoAd($filters)
                     },
                     'mobileHomeAd' => function($query)
                     {
-                        $query->with(['make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                        $query->with(['make','model','ad','driveType','generation','fuelType','transmissionType','dealer','dealerShowRoom']);
                     },
                     'truckAd' => function($query)
                     {

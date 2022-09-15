@@ -55,14 +55,14 @@ class MobileHomeAdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info'],
+            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation_id','drive_type_id'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'beds', 'emission_class', 'condition', 'color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info'],
+            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'beds', 'emission_class', 'condition', 'color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation_id','drive_type_id'],
             
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info'];
+                $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation_id','drive_type_id'];
                 
                 
                     if ($request->filters) {
@@ -194,7 +194,10 @@ class MobileHomeAdsController extends Controller
             'youtube_link' => ['nullable', 'string'],
             'doors' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
+            'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
+            'generation_id' => 'nullable|string|exists:generations,id',
         ]);
+
 
         if ($validator->fails()) {
             ApiHelper::setError($resource, 0, 422, $validator->errors());
@@ -298,6 +301,8 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->youtube_link = $request['youtube_link'];
             $mobileHomeAd->doors = $request['doors'];
             $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
+            $mobileHomeAd->drive_type_id = $request['drive_type_id'];
+            $mobileHomeAd->generation_id = $request['generation_id'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];
@@ -420,6 +425,8 @@ class MobileHomeAdsController extends Controller
             'eliminated_thumbnail' => ['required', 'boolean'],
             'doors' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
+            'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
+            'generation_id' => 'nullable|string|exists:generations,id',
         ]);
 
         if ($validator->fails()) {
@@ -511,6 +518,8 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->youtube_link = $request['youtube_link'];
             $mobileHomeAd->doors = $request['doors'];
             $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
+            $mobileHomeAd->drive_type_id = $request['drive_type_id'];
+            $mobileHomeAd->generation_id = $request['generation_id'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];

@@ -105,6 +105,15 @@ class MobileHomeAd extends Model
         return $this->belongsTo(VehicleCategory::class, 'vehicle_category_id');
     }
 
+    public function driveType()
+    {
+        return $this->belongsTo(CarWheelDriveType::class, 'drive_type_id');
+    }
+
+    public function generation()
+    {
+        return $this->belongsTo(Generation::class, 'generation_id');
+    }
     /**
      * @return BelongsTo
      */
