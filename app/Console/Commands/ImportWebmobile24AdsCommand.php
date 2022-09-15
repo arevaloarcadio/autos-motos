@@ -304,7 +304,8 @@ class ImportWebmobile24AdsCommand extends Command
         $externalDealer = strtolower(trim($externalDealer));
 
         $dealer = Dealer::query()
-                    ->where('company_name', '=', $externalDealer)->first();
+            ->where('slug', '=', Str::slug(trim($externalDealer)))
+            ->first();
 
         if (is_null($dealer)) {
             
@@ -338,7 +339,7 @@ class ImportWebmobile24AdsCommand extends Command
         $externalDealer = strtoupper(trim($externalDealer));
 
         $dealer_show_room = DealerShowRoom::query()
-                    ->where('name', '=', $externalDealer)->first();
+                    ->where('dealer_id', '=', $dealer_id)->first();
 
         if (is_null($dealer_show_room)) {
             
@@ -375,7 +376,7 @@ class ImportWebmobile24AdsCommand extends Command
         $externalDealer = strtolower(trim($externalDealer));
 
         $user = User::query()
-                    ->where('email', '=', strtolower($externalDealer).'@autosmotos.es')->first();
+                    ->where('dealer_id', '=', $dealer_id)->first();
 
         if (is_null($user)) {
             

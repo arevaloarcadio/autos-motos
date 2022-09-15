@@ -212,6 +212,7 @@ class UsersController extends Controller
             
             $dealer = new Dealer;
             $dealer->company_name = $request['dealer_company_name'];
+            $dealer->slug = Str::slug($request['dealer_company_name']);
             $dealer->vat_number = $request['dealer_vat_number'];
             $dealer->address = $request['dealer_address'];
             $dealer->zip_code = $request['dealer_zip_code'];
