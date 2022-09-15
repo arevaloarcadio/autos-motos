@@ -365,7 +365,7 @@ class ImportPortalClubAdsCommand extends Command
     }
 
 
-    private function findUser($externalDealer,$dealer_id): User
+    private function findUser(SimpleXMLElement $externalDealer,$dealer_id): User
     {
         if ('' === $externalDealer) {
             throw new Exception('no_user');
