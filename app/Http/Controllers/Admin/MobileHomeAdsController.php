@@ -371,7 +371,7 @@ class MobileHomeAdsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string'],
-            'description' => ['required', 'string'],}
+            'description' => ['required', 'string'],
             'market_id' => 'required|string|exists:markets,id',
             'make_id' => ['nullable', 'string'],
             'custom_make' => ['nullable', 'string'],
