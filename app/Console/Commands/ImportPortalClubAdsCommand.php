@@ -150,7 +150,7 @@ class ImportPortalClubAdsCommand extends Command
                     );
 
                     $sellerInfo = $sellerAds->export->seller;
-                    $this->info(var_dump($sellerInfo->email));
+
                     $dealer     = $this->findOrCreateDealer($sellerInfo, $countryName, $phonePrefix);
                     $user     = $this->findUser($sellerInfo,$dealer->id);
                     $showRoom   = $this->findOrCreateShowRoom(
@@ -990,7 +990,7 @@ class ImportPortalClubAdsCommand extends Command
      * @throws Throwable
      */
 
-    private function findOrCreateAd($external_ad,$thumbnail): Ad
+    private function findOrCreateAd($external_ad,$dealer_id): Ad
     {
         if (count($external_ad) == 0) {
             throw new Exception('no_external_ad');
@@ -1006,7 +1006,7 @@ class ImportPortalClubAdsCommand extends Command
         }else{
 
             $ad = Ad::where('description',$external_ad['description'])
-                ->where('thumbnail',$thumbnail)
+                ->where('dealer_id',$dealer_id)
                 ->first();
             
             if (is_null($ad)) {
@@ -1219,7 +1219,7 @@ class ImportPortalClubAdsCommand extends Command
 
             if ($gener == 'moto') {
                 
-                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
                 $vehicleAd['ad_id'] = $ad->id;
                 //$vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
                 $this->storeAdImage($ad,$adInfo->images->image);
@@ -1229,7 +1229,7 @@ class ImportPortalClubAdsCommand extends Command
             
             if ($gener == 'furgone') {
                 
-                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
@@ -1241,7 +1241,7 @@ class ImportPortalClubAdsCommand extends Command
 
             if ($gener == 'bus') {
                 
-                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='9f49d041-efd8-4797-95f2-4742b50442a8';
@@ -1253,7 +1253,7 @@ class ImportPortalClubAdsCommand extends Command
             
             if ($gener == 'auto') {
                 
-                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $this->storeAdImage($ad,$adInfo->images->image);
