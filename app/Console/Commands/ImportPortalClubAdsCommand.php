@@ -150,7 +150,7 @@ class ImportPortalClubAdsCommand extends Command
 
                     $sellerInfo = $sellerAds->export->seller;
                     $dealer     = $this->findOrCreateDealer($sellerInfo, $countryName, $phonePrefix);
-                    //$user     = $this->findUser($sellerInfo,$dealer->id);
+                    $user     = $this->findUser($sellerInfo,$dealer->id);
                     $showRoom   = $this->findOrCreateShowRoom(
                         $sellerInfo,
                         $dealer,
@@ -363,7 +363,7 @@ class ImportPortalClubAdsCommand extends Command
     }
 
 
-    private function findUser(SimpleXMLElement $externalDealer,$dealer_id): User
+    private function findUser($externalDealer,$dealer_id): User
     {
         if ('' === $externalDealer) {
             throw new Exception('no_user');
@@ -987,7 +987,7 @@ class ImportPortalClubAdsCommand extends Command
      * @throws Throwable
      */
 
-    private function findOrCreateAd($external_ad): Ad
+    private function findOrCreateAd($external_ad,$thumbnail): Ad
     {
         if (count($external_ad) == 0) {
             throw new Exception('no_external_ad');
@@ -996,9 +996,25 @@ class ImportPortalClubAdsCommand extends Command
         $ad = Ad::where('slug',$external_ad['slug'])->first();
         
         if (is_null($ad)) {
+
             $ad = Ad::create($external_ad);
 
             $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+        }else{
+
+            $ad = Ad::where('description',$external_ad['description'])
+                ->where('thumbnail',$thumbnail)
+                ->first();
+            
+            if (is_null($ad)) {
+
+                $external_ad['slug'] .= random_int(1000, 9999)
+                
+                $ad = Ad::create($external_ad);
+
+                $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+            }
+            
         }
         
         return $ad;
@@ -1098,13 +1114,11 @@ class ImportPortalClubAdsCommand extends Command
         $adInput = [
             'title'                    => $title,
             'description'              => $description,
-            //'slug'                     => Str::slug($title).'-'.random_int(1000, 9999),
             'slug'                     => Str::slug($title),
             'status'                   => ApprovalStatusEnum::APPROVED,
             'user_id'                  => $user->id,
             'market_id'                => $marketId,
             'source'                   => AdSourceEnum::PORTAL_CLUB_IMPORT,
-            //'source'                   => 'PORTAL_CLUB_IMPORT2',
             'external_id'              => $externalId,
             'images'                   => [],
             'images_processing_status' => ImageProcessingStatusEnum::PENDING,
@@ -1202,7 +1216,7 @@ class ImportPortalClubAdsCommand extends Command
 
             if ($gener == 'moto') {
                 
-                $ad = $this->findOrCreateAd($adInput);
+                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
                 $vehicleAd['ad_id'] = $ad->id;
                 //$vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
                 $this->storeAdImage($ad,$adInfo->images->image);
@@ -1212,7 +1226,7 @@ class ImportPortalClubAdsCommand extends Command
             
             if ($gener == 'furgone') {
                 
-                $ad = $this->findOrCreateAd($adInput);
+                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
@@ -1224,7 +1238,7 @@ class ImportPortalClubAdsCommand extends Command
 
             if ($gener == 'bus') {
                 
-                $ad = $this->findOrCreateAd($adInput);
+                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='9f49d041-efd8-4797-95f2-4742b50442a8';
@@ -1236,7 +1250,7 @@ class ImportPortalClubAdsCommand extends Command
             
             if ($gener == 'auto') {
                 
-                $ad = $this->findOrCreateAd($adInput);
+                $ad = $this->findOrCreateAd($adInput,$adInfo->images->image[0]);
                 
                 $vehicleAd['ad_id'] = $ad->id;
                 $this->storeAdImage($ad,$adInfo->images->image);
@@ -1260,19 +1274,13 @@ class ImportPortalClubAdsCommand extends Command
         $k = 0;
 
         foreach ($images as $image) {
+            
             if ($k == 0) {
                 $ad->thumbnail = $image->large;
                 $ad->images_processing_status = 'SUCCESSFUL';
                 $ad->save();
             }
-            /*$url                 = (string) $image->large;
-            $parts               = explode('.', $url);
-            $extension           = array_pop($parts);
-            $adInput['images'][] = [
-                'url'         => (string) $image->large,
-                'extension'   => $extension,
-                'is_external' => true,
-            ];*/
+
             AdImage::create(['ad_id' => $ad->id,'path'=>$image->large, 'is_external' => 1, 'order_index' => $k++]);
         }
         
