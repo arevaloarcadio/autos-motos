@@ -513,7 +513,7 @@ class ImportInventarioAdsCommand extends Command
         if (isset($bodyTypes[trim($externalBody)])) {
             
             $car_body_type = CarBodyType::query()
-                              ->where('internal_name', '=', $bodyTypes[trim($externalBody)]['internal_name'])
+                              ->where('internal_name', '=', $bodyTypes[trim($externalBody)])
                               //->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
                               ->first();
 
@@ -556,7 +556,7 @@ class ImportInventarioAdsCommand extends Command
         return [
             'Berlina'             => 'sedan',
             'Cabriolet'           => 'convertible',
-            'Coche sin carnet'    => null,
+            'Coche sin carnet'    =>'sedan',
             'Deportivo'           => 'sport_coupe',
             'Familiar'            => 'minivan',
             'Furgoneta'           => 'minivan',
@@ -564,8 +564,8 @@ class ImportInventarioAdsCommand extends Command
             'Pickup'              => 'suv_crossover',
             'Sedan'               => 'sedan',
             'Todoterreno'         => 'suv_crossover',
-            'Utilitario'          => null,
-            'Vehículo industrial' => null,
+            'Utilitario'          => 'sedan',
+            'Vehículo industrial' => 'deliverytrucks',
         ];
     }
 
