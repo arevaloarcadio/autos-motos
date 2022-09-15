@@ -452,23 +452,39 @@ class ImportInventarioAdsCommand extends Command
         return ConditionEnum::OTHER;
     }
 
-    private function findFuelTypeId(string $externalFuel): ?string
+    private function findFuelTypeId(string $externalFuel)
     {
         if ('' === $externalFuel) {
             return null;
         }
-        $externalFuel = strtolower(trim($externalFuel));
+        //$externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions();
 
-        if (isset($fuels[$externalFuel])) {
-            return CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
-                              //->where('ad_type', '=', 'auto')
-                              ->first()->id;
+        if (isset($fuels[trim($externalFuel)])) {
+            
+            $this->info($fuels[trim($externalFuel)].' '.strtolower(trim($externalFuel)).'LINE 160');
+            
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[trim($externalFuel)])
+                              ->first();
+        
+            if (is_null($car_fuel_type)) {
+                //$this->info($externalFuel.' '.strtolower(trim($externalFuel)).'LINE 166');
+                $car_fuel_type['id'] = 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
+            }
+            
+            return $car_fuel_type['id'];
         }
 
-        return null;
-    }
+        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
+                              ->first();
 
+        if (is_null($car_fuel_type)) {
+            //$this->info($car_fuel_type.' '.strtolower(trim($externalFuel)).'LINE 177');
+            $car_fuel_type['id'] = 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
+        }
+
+        return $car_fuel_type['id'];
+    }
     private function getFuelOptions(): array
     {
         return [
@@ -485,22 +501,54 @@ class ImportInventarioAdsCommand extends Command
         ];
     }
 
-    private function findBodyTypeId(string $externalBody): ?string
+    private function findBodyTypeId(string $externalBody)
     {
+        
         if ('' === $externalBody) {
             return null;
         }
-        $externalBody = strtolower(trim($externalBody));
+       
         $bodyTypes    = $this->getBodyOptions();
+    
+        if (isset($bodyTypes[trim($externalBody)])) {
+            
+            $car_body_type = CarBodyType::query()
+                              ->where('internal_name', '=', $bodyTypes[trim($externalBody)]['internal_name'])
+                              //->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
+                              ->first();
 
-        if (isset($bodyTypes[$externalBody])) {
-            return CarBodyType::query()
-                              ->where('internal_name', '=', $bodyTypes[$externalBody])
-                              //->where('ad_type', '=', 'auto')
-                              ->first()->id;
+           if (is_null($car_body_type)) {
+                $car_body_type['id'] = null;
+                /*$this->info('Save new car body type: '.$bodyTypes[trim($externalBody)]['internal_name']);
+                
+                $car_body_type = new CarBodyType;
+                $car_body_type->internal_name = $bodyTypes[trim($externalBody)]['internal_name'];
+                $car_body_type->ad_type =  $bodyTypes[trim($externalBody)]['ad_type'];
+                $car_body_type->slug = Str::slug($bodyTypes[trim($externalBody)]['internal_name']);
+                $car_body_type->save();*/
+            }
+
+            
+            return $car_body_type['id'];
         }
 
-        return null;
+        /*$car_body_type = CarBodyType::query()
+                              ->where('internal_name', '=', strtolower(trim($externalBody)))
+                              //->where('ad_type', '=', 'AUTO')
+                              ->first();
+
+        if (is_null($car_body_type)) {
+            
+            $this->info('Save new car body type: '.strtolower(trim($externalBody)));
+            
+            $car_body_type = new CarBodyType;
+            $car_body_type->internal_name = strtolower(trim($externalBody));
+            $car_body_type->ad_type = 'AUTO';
+            $car_body_type->slug = Str::slug($externalBody); 
+            $car_body_type->save();
+        }*/
+        $car_body_type['id'] = null;
+        return $car_body_type['id'];
     }
 
     private function getBodyOptions(): array
@@ -521,22 +569,26 @@ class ImportInventarioAdsCommand extends Command
         ];
     }
 
-    private function findTransmissionTypeId(string $externalTransmission): ?string
+    private function findTransmissionTypeId(string $externalTransmission)
     {
         if ('' === $externalTransmission) {
             return null;
         }
         $externalTransmission = strtolower(trim($externalTransmission));
         $transmissions        = $this->getTransmissionOptions();
-
+       
         if (isset($transmissions[$externalTransmission])) {
-            return CarTransmissionType::query()
+            $car_transmission_type = CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
-                                      //->where('ad_type', '=', 'auto')
-                                      ->first()->id;
+                                     // ->where('ad_type', '=', 'auto')
+                                      ->first();
+            
+            return $car_transmission_type['id'];                    
         }
+        
+        $car_transmission_type['id'] = null;
 
-        return null;
+        return $car_transmission_type['id'];
     }
 
     private function getTransmissionOptions(): array
