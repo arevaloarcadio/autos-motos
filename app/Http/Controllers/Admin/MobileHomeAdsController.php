@@ -297,6 +297,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->whatsapp_number = $request['whatsapp_number'];
             $mobileHomeAd->youtube_link = $request['youtube_link'];
             $mobileHomeAd->doors = $request['doors'];
+            $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];
@@ -469,7 +470,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->make_id = $request['make_id'];
             $mobileHomeAd->custom_make = $request['custom_make'];
             $mobileHomeAd->model_id = $request['model_id'];
-            $mobileHomeAd->custom_model = $request['custom_model'];
+            $mobileHomeAd->custom_model = $request['model'];
             $mobileHomeAd->fuel_type_id = $request['fuel_type_id'];
             $mobileHomeAd->vehicle_category_id = $request['vehicle_category_id'];
             $mobileHomeAd->transmission_type_id = $request['transmission_type_id'];
@@ -509,6 +510,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->whatsapp_number = $request['whatsapp_number'];
             $mobileHomeAd->youtube_link = $request['youtube_link'];
             $mobileHomeAd->doors = $request['doors'];
+            $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];
