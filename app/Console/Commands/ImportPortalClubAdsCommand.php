@@ -149,7 +149,7 @@ class ImportPortalClubAdsCommand extends Command
                     );
 
                     $sellerInfo = $sellerAds->export->seller;
-                    $this->info(var_dump($sellerInfo))
+                    $this->info(var_dump($sellerInfo));
                     $dealer     = $this->findOrCreateDealer($sellerInfo, $countryName, $phonePrefix);
                     $user     = $this->findUser($sellerInfo,$dealer->id);
                     $showRoom   = $this->findOrCreateShowRoom(
