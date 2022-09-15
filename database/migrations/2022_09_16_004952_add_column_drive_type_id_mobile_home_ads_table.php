@@ -15,7 +15,7 @@ class AddColumnDriveTypeIdMobileHomeAdsTable extends Migration
     {
         Schema::table('mobile_home_ads', function (Blueprint $table) {
             $table->uuid('drive_type_id')->nullable();
-            $table->uuid('generation_id')->nullable();
+            $table->string('generation')->nullable();
         });
     }
 

@@ -195,7 +195,7 @@ class MobileHomeAdsController extends Controller
             'doors' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
-            'generation_id' => 'nullable|string|exists:generations,id',
+            'generation_id' => 'nullable|string'
         ]);
 
 
@@ -302,7 +302,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->doors = $request['doors'];
             $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $mobileHomeAd->drive_type_id = $request['drive_type_id'];
-            $mobileHomeAd->generation_id = $request['generation_id'];
+            $mobileHomeAd->generation = $request['generation_id'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];
@@ -426,7 +426,7 @@ class MobileHomeAdsController extends Controller
             'doors' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
-            'generation_id' => 'nullable|string|exists:generations,id',
+            'generation_id' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -519,7 +519,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->doors = $request['doors'];
             $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $mobileHomeAd->drive_type_id = $request['drive_type_id'];
-            $mobileHomeAd->generation_id = $request['generation_id'];
+            $mobileHomeAd->generation = $request['generation_id'];
             $mobileHomeAd->save();
             
             $ad_sub_characteristics = [];

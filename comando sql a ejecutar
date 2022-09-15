@@ -65,3 +65,5 @@ ALTER TABLE autosmotos_dev.moto_ads MODIFY COLUMN body_type_id char(36) CHARACTE
 ALTER TABLE autosmotos_dev.moto_ads MODIFY COLUMN transmission_type_id char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 
 
+
+

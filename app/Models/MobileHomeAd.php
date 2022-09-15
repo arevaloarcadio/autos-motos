@@ -110,10 +110,6 @@ class MobileHomeAd extends Model
         return $this->belongsTo(CarWheelDriveType::class, 'drive_type_id');
     }
 
-    public function generation()
-    {
-        return $this->belongsTo(Generation::class, 'generation_id');
-    }
     /**
      * @return BelongsTo
      */
