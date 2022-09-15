@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnAdditionalVehicleInfoInModoAdsTable extends Migration
+class AddColumnAdditionalVehicleInfoInMotoAdsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnAdditionalVehicleInfoInModoAdsTable extends Migration
      */
     public function up()
     {
-        Schema::table('modo_ads', function (Blueprint $table) {
-            //
+        Schema::table('moto_ads', function (Blueprint $table) {
+            $table->string('additional_vehicle_info')->nullable();
         });
     }
 
