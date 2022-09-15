@@ -54,14 +54,14 @@ class MotoAdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
+            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'emission_class', 'condition', 'color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
+            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'emission_class', 'condition', 'color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
+                $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info'];
                 
                 
                     if ($request->filters) {
@@ -184,6 +184,7 @@ class MotoAdsController extends Controller
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
+            'additional_vehicle_info' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -275,6 +276,7 @@ class MotoAdsController extends Controller
             $motoAd->model_id = $request['model_id'];
             $motoAd->fuel_consumption = $request['fuel_consumption'];
             $motoAd->co2_emissions = $request['co2_emissions'];
+            $motoAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $motoAd->save();
             
             $ad_sub_characteristics = [];
@@ -394,7 +396,8 @@ class MotoAdsController extends Controller
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
-            'eliminated_thumbnail' => ['required', 'boolean']
+            'eliminated_thumbnail' => ['required', 'boolean'],
+            'additional_vehicle_info' => ['nullable', 'string']
         ]);
 
         if ($validator->fails()) {
@@ -473,6 +476,7 @@ class MotoAdsController extends Controller
             $motoAd->model_id = $request['model_id'];
             $motoAd->fuel_consumption = $request['fuel_consumption'];
             $motoAd->co2_emissions = $request['co2_emissions'];
+            $motoAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $motoAd->save();
             
             $ad_sub_characteristics = [];
