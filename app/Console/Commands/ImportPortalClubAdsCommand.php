@@ -8,6 +8,7 @@ use App\Enum\Ad\ImageProcessingStatusEnum;
 use App\Enum\Core\ApprovalStatusEnum;
 use App\Exceptions\InvalidAdTypeInputException;
 use App\Exceptions\InvalidAdTypeProvidedException;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Ad;
 use App\Models\CarBodyType;
 use App\Models\CarFuelType;
@@ -149,7 +150,7 @@ class ImportPortalClubAdsCommand extends Command
                     );
 
                     $sellerInfo = $sellerAds->export->seller;
-                    $this->info(var_dump($sellerInfo['email']));
+                    $this->info(var_dump($sellerInfo->email));
                     $dealer     = $this->findOrCreateDealer($sellerInfo, $countryName, $phonePrefix);
                     $user     = $this->findUser($sellerInfo,$dealer->id);
                     $showRoom   = $this->findOrCreateShowRoom(
