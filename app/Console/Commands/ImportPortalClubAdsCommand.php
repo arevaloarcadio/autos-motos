@@ -375,17 +375,17 @@ class ImportPortalClubAdsCommand extends Command
             throw new Exception('no_dealer_id');
         }
         
-        $externalDealer = strtolower(trim($externalDealer->email));
+        $email = strtolower(trim($externalDealer->email));
 
         $user = User::query()
-                    ->where('email', '=', $externalDealer->email)->first();
+                    ->where('email', '=', $email)->first();
 
         if (is_null($user)) {
             
             $user = User::create([
                     'first_name' => $externalDealer->company_name,
                     'last_name' => '.',
-                    'email' => $sellerInfo->email,
+                    'email' =>  $email,
                     'password' => Hash::make($externalDealer->email.'123**'),
                     'dealer_id' => $dealer_id,
                     'type' => 'Profesional'
