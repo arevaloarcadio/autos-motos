@@ -149,6 +149,7 @@ class ImportPortalClubAdsCommand extends Command
                     );
 
                     $sellerInfo = $sellerAds->export->seller;
+                    $this->info(var_dump($sellerInfo))
                     $dealer     = $this->findOrCreateDealer($sellerInfo, $countryName, $phonePrefix);
                     $user     = $this->findUser($sellerInfo,$dealer->id);
                     $showRoom   = $this->findOrCreateShowRoom(
@@ -161,9 +162,10 @@ class ImportPortalClubAdsCommand extends Command
                 } catch (Exception $exception) {
                     $this->error(
                         sprintf(
-                            '==> Failed to load seller %s with error: %s...; RAM Used: %s',
+                            '==> Failed to load seller %s with error: %s... LINE: %s; RAM Used: %s,  ',
                             $seller->id,
                             $exception->getMessage(),
+                            $exception->getLine(),
                             $this->getUsedMemory()
                         )
                     );
@@ -373,8 +375,6 @@ class ImportPortalClubAdsCommand extends Command
             throw new Exception('no_dealer_id');
         }
         
-        $this->info($externalDealer);
-
         $externalDealer = strtolower(trim($externalDealer->email));
 
         $user = User::query()
