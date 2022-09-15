@@ -372,6 +372,8 @@ class ImportPortalClubAdsCommand extends Command
         if ('' === $dealer_id) {
             throw new Exception('no_dealer_id');
         }
+        
+        $this->info($externalDealer);
 
         $externalDealer = strtolower(trim($externalDealer->email));
 
