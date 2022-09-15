@@ -1015,7 +1015,7 @@ class ImportPortalClubAdsCommand extends Command
                 
                 $ad = Ad::create($external_ad);
 
-                $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+                $this->info(sprintf('2: Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
             }
             
         }

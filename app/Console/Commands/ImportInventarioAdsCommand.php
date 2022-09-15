@@ -227,9 +227,10 @@ class ImportInventarioAdsCommand extends Command
                 } catch (Exception $exception) {
                     $this->error(
                         sprintf(
-                            '====> Ad %d errored with message: %s; %d/%d; RAM Used: %s',
+                            '====> Ad %d errored with message: %s;LINE %s : %d/%d; RAM Used: %s',
                             $externalId,
                             $exception->getMessage(),
+                            $exception->getLine(),
                             $counter + 1,
                             $totalAds,
                             $this->getUsedMemory()
