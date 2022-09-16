@@ -58,14 +58,14 @@ class ShopAdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
+            ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','custom_model'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'],
+            ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','custom_model'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link'];
+                $columns =  ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','custom_model'];
                 
                 
                     if ($request->filters) {
@@ -166,7 +166,8 @@ class ShopAdsController extends Controller
             'market_id' => 'required|string|exists:markets,id',
             'category' => ['required', 'string'],
             'make_id' => 'required|string|exists:makes,id',
-            'model_id' => 'required|string|exists:models,id',
+            'model_id' => 'nullable|string|exists:models,id',
+            'model' => 'nullable|string',
             'manufacturer' => ['required', 'string'],
             'code' => ['nullable', 'string'],
             'condition' => ['required', 'string'],
@@ -244,6 +245,7 @@ class ShopAdsController extends Controller
             $shopAd->category = $request['category'];
             $shopAd->make_id = $request['make_id'];
             $shopAd->model_id = $request['model_id'];
+            $shopAd->custom_model = $request['model'];
             $shopAd->manufacturer = $request['manufacturer'];
             $shopAd->code = $request['code'];
             $shopAd->condition = $request['condition'];
@@ -308,6 +310,10 @@ class ShopAdsController extends Controller
 
             if ($request->manufacturer) {
                 $shop_ads = $shop_ads->where('manufacturer','LIKE','%'.$request->manufacturer.'%');
+            }
+
+            if ($request->model) {
+                $shop_ads = $shop_ads->where('custom_model','LIKE','%'.$request->model.'%');
             }
 
             if ($request->condition) {
@@ -377,6 +383,7 @@ class ShopAdsController extends Controller
             'category' => ['required', 'string'],
             'make_id' => ['required', 'string'],
             'model_id' => ['required', 'string'],
+            'model' => 'nullable|string',
             'manufacturer' => ['required', 'string'],
             'code' => ['nullable', 'string'],
             'condition' => ['required', 'string'],
@@ -447,6 +454,7 @@ class ShopAdsController extends Controller
             $shopAd->category = $request['category'];
             $shopAd->make_id = $request['make_id'];
             $shopAd->model_id = $request['model_id'];
+            $shopAd->custom_model = $request['model'];
             $shopAd->manufacturer = $request['manufacturer'];
             $shopAd->code = $request['code'];
             $shopAd->condition = $request['condition'];
