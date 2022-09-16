@@ -155,6 +155,7 @@ class TruckAdsController extends Controller
             'fuel_type_id' => 'required|string|exists:car_fuel_types,id',
             'vehicle_category_id' => 'nullable|string|exists:vehicle_categories,id',
             'transmission_type_id' =>'nullable|string|exists:car_transmission_types,id',
+            'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
             'cab' => ['nullable', 'string'],
             'construction_year' => ['nullable', 'integer'],
             'first_registration_month' => ['nullable', 'integer'],
@@ -324,6 +325,7 @@ class TruckAdsController extends Controller
             $truckAd->youtube_link = $request['youtube_link'];
             $truckAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $truckAd->doors = $request['doors'];
+            $truckAd->drive_type_id = $request['drive_type_id'];
             $truckAd->save();
             
             $ad_sub_characteristics = [];
@@ -407,6 +409,7 @@ class TruckAdsController extends Controller
             'fuel_type_id' => 'required|string|exists:car_fuel_types,id',
             'vehicle_category_id' => 'required|string|exists:vehicle_categories,id',
             'transmission_type_id' =>'nullable|string|exists:car_transmission_types,id',
+            'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
             'cab' => ['nullable', 'string'],
             'construction_year' => ['nullable', 'integer'],
             'first_registration_month' => ['nullable', 'integer'],
@@ -562,6 +565,7 @@ class TruckAdsController extends Controller
             $truckAd->youtube_link = $request['youtube_link'];
             $truckAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $truckAd->doors = $request['doors'];
+            $truckAd->drive_type_id = $request['drive_type_id'];
             $truckAd->save();
             
             $ad_sub_characteristics = [];

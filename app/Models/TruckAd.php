@@ -100,6 +100,10 @@ class TruckAd extends Model
         return $this->belongsTo(Make::class, 'make_id');
     }
 
+    public function driveType()
+    {
+        return $this->belongsTo(CarWheelDriveType::class, 'drive_type_id');
+    }
     /**
      * @return BelongsTo
      */

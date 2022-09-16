@@ -173,7 +173,7 @@ class AdsController extends Controller
                         },
                         'truckAd' => function($query)
                         {
-                            $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                            $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
                         },
                         'shopAd' => function($query)
                         {
@@ -247,7 +247,7 @@ class AdsController extends Controller
             },
             'truckAd' => function($query)
             {
-                $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
             },
             'shopAd' => function($query)
             {
@@ -327,7 +327,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','characteristics']);
                     },
-                'transmissionType','dealer','dealerShowRoom']);
+                'transmissionType','driveType','dealer','dealerShowRoom']);
                 break;
             case 'rental':
                 $response = RentalAd::whereIn('ad_id',$ad_ids)->with([
@@ -417,7 +417,7 @@ class AdsController extends Controller
                         },
                         'truckAd' => function($query)
                         {
-                            $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                            $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
                         },
                         'shopAd' => function($query)
                         {
@@ -487,7 +487,7 @@ class AdsController extends Controller
             },
             'truckAd' => function($query)
             {
-                $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
             },
             'shopAd' => function($query)
             {
@@ -729,7 +729,7 @@ class AdsController extends Controller
                 },
                 'truckAd' => function($query)
                 {
-                    $query->with(['make','vehicleCategory','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                    $query->with(['make','vehicleCategory','driveType','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
                 },
                 'shopAd' => function($query)
                 {
@@ -1026,7 +1026,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','characteristics']);
                     },
-                'transmissionType','dealer','dealerShowRoom'])
+                'transmissionType','driveType','dealer','dealerShowRoom'])
                 ->inRandomOrder()
                 ->limit(10)
                 ->get()
@@ -1536,7 +1536,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','user','characteristics']);
                     },
-                'transmissionType','dealer','dealerShowRoom'])
+                'transmissionType','driveType','dealer','dealerShowRoom'])
             ->paginate(24)
             ->toArray();
     }
@@ -2016,7 +2016,7 @@ public function getCountAutoAd($filters)
                     },
                     'truckAd' => function($query)
                     {
-                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                        $query->with(['make','driveType','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
                     },
                     'shopAd' => function($query)
                     {
@@ -2073,7 +2073,7 @@ public function getCountAutoAd($filters)
                     },
                     'truckAd' => function($query)
                     {
-                        $query->with(['make','fuelType','ad','transmissionType','dealer','dealerShowRoom']);
+                        $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
                     },
                     'shopAd' => function($query)
                     {

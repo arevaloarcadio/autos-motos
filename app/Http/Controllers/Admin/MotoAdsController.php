@@ -364,7 +364,7 @@ class MotoAdsController extends Controller
             'fuel_type_id' => 'required|string|exists:car_fuel_types,id',
             'body_type_id' => 'nullable|string|exists:car_body_types,id',
             'transmission_type_id' =>'nullable|string|exists:car_transmission_types,id',
-            'drive_type_id' => ['nullable', 'string'],
+            'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
             'first_registration_month' => ['required', 'integer'],
             'first_registration_year' => ['required', 'integer'],
             'inspection_valid_until_month' => ['nullable', 'integer'],
