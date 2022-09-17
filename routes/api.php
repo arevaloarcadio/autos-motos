@@ -737,13 +737,13 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
           
             Route::get('/{user}',                                       'UsersController@show')->name('show');
             Route::get('/{user}/info_ads',                              'UsersController@countAdsByUser')->name('show');
-          
-            //Route::get('/create',                                       'UsersController@create')->name('create');
             Route::post('/',                                            'UsersController@store')->name('store');
             Route::post('/professional',                                'UsersController@store_professional')->name('store_professional');
+            Route::post('/validator_company_name',                      'UsersController@validator_company_name')->name('store_professional');
+            Route::post('/validator_dealer_show_room_name',             'UsersController@validator_dealer_show_room_name')->name('store_professional');
+            Route::post('/validator_email',                             'UsersController@validator_email')->name('store_professional');
             Route::post('/{user}/status',                               'UsersController@setStatus')->name('setStatus');
             Route::post('/{user}',                                      'UsersController@update')->name('update');
-            //Route::get('/{user}/edit',                                  'UsersController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'UsersController@bulkDestroy')->name('bulk-destroy');
             Route::delete('/{user}',                                    'UsersController@destroy')->name('destroy');
         });

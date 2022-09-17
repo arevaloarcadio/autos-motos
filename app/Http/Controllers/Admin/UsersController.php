@@ -162,9 +162,56 @@ class UsersController extends Controller
         }
     }
 
-     public function store_professional(Request $request)
+    public function validator_email(Request $request)
     {
+        $resource = ApiHelper::resource();
+        
+        $validator = \Validator::make($request->all(), [
+            'user_email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
+        ]);
 
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        return response()->json(['data' => 'OK'], 200);
+    }
+
+    public function validator_company_name(Request $request)
+    {
+        $resource = ApiHelper::resource();
+        
+        $validator = \Validator::make($request->all(), [
+            'dealer_company_name' => ['required', Rule::unique('dealers', 'company_name'), 'string']
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        return response()->json(['data' => 'OK'], 200);
+    }
+    
+    public function validator_dealer_show_room_name(Request $request)
+    {
+        $resource = ApiHelper::resource();
+        
+        $validator = \Validator::make($request->all(), [
+            'dealer_show_room_name' => ['required', Rule::unique('dealer_show_rooms', 'name'), 'string']
+        ]);
+
+        if ($validator->fails()) {
+            ApiHelper::setError($resource, 0, 422, $validator->errors());
+            return $this->sendResponse($resource);
+        }
+
+        return response()->json(['data' => 'OK'], 200);
+    }
+
+    public function store_professional(Request $request)
+    {
         $resource = ApiHelper::resource();
         
         $validator = \Validator::make($request->all(), [
@@ -189,7 +236,7 @@ class UsersController extends Controller
             'dealer_description' => ['nullable', 'string'],
             'dealer_whatsapp_number' => ['nullable', 'string'],
             //dealer_show_room
-            'dealer_show_room_name' => ['required', 'string'],
+            'dealer_show_room_name' => ['required', Rule::unique('dealer_show_rooms', 'name'), 'string'],
             'dealer_show_room_address' => ['required', 'string'],
             'dealer_show_room_zip_code' => ['required', 'string'],
             'dealer_show_room_city' => ['required', 'string'],
@@ -252,7 +299,6 @@ class UsersController extends Controller
             $user->image ='users/user-default-ocassional.png';
             $user->type = 'Profesional';
             $user->dealer_id = $dealer->id;
-
             $user->save();
 
             $user->notify(new NewUser($user));
