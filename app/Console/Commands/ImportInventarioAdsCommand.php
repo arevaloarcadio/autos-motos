@@ -1086,7 +1086,7 @@ class ImportInventarioAdsCommand extends Command
 
         } catch (Exception $e) {
             
-            $this->info(
+            $this->error(
                 sprintf(
                     '==>Error: %s , %s, %s ,%s',
                     $e->getMessage(),
