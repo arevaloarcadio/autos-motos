@@ -1067,7 +1067,7 @@ class ImportInventarioAdsCommand extends Command
                 $ad = $this->findOrCreateAd($adInput,$dealer->id);
                     
                 $vehicleAd['ad_id'] = $ad->id;
-                $this->storeAdImage($ad,$adInfo->images->image);
+                $this->storeAdImage($ad,$adInfo->imagenes->imagen);
            
                 return $this->findOrCreateAutoAd($vehicleAd,$ad);
             }
@@ -1079,7 +1079,7 @@ class ImportInventarioAdsCommand extends Command
                 $vehicleAd['ad_id'] = $ad->id;
                 $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
                 
-                $this->storeAdImage($ad,$adInfo->images->image);
+                $this->storeAdImage($ad,$adInfo->imagenes->imagen);
              
                 return $this->findOrCreateTruckAd($vehicleAd,$ad);
             }
