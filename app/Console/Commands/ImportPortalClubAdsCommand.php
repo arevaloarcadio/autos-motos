@@ -1006,7 +1006,7 @@ class ImportPortalClubAdsCommand extends Command
         }else{
 
             $ad = Ad::where('description',$external_ad['description'])
-                ->where('dealer_id',$dealer_id)
+               // ->where('dealer_id',$dealer_id)
                 ->first();
             
             if (is_null($ad)) {

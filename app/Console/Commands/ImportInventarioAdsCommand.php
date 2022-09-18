@@ -853,6 +853,130 @@ class ImportInventarioAdsCommand extends Command
      * @throws InvalidAdTypeProvidedException
      * @throws Throwable
      */
+    private function findOrCreateAd($external_ad,$dealer_id): Ad
+    {
+        if (count($external_ad) == 0) {
+            throw new Exception('no_external_ad');
+        }        
+
+        $ad = Ad::where('slug',$external_ad['slug'])->first();
+        
+        if (is_null($ad)) {
+
+            $ad = Ad::create($external_ad);
+
+            $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+        }else{
+
+            $ad = Ad::where('description',$external_ad['description'])
+                //->where('dealer_id',$dealer_id)
+                ->first();
+            
+            if (is_null($ad)) {
+
+                $external_ad['slug'] .= random_int(1000, 9999);
+                
+                $ad = Ad::create($external_ad);
+
+                $this->info(sprintf('2: Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+            }
+            
+        }
+        
+        return $ad;
+    }
+
+    private function findOrCreateAutoAd($external_auto_ad,$ad): AutoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $auto_ad = AutoAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($auto_ad)) {
+            
+            $auto_ad = AutoAd::create($external_auto_ad);
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $auto_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify auto_ad %s',$ad['external_id']));
+        }
+
+        return $auto_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
+    private function findOrCreateMotoAd($external_auto_ad,$ad): MotoAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $moto_ad = MotoAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($moto_ad)) {
+            
+            $moto_ad = MotoAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $moto_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify moto_ad %s',$ad['external_id']));
+        }
+
+        return $moto_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
+    private function findOrCreateTruckAd($external_auto_ad,$ad): TruckAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $truck_ad = TruckAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($truck_ad)) {
+            
+            $truck_ad = TruckAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $truck_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
+        }
+
+        return $truck_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
+     private function findOrCreateMobileHomeAd($external_auto_ad,$ad): MobileHomeAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $mobile_home_ad = MobileHomeAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($mobile_home_ad)) {
+            
+            $mobile_home_ad = MobileHomeAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $mobile_home_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
+        }
+
+        return $mobile_home_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
+
     private function createAd(
         SimpleXMLElement $adInfo,
         User $adminUser,
@@ -937,27 +1061,36 @@ class ImportInventarioAdsCommand extends Command
         
         
         if($typeAd == 'auto'){
-            $ad = Ad::create($adInput);
-            $vehicleAd['ad_id'] = $ad->id;
-            $this->storeAdImage($ad,$adInfo->imagenes->imagen);
             
-            return AutoAd::create($vehicleAd);
+            $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                
+            $vehicleAd['ad_id'] = $ad->id;
+            $this->storeAdImage($ad,$adInfo->images->image);
+       
+            return $this->findOrCreateAutoAd($vehicleAd,$ad);
         }
 
         if($typeAd == 'mobile-home'){
-            $ad = Ad::create($adInput);
-            $vehicleAd['ad_id'] = $ad->id;
-            $this->storeAdImage($ad,$adInfo->imagenes->imagen);
             
-            return MobileHomeAd::create($vehicleAd);
+            $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                
+            $vehicleAd['ad_id'] = $ad->id;
+            $vehicleAd['vehicle_category_id'] ='02d4cd46-6692-4c2b-9455-4683b961630d';
+            
+            $this->storeAdImage($ad,$adInfo->images->image);
+         
+            return $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
         }
 
         if($typeAd == 'truck'){
-            $ad = Ad::create($adInput);
+            $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                
             $vehicleAd['ad_id'] = $ad->id;
-            $this->storeAdImage($ad,$adInfo->imagenes->imagen);
+            $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
             
-            return TruckAd::create($vehicleAd);
+            $this->storeAdImage($ad,$adInfo->images->image);
+         
+            return $this->findOrCreateTruckAd($vehicleAd,$ad);
         }
 
         /*$images = $adInfo->imagenes;
