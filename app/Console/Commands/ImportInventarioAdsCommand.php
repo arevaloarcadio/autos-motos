@@ -180,7 +180,7 @@ class ImportInventarioAdsCommand extends Command
                 $importedAdsIds[] = $externalId;
                 $typeAd = $this->getTypeAd($ad->carroceria); 
 
-                $existingAd = Ad::query()
+                /*$existingAd = Ad::query()
                                 ->where('type', '=', $typeAd)
                                 ->where('external_id', '=', $externalId)
                                 ->where('source', '=', AdSourceEnum::INVENTARIO_IMPORT)
@@ -199,7 +199,7 @@ class ImportInventarioAdsCommand extends Command
                     $counter++;
                     $successfulAdsCounter++;
                     continue;
-                }
+                }*/
                 try {
                     $startTime = microtime(true);
                     $this->createAd(
@@ -1072,18 +1072,7 @@ class ImportInventarioAdsCommand extends Command
                 return $this->findOrCreateAutoAd($vehicleAd,$ad);
             }
 
-            if($typeAd == 'mobile-home'){
-                
-                $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                    
-                $vehicleAd['ad_id'] = $ad->id;
-                $vehicleAd['vehicle_category_id'] ='02d4cd46-6692-4c2b-9455-4683b961630d';
-                
-                $this->storeAdImage($ad,$adInfo->images->image);
-             
-                return $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
-            }
-
+           
             if($typeAd == 'truck'){
                 $ad = $this->findOrCreateAd($adInput,$dealer->id);
                     
