@@ -1046,6 +1046,7 @@ class ImportInventarioAdsCommand extends Command
             'owners'                       => $adInfo->duenos_anteriores == '' ? null : $this->formatIntValue((string) $adInfo->duenos_anteriores),
             'inspection_valid_until_month' => null,
             'inspection_valid_until_year'  => null,
+            'truck_type' => $adInfo->carroceria,
             'make_id'                      => $make->id,
             'model_id'                     => $model->id,
             'generation_id'                => null,
