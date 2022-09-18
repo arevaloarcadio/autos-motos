@@ -1262,6 +1262,17 @@ class ImportPortalClubAdsCommand extends Command
             }
             
         }catch (Exception $e) {
+
+            $this->info(
+                sprintf(
+                    '==>Error: %s , %s, %s ,%s',
+                    $e->getMessage(),
+                    $e->getLine(),
+                    $e->getFile(),
+                    $this->getUsedMemory()
+                )
+            );
+            
             \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug(sprintf(
                     '==>Error: %s , %s, %s ,%s',
                     $e->getMessage(),
