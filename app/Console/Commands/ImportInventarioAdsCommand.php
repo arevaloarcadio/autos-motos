@@ -1059,40 +1059,52 @@ class ImportInventarioAdsCommand extends Command
         ];
        
         
-        
-        if($typeAd == 'auto'){
-            
-            $ad = $this->findOrCreateAd($adInput,$dealer->id);
+        try {
+               
+              
+            if($typeAd == 'auto'){
                 
-            $vehicleAd['ad_id'] = $ad->id;
-            $this->storeAdImage($ad,$adInfo->images->image);
-       
-            return $this->findOrCreateAutoAd($vehicleAd,$ad);
-        }
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                $vehicleAd['ad_id'] = $ad->id;
+                $this->storeAdImage($ad,$adInfo->images->image);
+           
+                return $this->findOrCreateAutoAd($vehicleAd,$ad);
+            }
 
-        if($typeAd == 'mobile-home'){
-            
-            $ad = $this->findOrCreateAd($adInput,$dealer->id);
+            if($typeAd == 'mobile-home'){
                 
-            $vehicleAd['ad_id'] = $ad->id;
-            $vehicleAd['vehicle_category_id'] ='02d4cd46-6692-4c2b-9455-4683b961630d';
-            
-            $this->storeAdImage($ad,$adInfo->images->image);
-         
-            return $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
-        }
-
-        if($typeAd == 'truck'){
-            $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                $vehicleAd['ad_id'] = $ad->id;
+                $vehicleAd['vehicle_category_id'] ='02d4cd46-6692-4c2b-9455-4683b961630d';
                 
-            $vehicleAd['ad_id'] = $ad->id;
-            $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
-            
-            $this->storeAdImage($ad,$adInfo->images->image);
-         
-            return $this->findOrCreateTruckAd($vehicleAd,$ad);
-        }
+                $this->storeAdImage($ad,$adInfo->images->image);
+             
+                return $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
+            }
 
+            if($typeAd == 'truck'){
+                $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                $vehicleAd['ad_id'] = $ad->id;
+                $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                
+                $this->storeAdImage($ad,$adInfo->images->image);
+             
+                return $this->findOrCreateTruckAd($vehicleAd,$ad);
+            }
+
+        } catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug(sprintf(
+                    '==>Error: %s , %s, %s ,%s',
+                    $e->getMessage(),
+                    $e->getLine(),
+                    $e->getFile(),
+                    $this->getUsedMemory()
+                ));
+
+        }
         /*$images = $adInfo->imagenes;
         if (count($images) === 0) {
             return $this->adCreator->create(AdTypeEnum::AUTO_SLUG, $adInput);
