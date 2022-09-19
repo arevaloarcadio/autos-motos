@@ -1289,13 +1289,21 @@ class ImportPortalClubAdsCommand extends Command
 
         foreach ($images as $image) {
             
-            if ($k == 0) {
-                $ad->thumbnail = $image->large;
-                $ad->images_processing_status = 'SUCCESSFUL';
-                $ad->save();
-            }
+            $ad_image = AdImage::query()
+                ->where('ad_id', '=', $ad->id)
+                ->where('path', '=', $image->large)
+                ->first();
 
-            AdImage::create(['ad_id' => $ad->id,'path'=>$image->large, 'is_external' => 1, 'order_index' => $k++]);
+            if (is_null($ad_image)) {
+                if ($k == 0) {
+                    $ad->thumbnail = $image->large;
+                    $ad->images_processing_status = 'SUCCESSFUL';
+                    $ad->save();
+                }else{
+                    AdImage::create(['ad_id' => $ad->id,'path'=> $image->large, 'is_external' => 1, 'order_index' => $k]);   
+                }
+            }
+            $k++;
         }
         
         $ad->images_processing_status = 'SUCCESSFUL';

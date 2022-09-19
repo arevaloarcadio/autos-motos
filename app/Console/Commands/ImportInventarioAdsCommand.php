@@ -1131,20 +1131,28 @@ class ImportInventarioAdsCommand extends Command
         $k = 0;
 
         foreach ($images as $image) {
-    
-            if ($k == 0) {
-                $ad->thumbnail = $image->imagen_url;
-                $ad->images_processing_status = 'SUCCESSFUL';
-                $ad->save();
+            
+            $ad_image = AdImage::query()
+                ->where('ad_id', '=', $ad->id)
+                ->where('path', '=', $image->imagen_url)
+                ->first();
+
+            if (is_null($ad_image)) {
+                if ($k == 0) {
+                    $ad->thumbnail = $image->imagen_url;
+                    $ad->images_processing_status = 'SUCCESSFUL';
+                    $ad->save();
+                }else{
+                    AdImage::create(['ad_id' => $ad->id,'path'=> $image->imagen_url, 'is_external' => 1, 'order_index' => $k]);   
+                }
             }
-    
-            AdImage::create(['ad_id' => $ad->id,'path'=>$image->imagen_url, 'is_external' => 1, 'order_index' => $k++]);
+            $k++;
         }
         
         $ad->images_processing_status = 'SUCCESSFUL';
         $ad->save();
     }
-
+    
     public function getTypeAd($body)
     {   
         $bodys_inventario = [
