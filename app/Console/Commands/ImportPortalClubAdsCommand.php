@@ -990,7 +990,7 @@ class ImportPortalClubAdsCommand extends Command
      * @throws Throwable
      */
 
-    private function findOrCreateAd($external_ad,$dealer_id,mo): Ad
+    private function findOrCreateAd($external_ad,$dealer_id): Ad
     {
         if (count($external_ad) == 0) {
             throw new Exception('no_external_ad');
@@ -1057,7 +1057,7 @@ class ImportPortalClubAdsCommand extends Command
                     # code...
                     break;
                 case 'truck':
-                
+
                     $truck_ad = TruckAd::where('dealer_id',$external_vehicle_ad['dealer_id'])
                         ->where('address',$external_vehicle_ad['address'])
                         ->first();
