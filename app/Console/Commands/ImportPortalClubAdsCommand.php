@@ -1016,7 +1016,7 @@ class ImportPortalClubAdsCommand extends Command
     }
 
 
-    private function validateAd($external_ad,$external_vehicle_ad): Ad
+    private function validateAd($external_ad,$external_vehicle_ad)
     {
         $ad = Ad::where('slug',$external_ad['slug'])
             ->where('description',$external_ad['description'])
