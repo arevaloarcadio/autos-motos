@@ -278,10 +278,12 @@ class RentalAdsController extends Controller
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
 
-            $file = $request->file()[0];
-            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
-            $ad->thumbnail = $thumbnail;
-            $ad->save();
+            if ($request->file()) {
+                $file = $request->file()[0];
+                $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                $ad->thumbnail = $thumbnail;
+                $ad->save();
+            }
             
             $rental_ad = RentalAd::where('ad_id',$id)->update([
                 'address' => $sanitized['address'],

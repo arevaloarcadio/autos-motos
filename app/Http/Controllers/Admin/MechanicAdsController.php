@@ -274,10 +274,13 @@ class MechanicAdsController extends Controller
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
 
-            $file = $request->file()[0];
-            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
-            $ad->thumbnail = $thumbnail;
-            $ad->save();
+            if ($request->file()) {
+                $file = $request->file()[0];
+                $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                $ad->thumbnail = $thumbnail;
+                $ad->save();
+            }
+            
 
             $mechanicAd = MechanicAd::where('ad_id',$id)->update([
                 'address' => $sanitized['address'],
