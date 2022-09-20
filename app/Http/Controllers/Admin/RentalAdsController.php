@@ -177,17 +177,12 @@ class RentalAdsController extends Controller
             
             $thumbnail = '';
             $i = 0;
-            if ($request->file()) {
-                foreach ($request->file() as $file) {
-                    if ($i == 0) {
-                        $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
-                    }else{
-                        $this->uploadFile($file,$ad->id,$i);
-                    }
-                    $i++;
-                }
-            }
-            
+
+            $file = $request->file()[0];
+            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
+
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
 
             $rental_ad = RentalAd::create([
@@ -283,22 +278,10 @@ class RentalAdsController extends Controller
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
 
-            if ($request->file()) {
-                foreach ($request->file() as $file) {
-                    if ($i == 0) {
-                        if ($request->eliminated_thumbnail) {
-                            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
-                            $ad->thumbnail = $thumbnail;
-                            $ad->save();
-                        }else{
-                            $this->uploadFile($file,$ad->id,$i);
-                        }
-                    }else{
-                        $this->uploadFile($file,$ad->id,$i);
-                    }
-                    $i++;
-                }
-            }
+            $file = $request->file()[0];
+            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+            $ad->thumbnail = $thumbnail;
+            $ad->save();
             
             $rental_ad = RentalAd::where('ad_id',$id)->update([
                 'address' => $sanitized['address'],

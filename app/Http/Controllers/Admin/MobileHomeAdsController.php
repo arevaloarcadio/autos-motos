@@ -204,13 +204,13 @@ class MobileHomeAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
-        if (count($request->file()) > 3) {
+        if (count($request->file()) > 30) {
             ApiHelper::setError($resource, 0, 422,['files' => 'Has excedido el numero maximos de imagenes']);
             return $this->sendResponse($resource);
         }
 
-        if (count($request->file())  == 0) {
-            ApiHelper::setError($resource, 0, 422,['files' => 'Debe enviar minimo 1 imagen para publicar']);
+        if (count($request->file()) < 3) {
+            ApiHelper::setError($resource, 0, 422,['files' => 'Debe enviar minimo 3 imagenes para publicar']);
             return $this->sendResponse($resource);
         }
         
@@ -434,7 +434,7 @@ class MobileHomeAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
-        if (count($request->file()) > 3) {
+        if (count($request->file()) > 30) {
             ApiHelper::setError($resource, 0, 422,['files' => 'Has excedido el numero maximos de imagenes']);
             return $this->sendResponse($resource);
         }
