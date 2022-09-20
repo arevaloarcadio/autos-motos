@@ -253,11 +253,11 @@ class ImportPortalClubAdsCommand extends Command
                     }
                 }
 
-                $this->cleanUpAds($dealer, $importedAdsIds);
+                //$this->cleanUpAds($dealer, $importedAdsIds);
                 // delete external ads from this dealer not in $importedAdsIds;
             }
 
-            $this->cleanUpDealers($countryName, $importedSellersIds);
+            //$this->cleanUpDealers($countryName, $importedSellersIds);
             // find external dealer from current market not in $importedSellersIds and delete their external ads;
 
             $marketCounter[$countryCode] = [
@@ -990,7 +990,7 @@ class ImportPortalClubAdsCommand extends Command
      * @throws Throwable
      */
 
-    private function findOrCreateAd($external_ad,$dealer_id): Ad
+    private function findOrCreateAd($external_ad,$dealer_id,mo): Ad
     {
         if (count($external_ad) == 0) {
             throw new Exception('no_external_ad');
@@ -1005,24 +1005,79 @@ class ImportPortalClubAdsCommand extends Command
             $this->info(sprintf('Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
         }else{
 
-            $ad = Ad::where('description',$external_ad['description'])
-               // ->where('dealer_id',$dealer_id)
-                ->first();
+            $external_ad['slug'] .= random_int(1000, 9999);
             
-            if (is_null($ad)) {
+            $ad = Ad::create($external_ad);
 
-                $external_ad['slug'] .= random_int(1000, 9999);
+            $this->info(sprintf('2: Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+        }
+        
+        return $ad;
+    }
+
+
+    private function validateAd($external_ad,$external_vehicle_ad): Ad
+    {
+        $ad = Ad::where('slug',$external_ad['slug'])
+            ->where('description',$external_ad['description'])
+            ->first();
+        
+        if (is_null($ad)) {
+            return false;
+        }else{
+
+            switch ($ad['type']) {
+                case 'auto':
+                    
+                    $auto_ad = AutoAd::where('dealer_id',$external_vehicle_ad['dealer_id'])
+                        ->where('address',$external_vehicle_ad['address'])
+                        ->first();
+                    
+                    if (is_null($auto_ad)) {
+                        return false;
+                    }else{
+                        return true;
+                    }
+                    
+                    break;
+                case 'moto':
+
+                   $moto_ad = MotoAd::where('dealer_id',$external_vehicle_ad['dealer_id'])
+                        ->where('address',$external_vehicle_ad['address'])
+                        ->first();
+                    
+                    if (is_null($moto_ad)) {
+                        return false;
+                    }else{
+                        return true;
+                    }
+
+                    break;
+                case 'mobile-home':
+                    # code...
+                    break;
+                case 'truck':
                 
-                $ad = Ad::create($external_ad);
+                    $truck_ad = TruckAd::where('dealer_id',$external_vehicle_ad['dealer_id'])
+                        ->where('address',$external_vehicle_ad['address'])
+                        ->first();
 
-                $this->info(sprintf('2: Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
+                    if (is_null($truck_ad)) {
+                        return false;
+                    }else{
+                        return true;
+                    }
+
+                    break;    
+                default:
+                    # code...
+                    break;
             }
             
         }
         
         return $ad;
     }
-
     private function findOrCreateAutoAd($external_auto_ad,$ad): AutoAd
     {
         if (count($external_auto_ad) == 0) {
@@ -1219,46 +1274,62 @@ class ImportPortalClubAdsCommand extends Command
 
             if ($gener == 'moto') {
                 
-                $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                $vehicleAd['ad_id'] = $ad->id;
-                //$vehicleAd['vehicle_category_id'] ='8dc8cfab-ee22-4fe4-9246-0ada375eb4f8';
-                $this->storeAdImage($ad,$adInfo->images->image);
+                if (!$this->validateAd($adInput,$vehicleAd)) {
+
+                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    $vehicleAd['ad_id'] = $ad->id;
+                    
+                    $this->storeAdImage($ad,$adInfo->images->image);
+                    
+                    return $this->findOrCreateMotoAd($vehicleAd,$ad);
+                }else{
+                    return null;
+                }
                 
-                return $this->findOrCreateMotoAd($vehicleAd,$ad);
             }
             
             if ($gener == 'furgone') {
-                
-                $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                
-                $vehicleAd['ad_id'] = $ad->id;
-                $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
-                
-                $this->storeAdImage($ad,$adInfo->images->image);
-                
-                return $this->findOrCreateTruckAd($vehicleAd,$ad);
+
+                if (!$this->validateAd($adInput,$vehicleAd)) {
+                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                    $vehicleAd['ad_id'] = $ad->id;
+                    $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                    
+                    $this->storeAdImage($ad,$adInfo->images->image);
+                    
+                    return $this->findOrCreateTruckAd($vehicleAd,$ad);
+                }else{
+                    return null;
+                }
             }
 
             if ($gener == 'bus') {
-                
-                $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                
-                $vehicleAd['ad_id'] = $ad->id;
-                $vehicleAd['vehicle_category_id'] ='9f49d041-efd8-4797-95f2-4742b50442a8';
-                
-                $this->storeAdImage($ad,$adInfo->images->image);
-                
-                return $this->findOrCreateTruckAd($vehicleAd,$ad);
+                if (!$this->validateAd($adInput,$vehicleAd)) {
+                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                    $vehicleAd['ad_id'] = $ad->id;
+                    $vehicleAd['vehicle_category_id'] ='9f49d041-efd8-4797-95f2-4742b50442a8';
+                    
+                    $this->storeAdImage($ad,$adInfo->images->image);
+                    
+                    return $this->findOrCreateTruckAd($vehicleAd,$ad);
+                }else{
+                    return null;
+                }
             }
             
             if ($gener == 'auto') {
-                
-                $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                
-                $vehicleAd['ad_id'] = $ad->id;
-                $this->storeAdImage($ad,$adInfo->images->image);
-           
-                return $this->findOrCreateAutoAd($vehicleAd,$ad);
+                if (!$this->validateAd($adInput,$vehicleAd)) {
+                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                    $vehicleAd['ad_id'] = $ad->id;
+                    $this->storeAdImage($ad,$adInfo->images->image);
+               
+                    return $this->findOrCreateAutoAd($vehicleAd,$ad);
+                }else{
+                    return null;
+                }
             }
             
         }catch (Exception $e) {

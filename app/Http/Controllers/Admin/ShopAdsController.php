@@ -382,7 +382,7 @@ class ShopAdsController extends Controller
             'market_id' => ['required', 'string'],
             'category' => ['required', 'string'],
             'make_id' => ['required', 'string'],
-            'model_id' => ['required', 'string'],
+            'model_id' => 'nullable|string|exists:models,id',
             'model' => 'nullable|string',
             'manufacturer' => ['required', 'string'],
             'code' => ['nullable', 'string'],
