@@ -27,7 +27,8 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\{Ad,MechanicAd,DealerShowRoom,AdImage};
-
+use Illuminate\Support\Facades\Redis as Redis;
+use Illuminate\Support\Arr;
 class MechanicAdsController extends Controller
 {
     use ApiController;
@@ -40,14 +41,26 @@ class MechanicAdsController extends Controller
      */
     public function index(IndexMechanicAd $request)
     {
+        // $querys =$request->query->get();
+
+        if(
+            Redis::exists('mechanic_ads') && 
+            !$request->filters && 
+            $request->query->get('orderBy') == 'created_at'  &&
+            $request->query->get('orderDirection') == 'desc'
+        ) {
+            $data = json_decode(Redis::get('mechanic_ads'));
+            return ['data' => $data];
+        }
+            
         $promoted_simple_ads = MechanicAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
         foreach (MechanicAd::getRelationships() as $key => $value) {
-           $promoted_simple_ads->with($key);
+            $promoted_simple_ads->with($key);
         }
 
         $promoted = $promoted_simple_ads->get()->toArray();
-        
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MechanicAd::class)->processRequestAndGet(
             // pass the request with params
@@ -107,6 +120,14 @@ class MechanicAdsController extends Controller
         array_push($promoted,...$data['data']);
     
         $data['data'] = $promoted;
+
+        if(
+            !$request->filters && 
+            $request->query->get('orderBy') == 'created_at'  &&
+            $request->query->get('orderDirection') == 'desc'
+        ){
+            Redis::set('mechanic_ads',json_encode($data ));
+        }
 
         return ['data' => $data];
     }
@@ -192,6 +213,7 @@ class MechanicAdsController extends Controller
             }
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            Redis::del('mechanic_ads');
 
             $mechanicAd = MechanicAd::create([
                 'ad_id' =>  $ad->id,

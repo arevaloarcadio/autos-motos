@@ -28,6 +28,7 @@ use App\Helpers\Api as ApiHelper;
 use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Redis as Redis;
 
 class AdsController extends Controller
 {
@@ -379,54 +380,64 @@ class AdsController extends Controller
 
     public function byUser(Request $request)
     {
-        $data = Ad::where('user_id',Auth::user()->id)
-                    ->orderBy('created_at','DESC')
-                    ->limit(20);
-        
-        if ($request->filter) {
-            if ($request->filter == 'auto') {
-                $data = $data->whereIn('type',['auto','mobile-home','moto','truck']);
-            }else{
-                $data = $data->where('type',$request->filter);
-            }
-        } 
+        if(Redis::exists('by_user_'.Auth::user()->id.'_filter_'.$request->filter)) {
+            $data = json_decode(Redis::get('by_user_'.Auth::user()->id.'_filter_'.$request->filter));
+            return ['data' => $data];
+        }else{
+            
+            $data = Ad::where('user_id',Auth::user()->id)
+            ->orderBy('created_at','DESC')
+            ->limit(20);
 
-        $data->with([
-                        'user',
-                        'characteristics',
-                        'mechanicAd' => function($query)
-                        {
-                            $query->with(['dealer','dealerShowRoom']);
-                        },
-                        'rentalAd' => function($query)
-                        {
-                            $query->with(['dealer','dealerShowRoom']);
-                        },
-                        'images',
-                        'autoAd' => function($query)
-                        {
-                            $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
-                        },
-                        'motoAd' => function($query)
-                        {
-                            $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
-                        },
-                        'mobileHomeAd' => function($query)
-                        {
-                            $query->with(['make','model','driveType','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
-                        },
-                        'truckAd' => function($query)
-                        {
-                            $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
-                        },
-                        'shopAd' => function($query)
-                        {
-                            $query->with(['make','model','ad','dealer','dealerShowRoom']);
-                        }
-                    ]
-                );
-      
-        return ['data' => $data->get()];
+            if ($request->filter) {
+                if ($request->filter == 'auto') {
+                    $data = $data->whereIn('type',['auto','mobile-home','moto','truck']);
+                }else{
+                    $data = $data->where('type',$request->filter);
+                }
+            } 
+
+            $data->with([
+                    'user',
+                    'characteristics',
+                    'mechanicAd' => function($query)
+                    {
+                        $query->with(['dealer','dealerShowRoom']);
+                    },
+                    'rentalAd' => function($query)
+                    {
+                        $query->with(['dealer','dealerShowRoom']);
+                    },
+                    'images',
+                    'autoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'motoAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom']);
+                    },
+                    'mobileHomeAd' => function($query)
+                    {
+                        $query->with(['make','model','driveType','ad','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'truckAd' => function($query)
+                    {
+                        $query->with(['make','fuelType','driveType','ad','transmissionType','dealer','dealerShowRoom']);
+                    },
+                    'shopAd' => function($query)
+                    {
+                        $query->with(['make','model','ad','dealer','dealerShowRoom']);
+                    }
+                ]
+            );
+            $data=$data->get();
+            Redis::set('by_user_'.Auth::user()->id.'_filter_'.$request->filter,json_encode($data));
+            return ['data' => $data];
+  
+        }
+
+        
     }
 
     public function byDealer(Request $request,$dealer_id)

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\Redis as Redis;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RentalAd\BulkDestroyRentalAd;
 use App\Http\Requests\Admin\RentalAd\DestroyRentalAd;
@@ -40,15 +40,23 @@ class RentalAdsController extends Controller
      */
     public function index(IndexRentalAd $request)
     {
-        $promoted_simple_ads = RentalAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
-        ->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')
-        ->inRandomOrder()->limit(25);
 
-        foreach (RentalAd::getRelationships() as $key => $value) {
-           $promoted_simple_ads->with($key);
+        if(Redis::exists('rental_ads')) {
+            $promoted = json_decode(Redis::get('rental_ads'));
+
+        }else{
+            $promoted_simple_ads = RentalAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
+            ->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')
+            ->inRandomOrder()->limit(25);
+    
+            foreach (RentalAd::getRelationships() as $key => $value) {
+               $promoted_simple_ads->with($key);
+            }
+    
+            $promoted = $promoted_simple_ads->get()->toArray();
+            Redis::set('rental_ads',json_encode($promoted ));
         }
-
-        $promoted = $promoted_simple_ads->get()->toArray();
+        
       
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(RentalAd::class)->processRequestAndGet(
@@ -189,6 +197,7 @@ class RentalAdsController extends Controller
             }
             
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            Redis::del('rental-ads');
 
             $rental_ad = RentalAd::create([
                 'ad_id'  => $ad->id, 

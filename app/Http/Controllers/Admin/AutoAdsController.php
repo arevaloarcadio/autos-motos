@@ -27,6 +27,7 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\{Ad,AutoAd,DealerShowRoom,AdSubCharacteristic,AdImage};
+use Illuminate\Support\Facades\Redis as Redis;
 
 class AutoAdsController extends Controller
 {
@@ -40,13 +41,35 @@ class AutoAdsController extends Controller
      */
     public function index(IndexAutoAd $request)
     {
-        $promoted_simple_ads = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
-
-        foreach (AutoAd::getRelationships() as $key => $value) {
-           $promoted_simple_ads->with($key);
+        // dd(Redis::exists('auto_ads') && !$request->filters && $request->query->get('orderBy') == null?"true":"false");
+        // dd(!$request->filters && $request->query->get('orderBy') == 'created_at' && $request->query->get('orderDirection') == 'desc');
+        if(
+            Redis::exists('auto_ads_ult') && 
+            !$request->filters &&
+            $request->query->get('orderBy') == 'created_at' &&
+            $request->query->get('orderDirection') == 'desc'
+        ) {
+            $data = json_decode(Redis::get('auto_ads_ult'));
+            return ['data' => $data,'redis'=>'true'];
         }
 
+        if(
+            Redis::exists('auto_ads') && 
+            !$request->filters &&
+            $request->query->get('orderBy') == null
+        ) {
+            $data = json_decode(Redis::get('auto_ads'));
+            return ['data' => $data,'redis'=>'true'];
+        }
+        
+        $promoted_simple_ads = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
+        foreach (AutoAd::getRelationships() as $key => $value) {
+            $promoted_simple_ads->with($key);
+        }
+    
         $promoted = $promoted_simple_ads->get()->toArray();
+
+        
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AutoAd::class)->processRequestAndGet(
             // pass the request with params
@@ -61,7 +84,7 @@ class AutoAdsController extends Controller
             function ($query) use ($request) {
                         
                 $columns = ['id', 'ad_id', 'price', 'price_contains_vat', 'vin', 'doors', 'mileage', 'exterior_color', 'interior_color', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link', 'ad_fuel_type_id', 'ad_body_type_id', 'ad_transmission_type_id', 'ad_drive_type_id', 'first_registration_month', 'first_registration_year', 'engine_displacement', 'power_hp', 'owners', 'inspection_valid_until_month', 'inspection_valid_until_year', 'make_id', 'model_id', 'generation_id', 'series_id', 'trim_id', 'equipment_id', 'additional_vehicle_info', 'seats', 'fuel_consumption', 'co2_emissions', 'latitude', 'longitude', 'geocoding_status'];
-                
+
                 
                 if ($request->filters) {
                     foreach ($columns as $column) {
@@ -73,7 +96,14 @@ class AutoAdsController extends Controller
                     }
                 }
 
-                foreach (AutoAd::getRelationships() as $key => $value) {
+                if(Redis::exists('auto_ads_relation')) {
+                    $relation = json_decode(Redis::get('auto_ads_relation'));
+        
+                }else{
+                    $relation = AutoAd::getRelationships();
+                    Redis::set('auto_ads_relation',json_encode($relation ));
+                }
+                foreach ($relation as $key => $value) {
                    $query->with($key);
                 }
                 
@@ -92,8 +122,23 @@ class AutoAdsController extends Controller
         array_push($promoted,...$data['data']);
     
         $data['data'] = $promoted;
-        
-        return ['data' => $data];
+
+        if(
+            !$request->filters &&
+            $request->query->get('orderBy') == 'created_at' &&
+            $request->query->get('orderDirection') == 'desc'
+        ){
+            Redis::set('auto_ads_ult',json_encode($data));
+            return ['data' => $data];
+        }
+        if(
+            !$request->filters &&
+            $request->query->get('orderBy') == null
+        ) {
+            Redis::set('auto_ads',json_encode($data));
+            return ['data' => $data, "redis"=>'false'];
+        }
+
     }
 
     public function searchLike(Request $request)
@@ -144,6 +189,7 @@ class AutoAdsController extends Controller
     public function store(Request $request)
     {
    
+
         $validator = Validator::make($request->all(), [
             'make_id' => 'required|string|exists:makes,id',
             'model_id' => 'required|string|exists:models,id',
@@ -238,6 +284,8 @@ class AutoAdsController extends Controller
             $ad->save();
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            Redis::del('auto_ads');
+            Redis::del('auto_ads_ult');
             
             $autoAd = new AutoAd;
             $autoAd->ad_id = $ad->id;

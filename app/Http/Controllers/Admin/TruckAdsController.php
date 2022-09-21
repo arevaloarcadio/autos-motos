@@ -28,6 +28,7 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\{Ad,TruckAd,DealerShowRoom,AdSubCharacteristic,AdImage,VehicleCategory};
+use Illuminate\Support\Facades\Redis as Redis;
 
 class TruckAdsController extends Controller
 {   
@@ -41,13 +42,20 @@ class TruckAdsController extends Controller
      */
     public function index(IndexTruckAd $request)
     {
-        $promoted_simple_ads = TruckAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
-        foreach (TruckAd::getRelationships() as $key => $value) {
-           $promoted_simple_ads->with($key);
+        if(Redis::exists('truck_ads')) {
+            $promoted = json_decode(Redis::get('truck_ads'));
+
+        }else{
+            $promoted_simple_ads = TruckAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
+
+            foreach (TruckAd::getRelationships() as $key => $value) {
+            $promoted_simple_ads->with($key);
+            }
+            $promoted = $promoted_simple_ads->get()->toArray();
+            Redis::set('truck_ads',json_encode($promoted));
         }
 
-        $promoted = $promoted_simple_ads->get()->toArray();
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(TruckAd::class)->processRequestAndGet(
             // pass the request with params
@@ -262,6 +270,7 @@ class TruckAdsController extends Controller
             $ad->save();
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            Redis::del('truck_ads');
 
             $truckAd = new TruckAd;
             $truckAd->ad_id = $ad->id;

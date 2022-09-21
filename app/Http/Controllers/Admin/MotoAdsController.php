@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\Redis as Redis;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MotoAd\BulkDestroyMotoAd;
 use App\Http\Requests\Admin\MotoAd\DestroyMotoAd;
@@ -39,15 +39,22 @@ class MotoAdsController extends Controller
      */
     public function index(IndexMotoAd $request)
     {
+
+        if(Redis::exists('moto_ads')) {
+            $promoted = json_decode(Redis::get('moto_ads'));
+
+        }else{
         
-        $promoted_simple_ads = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
+            $promoted_simple_ads = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
-        foreach (MotoAd::getRelationships() as $key => $value) {
-           $promoted_simple_ads->with($key);
+            foreach (MotoAd::getRelationships() as $key => $value) {
+                $promoted_simple_ads->with($key);
+            }
+
+            $promoted = $promoted_simple_ads->get()->toArray();
+            Redis::set('moto_ads',json_encode($promoted ));
+
         }
-
-        $promoted = $promoted_simple_ads->get()->toArray();
-
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MotoAd::class)->processRequestAndGet(
             // pass the request with params
@@ -240,6 +247,7 @@ class MotoAdsController extends Controller
             $ad->save();
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            Redis::del('moto_ads');
 
             $motoAd = new MotoAd;
             $motoAd->ad_id = $ad->id;

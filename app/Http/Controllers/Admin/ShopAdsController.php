@@ -28,6 +28,7 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\{Ad,ShopAd,DealerShowRoom,AdImage,Models};
+use Illuminate\Support\Facades\Redis as Redis;
 
 class ShopAdsController extends Controller
 {
@@ -52,6 +53,11 @@ class ShopAdsController extends Controller
 
         $promoted = $promoted_simple_ads->get()->toArray();*/
         
+        if(Redis::exists('shop_ads') && !$request->filters) {
+            $data = json_decode(Redis::get('shop_ads'));
+            return ['data' => $data];
+        }
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(ShopAd::class)->processRequestAndGet(
             // pass the request with params
@@ -79,9 +85,8 @@ class ShopAdsController extends Controller
                     }
                 
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-                
 
-                foreach (ShopAd::getRelationships() as $key => $value) {
+                foreach ( ShopAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
                 $query->with(['ad' => function ($query)
@@ -97,7 +102,9 @@ class ShopAdsController extends Controller
         array_push($promoted,...$data['data']);
     
         $data['data'] = $promoted;*/
-
+        if(!$request->filters){
+            Redis::set('shop_ads',json_encode($data));
+        }
         return ['data' => $data];
     }
 
@@ -239,6 +246,7 @@ class ShopAdsController extends Controller
             $ad->save();
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
+            Redis::del('shop_ads');
 
             $shopAd = new ShopAd;
             $shopAd->ad_id = $ad->id;
