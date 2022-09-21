@@ -561,7 +561,7 @@ class ImportPortalClubAdsCommand extends Command
     private function findFuelTypeId(string $externalFuel, string $countryCode): ?string
     {
         if ('' === $externalFuel) {
-            return null;
+            return 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
         }
         $externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions($countryCode);
@@ -613,7 +613,7 @@ class ImportPortalClubAdsCommand extends Command
     private function findBodyTypeId(string $externalBody, string $countryCode): ?string
     {
         if ('' === $externalBody) {
-            return null;
+            return '1492cecf-2568-4704-8d46-297f4d41fb9c';
         }
         $externalBody = strtolower(trim($externalBody));
         $bodyTypes    = $this->getBodyOptions($countryCode);
