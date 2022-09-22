@@ -248,7 +248,7 @@ class ShopAdsController extends Controller
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
             Redis::del('shop_ads');
-
+            Redis::del('by_user_'.Auth::user()->id.'_filter_shop');
             $shopAd = new ShopAd;
             $shopAd->ad_id = $ad->id;
             $shopAd->category = $request['category'];
@@ -458,6 +458,8 @@ class ShopAdsController extends Controller
                     $i++;
                 }
             }
+            Redis::del('shop_ads');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_shop');
 
             $shopAd = ShopAd::where('ad_id',$id)->first();
             $shopAd->category = $request['category'];
@@ -513,6 +515,8 @@ class ShopAdsController extends Controller
     public function destroy(DestroyShopAd $request, ShopAd $shopAd)
     {
         $shopAd->delete();
+        Redis::del('shop_ads');
+        Redis::del('by_user_'.Auth::user()->id.'_filter_shop');
 
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);

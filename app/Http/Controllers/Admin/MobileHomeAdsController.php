@@ -27,6 +27,7 @@ use App\Traits\ApiController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\{Ad,MobileHomeAd,DealerShowRoom,AdSubCharacteristic,AdImage};
+use Illuminate\Support\Facades\Redis as Redis;
 
 
 class MobileHomeAdsController extends Controller
@@ -217,6 +218,7 @@ class MobileHomeAdsController extends Controller
         try {
             
             $slug = $this->slugAd($request['title']);
+            Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
 
             $ad = new Ad;
             $ad->slug =  $slug;
@@ -472,6 +474,7 @@ class MobileHomeAdsController extends Controller
                     $i++;
                 }
             }
+            Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
 
             $mobileHomeAd = MobileHomeAd::where('ad_id',$id)->first();
             $mobileHomeAd->make_id = $request['make_id'];
@@ -564,6 +567,7 @@ class MobileHomeAdsController extends Controller
     public function destroy(DestroyMobileHomeAd $request, MobileHomeAd $mobile_home_ad)
     {
         $mobile_home_ad->delete();
+        Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
 
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);

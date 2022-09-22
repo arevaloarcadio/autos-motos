@@ -204,7 +204,7 @@ class MechanicAdsController extends Controller
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
             Redis::del('mechanic_ads');
-
+            Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
             $mechanicAd = MechanicAd::create([
                 'ad_id' =>  $ad->id,
                 'address' => $sanitized['address'],
@@ -321,7 +321,8 @@ class MechanicAdsController extends Controller
             $mechanicAd = MechanicAd::where('ad_id',$id)->first();
 
             $images = AdImage::where('ad_id',$id)->get();
-
+            Redis::del('mechanic_ads');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
             return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
 
         } catch (Exception $e) {
@@ -341,7 +342,8 @@ class MechanicAdsController extends Controller
     public function destroy(DestroyMechanicAd $request, MechanicAd $mechanicAd)
     {
         $mechanicAd->delete();
-
+        Redis::del('mechanic_ads');
+        Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
         }
