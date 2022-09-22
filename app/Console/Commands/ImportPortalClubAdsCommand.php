@@ -996,7 +996,7 @@ class ImportPortalClubAdsCommand extends Command
             throw new Exception('no_external_ad');
         }        
 
-        $ad = Ad::where('slug',$external_ad['slug'])->first();
+        $ad = Ad::where('title',$external_ad['title'])->first();
         
         if (is_null($ad)) {
 
@@ -1018,8 +1018,9 @@ class ImportPortalClubAdsCommand extends Command
 
     private function validateAd($external_ad,$external_vehicle_ad)
     {
-        $ad = Ad::where('slug',$external_ad['slug'])
+        $ad = Ad::where('title',$external_ad['title'])
             ->where('description',$external_ad['description'])
+            ->where('type',$external_ad['type'])
             ->first();
         
         if (is_null($ad)) {
@@ -1146,6 +1147,28 @@ class ImportPortalClubAdsCommand extends Command
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
+    private function findOrCreateMobileHomeAd($external_auto_ad,$ad): MobileHomeAd
+    {
+        if (count($external_auto_ad) == 0) {
+            throw new Exception('external_auto_ad');
+        }
+
+        $mobile_home_ad = MobileHomeAd::query()
+                    ->where('ad_id', '=', $ad['id'])->first();
+
+        if (is_null($mobile_home_ad)) {
+            
+            $mobile_home_ad = MobileHomeAd::create($external_auto_ad);
+
+            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+        }else{
+            $mobile_home_ad->update($external_auto_ad); 
+            $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
+        }
+
+        return $mobile_home_ad;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
+    }
     private function createAd(
         SimpleXMLElement $adInfo,
         User $user,
@@ -1156,11 +1179,9 @@ class ImportPortalClubAdsCommand extends Command
         DealerShowRoom $showRoom,
         $gener
     ) {
-        $type = $gener;
 
-        if ($gener == 'furgone') {
-            $type = 'truck';
-        }
+        $type = $this->getTypeAd($gener);
+
         $this->info(  $adInfo->model->body);
        
         $title            = $this->generateAdTitle($adInfo);
@@ -1272,7 +1293,7 @@ class ImportPortalClubAdsCommand extends Command
 
             \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($gener.' - body '.$adInfo->model->body.' - fuel'.$adInfo->model->fuel);
 
-            if ($gener == 'moto') {
+            if ($type == 'moto') {
                 
                 if (!$this->validateAd($adInput,$vehicleAd)) {
 
@@ -1288,38 +1309,7 @@ class ImportPortalClubAdsCommand extends Command
                 
             }
             
-            if ($gener == 'furgone') {
-
-                if (!$this->validateAd($adInput,$vehicleAd)) {
-                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                    
-                    $vehicleAd['ad_id'] = $ad->id;
-                    $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
-                    
-                    $this->storeAdImage($ad,$adInfo->images->image);
-                    
-                    return $this->findOrCreateTruckAd($vehicleAd,$ad);
-                }else{
-                    return null;
-                }
-            }
-
-            if ($gener == 'bus') {
-                if (!$this->validateAd($adInput,$vehicleAd)) {
-                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
-                    
-                    $vehicleAd['ad_id'] = $ad->id;
-                    $vehicleAd['vehicle_category_id'] ='9f49d041-efd8-4797-95f2-4742b50442a8';
-                    
-                    $this->storeAdImage($ad,$adInfo->images->image);
-                    
-                    return $this->findOrCreateTruckAd($vehicleAd,$ad);
-                }else{
-                    return null;
-                }
-            }
-            
-            if ($gener == 'auto') {
+            if ($type == 'auto') {
                 if (!$this->validateAd($adInput,$vehicleAd)) {
                     $ad = $this->findOrCreateAd($adInput,$dealer->id);
                     
@@ -1331,6 +1321,39 @@ class ImportPortalClubAdsCommand extends Command
                     return null;
                 }
             }
+
+            if ($type == 'mobile-home') {
+
+                if (!$this->validateAd($adInput,$vehicleAd)) {
+                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                    $vehicleAd['ad_id'] = $ad->id;
+                    $vehicleAd['vehicle_category_id'] = $this->getCategory($gener);
+                    
+                    $this->storeAdImage($ad,$adInfo->images->image);
+                    
+                    return $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
+                }else{
+                    return null;
+                }
+            }
+
+            if ($type == 'truck') {
+
+                if (!$this->validateAd($adInput,$vehicleAd)) {
+                    $ad = $this->findOrCreateAd($adInput,$dealer->id);
+                    
+                    $vehicleAd['ad_id'] = $ad->id;
+                    $vehicleAd['vehicle_category_id'] = $this->getCategory($gener);
+                    
+                    $this->storeAdImage($ad,$adInfo->images->image);
+                    
+                    return $this->findOrCreateTruckAd($vehicleAd,$ad);
+                }else{
+                    return null;
+                }
+            }
+
             
         }catch (Exception $e) {
 
@@ -1354,6 +1377,45 @@ class ImportPortalClubAdsCommand extends Command
         }
     }
     
+     public function getTypeAd($body)
+    {   
+        $bodys_inventario = [
+            'auto' => 'auto',
+            'moto' => 'moto',
+            'autocarro' => 'truck',
+            'furgone'    => 'truck',
+            'autoarticolato' => 'truck',
+            'semirimorchio' => 'truck',
+            'veicolo comunale' => 'truck',
+            'macchina agricola' => 'truck',
+            'macchina edile' => 'truck',
+            'bus' => 'truck',
+            'carrello elevatore' => 'truck',
+            'roulotte' => 'mobile-home',
+            'casa mobile' => 'mobile-home',
+        ];
+
+        return $bodys_inventario[trim($body)];
+    }
+
+    public function getCategory($body)
+    {   
+        $bodys_inventario = [
+            'autocarro' => '9f49d041-efd8-4797-95f2-4742b50442a8',
+            'furgone'    => '510258ef-495a-4109-bd72-a1b9a4b26d86',
+            'autoarticolato' => '867cd8c1-3065-46d9-af50-217947671ab2',
+            'semirimorchio' => 'f4bcbced-bcd6-4122-ba49-1837db8e407e',
+            'veicolo comunale' => '10515c8a-db1a-4123-b73b-7c12887956fd',
+            'macchina agricola' => 'fcbd331d-a334-42ec-84f7-d53913606d67',
+            'macchina edile' => '042319f5-838e-4c76-ae8b-2a5467fb63df',
+            'bus' => 'c96d814c-3363-4e05-85b5-3b1ef9a8ac26',
+            'carrello elevatore' => 'fb1aa8c3-6446-47d3-9918-f4d17af123a9',
+            'roulotte' => '3e465476-974c-45cd-a6be-65826535ea80',
+            'casa mobile' => '3e465476-974c-45cd-a6be-65826535ea80',
+        ];
+
+        return $bodys_inventario[trim($body)];
+    }
     public function storeAdImage($ad,$images)
     {
         $k = 0;
