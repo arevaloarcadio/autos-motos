@@ -1071,6 +1071,15 @@ class AdsController extends Controller
             if (!is_null($promotedAds)) {
                 array_push($response, ...$promotedAds);
             }
+
+            foreach ($request->request as $key => $data) {
+                if( ($data != 'auto' || $data != 'moto' ||  $data != 'truck' ||  $data != 'mobile-home') && ($data == 0 || $data == null || $data == true || $data == false) ){
+                    dd($request->type);
+                }else{
+                    dd("seguir");
+                }
+            }
+            
            
             if ($request->dealer) {
                 $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
