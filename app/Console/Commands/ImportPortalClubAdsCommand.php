@@ -225,7 +225,7 @@ class ImportPortalClubAdsCommand extends Command
                         );
                         $endTime       = microtime(true);
                         $executionTime = ($endTime - $startTime);
-                        $this->info(
+                       /* $this->info(
                             sprintf(
                                 '====> Ad %d was successfully created in %ss; %d/%d; RAM Used: %s',
                                 $externalId,
@@ -234,7 +234,7 @@ class ImportPortalClubAdsCommand extends Command
                                 $totalAds,
                                 $this->getUsedMemory()
                             )
-                        );
+                        );*/
                         $successfulAdsCounter++;
                         $counter++;
                     } catch (Exception $exception) {
@@ -1091,7 +1091,7 @@ class ImportPortalClubAdsCommand extends Command
         if (is_null($auto_ad)) {
             
             $auto_ad = AutoAd::create($external_auto_ad);
-            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+            $this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
         }else{
             $auto_ad->update($external_auto_ad); 
             $this->info(sprintf('Successfully modify auto_ad %s',$ad['external_id']));
@@ -1114,7 +1114,7 @@ class ImportPortalClubAdsCommand extends Command
             
             $moto_ad = MotoAd::create($external_auto_ad);
 
-            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+            $this->info(sprintf('Successfully registered new moto_ad %s',$ad['external_id']));
         }else{
             $moto_ad->update($external_auto_ad); 
             $this->info(sprintf('Successfully modify moto_ad %s',$ad['external_id']));
@@ -1137,7 +1137,7 @@ class ImportPortalClubAdsCommand extends Command
             
             $truck_ad = TruckAd::create($external_auto_ad);
 
-            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+            $this->info(sprintf('Successfully registered new truck_ad %s',$ad['external_id']));
         }else{
             $truck_ad->update($external_auto_ad); 
             $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
@@ -1160,7 +1160,7 @@ class ImportPortalClubAdsCommand extends Command
             
             $mobile_home_ad = MobileHomeAd::create($external_auto_ad);
 
-            //$this->info(sprintf('Successfully registered new auto_ad %s',$ad['external_id']));
+            $this->info(sprintf('Successfully registered new mobile_home_ad %s',$ad['external_id']));
         }else{
             $mobile_home_ad->update($external_auto_ad); 
             $this->info(sprintf('Successfully modify truck_ad %s',$ad['external_id']));
@@ -1354,7 +1354,8 @@ class ImportPortalClubAdsCommand extends Command
                 }
             }
 
-            
+             $this->info(sprintf('Ad Skipped %s, %s, %s',$ad['external_id'],$gener,$type));
+
         }catch (Exception $e) {
 
             $this->info(
