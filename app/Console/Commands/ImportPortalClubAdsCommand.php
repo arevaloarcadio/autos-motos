@@ -1304,6 +1304,7 @@ class ImportPortalClubAdsCommand extends Command
                     
                     return $this->findOrCreateMotoAd($vehicleAd,$ad);
                 }else{
+                     $this->info(sprintf('Ad Skipped %s, %s, %s',$ad['external_id'],$gener,$type));
                     return null;
                 }
                 
@@ -1318,6 +1319,7 @@ class ImportPortalClubAdsCommand extends Command
                
                     return $this->findOrCreateAutoAd($vehicleAd,$ad);
                 }else{
+                     $this->info(sprintf('Ad Skipped %s, %s, %s',$ad['external_id'],$gener,$type));
                     return null;
                 }
             }
@@ -1334,6 +1336,7 @@ class ImportPortalClubAdsCommand extends Command
                     
                     return $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
                 }else{
+                     $this->info(sprintf('Ad Skipped %s, %s, %s',$ad['external_id'],$gener,$type));
                     return null;
                 }
             }
@@ -1350,11 +1353,12 @@ class ImportPortalClubAdsCommand extends Command
                     
                     return $this->findOrCreateTruckAd($vehicleAd,$ad);
                 }else{
+                     $this->info(sprintf('Ad Skipped %s, %s, %s',$ad['external_id'],$gener,$type));
                     return null;
                 }
             }
 
-             $this->info(sprintf('Ad Skipped %s, %s, %s',$ad['external_id'],$gener,$type));
+            
 
         }catch (Exception $e) {
 
