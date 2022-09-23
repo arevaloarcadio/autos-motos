@@ -286,6 +286,7 @@ class AutoAdsController extends Controller
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
             Redis::del('auto_ads');
             Redis::del('auto_ads_ult');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
             
             $autoAd = new AutoAd;
             $autoAd->ad_id = $ad->id;
@@ -482,6 +483,10 @@ class AutoAdsController extends Controller
                 }
             }
 
+            Redis::del('auto_ads');
+            Redis::del('auto_ads_ult');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+
             $autoAd = AutoAd::where('ad_id',$id)->first();
             $autoAd->price = $request['price'];
             $autoAd->doors = $request['doors'];
@@ -565,7 +570,9 @@ class AutoAdsController extends Controller
     public function destroy(DestroyAutoAd $request, AutoAd $autoAd)
     {
         $autoAd->delete();
-
+        Redis::del('auto_ads');
+        Redis::del('auto_ads_ult');
+        Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
         }

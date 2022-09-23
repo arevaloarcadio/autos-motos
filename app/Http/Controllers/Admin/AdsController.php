@@ -382,7 +382,7 @@ class AdsController extends Controller
     {
         if(Redis::exists('by_user_'.Auth::user()->id.'_filter_'.$request->filter)) {
             $data = json_decode(Redis::get('by_user_'.Auth::user()->id.'_filter_'.$request->filter));
-            return ['data' => $data];
+            return ['data' => $data, 'redis'=>'true'];
         }else{
             
             $data = Ad::where('user_id',Auth::user()->id)
@@ -433,7 +433,7 @@ class AdsController extends Controller
             );
             $data=$data->get();
             Redis::set('by_user_'.Auth::user()->id.'_filter_'.$request->filter,json_encode($data));
-            return ['data' => $data];
+            return ['data' => $data, 'redis'=>'false'];
   
         }
 

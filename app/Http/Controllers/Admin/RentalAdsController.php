@@ -193,6 +193,7 @@ class RentalAdsController extends Controller
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
             Redis::del('rental-ads');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
 
             $rental_ad = RentalAd::create([
                 'ad_id'  => $ad->id, 
@@ -313,6 +314,8 @@ class RentalAdsController extends Controller
 
             $rental_ad = RentalAd::where('ad_id',$id)->first();
             //$user->notify(new \App\Notifications\NewAd($user));
+            Redis::del('rental-ads');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
 
             return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad,'images' => $images]], 200);
 
@@ -333,6 +336,8 @@ class RentalAdsController extends Controller
     public function destroy(DestroyRentalAd $request, RentalAd $rentalAd)
     {
         $rentalAd->delete();
+        Redis::del('rental-ads');
+        Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
 
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);

@@ -248,6 +248,7 @@ class MotoAdsController extends Controller
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
             Redis::del('moto_ads');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
 
             $motoAd = new MotoAd;
             $motoAd->ad_id = $ad->id;
@@ -453,6 +454,9 @@ class MotoAdsController extends Controller
                 }
             }
 
+            Redis::del('moto_ads');
+            Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+
             $motoAd = MotoAd::where('ad_id',$id)->first();
             $motoAd->price = $request['price'];
             $motoAd->mileage = $request['mileage'];
@@ -529,7 +533,8 @@ class MotoAdsController extends Controller
     public function destroy(DestroyMotoAd $request, MotoAd $motoAd)
     {
         $motoAd->delete();
-
+        Redis::del('moto_ads');
+        Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
         }
