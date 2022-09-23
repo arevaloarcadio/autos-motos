@@ -1055,7 +1055,15 @@ class ImportPortalClubAdsCommand extends Command
 
                     break;
                 case 'mobile-home':
-                    # code...
+                    $mobile_ad = MobileHomeAd::where('dealer_id',$external_vehicle_ad['dealer_id'])
+                        ->where('address',$external_vehicle_ad['address'])
+                        ->first();
+
+                    if (is_null($mobile_ad)) {
+                        return false;
+                    }else{
+                        return true;
+                    }
                     break;
                 case 'truck':
 

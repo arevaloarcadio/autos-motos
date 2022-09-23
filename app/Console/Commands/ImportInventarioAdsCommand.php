@@ -859,7 +859,7 @@ class ImportInventarioAdsCommand extends Command
             throw new Exception('no_external_ad');
         }        
 
-        $ad = Ad::where('slug',$external_ad['slug'])->first();
+        $ad = Ad::where('title',$external_ad['title'])->first();
         
         if (is_null($ad)) {
 
