@@ -440,8 +440,8 @@ class ImportPortalClubAdsCommand extends Command
                 'body' => (string) Image::make((string) $sellerInfo->logo)->encode('data-url'),
             ];
         }
-
-        return $this->dealerService->create($dealerInput);
+        return Dealer::create($dealerInput);
+       // return $this->dealerService->create($dealerInput);
     }
 
     private function findOrCreateShowRoom(
