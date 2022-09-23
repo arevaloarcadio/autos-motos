@@ -598,6 +598,11 @@ class ImportWebmobile24AdsCommand extends Command
             $this->info(sprintf('Save new External Model: %s , Mark: %s', $externalModel ,$make->name));
 
             $slug = Models::whereIn('slug',[Str::slug($externalModel),Str::slug($externalModel.' '.$make->name)])->first();
+            
+            if (!is_null($slug)) {
+                return $slug;
+            }
+
             $model = new Models;
             $model->name = $externalModel;
             $model->slug = is_null($slug) ? Str::slug($externalModel) : Str::slug($externalModel.' '.$make->name);
@@ -621,6 +626,7 @@ class ImportWebmobile24AdsCommand extends Command
                         // ->where('ad_type', '=', 'auto')
                          ->where('make_id', '=', $makeId)
                          ->first();
+
 
         return $instance;
     }
