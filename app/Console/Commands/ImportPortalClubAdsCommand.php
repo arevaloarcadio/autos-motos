@@ -421,6 +421,7 @@ class ImportPortalClubAdsCommand extends Command
         $dealerInput = [
             'company_name'  => (string) $sellerInfo->company_name,
             'vat_number'    => $vatNumber,
+            'slug'          => Str::slug($sellerInfo->company_name),
             'address'       => (string) $sellerInfo->address,
             'zip_code'      => (string) $sellerInfo->zip_code,
             'city'          => (string) $sellerInfo->town,
