@@ -1074,9 +1074,9 @@ class AdsController extends Controller
 
             foreach ($request->request as $key => $data) {
                 if( ($data != 'auto' || $data != 'moto' ||  $data != 'truck' ||  $data != 'mobile-home') && ($data == 0 || $data == null || $data == true || $data == false) ){
-                    dd($request->type);
+                    //dd($request->type);
                 }else{
-                    dd("seguir");
+                    //dd("seguir");
                 }
             }
             
