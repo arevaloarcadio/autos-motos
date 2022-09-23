@@ -403,7 +403,7 @@ class ImportPortalClubAdsCommand extends Command
     {
         $vatNumber = (string) $sellerInfo->VAT === '' ? null : (string) $sellerInfo->VAT;
         $dealer    = Dealer::query()
-                           ->where('vat_number', '=', $vatNumber)
+                           //->where('vat_number', '=', $vatNumber)
                            ->where('slug', '=', Str::slug($sellerInfo->company_name))
                            ->first();
 
