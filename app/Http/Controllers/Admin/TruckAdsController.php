@@ -215,6 +215,7 @@ class TruckAdsController extends Controller
             'youtube_link' => ['nullable', 'string'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'doors' => ['nullable', 'integer'],
+            'price_contains_vat' => ['required', 'boolean'],
             
         ]);
 
@@ -320,7 +321,7 @@ class TruckAdsController extends Controller
             $truckAd->interior_color = $request['interior_color'];
             $truckAd->exterior_color = $request['exterior_color'];
             $truckAd->price = $request['price'];
-            $truckAd->price_contains_vat = 0;
+            $truckAd->price_contains_vat = $request['price_contains_vat'];
             $truckAd->first_name = $request['first_name'];
             $truckAd->last_name = $request['last_name'];
             $truckAd->email_address = $request['email_address'];
@@ -470,6 +471,7 @@ class TruckAdsController extends Controller
             'eliminated_thumbnail' => ['required', 'boolean'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'doors' => ['nullable', 'integer'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -525,6 +527,8 @@ class TruckAdsController extends Controller
             $truckAd->model = $request['model'];
             $truckAd->truck_type = VehicleCategory::find($request['vehicle_category_id'])->category;
             $truckAd->fuel_type_id = $request['fuel_type_id'];
+
+            $truckAd->price_contains_vat = $request['price_contains_vat'];
             $truckAd->vehicle_category_id = $request['vehicle_category_id'];
             $truckAd->transmission_type_id = $request['transmission_type_id'];
             $truckAd->cab = $request['cab'];

@@ -227,7 +227,8 @@ class AutoAdsController extends Controller
             'country' => ['required', 'string'],
             'address' => ['required', 'string'],
             'mobile_number' => ['required', 'string'],
-            'whatsapp_number' => ['required', 'string']
+            'whatsapp_number' => ['required', 'string'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -291,7 +292,7 @@ class AutoAdsController extends Controller
             $autoAd = new AutoAd;
             $autoAd->ad_id = $ad->id;
             $autoAd->price = $request['price'];
-            $autoAd->price_contains_vat = 0;
+            $autoAd->price_contains_vat = $request['price_contains_vat'];
             $autoAd->doors = $request['doors'];
             $autoAd->mileage = $request['mileage'];
             $autoAd->exterior_color = $request['exterior_color'];
@@ -436,7 +437,8 @@ class AutoAdsController extends Controller
             'mobile_number' => ['required', 'string'],
             'whatsapp_number' => ['required', 'string'],
             'image_ids' => ['nullable', 'array'],
-            'eliminated_thumbnail' => ['required', 'boolean']
+            'eliminated_thumbnail' => ['required', 'boolean'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -490,6 +492,7 @@ class AutoAdsController extends Controller
             $autoAd = AutoAd::where('ad_id',$id)->first();
             $autoAd->price = $request['price'];
             $autoAd->doors = $request['doors'];
+            $autoAd->price_contains_vat = $request['price_contains_vat'];
             $autoAd->mileage = $request['mileage'];
             $autoAd->exterior_color = $request['exterior_color'];
             $autoAd->interior_color = $request['interior_color'];

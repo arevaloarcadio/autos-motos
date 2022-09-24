@@ -192,6 +192,7 @@ class ShopAdsController extends Controller
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -252,6 +253,8 @@ class ShopAdsController extends Controller
             $shopAd = new ShopAd;
             $shopAd->ad_id = $ad->id;
             $shopAd->category = $request['category'];
+
+            $motoAd->price_contains_vat = $request['price_contains_vat'];
             $shopAd->make_id = $request['make_id'];
             $shopAd->model_id = $request['model_id'];
             $shopAd->custom_model = $request['model'];
@@ -259,7 +262,6 @@ class ShopAdsController extends Controller
             $shopAd->code = $request['code'];
             $shopAd->condition = $request['condition'];
             $shopAd->price = $request['price'];
-            $shopAd->price_contains_vat = 0;
             $shopAd->first_name = $request['first_name'];
             $shopAd->last_name = $request['last_name'];
             $shopAd->email_address = $request['email_address'];
@@ -411,7 +413,8 @@ class ShopAdsController extends Controller
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
-            'eliminated_thumbnail' => ['required', 'boolean']
+            'eliminated_thumbnail' => ['required', 'boolean'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -464,6 +467,7 @@ class ShopAdsController extends Controller
             $shopAd = ShopAd::where('ad_id',$id)->first();
             $shopAd->category = $request['category'];
             $shopAd->make_id = $request['make_id'];
+            $motoAd->price_contains_vat = $request['price_contains_vat'];
             $shopAd->model_id = $request['model_id'];
             $shopAd->custom_model = $request['model'];
             $shopAd->manufacturer = $request['manufacturer'];

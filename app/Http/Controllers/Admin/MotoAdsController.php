@@ -192,6 +192,7 @@ class MotoAdsController extends Controller
             'whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'additional_vehicle_info' => ['nullable', 'string'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -253,8 +254,8 @@ class MotoAdsController extends Controller
             $motoAd = new MotoAd;
             $motoAd->ad_id = $ad->id;
             $motoAd->price = $request['price'];
-            $motoAd->price_contains_vat = 0;
             $motoAd->mileage = $request['mileage'];
+            $motoAd->price_contains_vat = $request['price_contains_vat'];
             $motoAd->color = $request['color'];
             $motoAd->condition = $request['condition'] ;
             $motoAd->dealer_id =  Auth::user()->dealer_id ?? null;
@@ -406,7 +407,8 @@ class MotoAdsController extends Controller
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
-            'additional_vehicle_info' => ['nullable', 'string']
+            'additional_vehicle_info' => ['nullable', 'string'],
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -465,6 +467,7 @@ class MotoAdsController extends Controller
             $motoAd->first_name =  $request['first_name'];
             $motoAd->last_name =$request['last_name'] ;
             $motoAd->email_address = $request['email_address'];
+            $motoAd->price_contains_vat = $request['price_contains_vat'];
             $motoAd->address = $request['address'];
             $motoAd->zip_code = $request['zip_code'];
             $motoAd->city = $request['city'];

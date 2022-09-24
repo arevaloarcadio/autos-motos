@@ -196,7 +196,8 @@ class MobileHomeAdsController extends Controller
             'doors' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
-            'generation_id' => 'nullable|string'
+            'generation_id' => 'nullable|string',
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
 
@@ -258,6 +259,7 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd = new MobileHomeAd;
             $mobileHomeAd->ad_id = $ad->id;
             $mobileHomeAd->make_id = $request['make_id'];
+            $mobileHomeAd->price_contains_vat = $request['price_contains_vat'];
             $mobileHomeAd->custom_make = $request['custom_make'];
             $mobileHomeAd->model_id = $request['model_id'];
             $mobileHomeAd->custom_model = $request['model'];
@@ -429,6 +431,7 @@ class MobileHomeAdsController extends Controller
             'additional_vehicle_info' => ['nullable', 'string'],
             'drive_type_id' => 'nullable|string|exists:car_wheel_drive_types,id',
             'generation_id' => 'nullable|string',
+            'price_contains_vat' => ['required', 'boolean'],
         ]);
 
         if ($validator->fails()) {
@@ -479,6 +482,8 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd = MobileHomeAd::where('ad_id',$id)->first();
             $mobileHomeAd->make_id = $request['make_id'];
             $mobileHomeAd->custom_make = $request['custom_make'];
+
+            $mobileHomeAd->price_contains_vat = $request['price_contains_vat'];
             $mobileHomeAd->model_id = $request['model_id'];
             $mobileHomeAd->custom_model = $request['model'];
             $mobileHomeAd->fuel_type_id = $request['fuel_type_id'];
