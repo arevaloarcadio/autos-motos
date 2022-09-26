@@ -42,7 +42,8 @@ class UpdateMechanicAd extends FormRequest
             'email_address' => ['nullable', 'string'],
             'geocoding_status' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
-            'eliminated_thumbnail' => ['required', 'boolean']
+            'eliminated_thumbnail' => ['required', 'boolean'],
+            'images' =>  ['nullable', 'file'],
         ];
     }
 

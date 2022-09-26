@@ -197,7 +197,7 @@ class MechanicAdsController extends Controller
                 'images_processing_status_text' => null,
             ]);
             
-            $file = $request->file()[0];
+            $file = $request->file('images');
             $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
             $ad->thumbnail = $thumbnail;
             $ad->save();
@@ -225,9 +225,6 @@ class MechanicAdsController extends Controller
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
-            
-
-            $images = AdImage::where('ad_id',$ad->id)->get();
 
             return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
 
@@ -292,18 +289,13 @@ class MechanicAdsController extends Controller
             $thumbnail = '';
             $i = 0;
 
-            if ($request->image_ids) {
-                AdImage::whereIn('id',$request->image_ids)->delete();
-            }
-
-            if ($request->file()) {
-                $file = $request->file()[0];
+            if ($request->file('images')) {
+                $file = $request->file('images');
                 $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
                 $ad->thumbnail = $thumbnail;
                 $ad->save();
             }
-            
-
+        
             $mechanicAd = MechanicAd::where('ad_id',$id)->update([
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
@@ -320,9 +312,9 @@ class MechanicAdsController extends Controller
             
             $mechanicAd = MechanicAd::where('ad_id',$id)->first();
 
-            $images = AdImage::where('ad_id',$id)->get();
             Redis::del('mechanic_ads');
             Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
+
             return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
 
         } catch (Exception $e) {

@@ -41,7 +41,8 @@ class UpdateRentalAd extends FormRequest
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
-            'eliminated_thumbnail' => ['required', 'boolean']
+            'eliminated_thumbnail' => ['required', 'boolean'],
+            'images' =>  ['nullable', 'file'],
             
         ];
     }

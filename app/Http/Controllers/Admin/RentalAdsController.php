@@ -186,7 +186,7 @@ class RentalAdsController extends Controller
             $thumbnail = '';
             $i = 0;
 
-            $file = $request->file()[0];
+            $file = $request->file('images');
             $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
             $ad->thumbnail = $thumbnail;
             $ad->save();
@@ -284,12 +284,8 @@ class RentalAdsController extends Controller
 
             $i = 0;
             
-            if ($request->image_ids) {
-                AdImage::whereIn('id',$request->image_ids)->delete();
-            }
-
-            if ($request->file()) {
-                $file = $request->file()[0];
+            if ($request->file('images')) {
+                $file = $request->file('images');
                 $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
                 $ad->thumbnail = $thumbnail;
                 $ad->save();
@@ -308,7 +304,6 @@ class RentalAdsController extends Controller
                 'email_address' => $sanitized['email_address'],
             ]);
 
-            $images = AdImage::where('ad_id',$id)->get();
             
             //$user = Auth::user();
 
@@ -317,7 +312,7 @@ class RentalAdsController extends Controller
             Redis::del('rental-ads');
             Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
 
-            return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad,'images' => $images]], 200);
+            return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line '. $e->getLine());
