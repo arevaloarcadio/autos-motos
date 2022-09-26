@@ -386,7 +386,7 @@ class ImportWebmobile24AdsCommand extends Command
                     'email' => strtolower($externalDealer).'@autosmotos.es',
                     'password' => Hash::make(strtolower($externalDealer).'123**'),
                     'dealer_id' => $dealer_id,
-                    'type' => 'Professional'
+                    'type' => 'Profesional'
             ]);
 
             $this->info(sprintf('Successfully registered new user %s',$externalDealer));
