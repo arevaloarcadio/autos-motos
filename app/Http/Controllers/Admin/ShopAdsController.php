@@ -467,7 +467,7 @@ class ShopAdsController extends Controller
             $shopAd = ShopAd::where('ad_id',$id)->first();
             $shopAd->category = $request['category'];
             $shopAd->make_id = $request['make_id'];
-            $motoAd->price_contains_vat = $request['price_contains_vat'];
+            $shopAd->price_contains_vat = $request['price_contains_vat'];
             $shopAd->model_id = $request['model_id'];
             $shopAd->custom_model = $request['model'];
             $shopAd->manufacturer = $request['manufacturer'];
