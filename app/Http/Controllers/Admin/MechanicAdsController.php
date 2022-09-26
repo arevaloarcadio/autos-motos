@@ -226,7 +226,7 @@ class MechanicAdsController extends Controller
 
             $user->notify(new \App\Notifications\NewAd($user));
 
-            return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
+            return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd]], 200);
 
         } catch (Exception $e) {
             $ad->delete();
@@ -315,7 +315,7 @@ class MechanicAdsController extends Controller
             Redis::del('mechanic_ads');
             Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
 
-            return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd,'images' => $images]], 200);
+            return response()->json(['data' => ['ad' => $ad,'mechanic_ad' => $mechanicAd]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage().', Line '.$e->getLine());

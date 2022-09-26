@@ -220,7 +220,7 @@ class RentalAdsController extends Controller
 
             $user->notify(new \App\Notifications\NewAd($user));
 
-            return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad,'images' => $images]], 200);
+            return response()->json(['data' => ['ad' => $ad,'rental_ad' => $rental_ad]], 200);
 
         } catch (Exception $e) {
             $ad->delete();
