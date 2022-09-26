@@ -254,7 +254,7 @@ class ShopAdsController extends Controller
             $shopAd->ad_id = $ad->id;
             $shopAd->category = $request['category'];
 
-            $motoAd->price_contains_vat = $request['price_contains_vat'];
+            $shopAd->price_contains_vat = $request['price_contains_vat'];
             $shopAd->make_id = $request['make_id'];
             $shopAd->model_id = $request['model_id'];
             $shopAd->custom_model = $request['model'];
