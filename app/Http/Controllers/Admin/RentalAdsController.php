@@ -187,7 +187,7 @@ class RentalAdsController extends Controller
             $i = 0;
 
             $file = $request->file('images');
-            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+            $thumbnail = $this->uploadFile($file,$ad->id,0,true);
             $ad->thumbnail = $thumbnail;
             $ad->save();
 
@@ -286,7 +286,7 @@ class RentalAdsController extends Controller
             
             if ($request->file('images')) {
                 $file = $request->file('images');
-                $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                $thumbnail = $this->uploadFile($file,$ad->id,0,true);
                 $ad->thumbnail = $thumbnail;
                 $ad->save();
             }

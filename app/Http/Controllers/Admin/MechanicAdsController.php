@@ -198,7 +198,7 @@ class MechanicAdsController extends Controller
             ]);
             
             $file = $request->file('images');
-            $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+            $thumbnail = $this->uploadFile($file,$ad->id,0,true);
             $ad->thumbnail = $thumbnail;
             $ad->save();
 
@@ -291,7 +291,7 @@ class MechanicAdsController extends Controller
 
             if ($request->file('images')) {
                 $file = $request->file('images');
-                $thumbnail = $this->uploadFile($file,$ad->id,$i,true);
+                $thumbnail = $this->uploadFile($file,$ad->id,0,true);
                 $ad->thumbnail = $thumbnail;
                 $ad->save();
             }
