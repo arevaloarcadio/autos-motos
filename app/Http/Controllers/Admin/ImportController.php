@@ -395,39 +395,25 @@ class ImportController extends Controller
         //$externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions();
 
-        if (isset($fuels[$externalFuel])) {
+        if (isset($fuels[trim($externalFuel)])) {
             
-            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
-                              ->where('ad_type', '=', 'auto')
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[trim($externalFuel)])
                               ->first();
         
             if (is_null($car_fuel_type)) {
-                
-                //$this->info('Save new car fuel type: '.$externalFuel);
-                
-                $car_fuel_type = new CarFuelType;
-                $car_fuel_type->internal_name = $externalFuel;
-                $car_fuel_type->ad_type = 'AUTO';
-                $car_fuel_type->slug = Str::slug($externalFuel);
-                $car_fuel_type->save();
+                //$this->info($externalFuel.' '.strtolower(trim($externalFuel)).'LINE 166');
+                $car_fuel_type['id'] = 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
             }
-           
+            
             return $car_fuel_type;
         }
 
         $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
-                              ->where('ad_type', '=', 'auto')
                               ->first();
 
         if (is_null($car_fuel_type)) {
-                
-            //$this->info('Save new car fuel type: '.strtolower(trim($externalFuel)));
-            
-            $car_fuel_type = new CarFuelType;
-            $car_fuel_type->internal_name = strtolower(trim($externalFuel));
-            $car_fuel_type->ad_type = 'AUTO';
-            $car_fuel_type->slug = Str::slug($externalFuel);
-            $car_fuel_type->save();
+            //$this->info($car_fuel_type.' '.strtolower(trim($externalFuel)).'LINE 177');
+            $car_fuel_type['id'] = 'ed20075a-5297-11eb-b5ca-02e7c1e23b94';
         }
 
         return $car_fuel_type;
@@ -444,46 +430,24 @@ class ImportController extends Controller
        
         $bodyTypes    = $this->getBodyOptions();
     
-        if (isset($bodyTypes[$externalBody])) {
+        if (isset($bodyTypes[trim($externalBody)])) {
             
             $car_body_type = CarBodyType::query()
-                              ->where('internal_name', '=', $bodyTypes[$externalBody]['internal_name'])
-                              ->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
+                              ->where('internal_name', '=', $bodyTypes[trim($externalBody)]['internal_name'])
                               ->first();
 
            if (is_null($car_body_type)) {
-                
-                //$this->info('Save new car body type: '.$bodyTypes[$externalBody]['internal_name']);
-                
-                $car_body_type = new CarBodyType;
-                $car_body_type->internal_name = $bodyTypes[$externalBody]['internal_name'];
-                $car_body_type->ad_type = $bodyTypes[$externalBody]['ad_type'];
-                $car_body_type->slug = Str::slug($bodyTypes[$externalBody]['internal_name']);
-                $car_body_type->save();
+                 $car_body_type['id'] = null;
             }
 
+           
             return $car_body_type;
         }
 
-        $car_body_type = CarBodyType::query()
-                              ->where('internal_name', '=', strtolower(trim($externalBody)))
-                              ->where('ad_type', '=', 'AUTO')
-                              ->first();
-
-        if (is_null($car_body_type)) {
-            
-            //$this->info('Save new car body type: '.strtolower(trim($externalBody)));
-            
-            $car_body_type = new CarBodyType;
-            $car_body_type->internal_name = strtolower(trim($externalBody));
-            $car_body_type->ad_type = 'AUTO';
-            $car_body_type->slug = Str::slug($externalBody); 
-            $car_body_type->save();
-        }
-
+        $car_body_type['id'] = null;
         return $car_body_type;
     }
-
+    
     private function findTransmissionTypeId(string $externalTransmission)
     {
         if ('' === $externalTransmission) {
@@ -493,35 +457,16 @@ class ImportController extends Controller
         $transmissions        = $this->getTransmissionOptions();
        
         if (isset($transmissions[$externalTransmission])) {
-            
             $car_transmission_type = CarTransmissionType::query()
                                       ->where('internal_name', '=', $transmissions[$externalTransmission])
-                                      ->where('ad_type', '=', 'auto')
+                                     // ->where('ad_type', '=', 'auto')
                                       ->first();
             
             return $car_transmission_type;                       
         }
 
-        $car_transmission_type = CarTransmissionType::query()
-                                      ->where('internal_name', '=', $externalTransmission)
-                                      ->where('ad_type', '=', 'auto')
-                                      ->first();
-       
-       if (is_null($car_transmission_type)) {
-        
-            $car_transmission_type = new CarTransmissionType;
-            
-            $car_transmission_type->internal_name  = trim($externalTransmission);
-            $car_transmission_type->slug = Str::slug($externalTransmission);
-            $car_transmission_type->external_name = trim($externalTransmission); 
-            $car_transmission_type->ad_type = 'AUTO'; 
-
-            $car_transmission_type->save(); 
-        }
-        
-        return $car_transmission_type;
+        return null;
     }
-
     
 
     private function findMake(string $externalMake): Make
