@@ -43,6 +43,7 @@ class StoreMechanicAd extends FormRequest
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
             'geocoding_status' => ['nullable', 'string'],
+            'images'=>  ['required', 'file'],
             
         ];
     }

@@ -152,14 +152,12 @@ class ImportWebmobile24AdsCommand extends Command
         if ('' === $externalFuel) {
             return null;
         }
-        //$externalFuel = strtolower(trim($externalFuel));
+        $externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions();
 
-        if (isset($fuels[trim($externalFuel)])) {
+        if (isset($fuels[$externalFuel])) {
             
-            $this->info($fuels[trim($externalFuel)].' '.strtolower(trim($externalFuel)).'LINE 160');
-            
-            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[trim($externalFuel)])
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
                               ->first();
         
             if (is_null($car_fuel_type)) {
@@ -170,7 +168,7 @@ class ImportWebmobile24AdsCommand extends Command
             return $car_fuel_type;
         }
 
-        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
+        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $externalFuel)
                               ->first();
 
         if (is_null($car_fuel_type)) {
@@ -180,7 +178,6 @@ class ImportWebmobile24AdsCommand extends Command
 
         return $car_fuel_type;
     }
-
 
 
     private function findBodyTypeId(string $externalBody)
@@ -199,36 +196,14 @@ class ImportWebmobile24AdsCommand extends Command
                               //->where('ad_type', '=', $bodyTypes[$externalBody]['ad_type'])
                               ->first();
 
-           if (is_null($car_body_type)) {
-                
-                /*$this->info('Save new car body type: '.$bodyTypes[trim($externalBody)]['internal_name']);
-                
-                $car_body_type = new CarBodyType;
-                $car_body_type->internal_name = $bodyTypes[trim($externalBody)]['internal_name'];
-                $car_body_type->ad_type =  $bodyTypes[trim($externalBody)]['ad_type'];
-                $car_body_type->slug = Str::slug($bodyTypes[trim($externalBody)]['internal_name']);
-                $car_body_type->save();*/
+            if (is_null($car_body_type)) {
+              $car_body_type['id'] = null;
             }
 
             $car_body_type['id'] = null;
             return $car_body_type;
         }
 
-        /*$car_body_type = CarBodyType::query()
-                              ->where('internal_name', '=', strtolower(trim($externalBody)))
-                              //->where('ad_type', '=', 'AUTO')
-                              ->first();
-
-        if (is_null($car_body_type)) {
-            
-            $this->info('Save new car body type: '.strtolower(trim($externalBody)));
-            
-            $car_body_type = new CarBodyType;
-            $car_body_type->internal_name = strtolower(trim($externalBody));
-            $car_body_type->ad_type = 'AUTO';
-            $car_body_type->slug = Str::slug($externalBody); 
-            $car_body_type->save();
-        }*/
         $car_body_type['id'] = null;
         return $car_body_type;
     }
@@ -386,7 +361,7 @@ class ImportWebmobile24AdsCommand extends Command
                     'email' => strtolower($externalDealer).'@autosmotos.es',
                     'password' => Hash::make(strtolower($externalDealer).'123**'),
                     'dealer_id' => $dealer_id,
-                    'type' => 'Professional'
+                    'type' => 'Profesional'
             ]);
 
             $this->info(sprintf('Successfully registered new user %s',$externalDealer));
@@ -727,6 +702,8 @@ class ImportWebmobile24AdsCommand extends Command
                         $is_successful = false;
 
                         $this->totalImageAdsCounter = count($images)-1;
+                        
+                        $this->info($csv_ad[8]);
 
                         $body = $this->findBodyTypeId(utf8_encode($csv_ad[8]));
                         
