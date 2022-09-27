@@ -1091,14 +1091,14 @@ class AdsController extends Controller
                 array_push($response, ...$promotedAds);
             }
 
-            foreach ($request->request as $key => $data) {
-                if( $key != 'type'){
-                    if($data != null || $data != 0 || $data != false){
-                        break;
-                    }
-                    dd("asd");
-                }
-            }
+            // foreach ($request->request as $key => $data) {
+            //     if( $key != 'type'){
+            //         if($data != null || $data != 0 || $data != false){
+            //             break;
+            //         }
+            //         dd("asd");
+            //     }
+            // }
             
            
             if ($request->dealer) {
