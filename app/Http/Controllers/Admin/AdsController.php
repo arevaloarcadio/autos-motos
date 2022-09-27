@@ -892,34 +892,34 @@ class AdsController extends Controller
                 case 'auto':
                     Redis::del('auto_ads');
                     Redis::del('auto_ads_ult');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_auto');
                     AutoAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'moto':
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_auto');
                     MotoAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'mobile-home':
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_auto');
                     MobileHomeAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'truck':
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_auto');
                     TruckAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'rental':
                     Redis::del('rental_ads');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_rental');
                     RentalAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'shop':
                     Redis::del('shop_ads');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_shop');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_shop');
                     ShopAd::where('ad_id',$ad->id)->delete();
                     break;
                 case 'mechanic':
                     Redis::del('mechanic_ads');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_mechanic');
                     MechanicAd::where('ad_id',$ad->id)->delete();
                     break;
                 default:
@@ -930,10 +930,10 @@ class AdsController extends Controller
                     RentalAd::where('ad_id',$ad->id)->delete();
                     ShopAd::where('ad_id',$ad->id)->delete();
                     MechanicAd::where('ad_id',$ad->id)->delete();
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_mechanic');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_shop');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
-                    Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_mechanic');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_shop');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_rental');
+                    Redis::del('by_user_'.$ad->user_id.'_filter_auto');
                     Redis::del('mechanic_ads');
                     Redis::del('shop_ads');
                     Redis::del('rental_ads');

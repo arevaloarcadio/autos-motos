@@ -43,7 +43,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
             Route::get('/byUser',                                   'AdsController@byUser')->name('byUser');
             Route::get('/promoted-simple/byUser',                   'AdsController@getPromotedSimpleAdsByUser')->name('getPromotedSimpleAdsByUser');
             Route::get('/promoted-front-page/byUser',               'AdsController@getPromotedFrontPageAdsByUser')->name('getPromotedFrontPageAdsByUser');
-            Route::delete('/{ad}',                                      'AdsController@destroy')->name('destroy');
+
         });
 
         Route::prefix('reviews')->name('reviews/')->group(static function() {
@@ -218,6 +218,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             //Route::get('/{ad}/edit',                                    'AdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AdsController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{ad}',                                        'AdsController@update')->name('update');
+            Route::delete('/{ad}',                                      'AdsController@destroy')->name('destroy');
             
         });
 
