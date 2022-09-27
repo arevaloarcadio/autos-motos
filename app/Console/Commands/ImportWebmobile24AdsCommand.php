@@ -152,14 +152,12 @@ class ImportWebmobile24AdsCommand extends Command
         if ('' === $externalFuel) {
             return null;
         }
-        //$externalFuel = strtolower(trim($externalFuel));
+        $externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions();
 
-        if (isset($fuels[trim($externalFuel)])) {
+        if (isset($fuels[$externalFuel])) {
             
-            $this->info($fuels[trim($externalFuel)].' '.strtolower(trim($externalFuel)).'LINE 160');
-            
-            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[trim($externalFuel)])
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
                               ->first();
         
             if (is_null($car_fuel_type)) {
@@ -170,7 +168,7 @@ class ImportWebmobile24AdsCommand extends Command
             return $car_fuel_type;
         }
 
-        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
+        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $externalFuel)
                               ->first();
 
         if (is_null($car_fuel_type)) {
@@ -180,7 +178,6 @@ class ImportWebmobile24AdsCommand extends Command
 
         return $car_fuel_type;
     }
-
 
 
     private function findBodyTypeId(string $externalBody)

@@ -392,12 +392,12 @@ class ImportController extends Controller
         if ('' === $externalFuel) {
             return null;
         }
-        //$externalFuel = strtolower(trim($externalFuel));
+        $externalFuel = strtolower(trim($externalFuel));
         $fuels        = $this->getFuelOptions();
 
-        if (isset($fuels[trim($externalFuel)])) {
+        if (isset($fuels[$externalFuel])) {
             
-            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[trim($externalFuel)])
+            $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $fuels[$externalFuel])
                               ->first();
         
             if (is_null($car_fuel_type)) {
@@ -408,7 +408,7 @@ class ImportController extends Controller
             return $car_fuel_type;
         }
 
-        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', strtolower(trim($externalFuel)))
+        $car_fuel_type = CarFuelType::query()->where('internal_name', '=', $externalFuel)
                               ->first();
 
         if (is_null($car_fuel_type)) {
