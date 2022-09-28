@@ -886,6 +886,10 @@ class AdsController extends Controller
     {   
         $resource = ApiHelper::resource();
         try {
+            Redis::del('search_advanced_auto');
+            Redis::del('search_advanced_moto');
+            Redis::del('search_advanced_mobile-home');
+            Redis::del('search_advanced_truck');
 
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             switch ($ad->type) {
@@ -1081,7 +1085,7 @@ class AdsController extends Controller
         $resource = ApiHelper::resource();
         $filter_types = [];
         $response = [];
-      
+        $val_redis=false;
         try {
             $dealer_id = null;
             
@@ -1091,16 +1095,31 @@ class AdsController extends Controller
                 array_push($response, ...$promotedAds);
             }
 
-            // foreach ($request->request as $key => $data) {
-            //     if( $key != 'type'){
-            //         if($data != null || $data != 0 || $data != false){
-            //             break;
-            //         }
-            //         dd("asd");
-            //     }
-            // }
+            foreach ($request->request as $key => $data) {
+                if( $key != 'type'){
+                    if(
+                        !($request->from_mileage == 0 && $request->to_mileage == 500000) ||
+                        !($request->from_price == 500 && $request->to_price == 5000000)
+                    ){
+                        break;
+                    }
+                    if($key == 'from_mileage' || $key == 'to_mileage' || $key == 'from_price' || $key == 'to_price'){
+                        continue;
+                    }
+                    if(!is_null($data) && $data != false){
+                        break;
+                    }
+                    if($key == 'newer'){
+                        if(Redis::exists('search_advanced_'.$request->type)){
+                            $data = json_decode(Redis::get('search_advanced_'.$request->type));
+                            return response()->json(['data' => $data,'redis'=>'true'], 200);
+                        }
+                        $val_redis=true;
+                    }
+                }
+            }
+
             
-           
             if ($request->dealer) {
                 $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
                 foreach ($dealers as $key => $dealer) {
@@ -1130,8 +1149,12 @@ class AdsController extends Controller
                 }
                 
             }
+
+            if($val_redis){
+                Redis::set('search_advanced_'.$request->type,json_encode($response ));
+            }
                
-            return response()->json(['data' => $response], 200);
+            return response()->json(['data' => $response,'redis'=>false], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage().' '.$e->getLine());

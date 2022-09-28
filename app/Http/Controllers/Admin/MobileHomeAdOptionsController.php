@@ -102,7 +102,7 @@ class MobileHomeAdOptionsController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-
+        Redis::del('search_advanced_mobile-home');
         // Store the MobileHomeAdOption
         $mobileHomeAdOption = MobileHomeAdOption::create($sanitized);
 
@@ -137,7 +137,7 @@ class MobileHomeAdOptionsController extends Controller
     public function edit(MobileHomeAdOption $mobileHomeAdOption)
     {
         $this->authorize('admin.mobile-home-ad-option.edit', $mobileHomeAdOption);
-
+        Redis::del('search_advanced_mobile-home');
 
         return view('admin.mobile-home-ad-option.edit', [
             'mobileHomeAdOption' => $mobileHomeAdOption,
@@ -155,7 +155,7 @@ class MobileHomeAdOptionsController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-
+        Redis::del('search_advanced_mobile-home');
         // Update changed values MobileHomeAdOption
         $mobileHomeAdOption->update($sanitized);
 
@@ -180,7 +180,7 @@ class MobileHomeAdOptionsController extends Controller
     public function destroy(DestroyMobileHomeAdOption $request, MobileHomeAdOption $mobileHomeAdOption)
     {
         $mobileHomeAdOption->delete();
-
+        Redis::del('search_advanced_mobile-home');
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
         }

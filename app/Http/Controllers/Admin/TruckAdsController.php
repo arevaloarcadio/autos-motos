@@ -272,6 +272,7 @@ class TruckAdsController extends Controller
 
             $dealer_show_room_id = Auth::user()->dealer_id !== null ? DealerShowRoom::where('dealer_id',Auth::user()->dealer_id)->first()['id'] : null;
             Redis::del('truck_ads');
+            Redis::del('search_advanced_truck');
             Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
             $truckAd = new TruckAd;
             $truckAd->ad_id = $ad->id;
@@ -392,7 +393,7 @@ class TruckAdsController extends Controller
     public function edit(TruckAd $truck_ad)
     {
         $this->authorize('admin.truck-ad.edit', $truck_ad);
-
+        Redis::del('search_advanced_truck');
 
         return view('admin.truck-ad.edit', [
             'truckAd' => $truck_ad,
@@ -519,6 +520,7 @@ class TruckAdsController extends Controller
             }
 
             Redis::del('truck_ads');
+            Redis::del('search_advanced_truck');
             Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
 
             $truckAd = TruckAd::where('ad_id',$id)->first();
@@ -627,6 +629,7 @@ class TruckAdsController extends Controller
     {
         $truck_ad->delete();
         Redis::del('truck_ads');
+        Redis::del('search_advanced_truck');
         Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
         if ($request->ajax()) {
             return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
