@@ -1503,7 +1503,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','user','characteristics']);
                     },
-                    'make','model','ad','driveType','fuelType','transmissionType','dealer','dealerShowRoom'])
+                    'make','model','driveType','fuelType','transmissionType','dealer','dealerShowRoom'])
 
             ->paginate(24)
             ->toArray();
