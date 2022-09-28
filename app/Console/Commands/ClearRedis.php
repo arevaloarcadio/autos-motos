@@ -42,7 +42,7 @@ class ClearRedis extends Command
         Redis::del('search_advanced_mobile-home');
         $this->info("Redis Clear Successfully");
     
-        $this->info($clear);
+        //$this->info($clear);
 
     }
 }
