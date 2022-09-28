@@ -1818,7 +1818,7 @@ public function getCountAutoAd($filters)
         
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
-        return $moto_ad->count();
+        return $moto_ad->count() * 2;
     }
 
     public function getCountMobileHomeAd($filters)
@@ -1985,7 +1985,7 @@ public function getCountAutoAd($filters)
         
         $truck_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
         
-        return $truck_ad->count();
+        return $truck_ad->count() * 2;
     }
 
      public function searchAdvancedMechanic(Request $request)
