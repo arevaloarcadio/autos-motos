@@ -1415,15 +1415,15 @@ class ImportPortalClubAdsCommand extends Command
     public function getCategory($body)
     {   
         $bodys_inventario = [
-            'autocarro' => '9f49d041-efd8-4797-95f2-4742b50442a8',
-            'furgone'    => '510258ef-495a-4109-bd72-a1b9a4b26d86',
-            'autoarticolato' => '867cd8c1-3065-46d9-af50-217947671ab2',
-            'semirimorchio' => 'f4bcbced-bcd6-4122-ba49-1837db8e407e',
-            'veicolo comunale' => '10515c8a-db1a-4123-b73b-7c12887956fd',
-            'macchina agricola' => 'fcbd331d-a334-42ec-84f7-d53913606d67',
-            'macchina edile' => '042319f5-838e-4c76-ae8b-2a5467fb63df',
-            'bus' => 'c96d814c-3363-4e05-85b5-3b1ef9a8ac26',
-            'carrello elevatore' => 'fb1aa8c3-6446-47d3-9918-f4d17af123a9',
+            'autocarro' => '9a3ca7bc-3f5f-11ed-b552-960000d5cd75',
+            'furgone'    => '9a3ca74d-3f5f-11ed-b552-960000d5cd75',
+            'autoarticolato' => '9a3ca42e-3f5f-11ed-b552-960000d5cd75',
+            'semirimorchio' => '9a3cbda9-3f5f-11ed-b552-960000d5cd75',
+            'veicolo comunale' => '9a3ca6ce-3f5f-11ed-b552-960000d5cd75',
+            'macchina agricola' => '9a3c9086-3f5f-11ed-b552-960000d5cd75',
+            'macchina edile' => '9a3c9086-3f5f-11ed-b552-960000d5cd75',
+            'bus' => '9a3ca7bc-3f5f-11ed-b552-960000d5cd75',
+            'carrello elevatore' => '9a3cbbdf-3f5f-11ed-b552-960000d5cd75',
             'roulotte' => '3e465476-974c-45cd-a6be-65826535ea80',
             'casa mobile' => '3e465476-974c-45cd-a6be-65826535ea80',
         ];

@@ -778,11 +778,11 @@ class ImportWebmobile24AdsCommand extends Command
                         }
                         
                         if ($body['ad_type'] == 'MOBILE-HOME') {
-                            $vehicleAd['vehicle_category_id'] ='02d4cd46-6692-4c2b-9455-4683b961630d';
+                            $vehicleAd['vehicle_category_id'] ='3e465476-974c-45cd-a6be-65826535ea80';
                             $this->findOrCreateMobileHomeAd($vehicleAd,$ad);
                         }
                         if ($body['ad_type'] == 'TRUCK') {
-                            $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                            $vehicleAd['vehicle_category_id'] ='9a3cdc80-3f5f-11ed-b552-960000d5cd75';
                             $this->findOrCreateTruckAd($vehicleAd,$ad);
                         }
 

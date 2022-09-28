@@ -1056,7 +1056,7 @@ class ImportInventarioAdsCommand extends Command
             'additional_vehicle_info'      => $this->generateAdditionalVehicleInfo($adInfo),
             'co2_emission'                 => $this->formatFloatValue((string) $adInfo->emisiones_combinadas),
             'options'                      => [],
-            'vehicle_category_id'          => '28867312-f460-4c0a-94b7-7b10340971ce',
+            'vehicle_category_id'          => '9a3cdc80-3f5f-11ed-b552-960000d5cd75',
         ];
        
         
@@ -1078,7 +1078,7 @@ class ImportInventarioAdsCommand extends Command
                 $ad = $this->findOrCreateAd($adInput,$dealer->id);
                     
                 $vehicleAd['ad_id'] = $ad->id;
-                $vehicleAd['vehicle_category_id'] ='b0578de4-8c44-4ef9-ae74-cd736062f93a';
+                $vehicleAd['vehicle_category_id'] ='9a3cdc80-3f5f-11ed-b552-960000d5cd75';
                 
                 $this->storeAdImage($ad,$adInfo->imagenes->imagen);
              
