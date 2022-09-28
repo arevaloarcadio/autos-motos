@@ -38,11 +38,13 @@ class ClearRedis extends Command
      */
     public function handle()
     {
-        //$clear = Redis::flushDB();
-        Redis::del('search_advanced_mobile-home');
+        $clear = Redis::flushDB();
+    
+        //Redis::del('search_advanced_mobile-home');
+    
         $this->info("Redis Clear Successfully");
     
-        //$this->info($clear);
+        $this->info($clear);
 
     }
 }
