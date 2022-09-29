@@ -67,3 +67,10 @@ ALTER TABLE autosmotos_dev.moto_ads MODIFY COLUMN transmission_type_id char(36) 
 
 
 
+select * from autosmotos_prod.users   order by created_at desc limit 100
+
+select * from autosmotos_prod.ads where  source ='PORTAL' 
+order by created_at desc limit 100
+
+
+select * from users u  where id = '2b660416-d58d-4fc3-b61a-a8c9128877ff'
