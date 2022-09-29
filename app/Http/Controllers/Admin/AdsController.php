@@ -1081,7 +1081,6 @@ class AdsController extends Controller
 
     public function searchAdvanced(Request $request)
     {   
-        
         $resource = ApiHelper::resource();
         $filter_types = [];
         $response = [];
@@ -1096,6 +1095,9 @@ class AdsController extends Controller
             }
 
             foreach ($request->request as $key => $data) {
+                if($request->query->get('page') != 1){
+                    break;
+                }
                 if( $key != 'type'){
                     if(
                         !($request->from_mileage == 0 && $request->to_mileage == 500000) ||
