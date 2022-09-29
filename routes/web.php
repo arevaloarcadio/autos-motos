@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Models\Plan;
 use App\Models\User;
+use Illuminate\Support\Facades\Redis;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +19,13 @@ use App\Models\User;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/clear/redis', function () {
+    $clear = Redis::flushDB();
+    return response()->json(['data' => 'OK','redis' => $clear ]);
+});
+
 
 Route::get('/aprobado', function () {
     $plan = Plan::find('212157f7-fdc9-4442-b6a9-c7a60fb27e3c');
