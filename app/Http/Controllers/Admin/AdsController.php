@@ -620,6 +620,7 @@ class AdsController extends Controller
                     $user->notify(new NotifyApproved($ad->title));
                 }
             }
+            Redis::flushDB();
                
             return response()->json(['data' => 'OK'], 200);
 
@@ -660,6 +661,8 @@ class AdsController extends Controller
                 $user->notify(new NotifyApproved($ad_->title));
             }
         }
+        Redis::flushDB();
+
         return ['data' => 'OK'];
     }
 
@@ -774,6 +777,7 @@ class AdsController extends Controller
         $ad_rejected_comment->ad_id = $ad->id;
         $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
         $ad_rejected_comment->save();
+        Redis::flushDB();
         
         return ['data' => 'OK'];
     }
@@ -796,6 +800,7 @@ class AdsController extends Controller
             $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
             $ad_rejected_comment->save();
         }
+        Redis::flushDB();
         
         return ['data' => 'OK'];
     }
@@ -829,6 +834,7 @@ class AdsController extends Controller
             $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
             $ad_rejected_comment->save();
         }
+        Redis::flushDB();
 
         return ['data' => 'OK'];
     }
