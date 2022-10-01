@@ -52,7 +52,7 @@ class UserController extends Controller
 
     public function refresh(Request $request)
     {
-        $token = Auth::refresh();
+        $token = auth()->refresh();
 
         $user = Auth::user();
         
