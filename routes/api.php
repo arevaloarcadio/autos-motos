@@ -156,6 +156,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 });
 
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
+Route::post('/refresh', 'App\Http\Controllers\UserController@refresh');
 
 Route::post('/recovery-password-email', 'App\Http\Controllers\UserController@recovery_email');
 Route::post('/recovery-password-code', 'App\Http\Controllers\UserController@recovery_code');

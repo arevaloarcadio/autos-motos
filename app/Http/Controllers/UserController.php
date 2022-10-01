@@ -50,6 +50,21 @@ class UserController extends Controller
         ]);
     }
 
+    public function refresh(Request $request)
+    {
+        $token = auth()->refresh();
+
+        $user = Auth::user();
+        
+        $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
+    
+        return response()->json([
+            'token' => $token,
+            'user'  => Auth::user(),
+            'plan_active' => $plan_active
+        ]);
+    }
+
     public function authenticate_admin(Request $request)
     {
         $credentials = $request->only('email', 'password');
