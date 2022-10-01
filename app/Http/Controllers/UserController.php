@@ -52,7 +52,7 @@ class UserController extends Controller
 
     public function refresh(Request $request)
     {
-        $token = auth()->refresh();
+        $token = JWTAuth::refresh();
 
         $user = Auth::user();
         
