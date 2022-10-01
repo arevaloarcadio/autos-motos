@@ -52,12 +52,12 @@ class UserController extends Controller
 
     public function refresh(Request $request)
     {
-        $token = JWTAuth::refresh();
+        $token = JWTAuth::parseToken()->authenticate();
 
         $user = Auth::user();
         
         $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
-    
+       
         return response()->json([
             'token' => $token,
             'user'  => Auth::user(),
