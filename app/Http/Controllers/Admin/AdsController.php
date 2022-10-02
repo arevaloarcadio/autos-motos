@@ -1104,26 +1104,34 @@ class AdsController extends Controller
                 if($request->query->get('page') != 1){
                     break;
                 }
-                if( $key != 'type'){
-                    if(
-                        !($request->from_mileage == 0 && $request->to_mileage == 500000) ||
-                        !($request->from_price == 500 && $request->to_price == 5000000)
-                    ){
-                        break;
-                    }
-                    if($key == 'from_mileage' || $key == 'to_mileage' || $key == 'from_price' || $key == 'to_price'){
+                if( $key == 'type'){
+                    continue;
+                }
+                if(
+                    !($request->from_mileage == 0 && $request->to_mileage == 500000) ||
+                    !($request->from_price == 500 && $request->to_price == 5000000)
+                ){
+                    break;
+                }
+                if($key == 'from_mileage' || $key == 'to_mileage' || $key == 'from_price' || $key == 'to_price'){
+                    continue;
+                }
+                if($key == 'higher_price'){
+                    if($data == true){
                         continue;
-                    }
-                    if(!is_null($data) && $data != false){
+                    }else{
                         break;
                     }
-                    if($key == 'newer'){
-                        if(Redis::exists('search_advanced_'.$request->type)){
-                            $data = json_decode(Redis::get('search_advanced_'.$request->type));
-                            return response()->json(['data' => $data,'redis'=>'true'], 200);
-                        }
-                        $val_redis=true;
+                }
+                if(!is_null($data) && $data != false){
+                    break;
+                }
+                if($key == 'newer'){
+                    if(Redis::exists('search_advanced_'.$request->type)){
+                        $data = json_decode(Redis::get('search_advanced_'.$request->type));
+                        return response()->json(['data' => $data,'redis'=>'true'], 200);
                     }
+                    $val_redis=true;
                 }
             }
 
