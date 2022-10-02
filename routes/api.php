@@ -24,6 +24,7 @@ Route::namespace('App\Http\Controllers')->group(static function() {
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     
+    
     Route::post('/recovery-password-admin', 'App\Http\Controllers\UserController@recovery_password_admin');
 
     Route::namespace('App\Http\Controllers')->group(static function() {
@@ -156,6 +157,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 });
 
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
+Route::post('/refresh', 'App\Http\Controllers\UserController@refresh');
+
 
 Route::post('/recovery-password-email', 'App\Http\Controllers\UserController@recovery_email');
 Route::post('/recovery-password-code', 'App\Http\Controllers\UserController@recovery_code');

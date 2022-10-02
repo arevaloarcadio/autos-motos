@@ -56,14 +56,14 @@ class MobileHomeAdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color_interior', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','color_exterior'],
+            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'interior_color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','exterior_color'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'beds', 'emission_class', 'condition', 'color_interior', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','color_exterior'],
+            ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'beds', 'emission_class', 'condition', 'interior_color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','exterior_color'],
             
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color_interior', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','color_exterior'];
+                $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'interior_color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','exterior_color'];
                 
                 
                     if ($request->filters) {
@@ -180,8 +180,8 @@ class MobileHomeAdsController extends Controller
             'fuel_consumption' => ['nullable', 'numeric'],
             'co2_emissions' => ['nullable', 'numeric'],
             'condition' => ['required', 'string'],
-            'color_interior' => ['nullable', 'string'],
-            'color_exterior' => ['nullable', 'string'],
+            'exterior_color' => ['required', 'string'],
+            'interior_color' => ['nullable', 'string'],
             'price' => ['required', 'numeric','max:99999999'],
             'first_name' => ['nullable', 'string'],
             'last_name' => ['nullable', 'string'],
@@ -290,8 +290,8 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->fuel_consumption = $request['fuel_consumption'];
             $mobileHomeAd->co2_emissions = $request['co2_emissions'];
             $mobileHomeAd->condition = $request['condition'];
-            $mobileHomeAd->color_interior = $request['color_interior'];
-            $mobileHomeAd->color_exterior = $request['color_exterior'];
+            $mobileHomeAd->exterior_color = $request['exterior_color'];
+            $mobileHomeAd->interior_color = $request['interior_color'];
             $mobileHomeAd->price = $request['price'];
             $mobileHomeAd->first_name = $request['first_name'];
             $mobileHomeAd->last_name = $request['last_name'];
@@ -414,8 +414,8 @@ class MobileHomeAdsController extends Controller
             'fuel_consumption' => ['nullable', 'numeric'],
             'co2_emissions' => ['nullable', 'numeric'],
             'condition' => ['required', 'string'],
-            'color_interior' => ['nullable', 'string'],
-            'color_exterior' => ['nullable', 'string'],
+            'exterior_color' => ['required', 'string'],
+            'interior_color' => ['nullable', 'string'],
             'price' => ['required', 'numeric','max:99999999'],
             'first_name' => ['nullable', 'string'],
             'last_name' => ['nullable', 'string'],
@@ -513,8 +513,8 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->fuel_consumption = $request['fuel_consumption'];
             $mobileHomeAd->co2_emissions = $request['co2_emissions'];
             $mobileHomeAd->condition = $request['condition'];
-            $mobileHomeAd->color_interior = $request['color_interior'];
-            $mobileHomeAd->color_exterior = $request['color_exterior'];
+            $mobileHomeAd->exterior_color = $request['exterior_color'];
+            $mobileHomeAd->interior_color = $request['interior_color'];
             $mobileHomeAd->price = $request['price'];
             $mobileHomeAd->first_name = $request['first_name'];
             $mobileHomeAd->last_name = $request['last_name'];

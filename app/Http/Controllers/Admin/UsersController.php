@@ -295,8 +295,8 @@ class UsersController extends Controller
             $user->whatsapp_number = $request['user_whatsapp_number'];
             $user->email = $request['user_email'];
             $user->password = Hash::make($request['user_password']);
-            $user->status = 'Pendiente';
-            $user->image ='users/user-default-ocassional.png';
+            $user->status = 'Pendiente'; 
+            $user->image = 'users/user-default-ocassional.png';
             $user->type = 'Profesional';
             $user->dealer_id = $dealer->id;
             $user->save();
