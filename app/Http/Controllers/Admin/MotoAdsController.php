@@ -116,13 +116,17 @@ class MotoAdsController extends Controller
         
         $filter = $request->filter;
 
-        $data = MotoAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'moto')")
+        $data = MotoAd::where(function ($query) use ($filter){ 
+                        $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'moto')")
+                            ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
                     } ,
-                    'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])->paginate(25);
+                    'fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])->paginate(24);
 
         return response()->json([
             'data' => $data

@@ -112,13 +112,19 @@ class MobileHomeAdsController extends Controller
 
         $filter = $request->filter;
         
-        $data = MobileHomeAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'mobile-home')")
+        $data = MobileHomeAd::where(function ($query) use ($filter){ 
+                        $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'mobile-home')")
+                            ->orWhere('custom_make','LIKE','%'.$filter.'%')
+                            ->orWhere('custom_model','LIKE','%'.$filter.'%')
+                            ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
                         $query->with(['images']);
                     },
-                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])->paginate(25);
+                    'make','model','ad','fuelType','transmissionType','dealer','dealerShowRoom'])->paginate(24);
 
         return response()->json([
             'data' => $data

@@ -120,12 +120,16 @@ class ShopAdsController extends Controller
 
         $filter = $request->filter;
 
-        $data = ShopAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'shop')")
+        $data = ShopAd::where(function ($query) use ($filter){ 
+                        $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'shop')")
+                            ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make','model','ad'=> function($query)
                         {
                             $query->with(['images']);
                         },
-                    'dealer','dealerShowRoom'])->paginate(25);
+                    'dealer','dealerShowRoom'])->paginate(24);
 
         return response()->json([
             'data' => $data

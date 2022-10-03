@@ -120,12 +120,17 @@ class TruckAdsController extends Controller
         
         $filter = $request->filter;
 
-        $data = TruckAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'truck')")
+        $data = TruckAd::where(function ($query) use ($filter){ 
+                        $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'truck')")
+                            ->orWhere('custom_make','LIKE','%'.$filter.'%')
+                            ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhere('model','LIKE','%'.$filter.'%');
+                    })
                     ->with(['make','fuelType','ad'=> function($query)
                     {
                         $query->with(['images']);
                     },
-                'transmissionType','dealer','dealerShowRoom'])->paginate(25);
+                'transmissionType','dealer','dealerShowRoom'])->paginate(24);
 
         return response()->json([
             'data' => $data
