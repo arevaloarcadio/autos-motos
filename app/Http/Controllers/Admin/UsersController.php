@@ -296,7 +296,7 @@ class UsersController extends Controller
             $user->email = $request['user_email'];
             $user->password = Hash::make($request['user_password']);
             $user->status = 'Pendiente'; 
-            $user->image = 'users/user-default-ocassional.png';
+            $user->image = $dealer->logo_path;
             $user->type = 'Profesional';
             $user->dealer_id = $dealer->id;
             $user->save();

@@ -213,7 +213,6 @@ class AdsController extends Controller
         
         $ads = Ad::where(function ($query) use ($filter){
             $query->where('ads.title','LIKE','%'. $filter.'%');
-            //->orWhere('ads.description','LIKE','%'.$filter.'%')
         });
 
         if ($type != 'all') {
@@ -289,12 +288,15 @@ class AdsController extends Controller
             array_push($ad_ids, $ad['id']);
         }
         
-
         $response = [];
         
         switch ($type) {
             case 'auto':
-                $response = AutoAd::whereRaw("ad_id in (SELECT id FROM ads where ads.title LIKE '%".$filter."%'  and ads.description '%".$filter."%')")
+                $response = AutoAd::whereIn('ad_id',$ad_ids)
+                    ->where(function ($query) use ($filter){ 
+                        $query->whereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make',
                             'model',
 
@@ -306,6 +308,10 @@ class AdsController extends Controller
                 break;
             case 'moto':
                 $response = MotoAd::whereIn('ad_id',$ad_ids)
+                    ->where(function ($query) use ($filter){ 
+                        $query->whereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
@@ -315,6 +321,12 @@ class AdsController extends Controller
                 break;
             case 'mobile-home':
                 $response = MobileHomeAd::whereIn('ad_id',$ad_ids)
+                    ->where(function ($query) use ($filter){ 
+                        $query->orWhere('custom_make','LIKE','%'.$filter.'%')
+                            ->orWhere('custom_model','LIKE','%'.$filter.'%')
+                            ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make','model',
                     'ad'=> function($query)
                     {
@@ -324,6 +336,11 @@ class AdsController extends Controller
                 break;
             case 'truck':
                 $response = TruckAd::whereIn('ad_id',$ad_ids)
+                    ->where(function ($query) use ($filter){ 
+                        $query->orWhere('custom_make','LIKE','%'.$filter.'%')
+                            ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhere('model','LIKE','%'.$filter.'%');
+                    })
                     ->with(['make','fuelType','ad'=> function($query)
                     {
                         $query->with(['images','characteristics']);
@@ -340,6 +357,10 @@ class AdsController extends Controller
                 break;  
             case 'shop':
                 $response = ShopAd::whereIn('ad_id',$ad_ids)
+                    ->where(function ($query) use ($filter){ 
+                        $query->whereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
+                            ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
+                    })
                     ->with(['make','model','ad'=> function($query)
                         {
                             $query->with(['images','characteristics']);
@@ -358,10 +379,13 @@ class AdsController extends Controller
 
                 break;
         }
+    
         return response()->json([
             'data' => $response->paginate(25)
         ]);
     }
+
+
     public function bySource(Request $request)
     {
 
@@ -1538,6 +1562,9 @@ class AdsController extends Controller
             }
             if ($filters->vehicle_category_id) {
                 $query->where('vehicle_category_id',$filters->vehicle_category_id);
+            }
+            if ($filters->category) {
+                $query->whereRaw("vehicle_category_id IN (SELECT id FROM vehicle_categories WHERE category = '".$filters->category."')" );
             }
             if ($filters->country) {
                 $query->where('country',$filters->country);
