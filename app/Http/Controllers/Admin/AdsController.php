@@ -256,7 +256,7 @@ class AdsController extends Controller
         ]);
 
         return response()->json([
-            'data' => $ads->paginate(25)
+            'data' => $ads->paginate(24)
         ]);
     }
 
@@ -381,7 +381,7 @@ class AdsController extends Controller
         }
     
         return response()->json([
-            'data' => $response->paginate(25)
+            'data' => $response->paginate(24)
         ]);
     }
 
