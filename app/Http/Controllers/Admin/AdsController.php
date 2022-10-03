@@ -332,7 +332,7 @@ class AdsController extends Controller
                     {
                         $query->with(['images','characteristics']);
                     },
-                    'make','model','ad','driveType','fuelType','transmissionType','dealer','dealerShowRoom']);
+                    'make','model','driveType','fuelType','transmissionType','dealer','dealerShowRoom']);
                 break;
             case 'truck':
                 $response = TruckAd::whereIn('ad_id',$ad_ids)
