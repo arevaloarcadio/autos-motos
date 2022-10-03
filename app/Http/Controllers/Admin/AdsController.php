@@ -279,7 +279,7 @@ class AdsController extends Controller
                   ->orWhere('ads.description','LIKE','%'.$filter.'%');
         })
         ->where('type',$type)
-        ->limit(25)
+        ->limit(24)
         ->get();
 
         $ad_ids = [];
