@@ -1140,22 +1140,21 @@ class AdsController extends Controller
                 if($key == 'from_mileage' || $key == 'to_mileage' || $key == 'from_price' || $key == 'to_price'){
                     continue;
                 }
-                if($key == 'higher_price'){
-                    if($data == true){
-                        continue;
-                    }else{
-                        break;
-                    }
-                }
-                if(!is_null($data) && $data != false){
+                
+                if(!is_null($data) && $data != false && $key != 'newer'){
+                    
                     break;
                 }
                 if($key == 'newer'){
-                    if(Redis::exists('search_advanced_'.$request->type)){
-                        $data = json_decode(Redis::get('search_advanced_'.$request->type));
-                        return response()->json(['data' => $data,'redis'=>'true'], 200);
+                    if($data == true){
+                        if(Redis::exists('search_advanced_'.$request->type)){
+                            $data = json_decode(Redis::get('search_advanced_'.$request->type));
+                            return response()->json(['data' => $data,'redis'=>'true'], 200);
+                        }
+                        $val_redis=true;
+                    }else{
+                        break;
                     }
-                    $val_redis=true;
                 }
             }
 
