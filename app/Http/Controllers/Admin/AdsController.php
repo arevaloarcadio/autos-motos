@@ -1654,34 +1654,45 @@ class AdsController extends Controller
         
 
         try {
-            $dealer_id=null;
+
+            $dealer_id = null;
+            
             if ($request->dealer) {
-                $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
+                
+                $dealers = Dealer::select('id')
+                	->where('company_name','LIKE','%'.$request->dealer.'%')
+                	->get()
+                	->toArray();
+                
                 foreach ($dealers as $key => $dealer) {
                     $dealer_id[$key] = $dealer['id'];
                 }
             }
+            
             $request['dealer_id'] = $dealer_id;
+            
             $counts = 0;
-            if ($request->types) {
-                foreach ($request->types as $type) {
-                    switch ($type) {
-                        case 'auto':
-                           $counts += $this->getCountAutoAd($request);
-                            break;
-                        case 'moto':
-                            $counts += $this->getCountMotoAd($request);
-                            break;
-                        case 'mobile-home':
-                            $counts += $this->getCountMobileHomeAd($request);
-                            break;
-                        case 'truck':
-                            $counts += $this->getCountTruckAd($request);
-                            break;
-                        default:
-                            break;
-                    }
-                }
+            
+            $type = $request->type;
+
+            switch ($type) {
+                case 'auto':
+                    $counts = $this->getCountAutoAd($request) * 2;
+                    break;
+                case 'moto':
+                    $counts = $this->getCountMotoAd($request);
+                    break;
+                case 'mobile-home':
+                    $counts = $this->getCountMobileHomeAd($request);
+                    break;
+                case 'truck':
+                    $counts = $this->getCountTruckAd($request);
+                    break;
+                case 'all':
+                    $counts = Ad::count() * 2;
+                    break;
+                default:
+                    break;
             }
                
             return response()->json(['data' => $counts], 200);
@@ -1777,7 +1788,7 @@ public function getCountAutoAd($filters)
         
         $auto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
         
-        return $auto_ad->count() * 2;
+        return $auto_ad->count();
     }
 
     public function getCountMotoAd($filters)
@@ -1861,7 +1872,7 @@ public function getCountAutoAd($filters)
         
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
-        return $moto_ad->count() * 2;
+        return $moto_ad->count();
     }
 
     public function getCountMobileHomeAd($filters)
@@ -2028,7 +2039,7 @@ public function getCountAutoAd($filters)
         
         $truck_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
         
-        return $truck_ad->count() * 2;
+        return $truck_ad->count();
     }
 
      public function searchAdvancedMechanic(Request $request)
