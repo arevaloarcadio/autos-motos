@@ -1983,6 +1983,11 @@ public function getCountAutoAd($filters)
             if ($filters->vehicle_category_id) {
                 $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
+            
+            if ($filters->category) {
+                $query->whereRaw("vehicle_category_id IN (SELECT id FROM vehicle_categories WHERE category = '".$filters->category."')" );
+            }
+
             if ($filters->city) {
                 $query->where('city','LIKE','%'.$filters->city.'%');
                 $query->where('address','LIKE','%'.$filters->city.'%');
