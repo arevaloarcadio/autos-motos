@@ -1676,7 +1676,7 @@ class AdsController extends Controller
 
             switch ($type) {
                 case 'auto':
-                    $counts = $this->getCountAutoAd($request) * 2;
+                    $counts = $this->getCountAutoAd($request);
                     break;
                 case 'moto':
                     $counts = $this->getCountMotoAd($request);
