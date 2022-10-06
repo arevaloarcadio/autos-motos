@@ -1136,9 +1136,9 @@ class AdsController extends Controller
                     ($request->from_mileage == 0 && $request->to_mileage == 500000) &&
                     ($request->from_price == 500 && $request->to_price == 5000000)
                 ){
-                    $request['from_mileage'] == null;
-                    $request['to_price'] == null;
-                    $request['to_mileage'] == null;
+                    $request['from_mileage'] = null;
+                    $request['to_price'] = null;
+                    $request['to_mileage'] = null;
                 }
                 
                 if(
