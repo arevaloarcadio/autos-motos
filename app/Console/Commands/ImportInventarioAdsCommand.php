@@ -10,6 +10,7 @@ use App\Enum\Ad\ImageProcessingStatusEnum;
 use App\Enum\Core\ApprovalStatusEnum;
 use App\Exceptions\InvalidAdTypeInputException;
 use App\Exceptions\InvalidAdTypeProvidedException;
+use Illuminate\Support\Facades\Hash;
 use App\Manager\Market\MarketManager;
 use App\Models\Ad;
 use App\Models\MotoAd;
