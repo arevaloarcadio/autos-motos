@@ -1137,6 +1137,14 @@ class AdsController extends Controller
                 ){
                     break;
                 }
+                 if(
+                    ($request->from_mileage == 0 && $request->to_mileage == 500000) &&
+                    ($request->from_price == 500 && $request->to_price == 5000000)
+                ){
+                    $request['from_mileage'] == null;
+                    $request['to_price'] == null;
+                    $request['to_mileage'] == null;
+                }
                 if($key == 'from_mileage' || $key == 'to_mileage' || $key == 'from_price' || $key == 'to_price'){
                     continue;
                 }
