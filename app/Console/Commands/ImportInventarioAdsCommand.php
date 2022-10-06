@@ -342,17 +342,16 @@ class ImportInventarioAdsCommand extends Command
             throw new Exception('no_dealer_id');
         }
         
-        $email = strtolower(trim($externalDealer->cliente_email));
 
         $user = User::query()
-                    ->where('email', '=', $email)->first();
+                    ->where('dealer_id', '=', $dealer_id)->first();
 
         if (is_null($user)) {
             
             $user = User::create([
-                    'first_name' => $externalDealer->cliente_nombre,
+                    'first_name' => trim($externalDealer->cliente_nombre),
                     'last_name' => '.',
-                    'email' =>   $externalDealer->cliente_email,
+                    'email' =>   strtolower(trim($externalDealer->cliente_email)),
                     'password' => Hash::make($externalDealer->cliente_email.'123**'),
                     'dealer_id' => $dealer_id,
                     'type' => 'Profesional'
@@ -364,6 +363,7 @@ class ImportInventarioAdsCommand extends Command
         return $user;
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
+
 
 
     private function findOrCreateDealer(SimpleXMLElement $seller): Dealer
