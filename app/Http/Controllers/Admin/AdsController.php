@@ -1298,11 +1298,11 @@ class AdsController extends Controller
         $auto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
         if ($filters->oldest) {
-            $auto_ad->orderBy('created_at','DESC');
+            $auto_ad->orderBy('created_at','ASC');
         }
         
         if ($filters->newer) {
-            $auto_ad->orderBy('created_at','ASC');
+            $auto_ad->orderBy('created_at','DESC');
         }
 
         if ($filters->higher_price) {
@@ -1406,11 +1406,11 @@ class AdsController extends Controller
         
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
-        if ($filters->oldest) {
+        if ($filters->newer) {
             $moto_ad->orderBy('created_at','DESC');
         }
         
-        if ($filters->newer) {
+        if ($filters->oldest) {
             $moto_ad->orderBy('created_at','ASC');
         }
 
@@ -1517,11 +1517,11 @@ class AdsController extends Controller
 
         $mobile_home_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
-        if ($filters->oldest) {
+        if ($filters->newer) {
             $mobile_home_ad->orderBy('created_at','DESC');
         }
         
-        if ($filters->newer) {
+        if ($filters->oldest) {
             $mobile_home_ad->orderBy('created_at','ASC');
         }
 
@@ -1620,11 +1620,11 @@ class AdsController extends Controller
         
         $truck_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
-        if ($filters->oldest) {
+        if ($filters->newer) {
             $truck_ad->orderBy('created_at','DESC');
         }
         
-        if ($filters->newer) {
+        if ($filters->oldest) {
             $truck_ad->orderBy('created_at','ASC');
         }
 
