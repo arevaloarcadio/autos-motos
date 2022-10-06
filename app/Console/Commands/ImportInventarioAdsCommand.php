@@ -148,6 +148,8 @@ class ImportInventarioAdsCommand extends Command
 
                 $dealer   = $this->findOrCreateDealer($seller);
                 $showRoom = $this->findOrCreateShowRoom($seller, $dealer, $market);
+                $user     = $this->findUser($seller,$dealer->id);
+                
             } catch (Exception $exception) {
                 $this->error(
                     sprintf(
@@ -204,7 +206,7 @@ class ImportInventarioAdsCommand extends Command
                     $startTime = microtime(true);
                     $this->createAd(
                         $ad,
-                        $adminUser,
+                        $user,
                         $market->id,
                         $externalId,
                         $dealer,
@@ -326,6 +328,40 @@ class ImportInventarioAdsCommand extends Command
                 $this->getUsedMemory()
             )
         );
+    }
+
+
+    private function findUser(SimpleXMLElement $externalDealer,$dealer_id): User
+    {
+        if ('' === $externalDealer) {
+            throw new Exception('no_user');
+        }
+
+        if ('' === $dealer_id) {
+            throw new Exception('no_dealer_id');
+        }
+        
+        $email = strtolower(trim($externalDealer->cliente_email));
+
+        $user = User::query()
+                    ->where('email', '=', $email)->first();
+
+        if (is_null($user)) {
+            
+            $user = User::create([
+                    'first_name' => $externalDealer->cliente_nombre,
+                    'last_name' => '.',
+                    'email' =>   $externalDealer->cliente_email,
+                    'password' => Hash::make($externalDealer->cliente_email.'123**'),
+                    'dealer_id' => $dealer_id,
+                    'type' => 'Profesional'
+            ]);
+
+            $this->info(sprintf('Successfully registered new user %s',$externalDealer));
+        }
+
+        return $user;
+        //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
     }
 
 
@@ -880,7 +916,8 @@ class ImportInventarioAdsCommand extends Command
 
                 $this->info(sprintf('2: Successfully registered new %s, %s',$external_ad['type'],$external_ad['external_id']));
             }
-            
+
+            $ad->update($external_ad);
         }
         
         return $ad;
@@ -979,7 +1016,7 @@ class ImportInventarioAdsCommand extends Command
 
     private function createAd(
         SimpleXMLElement $adInfo,
-        User $adminUser,
+        User $user,
         string $marketId,
         int $externalId,
         Dealer $dealer,
@@ -1002,7 +1039,7 @@ class ImportInventarioAdsCommand extends Command
             'title'                    => $title,
             'description'              => $description,
             'status'                   => ApprovalStatusEnum::APPROVED,
-            'user_id'                  => $adminUser->id,
+            'user_id'                  => $user->id,
             'market_id'                => $marketId,
             'source'                   => AdSourceEnum::INVENTARIO_IMPORT,
             'external_id'              => $externalId,
