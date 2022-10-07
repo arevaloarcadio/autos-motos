@@ -433,7 +433,15 @@ class UsersController extends Controller
             // Update changed values User
             $user->update($data);
 
+            if (!is_null($user->dealer_id)) {
+                $dealer = Dealer::find($user->dealer_id);
+                $dealer->address = $sanitized['address']  ?? $dealer['address'];
+                $dealer->city = $sanitized['city'] ?? $dealer['city'];
+                $dealer->save();
+            }
+            
             $user->dealer;
+            
             $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
             
             if (!is_null($user->dealer)) {

@@ -472,25 +472,28 @@ class AdsController extends Controller
         switch ($request->filter) {
             case 'auto':
                 $data = $data->where(function($query) use ($dealer_id){
-                            $query->whereRaw("(
-                                id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or
-                                id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or 
-                                id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."') or
-                                id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."')
-                            )");
-                        });
+                    $query->whereRaw("(
+                        id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."' and status = '10') or
+                        id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."' and status = '10') or 
+                        id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."' and status = '10') or
+                        id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."' and status = '10')
+                    )");
+                });
                 break;
             case 'mechanic':
                 $data = $data->join('mechanic_ads','mechanic_ads.ad_id','ads.id')
-                    ->where('dealer_id',$dealer_id);
+                    ->where('dealer_id',$dealer_id)
+                    ->where('status','10');
                 break;
             case 'rental':
                 $data = $data->join('rental_ads','rental_ads.ad_id','ads.id')
-                    ->where('dealer_id',$dealer_id);
+                    ->where('dealer_id',$dealer_id)
+                    ->where('status','10');
                 break;
             case 'shop':
                 $data = $data ->join('shop_ads','shop_ads.ad_id','ads.id')
-                    ->where('dealer_id',$dealer_id);
+                    ->where('dealer_id',$dealer_id)
+                    ->where('status','10');
                 break;
             default:
                 
