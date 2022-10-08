@@ -171,6 +171,9 @@ class ImportController extends Controller
             }
         
         } catch (Exception $e) {
+            Ad::where('csv_ad_id',$csv_ad_id['id'])->whereRaw('id not in(SELECT ad_id from auto_ads)')->delete();  
+            
+            
             $resource = array_merge($resource, [
                     'error_message' => sprintf('Error en la fila %d por favor verifique el archivo e intente  nuevamente',$count_ads+1) 
                 ]
