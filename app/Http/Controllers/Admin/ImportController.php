@@ -81,6 +81,7 @@ class ImportController extends Controller
                 $thumbnail =  preg_split("/_/", $csv_ad[2]);
                    
                 $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
+                $until_year_month = $csv_ad[24] !== null ? explode('.', $csv_ad[24]) : null;
                 
                 $thumbnail_format = explode('.', $csv_ad[2]);                
                 
@@ -105,12 +106,12 @@ class ImportController extends Controller
 
                 $data_auto_ad = [
                     'price'                    => $csv_ad[15],//OK.
-                    'price_contains_vat'       => 0,
+                    'price_contains_vat'       => $csv_ad[10],
                     'vin'                      => null,
                     'doors'                    => $csv_ad[16] == '' ? 0 : $csv_ad[16], //OK
                     'mileage'                  => $csv_ad[14], ///OK
                     'exterior_color'           => utf8_encode($csv_ad[9]),
-                    'interior_color'           => utf8_encode($csv_ad[9]),
+                    'interior_color'           => utf8_encode($csv_ad[90]),
                     'condition'                => $this->getCondition($csv_ad[6]), //OK
                     'dealer_id'                => !is_null($dealer) ? $dealer['id'] : null,
                     'dealer_show_room_id'      => !is_null($dealer_show_room)  ? $dealer_show_room['id'] : null,
@@ -125,11 +126,13 @@ class ImportController extends Controller
                     'ad_transmission_type_id'  => $this->findTransmissionTypeId($csv_ad[7])['id'], 
                     'first_registration_year'  => $year_month[1] ?? '01',
                     'first_registration_month' => $year_month[0] ?? '2000',
+                    'inspection_valid_until_year'  => $until_year_month[1] ?? '',
+                    'inspection_valid_until_month' => $until_year_month[0] ?? '',
                     'engine_displacement'      => $csv_ad[18], //OK
                     'power_hp'                 => $csv_ad[19], //OK
                     'make_id'                  => $this->findMake($csv_ad[3])['id'], //OK
                     'model_id'                 => $this->findModel($csv_ad[4],$this->findMake($csv_ad[3]))['id'], //OK
-                    'additional_vehicle_info'  => utf8_encode($csv_ad[5]), //OK
+                    'additional_vehicle_info'  => utf8_encode($csv_ad[58]), //OK
                     'seats'                    => $csv_ad[17], //OK
                 ];
                 
