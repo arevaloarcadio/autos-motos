@@ -76,28 +76,34 @@ class ImportController extends Controller
             while (fgets($fh) !== false) $total_ads++;
 
             fclose($fh);
+            
+            $i = 0;
 
             while (($csv_ad = fgetcsv($handle,null,';')) !== FALSE) {
+                 if ($csv_ad[3] == 'make') {
+                    continue;
+                }
+
                 $thumbnail =  preg_split("/_/", $csv_ad[2]);
                    
                 $year_month = $csv_ad[13] !== null ? explode('.', $csv_ad[13]) : null;
-                $until_year_month = $csv_ad[24] !== null ? explode('.', $csv_ad[24]) : null;
+                $until_year_month = $csv_ad[23] !== null ? explode('.', $csv_ad[23]) : null;
                 
                 $thumbnail_format = explode('.', $csv_ad[2]);                
                 
                 $external_id = $thumbnail[0];
                 //23bcf97c-296b-46c9-bdd5-8057e052bfce el id de administrador actual
 
+               
                 $data_ad = [
                     'slug'                          => Str::slug(utf8_encode($csv_ad[5])),
                     'title'                         => utf8_encode($csv_ad[5]),
-                    'description'                   => utf8_encode($csv_ad[58]) ,
+                    'description'                   => utf8_encode($csv_ad[57]) ,
                     'thumbnail'                     => NULL,
                     'status'                        => $is_admin ? 10 : 0,
                     'type'                          => 'auto',
                     'user_id'                       => $user->id,
                     'market_id'                     => $market->id,
-                    'external_id'                   => $external_id,
                     'source'                        => 'CSV',
                     'images_processing_status'      => 'N/A',
                     'images_processing_status_text' => null,
@@ -126,16 +132,17 @@ class ImportController extends Controller
                     'ad_transmission_type_id'  => $this->findTransmissionTypeId($csv_ad[7])['id'], 
                     'first_registration_year'  => $year_month[1] ?? '01',
                     'first_registration_month' => $year_month[0] ?? '2000',
-                    'inspection_valid_until_year'  => $until_year_month[1] ?? '',
-                    'inspection_valid_until_month' => $until_year_month[0] ?? '',
+                    'inspection_valid_until_year'  => $until_year_month[1] ?? null,
+                    'inspection_valid_until_month' => $until_year_month[0] ?? null,
                     'engine_displacement'      => $csv_ad[18], //OK
                     'power_hp'                 => $csv_ad[19], //OK
                     'make_id'                  => $this->findMake($csv_ad[3])['id'], //OK
                     'model_id'                 => $this->findModel($csv_ad[4],$this->findMake($csv_ad[3]))['id'], //OK
-                    'additional_vehicle_info'  => utf8_encode($csv_ad[58]), //OK
+                    'additional_vehicle_info'  => utf8_encode($csv_ad[57]), //OK
                     'seats'                    => $csv_ad[17], //OK
                 ];
                 
+
                 $ad = $this->findOrCreateAd($data_ad);
                 
                 $data_auto_ad['ad_id'] = $ad->id;
@@ -160,6 +167,7 @@ class ImportController extends Controller
                         'percentage' => round(($count_ads*100)/$total_ads,2).'%'
                     ]
                 );   */  
+                $i++;
             }
         
         } catch (Exception $e) {
@@ -172,7 +180,7 @@ class ImportController extends Controller
         } 
         
         $resource = array_merge($resource, [
-                    'data' => 'Total de anuncios importandos '.$count_ads.' de '.$total_ads
+                    'data' => 'Total de anuncios importandos '.$count_ads.' de '.($total_ads-1)
                 ]
             );
 
@@ -274,8 +282,6 @@ class ImportController extends Controller
             'diésel'                    => 'diesel',
             'eléctrico'                 => 'electric',
             'gas'                       => 'gas_gasoline',
-            'gas licuado (glp)'         => 'gas_gasoline',
-            'gas natural (cng)'         => 'gas_gasoline',
             'gasolina'                  => 'gas_gasoline',
             'híbrido (gasolina)'        => 'hybrid_petrol_electric',
             'híbrido (diésel)'          => 'hybrid_diesel_electric',
@@ -298,6 +304,7 @@ class ImportController extends Controller
             'automático' => 'automatic',
             'manuale'    => 'manual',
             'automatico' => 'automatic',
+            'automatic' => 'automatic',
         ];
 
         return $transmissions;
@@ -307,17 +314,21 @@ class ImportController extends Controller
     {
         
         $conditions = [
-            'Gebraucht' => "used", 
-            'Oldtimer' => "classic", 
-            'Neu' => "new",
+            'gebraucht' => "used", 
+            'new' => "new", 
+            'usado' => "used", 
+            'used' => "used", 
+            'nuevo' => "new", 
+            'oldtimer' => "classic", 
+            'neu' => "new",
             'kmzero'  => 'new',
             'nuovo'   => 'new',
             'ocasion' => 'used',
             'usato'   => 'used',
         ];
 
-        if (isset($conditions[$externalCondition])) {
-            return $conditions[$externalCondition];
+        if (isset($conditions[trim(strtolower($externalCondition))])) {
+            return $conditions[trim(strtolower($externalCondition))];
         }
 
         return 'other';
