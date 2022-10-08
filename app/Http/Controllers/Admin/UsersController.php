@@ -435,8 +435,8 @@ class UsersController extends Controller
 
             if (!is_null($user->dealer_id)) {
                 $dealer = Dealer::find($user->dealer_id);
-                $dealer->address = $sanitized['address']  ?? $dealer['address'];
-                $dealer->city = $sanitized['city'] ?? $dealer['city'];
+                $dealer->address = $request['address']  ?? $dealer['address'];
+                $dealer->city = $request['city'] ?? $dealer['city'];
                 $dealer->save();
             }
             
