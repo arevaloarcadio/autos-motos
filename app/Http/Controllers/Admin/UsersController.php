@@ -437,6 +437,7 @@ class UsersController extends Controller
                 $dealer = Dealer::find($user->dealer_id);
                 $dealer->address = $request['address']  ?? $dealer['address'];
                 $dealer->city = $request['city'] ?? $dealer['city'];
+                $dealer->country = $request['country'] ?? $dealer['country'];
                 $dealer->save();
             }
             
