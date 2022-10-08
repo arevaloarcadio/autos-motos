@@ -98,7 +98,7 @@ class ImportController extends Controller
                 $data_ad = [
                     'slug'                          => Str::slug(utf8_encode($csv_ad[5])),
                     'title'                         => utf8_encode($csv_ad[5]),
-                    'description'                   => utf8_encode($csv_ad[57]) ,
+                    'description'                   => utf8_encode($csv_ad[57]) == '' ? utf8_encode($csv_ad[5])  :utf8_encode($csv_ad[57]),
                     'thumbnail'                     => NULL,
                     'status'                        => $is_admin ? 10 : 0,
                     'type'                          => 'auto',
@@ -255,11 +255,11 @@ class ImportController extends Controller
     private function getFuelOptions(): array
     {
         $fuel_types = [
-            'Diesel'            => 'diesel',
-            'Elektro/Benzin'    => 'hybrid_petrol_electric',
-            'Benzin'            => 'petrol',
-            'Elektro'           => 'electric',
-            'LPG'               => 'lpg', 
+            'diesel'            => 'diesel',
+            'elektro/benzin'    => 'hybrid_petrol_electric',
+            'benzin'            => 'petrol',
+            'elektro'           => 'electric',
+            'lpg'               => 'lpg', 
             'gasolina'          => 'petrol',
             'diesel'            => 'diesel',
             'gas licuado (glp)' => 'gas_gasoline',
