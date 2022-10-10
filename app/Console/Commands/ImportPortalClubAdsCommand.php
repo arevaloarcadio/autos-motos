@@ -412,9 +412,11 @@ class ImportPortalClubAdsCommand extends Command
                 $dealer->external_id = (string) $sellerInfo->id;
                 $dealer->source      = AdSourceEnum::PORTAL_CLUB_IMPORT;
 
-                $dealer->save();
             }
-
+            
+            $dealer->logo_path = $sellerInfo->logo;
+			$dealer->save();
+            
             return $dealer;
         }
 
@@ -426,7 +428,7 @@ class ImportPortalClubAdsCommand extends Command
             'zip_code'      => (string) $sellerInfo->zip_code,
             'city'          => (string) $sellerInfo->town,
             'country'       => $countryName,
-            'logo_path'     => null,
+            'logo_path'     => $sellerInfo->logo,
             'email_address' => (string) $sellerInfo->email,
             'phone_number'  => $this->formatPhoneNumber(
                 str_replace(' ', '', (string) $sellerInfo->phone),
