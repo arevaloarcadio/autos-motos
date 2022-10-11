@@ -373,8 +373,8 @@ class ImportInventarioAdsCommand extends Command
                            ->where('vat_number', '=', $vatNumber)
                            ->where('slug', '=', Str::slug((string) $seller->cliente_nombre))
                            ->first();
-        $this->info($seller);
-        
+        $this->info( var_dump($seller));
+
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $seller->cliente_id;
