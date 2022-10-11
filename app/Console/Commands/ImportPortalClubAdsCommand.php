@@ -407,7 +407,7 @@ class ImportPortalClubAdsCommand extends Command
                            ->where('slug', '=', Str::slug($sellerInfo->company_name))
                            ->first();
 
-        $this->info($sellerInfo->company_name);
+        $this->info($sellerInfo->logo);
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $sellerInfo->id;
