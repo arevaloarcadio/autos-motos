@@ -419,6 +419,8 @@ class ImportPortalClubAdsCommand extends Command
             
             return $dealer;
         }
+        
+        $this->info($sellerInfo);
 
         $dealerInput = [
             'company_name'  => (string) $sellerInfo->company_name,
