@@ -1303,9 +1303,12 @@ class AdsController extends Controller
             if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
         });
 
         $auto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
@@ -1412,9 +1415,12 @@ class AdsController extends Controller
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
         });
         
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
@@ -1520,12 +1526,15 @@ class AdsController extends Controller
              if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-             if (!is_null($filters->fuel_consumption)) {
+            if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
         });
 
         $mobile_home_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
@@ -1626,9 +1635,12 @@ class AdsController extends Controller
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
         });
         
         $truck_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
@@ -1793,9 +1805,12 @@ public function getCountAutoAd($filters)
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
         });
         
         $auto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
@@ -1877,9 +1892,12 @@ public function getCountAutoAd($filters)
              if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
         });
         
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
@@ -1945,9 +1963,12 @@ public function getCountAutoAd($filters)
             if (!is_null($filters->sleeping_places)) {
                 $query->where('sleeping_places',$filters->sleeping_places);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
             
             
             if ($filters->inspection_valid_until_month) {
@@ -2046,10 +2067,14 @@ public function getCountAutoAd($filters)
              if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            if (!is_null($filters->co2_emissions)) {
-                $query->where('co2_emissions',$filters->co2_emissions);
+            
+            if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
+                $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
-             if (!is_null($filters->fuel_consumption)) {
+            /*if (!is_null($filters->co2_emissions)) {
+                $query->where('co2_emissions',$filters->co2_emissions);
+            }*/
+            if (!is_null($filters->fuel_consumption)) {
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });

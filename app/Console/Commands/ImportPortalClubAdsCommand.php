@@ -253,11 +253,11 @@ class ImportPortalClubAdsCommand extends Command
                     }
                 }
 
-                //$this->cleanUpAds($dealer, $importedAdsIds);
+                $this->cleanUpAds($dealer, $importedAdsIds);
                 // delete external ads from this dealer not in $importedAdsIds;
             }
 
-            //$this->cleanUpDealers($countryName, $importedSellersIds);
+            $this->cleanUpDealers($countryName, $importedSellersIds);
             // find external dealer from current market not in $importedSellersIds and delete their external ads;
 
             $marketCounter[$countryCode] = [
