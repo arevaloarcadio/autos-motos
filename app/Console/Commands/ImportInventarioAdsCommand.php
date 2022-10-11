@@ -244,7 +244,7 @@ class ImportInventarioAdsCommand extends Command
                 }
             }
 
-//            $this->cleanUpAds($dealer, $importedAdsIds);
+            $this->cleanUpAds($dealer, $importedAdsIds);
             // delete external ads from this dealer not in $importedAdsIds;
         }
 
