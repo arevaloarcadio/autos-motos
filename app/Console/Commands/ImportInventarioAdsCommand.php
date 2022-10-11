@@ -383,7 +383,7 @@ class ImportInventarioAdsCommand extends Command
                 $dealer->save();
             }
             
-            $dealer->logo_path = $seller->cliente_logo;
+            $dealer->logo_path = $seller->cliente_logo[0];
             $dealer->save();
             
             $this->info($dealer);      
@@ -398,7 +398,7 @@ class ImportInventarioAdsCommand extends Command
             'zip_code'      => (string) $seller->cliente_codigo_postal,
             'city'          => (string) $seller->cliente_provincia,
             'country'       => self::COUNTRY_NAME,
-            'logo_path'     => $seller->cliente_logo,
+            'logo_path'     => $seller->cliente_logo[0],
             'email_address' => (string) $seller->cliente_email,
             'phone_number'  => $this->formatPhoneNumber((string) $seller->cliente_telefono_primero),
             'source'        => AdSourceEnum::INVENTARIO_IMPORT,
