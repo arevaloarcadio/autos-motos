@@ -373,8 +373,8 @@ class ImportInventarioAdsCommand extends Command
                            ->where('vat_number', '=', $vatNumber)
                            ->where('slug', '=', Str::slug((string) $seller->cliente_nombre))
                            ->first();
-        $this->info( var_dump($seller->cliente_logo));
-
+       
+                                 $this->info($seller->cliente_logo);
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $seller->cliente_id;
@@ -393,13 +393,13 @@ class ImportInventarioAdsCommand extends Command
             'zip_code'      => (string) $seller->cliente_codigo_postal,
             'city'          => (string) $seller->cliente_provincia,
             'country'       => self::COUNTRY_NAME,
-            'logo_path'     => null,
+            'logo_path'     => $seller->cliente_logo,
             'email_address' => (string) $seller->cliente_email,
             'phone_number'  => $this->formatPhoneNumber((string) $seller->cliente_telefono_primero),
             'source'        => AdSourceEnum::INVENTARIO_IMPORT,
             'external_id'   => (string) $seller->cliente_id,
         ];
-
+   
         return $this->dealerService->create($dealerInput);
     }
 
