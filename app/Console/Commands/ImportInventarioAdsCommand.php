@@ -374,7 +374,7 @@ class ImportInventarioAdsCommand extends Command
                            ->where('slug', '=', Str::slug((string) $seller->cliente_nombre))
                            ->first();
        
-                                 $this->info($seller->cliente_logo);
+               
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $seller->cliente_id;
@@ -382,7 +382,12 @@ class ImportInventarioAdsCommand extends Command
 
                 $dealer->save();
             }
-
+            
+            $dealer->logo = $seller->cliente_logo;
+            $dealer->save();
+            
+            $this->info($dealer);      
+            
             return $dealer;
         }
 
@@ -399,7 +404,7 @@ class ImportInventarioAdsCommand extends Command
             'source'        => AdSourceEnum::INVENTARIO_IMPORT,
             'external_id'   => (string) $seller->cliente_id,
         ];
-   
+
         return $this->dealerService->create($dealerInput);
     }
 
