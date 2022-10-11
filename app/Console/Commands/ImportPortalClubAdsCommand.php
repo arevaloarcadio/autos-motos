@@ -406,7 +406,8 @@ class ImportPortalClubAdsCommand extends Command
                            //->where('vat_number', '=', $vatNumber)
                            ->where('slug', '=', Str::slug($sellerInfo->company_name))
                            ->first();
-
+                               
+        $this->info($sellerInfo);
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $sellerInfo->id;
@@ -419,8 +420,7 @@ class ImportPortalClubAdsCommand extends Command
             
             return $dealer;
         }
-        
-        $this->info($sellerInfo);
+    
 
         $dealerInput = [
             'company_name'  => (string) $sellerInfo->company_name,
