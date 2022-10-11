@@ -383,7 +383,7 @@ class ImportInventarioAdsCommand extends Command
                 $dealer->save();
             }
             
-            $dealer->logo_path = $seller->cliente_logo[0];
+            $dealer->logo_path = $seller->cliente_logo;
             $dealer->save();
             
             $this->info($seller);      
