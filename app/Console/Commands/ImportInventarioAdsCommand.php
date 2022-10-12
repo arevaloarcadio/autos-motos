@@ -386,7 +386,7 @@ class ImportInventarioAdsCommand extends Command
             $dealer->logo_path = $seller->cliente_logo;
             $dealer->save();
             
-            $this->info($seller);      
+            $this->info(var_dump($seller) );      
             
             return $dealer;
         }
