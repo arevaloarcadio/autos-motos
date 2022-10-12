@@ -539,26 +539,31 @@ class AdsController extends Controller
 
     public function byDealerCount(Request $request,$dealer_id)
     {
-       
-        $product_ads = Ad::where(function($query) use ($dealer_id){
-            $query->whereRaw("(
-                id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or
-                id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or 
-                id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."' ) or
-                id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."')
-            )")->where('ads.status','10');
-        })->count();
+        try {
 
-        $service_ads = Ad::where(function($query) use ($dealer_id){
-            $query->whereRaw("(
-                id in (SELECT ad_id from mechanic_ads where dealer_id = '".$dealer_id."') or
-                id in (SELECT ad_id from rental_ads where dealer_id = '".$dealer_id."') or 
-                id in (SELECT ad_id from shop_ads where dealer_id = '".$dealer_id."') or
-            )")->where('ads.status','10');
-        })->count();
+            $product_ads = Ad::where(function($query) use ($dealer_id){
+                $query->whereRaw("(
+                    id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or
+                    id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or 
+                    id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."' ) or
+                    id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."')
+                )")->where('ads.status','10');
+            })->count();
 
+            $service_ads = Ad::where(function($query) use ($dealer_id){
+                $query->whereRaw("(
+                    id in (SELECT ad_id from mechanic_ads where dealer_id = '".$dealer_id."') or
+                    id in (SELECT ad_id from rental_ads where dealer_id = '".$dealer_id."') or 
+                    id in (SELECT ad_id from shop_ads where dealer_id = '".$dealer_id."')
+                )")->where('ads.status','10');
+            })->count();
 
-        return response()->json(['data' => ['product_ads' => $product_ads, 'service_ads' => $service_ads]], 200);
+            return response()->json(['data' => ['product_ads' => $product_ads, 'service_ads' => $service_ads]], 200);
+        
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
     }
 
     public function byCsv(Request $request,$csv_ad_id)
