@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enum\Ad\AdSourceEnum;
+use Illuminate\Support\Facades\DB;
 use App\Enum\Ad\AdTypeEnum;
 use App\Enum\Ad\ColorEnum;
 use App\Enum\Ad\ConditionEnum;
@@ -276,8 +277,7 @@ class ImportInventarioAdsCommand extends Command
     private function cleanUpAds(Dealer $dealer, array $adExternalIds): void
     {
         $ads = Ad::query()
-                 ->join('auto_ads', 'auto_ads.ad_id', '=', 'ads.id')
-                 ->where('auto_ads.dealer_id', '=', $dealer->id)
+                 ->whereRaw("ads.user_id IN(SELECT id FROM users where dealer_id = '".$dealer->id."')" )
                  ->where('ads.source', '=', AdSourceEnum::INVENTARIO_IMPORT)
                  ->whereNotIn('ads.external_id', $adExternalIds)
                  ->whereNotNull('ads.external_id');
@@ -286,14 +286,24 @@ class ImportInventarioAdsCommand extends Command
 
         \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug($dealer->id);
 
-        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug(var_dump($adExternalIds));
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug($adExternalIds);
 
         $deletedAdsCounter = 0;
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         foreach ($ads->get() as $ad) {
-            //$this->adDeleteService->delete($ad);
+
+            Ad::where('id',$ad->id)->delete();
+            AutoAd::where('ad_id',$ad->id)->delete();
+            MotoAd::where('ad_id',$ad->id)->delete();
+            MobileHomeAd::where('ad_id',$ad->id)->delete();
+            TruckAd::where('ad_id',$ad->id)->delete();
+            
             $deletedAdsCounter++;
         }
 
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        
         $this->info(
             sprintf(
                 '==> Deleted %d old ads from dealer %s; RAM Used: %s',
@@ -302,6 +312,13 @@ class ImportInventarioAdsCommand extends Command
                 $this->getUsedMemory()
             )
         );
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug(sprintf(
+                '==> Deleted %d old ads from dealer %s; RAM Used: %s',
+                $deletedAdsCounter,
+                $dealer->id,
+                $this->getUsedMemory()
+            ));
     }
 
     private function cleanUpDealers(array $externalDealerIds): void
