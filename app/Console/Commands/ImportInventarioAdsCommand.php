@@ -280,12 +280,17 @@ class ImportInventarioAdsCommand extends Command
                  ->where('auto_ads.dealer_id', '=', $dealer->id)
                  ->where('ads.source', '=', AdSourceEnum::INVENTARIO_IMPORT)
                  ->whereNotIn('ads.external_id', $adExternalIds)
-                 ->whereNotNull('ads.external_id')
-                 ->get();
+                 ->whereNotNull('ads.external_id');
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug($ads->toSql());
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug($dealer->id);
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/invetario_'.date('dmy').'.log')])->debug(var_dump($adExternalIds));
 
         $deletedAdsCounter = 0;
-        foreach ($ads as $ad) {
-            $this->adDeleteService->delete($ad);
+        foreach ($ads->get() as $ad) {
+            //$this->adDeleteService->delete($ad);
             $deletedAdsCounter++;
         }
 
