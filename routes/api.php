@@ -192,7 +192,8 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
             Route::post('/filter',                                      'AdsController@index')->name('filter');
 
-            Route::get('/byDealer/{dealer_id}',                                       'AdsController@byDealer')->name('byDealer');
+            Route::get('/byDealer/{dealer_id}',                         'AdsController@byDealer')->name('byDealer');
+            Route::get('/byDealerCount/{dealer_id}',                    'AdsController@byDealerCount')->name('byDealerCount');
             Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
             Route::get('/countToday',                                   'AdsController@countAdsToday')->name('countAdsToday');
             Route::get('/countImportToday',                             'AdsController@countAdsImportToday')->name('countAdsImportToday');

@@ -599,7 +599,7 @@ class UsersController extends Controller
                 ->whereIn('type',['shop','rental','mechanic'])
                 ->count();
 
-            return response()->json(['data' => ['product_ads' =>$product_ads, 'service_ads' => $service_ads]], 200);
+            return response()->json(['data' => ['product_ads' => $product_ads, 'service_ads' => $service_ads]], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
