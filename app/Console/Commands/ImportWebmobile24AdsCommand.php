@@ -704,6 +704,8 @@ class ImportWebmobile24AdsCommand extends Command
                         $this->totalImageAdsCounter = count($images)-1;
                         
                         $this->info($csv_ad[8]);
+                        
+                        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($csv_ad[8]);
 
                         $body = $this->findBodyTypeId(utf8_encode($csv_ad[8]));
                         
