@@ -38,6 +38,7 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Redis;
 use SimpleXMLElement;
 use Throwable;
 
@@ -262,6 +263,8 @@ class ImportInventarioAdsCommand extends Command
             )
         );
         $this->info(sprintf('Command ended at %s', (new DateTime())->format('Y-m-d H:i:s')));
+        
+        Redis::flushDB();
 
         return Command::SUCCESS;
     }
