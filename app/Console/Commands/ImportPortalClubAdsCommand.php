@@ -414,7 +414,7 @@ class ImportPortalClubAdsCommand extends Command
 
             }
             
-            $dealer->logo_path = $sellerInfo->logo;
+            $dealer->logo_path = $sellerInfo->logo != '' ? $sellerInfo->logo : null;
 			$dealer->save();
             
             return $dealer;
@@ -429,7 +429,7 @@ class ImportPortalClubAdsCommand extends Command
             'zip_code'      => (string) $sellerInfo->zip_code,
             'city'          => (string) $sellerInfo->town,
             'country'       => $countryName,
-            'logo_path'     => $sellerInfo->logo,
+            'logo_path'     => $sellerInfo->logo != '' ? $sellerInfo->logo : null,
             'email_address' => (string) $sellerInfo->email,
             'phone_number'  => $this->formatPhoneNumber(
                 str_replace(' ', '', (string) $sellerInfo->phone),
