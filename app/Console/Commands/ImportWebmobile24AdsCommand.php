@@ -128,20 +128,19 @@ class ImportWebmobile24AdsCommand extends Command
     private function getBodyOptions(): array
     {
         $bodys = [
-            'Limousine' =>  ['internal_name' => 'limousine', 'ad_type' => 'AUTO'], //limousine
+            'Kleinwagen' =>  ['internal_name' => 'sedan', 'ad_type' => 'AUTO'], //sport_coupe
+            'Sonstiges' =>  ['internal_name' => 'racing', 'ad_type' => 'AUTO'], //sport_coupe
+            'Limousine' =>  ['internal_name' => 'sedan', 'ad_type' => 'AUTO'], //limousine
             'Van/Kleinbus' =>  ['internal_name' => 'minivan', 'ad_type' => 'TRUCK'], //van/minibus
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
-            'SUV/Geländewagen' => ['internal_name' => 'off_road_vehicle', 'ad_type' => 'AUTO'], //SUV/off-road vehicle
+            'SUV/Geländewagen' => ['internal_name' => 'suv_crossover', 'ad_type' => 'AUTO'], //SUV/off-road vehicle
             'Kombi' =>  ['internal_name' => 'wagon', 'ad_type' => 'AUTO'], //station wagon
-            'Sonstiges' => ['internal_name' => 'miscellaneous', 'ad_type' => 'AUTO'], //Miscellaneous
-            'Kleinwagen'  => ['internal_name' => 'small_car', 'ad_type' => 'AUTO'], //small car
             'Sportwagen/Coupé' => ['internal_name' => 'sport_coupe', 'ad_type' => 'AUTO'], //sports car/coupe
             'Sonstige Moto' => ['internal_name' => 'other_moto', 'ad_type' => 'MOTO'], //Other Moto
             'Cabrio/Roadster' => ['internal_name' => 'convertible', 'ad_type' => 'AUTO'], //Convertible/Roadster
             'Lieferwagen' => ['internal_name' => 'deliverytrucks' , 'ad_type' => 'TRUCK'],  //delivery trucks
             'Wohnmobil sonstige' => ['internal_name' => 'other_mobile_home' , 'ad_type' => 'MOBILE-HOME'],
             'wohnmobil_sonstige' => ['internal_name' => 'other_mobile_home' , 'ad_type' => 'MOBILE-HOME'],
-             
         ];
 
         return $bodys;
@@ -734,7 +733,6 @@ class ImportWebmobile24AdsCommand extends Command
                             'doors' => trim($csv_ad[16]) == '' ? 0 : (int) $csv_ad[16], //OK
                             'mileage' => $csv_ad[14]== '' ? 0 : $csv_ad[14], ///OK
                             'exterior_color' => $this->getColor(trim(utf8_encode($csv_ad[9]))),
-                            'color' => $this->getColor(trim(utf8_encode($csv_ad[9]))),
                             'interior_color' => $this->getColor(trim(utf8_encode($csv_ad[91]))),
                             'condition' =>  $this->getCondition(trim(utf8_encode($csv_ad[6]))), //OK
                             'dealer_id' => $dealer->id,
@@ -758,6 +756,7 @@ class ImportWebmobile24AdsCommand extends Command
                             'make_id' => $this->findMake(trim(utf8_encode($csv_ad[3])))->id, //OK
                             'model_id' => $model->id, //OK
                             'model' => $model->name, //OK
+                            'custom_model' => $model->name, //OK
                             'truck_type' => 'truck', //OK
                             'additional_vehicle_info' => utf8_encode($csv_ad[5]), //OK
                             'seats' => $csv_ad[17], //OK
