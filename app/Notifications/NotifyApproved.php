@@ -46,7 +46,7 @@ class NotifyApproved extends Notification
             ->line('Nos complace informar que su anuncio: ')
             ->line($this->title)
             ->line('Ha sido aprobado')
-            ->action('Ingrese a Autos Motos',env('URL_FRONT'))
+            ->action('Ingrese a Autosmotos',env('URL_FRONT'))
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }

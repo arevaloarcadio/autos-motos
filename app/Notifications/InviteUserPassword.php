@@ -41,12 +41,12 @@ class InviteUserPassword extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Invitación a Autos Motos')
+            ->subject('Invitación a Autosmotos')
             ->line('Hola '.$this->user->first_name.' '.$this->user->last_name)
             ->line('Te invitamos para que ingreses a nuestra web')
-            ->line('Y para asegurar que difrutes al maximo nuestros servicios')
-            ->line('Te recomendamos que restablezca tu contraseña')
-            ->action('Ingrese a Autos Motos',env('URL_FRONT').'recovery?email='.$this->user->email)
+            ->line('Y para asegurar que difrutes al máximo nuestros servicios')
+            ->line('Te recomendamos que restablezcas tu contraseña')
+            ->action('Ingrese a Autosmotos',env('URL_FRONT').'recovery?email='.$this->user->email)
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }

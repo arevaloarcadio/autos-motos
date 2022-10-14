@@ -46,7 +46,7 @@ class RecoveryPassword extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Recuperar Contraseña Autos Motos')
+            ->subject('Recuperar Contraseña Autosmotos')
             ->line('Hola '.$this->user->first_name.' '.$this->user->last_name)
             ->line('Hemos recibido una solicitud para restablecer la contraseña')
             ->line('Su código de recuperación es:')

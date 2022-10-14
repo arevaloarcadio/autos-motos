@@ -51,7 +51,7 @@ class NotifyRejected extends Notification
             ->line('Ha sido rechazado')
             ->line('Razón del rechazo: ')
             ->line($this->message)
-            ->action('Ingrese a Autos Motos',env('URL_FRONT'))
+            ->action('Ingrese a Autosmotos',env('URL_FRONT'))
             ->line(' ')
             ->salutation('Gracias por usar nuestra web');
     }

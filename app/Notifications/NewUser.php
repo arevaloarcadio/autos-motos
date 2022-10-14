@@ -43,9 +43,9 @@ class NewUser extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Bienvenido a Autos Motos')
+            ->subject('Bienvenido a Autosmotos')
             ->line('Hola '.$this->user->first_name.' '.$this->user->last_name)
-            ->line('Te damos la Bienvenida a Autos Motos')
+            ->line('Te damos la Bienvenida a Autosmotos')
             ->line('Para confirmar el correo electrónico presione el siguiente botón')
             ->action('Confirmar correo',url('/confirm/email').'/'.$this->user->email)
             ->line(' ')
