@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Autos Motos</title>
+        <title>Autosmotos</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -45,10 +45,10 @@
 
     <script type="text/javascript">
         function  cancel() {
-            window.location.href = 'https://automotos.dattatech.com/seller/perfil';
+            window.location.href = "{{env('URL_FRONT').'seller/perfil'}}";
         }
         function backPlan() {
-            window.location.href = 'https://automotos.dattatech.com/seller/planes';
+            window.location.href =  "{{env('URL_FRONT').'seller/planes'}}";
         }   
         //redirect();
     </script>

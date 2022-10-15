@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Autos Motos</title>
+        <title>Autosmotos</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -44,13 +44,14 @@
                 window.location.href = 'https://automotos.dattatech.com/';
             }, 3500);
         }*/
+       
         function back() {
             @if($user->type == 'Ocasional')
-                window.location.href = 'https://automotos.dattatech.com/seller/perfil';
+                window.location.href = "{{env('URL_FRONT').'seller/perfil'}}";
             @endif
 
             @if($user->type == 'Profesional')
-                window.location.href = 'https://automotos.dattatech.com/seller/tienda';
+                window.location.href = "{{env('URL_FRONT').'seller/tienda'}}";
             @endif
         }   
         //redirect();

@@ -28,7 +28,7 @@ Route::get('/clear/redis', function () {
 
 
 Route::get('/aprobado', function () {
-    $plan = Plan::find('212157f7-fdc9-4442-b6a9-c7a60fb27e3c');
+    $plan = Plan::find('1206e176-ff6c-4859-b545-a2840a45269a');
     $user = User::find('0041c53b-1044-4824-a8e8-99f1bac630b7');
     
     return view('landing.aprobado')->with('plan',$plan)->with('user',$user);
