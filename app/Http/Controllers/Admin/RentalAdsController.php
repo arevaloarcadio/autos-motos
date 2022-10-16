@@ -41,22 +41,15 @@ class RentalAdsController extends Controller
     public function index(IndexRentalAd $request)
     {
 
-        if(Redis::exists('rental_ads')) {
-            $promoted = json_decode(Redis::get('rental_ads'));
-
-        }else{
-            $promoted_simple_ads = RentalAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
-            ->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')
-            ->inRandomOrder()->limit(25);
-    
-            foreach (RentalAd::getRelationships() as $key => $value) {
-               $promoted_simple_ads->with($key);
-            }
-    
-            $promoted = $promoted_simple_ads->get()->toArray();
-            Redis::set('rental_ads',json_encode($promoted ));
+        if(
+            Redis::exists('rental_ads') && 
+            !$request->filters && 
+            $request->query->get('orderBy') == 'created_at'  &&
+            $request->query->get('orderDirection') == 'desc'
+        ) {
+            $data = json_decode(Redis::get('rental_ads'));
+            return ['data' => $data];
         }
-        
       
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(RentalAd::class)->processRequestAndGet(
@@ -73,49 +66,48 @@ class RentalAdsController extends Controller
                         
                 $columns =  ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'];
                 
-                foreach ($columns as $column) {
-                        if ($request->filters) {
-                            foreach ($request->filters as $key => $filter) {
-                                if ($column == $key) {
-                                   $query->where($key,$filter);
+               foreach ($columns as $column) {
+                    if ($request->filters) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                                if ($key == 'city') {
+                                    $query->where($key,'LIKE', '%'.$filter.'%');
+                                }else{
+                                   $query->where($key,$filter);  
                                 }
+                              
                             }
                         }
                     }
+                }
                     
-                    if(isset($request->filters['title'])){
-                        $ad_ids = Ad::select('id')
-                            ->where('title','LIKE','%'.$request->filters['title'].'%' )
-                            ->where('type','rental')
-                            ->get()
-                            ->toArray();
-                        
-                        $ids = [];
+                if(isset($request->filters['title'])){
+                    $ad_ids = Ad::select('id')
+                        ->where('title','LIKE','%'.$request->filters['title'].'%' )
+                        ->where('type','rental')
+                        ->get()
+                        ->toArray();
+                    
+                    $ids = [];
 
-                        foreach ($ad_ids as $key => $ad_id) {
-                            $ids[$key] =  $ad_id['id'];
-                        }
-
-                        $query->whereIn('ad_id',$ids);
+                    foreach ($ad_ids as $key => $ad_id) {
+                        $ids[$key] =  $ad_id['id'];
                     }
-                    
-                    $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
+
+                    $query->whereIn('ad_id',$ids);
+                }
                 
-                    $query->with(['ad' => function ($query)
-                        {
-                            $query->with(['images','user']);
-                        }
-                    ]);
+                $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
+            
+                $query->with(['ad' => function ($query)
+                    {
+                        $query->with(['images','user']);
+                    }
+                ]);
                 
             }
         );
         
-        $data = $data->toArray(); 
-            
-        array_push($promoted,...$data['data']);
-    
-        $data['data'] = $promoted;
-
         return ['data' => $data];
     }
 
