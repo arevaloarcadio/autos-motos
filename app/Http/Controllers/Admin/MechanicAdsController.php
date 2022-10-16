@@ -53,14 +53,6 @@ class MechanicAdsController extends Controller
             return ['data' => $data];
         }
             
-        $promoted_simple_ads = MechanicAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
-
-        foreach (MechanicAd::getRelationships() as $key => $value) {
-            $promoted_simple_ads->with($key);
-        }
-
-        $promoted = $promoted_simple_ads->get()->toArray();
-
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MechanicAd::class)->processRequestAndGet(
             // pass the request with params
@@ -80,7 +72,12 @@ class MechanicAdsController extends Controller
                     if ($request->filters) {
                         foreach ($request->filters as $key => $filter) {
                             if ($column == $key) {
-                               $query->where($key,$filter);
+                                if ($key == 'city') {
+                                    $query->where($key,'LIKE', '%'.$filter.'%');
+                                }else{
+                                   $query->where($key,$filter);  
+                                }
+                              
                             }
                         }
                     }
@@ -105,6 +102,7 @@ class MechanicAdsController extends Controller
                     $query->whereIn('ad_id',$ids);
                 }
 
+
                 foreach (MechanicAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
@@ -115,12 +113,7 @@ class MechanicAdsController extends Controller
             }
         );
         
-        $data = $data->toArray(); 
-            
-        array_push($promoted,...$data['data']);
-    
-        $data['data'] = $promoted;
-
+       
         if(
             !$request->filters && 
             $request->query->get('orderBy') == 'created_at'  &&
