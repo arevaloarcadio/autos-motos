@@ -1742,7 +1742,7 @@ class AdsController extends Controller
                     $counts = $this->getCountTruckAd($request);
                     break;
                 case 'all':
-                    $counts = (AutoAd::where('status','10')->count() * 2) + MotoAd::count() + MobileHomeAd::count() + TruckAd::count() + ShopAd::count() + RentalAd::count() + MechanicAd::count();
+                    $counts = (AutoAd::count() * 2) + MotoAd::count() + MobileHomeAd::count() + TruckAd::count() + ShopAd::count() + RentalAd::count() + MechanicAd::count();
                     break;
                 default:
                     break;
