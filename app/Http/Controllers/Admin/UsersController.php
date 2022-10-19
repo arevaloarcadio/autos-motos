@@ -80,15 +80,15 @@ class UsersController extends Controller
                         
                 $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id'];
                 
-            if ($request->filters) {
-                foreach ($columns as $column) {
-                    foreach ($request->filters as $key => $filter) {
-                        if ($column == $key) {
-                           $query->where($key,$filter);
+                if ($request->filters) {
+                    foreach ($columns as $column) {
+                        foreach ($request->filters as $key => $filter) {
+                            if ($column == $key) {
+                               $query->where($key,$filter);
+                            }
                         }
                     }
                 }
-            }
 
                 if ($request->dateStart && $request->dateEnd) {
                      $query->whereBetween('created_at',[$request->dateStart,$request->dateEnd]);
@@ -105,7 +105,8 @@ class UsersController extends Controller
                     $query->where(function ($query1) use ($filter){
                         $query1->where('first_name','LIKE','%'.$filter.'%')
                             ->orWhere('last_name','LIKE','%'.$filter.'%')
-                            ->orWhere('email','LIKE','%'.$filter.'%');
+                            ->orWhere('email','LIKE','%'.$filter.'%')
+                            ->orWhereRaw("dealer_id in(select id from dealers where company_name like '%".$filter."%')");
                     });
                 }
 
