@@ -436,15 +436,15 @@ class UsersController extends Controller
 
             if (!is_null($user->dealer_id)) {
                 $dealer = Dealer::find($user->dealer_id);
-                $dealer->company_name = $request['company_name']  ?? $dealer['company_name'];
-                $dealer->email_address = $request['email_address']  ?? $dealer['email_address'];
-                $dealer->vat_number = $request['vat_number']  ?? $dealer['vat_number'];
-                $dealer->description = $request['description']  ?? $dealer['description'];
-                $dealer->zip_code = $request['zip_code']  ?? $dealer['zip_code'];
-                $dealer->phone_number = $request['phone_number']  ?? $dealer['phone_number'];
-                $dealer->address = $request['address']  ?? $dealer['address'];
-                $dealer->city = $request['city'] ?? $dealer['city'];
-                $dealer->country = $request['country'] ?? $dealer['country'];
+                $dealer->company_name = $dealer['company_name'];
+                $dealer->email_address =  $dealer['email_address'];
+                $dealer->vat_number = $dealer['vat_number'];
+                $dealer->description = $dealer['description'];
+                $dealer->zip_code =  $dealer['zip_code'];
+                $dealer->phone_number =  $dealer['phone_number'];
+                $dealer->address =  $dealer['address'];
+                $dealer->city =  $dealer['city'];
+                $dealer->country = $dealer['country'];
                 $dealer->logo_path = $request->file('logo_path') ? $this->uploadFile($request->file('logo_path'),$user->id) : $dealer->logo_path;
                 $dealer->save();
             }
