@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\Make\DestroyMake;
 use App\Http\Requests\Admin\Make\IndexMake;
 use App\Http\Requests\Admin\Make\StoreMake;
 use App\Http\Requests\Admin\Make\UpdateMake;
-use App\Models\Make;
+use App\Models\{Submodel,Make};
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -19,9 +19,14 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use App\Helpers\Api as ApiHelper;
+use App\Traits\ApiController;
+
 
 class MakesController extends Controller
 {
+    use ApiController;
 
     /**
      * Display a listing of the resource.
@@ -88,6 +93,21 @@ class MakesController extends Controller
         return ['data' => $data];
     }
 
+    public function getSubmodels(Request $request,$make_id)
+    {
+        $resource = ApiHelper::resource();
+
+        try {
+            
+            $sub_models = Submodel::where('make_id',$make_id)->with('sub_models_by_model')->get();
+
+            return response()->json(['data' => $sub_models], 200);
+
+        } catch (Exception $e) {
+            ApiHelper::setError($resource, 0, 500, $e->getMessage());
+            return $this->sendResponse($resource);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *

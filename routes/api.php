@@ -510,6 +510,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
         Route::prefix('makes')->name('makes/')->group(static function() {
             Route::get('/',                                             'MakesController@index')->name('index');
+            Route::get('/{id}/sub_models',                              'MakesController@getSubmodels')->name('getSubmodels');
             //Route::get('/create',                                       'MakesController@create')->name('create');
             Route::post('/',                                            'MakesController@store')->name('store');
             //Route::get('/{make}/edit',                                  'MakesController@edit')->name('edit');

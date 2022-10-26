@@ -10,7 +10,7 @@ use App\Http\Requests\Admin\Ad\DestroyAd;
 use App\Http\Requests\Admin\Ad\IndexAd;
 use App\Http\Requests\Admin\Ad\StoreAd;
 use App\Http\Requests\Admin\Ad\UpdateAd;
-use App\Models\{Ad,CsvAd,Dealer,RejectedComment,AdRejectedComment,User,AutoAd,MotoAd,MechanicAd,MobileHomeAd,ShopAd,TruckAd,RentalAd};
+use App\Models\{Ad,CsvAd,Dealer,Characteristic,RejectedComment,AdRejectedComment,User,AutoAd,MotoAd,MechanicAd,MobileHomeAd,ShopAd,TruckAd,RentalAd};
 use Brackets\AdminListing\Facades\AdminListing;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -774,6 +774,8 @@ class AdsController extends Controller
                 return $this->sendResponse($resource);
             }
 
+           
+
             $ad->with([
                 'user',
                 'characteristics',
@@ -807,14 +809,33 @@ class AdsController extends Controller
                     $query->with(['make','model','ad','dealer','dealerShowRoom']);
                 }
             ]);
-   
-            return response()->json(['data' =>   $ad->first()], 200);
+            
+            $ad =  $ad->first();
+
+            $ad['characteristic_ads'] = $this->characteristic_ads($ad);
+     
+            return response()->json(['data' => $ad], 200);
 
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }
     }
+
+    public function characteristic_ads($ad){
+
+        $sub_characteristic_ids = $ad->characteristics()->select('characteristic_id')->get()->toArray();
+
+        $characteristics = Characteristic::whereIn('id',$sub_characteristic_ids)
+            ->with([
+                'sub_characteristics' => function ($query) use ($ad)
+                {
+                    $query->whereRaw("sub_characteristics.id in(SELECT sub_characteristic_id FROM ad_sub_characteristic WHERE ad_id='".$ad->id."')");
+                }
+            ]);
+
+        return $characteristics->get();
+    }    
 
 
     public function storeCommentRejected(Request $request,$ad)

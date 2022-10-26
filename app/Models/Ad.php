@@ -53,6 +53,7 @@ class Ad extends Model
         return $p == 0 ? false : true;
     }
 
+
     public function csv_ad()
     {
         return $this->belongsTo(CsvAd::class,'csv_ad_id');
@@ -210,6 +211,9 @@ class Ad extends Model
         return $this->belongsToMany(SubCharacteristic::class)
                   ->using(AdSubCharacteristic::class);
     }
+
+    
+   
 
     /*public function rejected_comments(){
       return $this->belongsToMany('App\Models\RejectedComment','rejected_comments')

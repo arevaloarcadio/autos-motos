@@ -293,18 +293,34 @@ class ImportPortalClubAdsCommand extends Command
     private function cleanUpAds(Dealer $dealer, array $adExternalIds): void
     {
         $ads = Ad::query()
-                 ->join('auto_ads', 'auto_ads.ad_id', '=', 'ads.id')
-                 ->where('auto_ads.dealer_id', '=', $dealer->id)
+                 ->whereRaw("ads.user_id IN(SELECT id FROM users where dealer_id = '".$dealer->id."')" )
+                 ->where('ads.source', '=', AdSourceEnum::PORTAL_CLUB_IMPORT)
                  ->whereNotIn('ads.external_id', $adExternalIds)
-                 ->whereNotNull('ads.external_id')
-                 ->get();
+                 ->whereNotNull('ads.external_id');
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($ads->toSql());
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($dealer->id);
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug($adExternalIds);
 
         $deletedAdsCounter = 0;
-        foreach ($ads as $ad) {
-            $this->adDeleteService->delete($ad);
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
+        foreach ($ads->get() as $ad) {
+
+            Ad::where('id',$ad->id)->delete();
+            AutoAd::where('ad_id',$ad->id)->delete();
+            MotoAd::where('ad_id',$ad->id)->delete();
+            MobileHomeAd::where('ad_id',$ad->id)->delete();
+            TruckAd::where('ad_id',$ad->id)->delete();
+            
             $deletedAdsCounter++;
         }
 
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        
         $this->info(
             sprintf(
                 '==> Deleted %d old ads from dealer %s; RAM Used: %s',
@@ -313,6 +329,13 @@ class ImportPortalClubAdsCommand extends Command
                 $this->getUsedMemory()
             )
         );
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug(sprintf(
+                '==> Deleted %d old ads from dealer %s; RAM Used: %s',
+                $deletedAdsCounter,
+                $dealer->id,
+                $this->getUsedMemory()
+            ));
     }
 
     private function cleanUpDealers(string $marketCountry, array $externalDealerIds): void

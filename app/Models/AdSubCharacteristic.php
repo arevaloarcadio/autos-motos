@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class AdSubCharacteristic extends Pivot
 {
-        use \App\Traits\TraitUuid;
+    use \App\Traits\TraitUuid;
+    
     protected $fillable = [
         'ad_id',
         'sub_characteristic_id',
-    
     ];
     
     
@@ -20,5 +20,10 @@ class AdSubCharacteristic extends Pivot
     
     ];
     
+   	public function sub_characteristics()
+    {
+        return $this->hasMany(SubCharacteristic::class);
+    }
+
     
 }

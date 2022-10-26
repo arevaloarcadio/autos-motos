@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Models\{Ad,AutoAd,DealerShowRoom,AdSubCharacteristic,AdImage};
 use Illuminate\Support\Facades\Redis as Redis;
+use App\Models\SubCharacteristic;
 
 class AutoAdsController extends Controller
 {

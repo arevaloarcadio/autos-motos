@@ -714,6 +714,8 @@ class ImportWebmobile24AdsCommand extends Command
                         $model =  $this->findModel(trim(utf8_encode($csv_ad[4])),$this->findMake(trim(utf8_encode($csv_ad[3]))));
                         
                         $external_id = explode('_', $csv_ad[2])[0];
+                        
+                        $importedAdsIds[] = $external_id;
 
                         $data_ad = [
                             'slug' => Str::slug(utf8_encode($csv_ad[5])) == '' ? $model->name : Str::slug(utf8_encode($csv_ad[5])),
@@ -858,8 +860,10 @@ class ImportWebmobile24AdsCommand extends Command
                          //$this->error($e->getTrace());
                         continue;
                     }
+
+                    //$this->cleanUpAds($dealer, $importedAdsIds);
                 }
-                
+
                 $zip->close();
 
                 Storage::disk('local')->delete($zip_file);
@@ -918,5 +922,54 @@ class ImportWebmobile24AdsCommand extends Command
                 ));
 
         $this->info(sprintf('Command ended at %s', (new DateTime())->format('Y-m-d H:i:s')));
+    }
+
+    private function cleanUpAds(Dealer $dealer, array $adExternalIds): void
+    {
+        $ads = Ad::query()
+                 ->whereRaw("ads.user_id IN(SELECT id FROM users where dealer_id = '".$dealer->id."')" )
+                 ->where('ads.source', '=', 'WEB_MOBILE_24')
+                 ->whereNotIn('ads.external_id', $adExternalIds)
+                 ->whereNotNull('ads.external_id');
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($ads->toSql());
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($dealer->id);
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($adExternalIds);
+
+        $deletedAdsCounter = 0;
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
+        foreach ($ads->get() as $ad) {
+
+            Ad::where('id',$ad->id)->delete();
+            AutoAd::where('ad_id',$ad->id)->delete();
+            MotoAd::where('ad_id',$ad->id)->delete();
+            MobileHomeAd::where('ad_id',$ad->id)->delete();
+            TruckAd::where('ad_id',$ad->id)->delete();
+            
+            $deletedAdsCounter++;
+        }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        
+        $this->info(
+            sprintf(
+                '==> Deleted %d old ads from dealer %s; RAM Used: %s',
+                $deletedAdsCounter,
+                $dealer->id,
+                $this->getUsedMemory()
+            )
+        );
+
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/portal_club_'.date('dmy').'.log')])->debug(sprintf(
+                '==> Deleted %d old ads from dealer %s; RAM Used: %s',
+                $deletedAdsCounter,
+                $dealer->id,
+                $this->getUsedMemory()
+            )
+        );
     }
 }
