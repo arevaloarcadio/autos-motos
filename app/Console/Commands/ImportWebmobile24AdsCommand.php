@@ -861,7 +861,7 @@ class ImportWebmobile24AdsCommand extends Command
                         continue;
                     }
 
-                    //$this->cleanUpAds($dealer, $importedAdsIds);
+                    $this->cleanUpAds($dealer, $importedAdsIds);
                 }
 
                 $zip->close();
@@ -936,7 +936,7 @@ class ImportWebmobile24AdsCommand extends Command
 
         \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($dealer->id);
 
-        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug($adExternalIds);
+        \Illuminate\Support\Facades\Log::build(['driver' => 'single', 'path' => storage_path('logs/webmobile24_'.date('dmy').'.log')])->debug(var_dump($adExternalIds));
 
         $deletedAdsCounter = 0;
 
