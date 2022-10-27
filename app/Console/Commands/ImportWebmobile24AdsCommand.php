@@ -861,9 +861,11 @@ class ImportWebmobile24AdsCommand extends Command
                         continue;
                     }
 
-                    $this->cleanUpAds($dealer, $importedAdsIds);
+                    
                 }
-
+                
+                $this->cleanUpAds($dealer, $importedAdsIds);
+                
                 $zip->close();
 
                 Storage::disk('local')->delete($zip_file);
