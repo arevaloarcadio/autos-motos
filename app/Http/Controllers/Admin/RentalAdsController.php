@@ -57,14 +57,14 @@ class RentalAdsController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'ad_id', 'address','latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'],
+            ['id', 'ad_id', 'address','latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url','dealer_id','dealer_show_room_id' ,'email_address'],
 
             // set columns to searchIn
-            ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'],
+            ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'dealer_id','dealer_show_room_id','email_address'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address'];
+                $columns =  ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'dealer_id','dealer_show_room_id','website_url', 'email_address'];
                 
                foreach ($columns as $column) {
                     if ($request->filters) {
