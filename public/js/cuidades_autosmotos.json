@@ -1,0 +1,2016 @@
+[
+	{
+		"name": "Germany",
+		"iso3": "DEU",
+		"states": [
+			{
+				"name": "Baden-Württemberg",
+				"state_code": "BW"
+			},
+			{
+				"name": "Bavaria",
+				"state_code": "BY"
+			},
+			{
+				"name": "Berlin",
+				"state_code": "BE"
+			},
+			{
+				"name": "Brandenburg",
+				"state_code": "BB"
+			},
+			{
+				"name": "Bremen",
+				"state_code": "HB"
+			},
+			{
+				"name": "Hamburg",
+				"state_code": "HH"
+			},
+			{
+				"name": "Hesse",
+				"state_code": "HE"
+			},
+			{
+				"name": "Lower Saxony",
+				"state_code": "NI"
+			},
+			{
+				"name": "Mecklenburg-Vorpommern",
+				"state_code": "MV"
+			},
+			{
+				"name": "North Rhine-Westphalia",
+				"state_code": "NW"
+			},
+			{
+				"name": "Rhineland-Palatinate",
+				"state_code": "RP"
+			},
+			{
+				"name": "Saarland",
+				"state_code": "SL"
+			},
+			{
+				"name": "Saxony",
+				"state_code": "SN"
+			},
+			{
+				"name": "Saxony-Anhalt",
+				"state_code": "ST"
+			},
+			{
+				"name": "Schleswig-Holstein",
+				"state_code": "SH"
+			},
+			{
+				"name": "Thuringia",
+				"state_code": "TH"
+			}
+		]
+	},
+	{
+		"name": "España",
+		"iso3": "ESP",
+		"states": [
+			{
+				"name": "A Coruña",
+				"state_code": "C"
+			},
+			{
+				"name": "Albacete",
+				"state_code": "AB"
+			},
+			{
+				"name": "Alicante",
+				"state_code": "A"
+			},
+			{
+				"name": "Almería",
+				"state_code": "AL"
+			},
+			{
+				"name": "Andalusia",
+				"state_code": "AN"
+			},
+			{
+				"name": "Araba Álava",
+				"state_code": "VI"
+			},
+			{
+				"name": "Aragon",
+				"state_code": "AR"
+			},
+			{
+				"name": "Badajoz",
+				"state_code": "BA"
+			},
+			{
+				"name": "Balearic Islands",
+				"state_code": "PM"
+			},
+			{
+				"name": "Barcelona",
+				"state_code": "B"
+			},
+			{
+				"name": "Basque Country",
+				"state_code": "PV"
+			},
+			{
+				"name": "Biscay",
+				"state_code": "BI"
+			},
+			{
+				"name": "Burgos",
+				"state_code": "BU"
+			},
+			{
+				"name": "Cáceres",
+				"state_code": "CC"
+			},
+			{
+				"name": "Cádiz",
+				"state_code": "CA"
+			},
+			{
+				"name": "Canary Islands",
+				"state_code": "CN"
+			},
+			{
+				"name": "Cantabria",
+				"state_code": "S"
+			},
+			{
+				"name": "Castellón",
+				"state_code": "CS"
+			},
+			{
+				"name": "Castile and León",
+				"state_code": "CL"
+			},
+			{
+				"name": "Castile-La Mancha",
+				"state_code": "CM"
+			},
+			{
+				"name": "Catalonia",
+				"state_code": "CT"
+			},
+			{
+				"name": "Ceuta",
+				"state_code": "CE"
+			},
+			{
+				"name": "Ciudad Real",
+				"state_code": "CR"
+			},
+			{
+				"name": "Community of Madrid",
+				"state_code": "MD"
+			},
+			{
+				"name": "Córdoba",
+				"state_code": "CO"
+			},
+			{
+				"name": "Cuenca",
+				"state_code": "CU"
+			},
+			{
+				"name": "Extremadura",
+				"state_code": "EX"
+			},
+			{
+				"name": "Galicia",
+				"state_code": "GA"
+			},
+			{
+				"name": "Gipuzkoa",
+				"state_code": "SS"
+			},
+			{
+				"name": "Girona",
+				"state_code": "GI"
+			},
+			{
+				"name": "Granada",
+				"state_code": "GR"
+			},
+			{
+				"name": "Guadalajara",
+				"state_code": "GU"
+			},
+			{
+				"name": "Huelva",
+				"state_code": "H"
+			},
+			{
+				"name": "Huesca",
+				"state_code": "HU"
+			},
+			{
+				"name": "Jaén",
+				"state_code": "J"
+			},
+			{
+				"name": "La Rioja",
+				"state_code": "RI"
+			},
+			{
+				"name": "Las Palmas",
+				"state_code": "GC"
+			},
+			{
+				"name": "León",
+				"state_code": "LE"
+			},
+			{
+				"name": "Lleida",
+				"state_code": "L"
+			},
+			{
+				"name": "Lugo",
+				"state_code": "LU"
+			},
+			{
+				"name": "Madrid",
+				"state_code": "M"
+			},
+			{
+				"name": "Málaga",
+				"state_code": "MA"
+			},
+			{
+				"name": "Melilla",
+				"state_code": "ML"
+			},
+			{
+				"name": "Murcia",
+				"state_code": "MU"
+			},
+			{
+				"name": "Navarre",
+				"state_code": "NC"
+			},
+			{
+				"name": "Ourense",
+				"state_code": "OR"
+			},
+			{
+				"name": "Palencia",
+				"state_code": "P"
+			},
+			{
+				"name": "Pontevedra",
+				"state_code": "PO"
+			},
+			{
+				"name": "Asturias",
+				"state_code": "O"
+			},
+			{
+				"name": "Ávila",
+				"state_code": "AV"
+			},
+			{
+				"name": "Region of Murcia",
+				"state_code": "MC"
+			},
+			{
+				"name": "Salamanca",
+				"state_code": "SA"
+			},
+			{
+				"name": "Santa Cruz de Tenerife",
+				"state_code": "TF"
+			},
+			{
+				"name": "Segovia",
+				"state_code": "SG"
+			},
+			{
+				"name": "Seville",
+				"state_code": "SE"
+			},
+			{
+				"name": "Soria",
+				"state_code": "SO"
+			},
+			{
+				"name": "Tarragona",
+				"state_code": "T"
+			},
+			{
+				"name": "Teruel",
+				"state_code": "TE"
+			},
+			{
+				"name": "Toledo",
+				"state_code": "TO"
+			},
+			{
+				"name": "Valencia",
+				"state_code": "V"
+			},
+			{
+				"name": "Valencian Community",
+				"state_code": "VC"
+			},
+			{
+				"name": "Valladolid",
+				"state_code": "VA"
+			},
+			{
+				"name": "Zamora",
+				"state_code": "ZA"
+			},
+			{
+				"name": "Zaragoza",
+				"state_code": "Z"
+			}
+		]
+	},
+	{
+		"name": "Italy",
+		"iso3": "ITA",
+		"states": [
+			{
+				"name": "Abruzzo",
+				"state_code": "65"
+			},
+			{
+				"name": "Aosta Valley",
+				"state_code": "23"
+			},
+			{
+				"name": "Apulia",
+				"state_code": "75"
+			},
+			{
+				"name": "Basilicata",
+				"state_code": "77"
+			},
+			{
+				"name": "Benevento Province",
+				"state_code": "BN"
+			},
+			{
+				"name": "Calabria",
+				"state_code": "78"
+			},
+			{
+				"name": "Campania",
+				"state_code": "72"
+			},
+			{
+				"name": "Emilia-Romagna",
+				"state_code": "45"
+			},
+			{
+				"name": "Friuli–Venezia Giulia",
+				"state_code": "36"
+			},
+			{
+				"name": "Lazio",
+				"state_code": "62"
+			},
+			{
+				"name": "Libero consorzio comunale di Agrigento",
+				"state_code": "AG"
+			},
+			{
+				"name": "Libero consorzio comunale di Caltanissetta",
+				"state_code": "CL"
+			},
+			{
+				"name": "Libero consorzio comunale di Enna",
+				"state_code": "EN"
+			},
+			{
+				"name": "Libero consorzio comunale di Ragusa",
+				"state_code": "RG"
+			},
+			{
+				"name": "Libero consorzio comunale di Siracusa",
+				"state_code": "SR"
+			},
+			{
+				"name": "Libero consorzio comunale di Trapani",
+				"state_code": "TP"
+			},
+			{
+				"name": "Liguria",
+				"state_code": "42"
+			},
+			{
+				"name": "Lombardy",
+				"state_code": "25"
+			},
+			{
+				"name": "Marche",
+				"state_code": "57"
+			},
+			{
+				"name": "Bari",
+				"state_code": "BA"
+			},
+			{
+				"name": "Bologna",
+				"state_code": "BO"
+			},
+			{
+				"name": "Cagliari",
+				"state_code": "CA"
+			},
+			{
+				"name": "Catania",
+				"state_code": "CT"
+			},
+			{
+				"name": "Florence",
+				"state_code": "FI"
+			},
+			{
+				"name": "Genoa",
+				"state_code": "GE"
+			},
+			{
+				"name": "Messina",
+				"state_code": "ME"
+			},
+			{
+				"name": "Milan",
+				"state_code": "MI"
+			},
+			{
+				"name": "Naples",
+				"state_code": "NA"
+			},
+			{
+				"name": "Palermo",
+				"state_code": "PA"
+			},
+			{
+				"name": "Reggio Calabria",
+				"state_code": "RC"
+			},
+			{
+				"name": "Rome",
+				"state_code": "RM"
+			},
+			{
+				"name": "Turin",
+				"state_code": "TO"
+			},
+			{
+				"name": "Venice",
+				"state_code": "VE"
+			},
+			{
+				"name": "Molise",
+				"state_code": "67"
+			},
+			{
+				"name": "Pesaro and Urbino Province",
+				"state_code": "PU"
+			},
+			{
+				"name": "Piedmont",
+				"state_code": "21"
+			},
+			{
+				"name": "Alessandria",
+				"state_code": "AL"
+			},
+			{
+				"name": "Ancona",
+				"state_code": "AN"
+			},
+			{
+				"name": "Ascoli Piceno",
+				"state_code": "AP"
+			},
+			{
+				"name": "Asti",
+				"state_code": "AT"
+			},
+			{
+				"name": "Avellino",
+				"state_code": "AV"
+			},
+			{
+				"name": "Barletta-Andria-Trani",
+				"state_code": "BT"
+			},
+			{
+				"name": "Belluno",
+				"state_code": "BL"
+			},
+			{
+				"name": "Bergamo",
+				"state_code": "BG"
+			},
+			{
+				"name": "Biella",
+				"state_code": "BI"
+			},
+			{
+				"name": "Brescia",
+				"state_code": "BS"
+			},
+			{
+				"name": "Brindisi",
+				"state_code": "BR"
+			},
+			{
+				"name": "Campobasso",
+				"state_code": "CB"
+			},
+			{
+				"name": "Carbonia-Iglesias",
+				"state_code": "CI"
+			},
+			{
+				"name": "Caserta",
+				"state_code": "CE"
+			},
+			{
+				"name": "Catanzaro",
+				"state_code": "CZ"
+			},
+			{
+				"name": "Chieti",
+				"state_code": "CH"
+			},
+			{
+				"name": "Como",
+				"state_code": "CO"
+			},
+			{
+				"name": "Cosenza",
+				"state_code": "CS"
+			},
+			{
+				"name": "Cremona",
+				"state_code": "CR"
+			},
+			{
+				"name": "Crotone",
+				"state_code": "KR"
+			},
+			{
+				"name": "Cuneo",
+				"state_code": "CN"
+			},
+			{
+				"name": "Fermo",
+				"state_code": "FM"
+			},
+			{
+				"name": "Ferrara",
+				"state_code": "FE"
+			},
+			{
+				"name": "Foggia",
+				"state_code": "FG"
+			},
+			{
+				"name": "Forlì-Cesena",
+				"state_code": "FC"
+			},
+			{
+				"name": "Frosinone",
+				"state_code": "FR"
+			},
+			{
+				"name": "Gorizia",
+				"state_code": "GO"
+			},
+			{
+				"name": "Grosseto",
+				"state_code": "GR"
+			},
+			{
+				"name": "Imperia",
+				"state_code": "IM"
+			},
+			{
+				"name": "Isernia",
+				"state_code": "IS"
+			},
+			{
+				"name": "L'Aquila",
+				"state_code": "AQ"
+			},
+			{
+				"name": "La Spezia",
+				"state_code": "SP"
+			},
+			{
+				"name": "Latina",
+				"state_code": "LT"
+			},
+			{
+				"name": "Lecce",
+				"state_code": "LE"
+			},
+			{
+				"name": "Lecco",
+				"state_code": "LC"
+			},
+			{
+				"name": "Livorno",
+				"state_code": "LI"
+			},
+			{
+				"name": "Lodi",
+				"state_code": "LO"
+			},
+			{
+				"name": "Lucca",
+				"state_code": "LU"
+			},
+			{
+				"name": "Macerata",
+				"state_code": "MC"
+			},
+			{
+				"name": "Mantua",
+				"state_code": "MN"
+			},
+			{
+				"name": "Massa and Carrara",
+				"state_code": "MS"
+			},
+			{
+				"name": "Matera",
+				"state_code": "MT"
+			},
+			{
+				"name": "Medio Campidano",
+				"state_code": "VS"
+			},
+			{
+				"name": "Modena",
+				"state_code": "MO"
+			},
+			{
+				"name": "Monza and Brianza",
+				"state_code": "MB"
+			},
+			{
+				"name": "Novara",
+				"state_code": "NO"
+			},
+			{
+				"name": "Nuoro",
+				"state_code": "NU"
+			},
+			{
+				"name": "Ogliastra",
+				"state_code": "OG"
+			},
+			{
+				"name": "Olbia-Tempio",
+				"state_code": "OT"
+			},
+			{
+				"name": "Oristano",
+				"state_code": "OR"
+			},
+			{
+				"name": "Padua",
+				"state_code": "PD"
+			},
+			{
+				"name": "Parma",
+				"state_code": "PR"
+			},
+			{
+				"name": "Pavia",
+				"state_code": "PV"
+			},
+			{
+				"name": "Perugia",
+				"state_code": "PG"
+			},
+			{
+				"name": "Pescara",
+				"state_code": "PE"
+			},
+			{
+				"name": "Piacenza",
+				"state_code": "PC"
+			},
+			{
+				"name": "Pisa",
+				"state_code": "PI"
+			},
+			{
+				"name": "Pistoia",
+				"state_code": "PT"
+			},
+			{
+				"name": "Pordenone",
+				"state_code": "PN"
+			},
+			{
+				"name": "Potenza",
+				"state_code": "PZ"
+			},
+			{
+				"name": "Prato",
+				"state_code": "PO"
+			},
+			{
+				"name": "Ravenna",
+				"state_code": "RA"
+			},
+			{
+				"name": "Reggio Emilia",
+				"state_code": "RE"
+			},
+			{
+				"name": "Rieti",
+				"state_code": "RI"
+			},
+			{
+				"name": "Rimini",
+				"state_code": "RN"
+			},
+			{
+				"name": "Rovigo",
+				"state_code": "RO"
+			},
+			{
+				"name": "Salerno",
+				"state_code": "SA"
+			},
+			{
+				"name": "Sassari",
+				"state_code": "SS"
+			},
+			{
+				"name": "Savona",
+				"state_code": "SV"
+			},
+			{
+				"name": "Siena",
+				"state_code": "SI"
+			},
+			{
+				"name": "Sondrio",
+				"state_code": "SO"
+			},
+			{
+				"name": "Taranto",
+				"state_code": "TA"
+			},
+			{
+				"name": "Teramo",
+				"state_code": "TE"
+			},
+			{
+				"name": "Terni",
+				"state_code": "TR"
+			},
+			{
+				"name": "Treviso",
+				"state_code": "TV"
+			},
+			{
+				"name": "Trieste",
+				"state_code": "TS"
+			},
+			{
+				"name": "Udine",
+				"state_code": "UD"
+			},
+			{
+				"name": "Varese",
+				"state_code": "VA"
+			},
+			{
+				"name": "Verbano-Cusio-Ossola",
+				"state_code": "VB"
+			},
+			{
+				"name": "Vercelli",
+				"state_code": "VC"
+			},
+			{
+				"name": "Verona",
+				"state_code": "VR"
+			},
+			{
+				"name": "Vibo Valentia",
+				"state_code": "VV"
+			},
+			{
+				"name": "Vicenza",
+				"state_code": "VI"
+			},
+			{
+				"name": "Viterbo",
+				"state_code": "VT"
+			},
+			{
+				"name": "Sardinia",
+				"state_code": "88"
+			},
+			{
+				"name": "Sicily",
+				"state_code": "82"
+			},
+			{
+				"name": "South Tyrol",
+				"state_code": "BZ"
+			},
+			{
+				"name": "Trentino",
+				"state_code": "TN"
+			},
+			{
+				"name": "Trentino-South Tyrol",
+				"state_code": "32"
+			},
+			{
+				"name": "Tuscany",
+				"state_code": "52"
+			},
+			{
+				"name": "Umbria",
+				"state_code": "55"
+			},
+			{
+				"name": "Veneto",
+				"state_code": "34"
+			}
+		]
+	},
+	{
+		"name": "Romania",
+		"iso3": "ROU",
+		"states": [
+			{
+				"name": "Alba",
+				"state_code": "AB"
+			},
+			{
+				"name": "Arad",
+				"state_code": "AR"
+			},
+			{
+				"name": "Arges",
+				"state_code": "AG"
+			},
+			{
+				"name": "Bacău",
+				"state_code": "BC"
+			},
+			{
+				"name": "Bihor",
+				"state_code": "BH"
+			},
+			{
+				"name": "Bistrița-Năsăud",
+				"state_code": "BN"
+			},
+			{
+				"name": "Botoșani",
+				"state_code": "BT"
+			},
+			{
+				"name": "Braila",
+				"state_code": "BR"
+			},
+			{
+				"name": "Brașov",
+				"state_code": "BV"
+			},
+			{
+				"name": "Bucharest",
+				"state_code": "B"
+			},
+			{
+				"name": "Buzău",
+				"state_code": "BZ"
+			},
+			{
+				"name": "Călărași",
+				"state_code": "CL"
+			},
+			{
+				"name": "Caraș-Severin",
+				"state_code": "CS"
+			},
+			{
+				"name": "Cluj",
+				"state_code": "CJ"
+			},
+			{
+				"name": "Constanța",
+				"state_code": "CT"
+			},
+			{
+				"name": "Covasna",
+				"state_code": "CV"
+			},
+			{
+				"name": "Dâmbovița",
+				"state_code": "DB"
+			},
+			{
+				"name": "Dolj",
+				"state_code": "DJ"
+			},
+			{
+				"name": "Galați",
+				"state_code": "GL"
+			},
+			{
+				"name": "Giurgiu",
+				"state_code": "GR"
+			},
+			{
+				"name": "Gorj",
+				"state_code": "GJ"
+			},
+			{
+				"name": "Harghita",
+				"state_code": "HR"
+			},
+			{
+				"name": "Hunedoara",
+				"state_code": "HD"
+			},
+			{
+				"name": "Ialomița",
+				"state_code": "IL"
+			},
+			{
+				"name": "Iași",
+				"state_code": "IS"
+			},
+			{
+				"name": "Ilfov",
+				"state_code": "IF"
+			},
+			{
+				"name": "Maramureș",
+				"state_code": "MM"
+			},
+			{
+				"name": "Mehedinți",
+				"state_code": "MH"
+			},
+			{
+				"name": "Neamț",
+				"state_code": "NT"
+			},
+			{
+				"name": "Olt",
+				"state_code": "OT"
+			},
+			{
+				"name": "Prahova",
+				"state_code": "PH"
+			},
+			{
+				"name": "Sălaj",
+				"state_code": "SJ"
+			},
+			{
+				"name": "Satu Mare",
+				"state_code": "SM"
+			},
+			{
+				"name": "Sibiu",
+				"state_code": "SB"
+			},
+			{
+				"name": "Suceava",
+				"state_code": "SV"
+			},
+			{
+				"name": "Teleorman",
+				"state_code": "TR"
+			},
+			{
+				"name": "Timiș",
+				"state_code": "TM"
+			},
+			{
+				"name": "Tulcea",
+				"state_code": "TL"
+			},
+			{
+				"name": "Vâlcea",
+				"state_code": "VL"
+			},
+			{
+				"name": "Vaslui",
+				"state_code": "VS"
+			},
+			{
+				"name": "Vrancea",
+				"state_code": "VN"
+			}
+		]
+	},
+	{
+		"name": "United Kingdom",
+		"iso3": "GBR",
+		"states": [
+			{
+				"name": "Aberdeen",
+				"state_code": "ABE"
+			},
+			{
+				"name": "Aberdeenshire",
+				"state_code": "ABD"
+			},
+			{
+				"name": "Angus",
+				"state_code": "ANS"
+			},
+			{
+				"name": "Antrim",
+				"state_code": "ANT"
+			},
+			{
+				"name": "Antrim and Newtownabbey",
+				"state_code": "ANN"
+			},
+			{
+				"name": "Ards",
+				"state_code": "ARD"
+			},
+			{
+				"name": "Ards and North Down",
+				"state_code": "AND"
+			},
+			{
+				"name": "Argyll and Bute",
+				"state_code": "AGB"
+			},
+			{
+				"name": "Armagh City and District Council",
+				"state_code": "ARM"
+			},
+			{
+				"name": "Armagh, Banbridge and Craigavon",
+				"state_code": "ABC"
+			},
+			{
+				"name": "Ascension Island",
+				"state_code": "SH-AC"
+			},
+			{
+				"name": "Ballymena Borough",
+				"state_code": "BLA"
+			},
+			{
+				"name": "Ballymoney",
+				"state_code": "BLY"
+			},
+			{
+				"name": "Banbridge",
+				"state_code": "BNB"
+			},
+			{
+				"name": "Barnsley",
+				"state_code": "BNS"
+			},
+			{
+				"name": "Bath and North East Somerset",
+				"state_code": "BAS"
+			},
+			{
+				"name": "Bedford",
+				"state_code": "BDF"
+			},
+			{
+				"name": "Belfast district",
+				"state_code": "BFS"
+			},
+			{
+				"name": "Birmingham",
+				"state_code": "BIR"
+			},
+			{
+				"name": "Blackburn with Darwen",
+				"state_code": "BBD"
+			},
+			{
+				"name": "Blackpool",
+				"state_code": "BPL"
+			},
+			{
+				"name": "Blaenau Gwent County Borough",
+				"state_code": "BGW"
+			},
+			{
+				"name": "Bolton",
+				"state_code": "BOL"
+			},
+			{
+				"name": "Bournemouth",
+				"state_code": "BMH"
+			},
+			{
+				"name": "Bracknell Forest",
+				"state_code": "BRC"
+			},
+			{
+				"name": "Bradford",
+				"state_code": "BRD"
+			},
+			{
+				"name": "Bridgend County Borough",
+				"state_code": "BGE"
+			},
+			{
+				"name": "Brighton and Hove",
+				"state_code": "BNH"
+			},
+			{
+				"name": "Buckinghamshire",
+				"state_code": "BKM"
+			},
+			{
+				"name": "Bury",
+				"state_code": "BUR"
+			},
+			{
+				"name": "Caerphilly County Borough",
+				"state_code": "CAY"
+			},
+			{
+				"name": "Calderdale",
+				"state_code": "CLD"
+			},
+			{
+				"name": "Cambridgeshire",
+				"state_code": "CAM"
+			},
+			{
+				"name": "Carmarthenshire",
+				"state_code": "CMN"
+			},
+			{
+				"name": "Carrickfergus Borough Council",
+				"state_code": "CKF"
+			},
+			{
+				"name": "Castlereagh",
+				"state_code": "CSR"
+			},
+			{
+				"name": "Causeway Coast and Glens",
+				"state_code": "CCG"
+			},
+			{
+				"name": "Central Bedfordshire",
+				"state_code": "CBF"
+			},
+			{
+				"name": "Ceredigion",
+				"state_code": "CGN"
+			},
+			{
+				"name": "Cheshire East",
+				"state_code": "CHE"
+			},
+			{
+				"name": "Cheshire West and Chester",
+				"state_code": "CHW"
+			},
+			{
+				"name": "City and County of Cardiff",
+				"state_code": "CRF"
+			},
+			{
+				"name": "City and County of Swansea",
+				"state_code": "SWA"
+			},
+			{
+				"name": "City of Bristol",
+				"state_code": "BST"
+			},
+			{
+				"name": "City of Derby",
+				"state_code": "DER"
+			},
+			{
+				"name": "City of Kingston upon Hull",
+				"state_code": "KHL"
+			},
+			{
+				"name": "City of Leicester",
+				"state_code": "LCE"
+			},
+			{
+				"name": "City of London",
+				"state_code": "LND"
+			},
+			{
+				"name": "City of Nottingham",
+				"state_code": "NGM"
+			},
+			{
+				"name": "City of Peterborough",
+				"state_code": "PTE"
+			},
+			{
+				"name": "City of Plymouth",
+				"state_code": "PLY"
+			},
+			{
+				"name": "City of Portsmouth",
+				"state_code": "POR"
+			},
+			{
+				"name": "City of Southampton",
+				"state_code": "STH"
+			},
+			{
+				"name": "City of Stoke-on-Trent",
+				"state_code": "STE"
+			},
+			{
+				"name": "City of Sunderland",
+				"state_code": "SND"
+			},
+			{
+				"name": "City of Westminster",
+				"state_code": "WSM"
+			},
+			{
+				"name": "City of Wolverhampton",
+				"state_code": "WLV"
+			},
+			{
+				"name": "City of York",
+				"state_code": "YOR"
+			},
+			{
+				"name": "Clackmannanshire",
+				"state_code": "CLK"
+			},
+			{
+				"name": "Coleraine Borough Council",
+				"state_code": "CLR"
+			},
+			{
+				"name": "Conwy County Borough",
+				"state_code": "CWY"
+			},
+			{
+				"name": "Cookstown District Council",
+				"state_code": "CKT"
+			},
+			{
+				"name": "Cornwall",
+				"state_code": "CON"
+			},
+			{
+				"name": "County Durham",
+				"state_code": "DUR"
+			},
+			{
+				"name": "Coventry",
+				"state_code": "COV"
+			},
+			{
+				"name": "Craigavon Borough Council",
+				"state_code": "CGV"
+			},
+			{
+				"name": "Cumbria",
+				"state_code": "CMA"
+			},
+			{
+				"name": "Darlington",
+				"state_code": "DAL"
+			},
+			{
+				"name": "Denbighshire",
+				"state_code": "DEN"
+			},
+			{
+				"name": "Derbyshire",
+				"state_code": "DBY"
+			},
+			{
+				"name": "Derry City and Strabane",
+				"state_code": "DRS"
+			},
+			{
+				"name": "Derry City Council",
+				"state_code": "DRY"
+			},
+			{
+				"name": "Devon",
+				"state_code": "DEV"
+			},
+			{
+				"name": "Doncaster",
+				"state_code": "DNC"
+			},
+			{
+				"name": "Dorset",
+				"state_code": "DOR"
+			},
+			{
+				"name": "Down District Council",
+				"state_code": "DOW"
+			},
+			{
+				"name": "Dudley",
+				"state_code": "DUD"
+			},
+			{
+				"name": "Dumfries and Galloway",
+				"state_code": "DGY"
+			},
+			{
+				"name": "Dundee",
+				"state_code": "DND"
+			},
+			{
+				"name": "Dungannon and South Tyrone Borough Council",
+				"state_code": "DGN"
+			},
+			{
+				"name": "East Ayrshire",
+				"state_code": "EAY"
+			},
+			{
+				"name": "East Dunbartonshire",
+				"state_code": "EDU"
+			},
+			{
+				"name": "East Lothian",
+				"state_code": "ELN"
+			},
+			{
+				"name": "East Renfrewshire",
+				"state_code": "ERW"
+			},
+			{
+				"name": "East Riding of Yorkshire",
+				"state_code": "ERY"
+			},
+			{
+				"name": "East Sussex",
+				"state_code": "ESX"
+			},
+			{
+				"name": "Edinburgh",
+				"state_code": "EDH"
+			},
+			{
+				"name": "England",
+				"state_code": "ENG"
+			},
+			{
+				"name": "Essex",
+				"state_code": "ESS"
+			},
+			{
+				"name": "Falkirk",
+				"state_code": "FAL"
+			},
+			{
+				"name": "Fermanagh and Omagh",
+				"state_code": "FMO"
+			},
+			{
+				"name": "Fermanagh District Council",
+				"state_code": "FER"
+			},
+			{
+				"name": "Fife",
+				"state_code": "FIF"
+			},
+			{
+				"name": "Flintshire",
+				"state_code": "FLN"
+			},
+			{
+				"name": "Gateshead",
+				"state_code": "GAT"
+			},
+			{
+				"name": "Glasgow",
+				"state_code": "GLG"
+			},
+			{
+				"name": "Gloucestershire",
+				"state_code": "GLS"
+			},
+			{
+				"name": "Gwynedd",
+				"state_code": "GWN"
+			},
+			{
+				"name": "Halton",
+				"state_code": "HAL"
+			},
+			{
+				"name": "Hampshire",
+				"state_code": "HAM"
+			},
+			{
+				"name": "Hartlepool",
+				"state_code": "HPL"
+			},
+			{
+				"name": "Herefordshire",
+				"state_code": "HEF"
+			},
+			{
+				"name": "Hertfordshire",
+				"state_code": "HRT"
+			},
+			{
+				"name": "Highland",
+				"state_code": "HLD"
+			},
+			{
+				"name": "Inverclyde",
+				"state_code": "IVC"
+			},
+			{
+				"name": "Isle of Wight",
+				"state_code": "IOW"
+			},
+			{
+				"name": "Isles of Scilly",
+				"state_code": "IOS"
+			},
+			{
+				"name": "Kent",
+				"state_code": "KEN"
+			},
+			{
+				"name": "Kirklees",
+				"state_code": "KIR"
+			},
+			{
+				"name": "Knowsley",
+				"state_code": "KWL"
+			},
+			{
+				"name": "Lancashire",
+				"state_code": "LAN"
+			},
+			{
+				"name": "Larne Borough Council",
+				"state_code": "LRN"
+			},
+			{
+				"name": "Leeds",
+				"state_code": "LDS"
+			},
+			{
+				"name": "Leicestershire",
+				"state_code": "LEC"
+			},
+			{
+				"name": "Limavady Borough Council",
+				"state_code": "LMV"
+			},
+			{
+				"name": "Lincolnshire",
+				"state_code": "LIN"
+			},
+			{
+				"name": "Lisburn and Castlereagh",
+				"state_code": "LBC"
+			},
+			{
+				"name": "Lisburn City Council",
+				"state_code": "LSB"
+			},
+			{
+				"name": "Liverpool",
+				"state_code": "LIV"
+			},
+			{
+				"name": "London Borough of Barking and Dagenham",
+				"state_code": "BDG"
+			},
+			{
+				"name": "London Borough of Barnet",
+				"state_code": "BNE"
+			},
+			{
+				"name": "London Borough of Bexley",
+				"state_code": "BEX"
+			},
+			{
+				"name": "London Borough of Brent",
+				"state_code": "BEN"
+			},
+			{
+				"name": "London Borough of Bromley",
+				"state_code": "BRY"
+			},
+			{
+				"name": "London Borough of Camden",
+				"state_code": "CMD"
+			},
+			{
+				"name": "London Borough of Croydon",
+				"state_code": "CRY"
+			},
+			{
+				"name": "London Borough of Ealing",
+				"state_code": "EAL"
+			},
+			{
+				"name": "London Borough of Enfield",
+				"state_code": "ENF"
+			},
+			{
+				"name": "London Borough of Hackney",
+				"state_code": "HCK"
+			},
+			{
+				"name": "London Borough of Hammersmith and Fulham",
+				"state_code": "HMF"
+			},
+			{
+				"name": "London Borough of Haringey",
+				"state_code": "HRY"
+			},
+			{
+				"name": "London Borough of Harrow",
+				"state_code": "HRW"
+			},
+			{
+				"name": "London Borough of Havering",
+				"state_code": "HAV"
+			},
+			{
+				"name": "London Borough of Hillingdon",
+				"state_code": "HIL"
+			},
+			{
+				"name": "London Borough of Hounslow",
+				"state_code": "HNS"
+			},
+			{
+				"name": "London Borough of Islington",
+				"state_code": "ISL"
+			},
+			{
+				"name": "London Borough of Lambeth",
+				"state_code": "LBH"
+			},
+			{
+				"name": "London Borough of Lewisham",
+				"state_code": "LEW"
+			},
+			{
+				"name": "London Borough of Merton",
+				"state_code": "MRT"
+			},
+			{
+				"name": "London Borough of Newham",
+				"state_code": "NWM"
+			},
+			{
+				"name": "London Borough of Redbridge",
+				"state_code": "RDB"
+			},
+			{
+				"name": "London Borough of Richmond upon Thames",
+				"state_code": "RIC"
+			},
+			{
+				"name": "London Borough of Southwark",
+				"state_code": "SWK"
+			},
+			{
+				"name": "London Borough of Sutton",
+				"state_code": "STN"
+			},
+			{
+				"name": "London Borough of Tower Hamlets",
+				"state_code": "TWH"
+			},
+			{
+				"name": "London Borough of Waltham Forest",
+				"state_code": "WFT"
+			},
+			{
+				"name": "London Borough of Wandsworth",
+				"state_code": "WND"
+			},
+			{
+				"name": "Magherafelt District Council",
+				"state_code": "MFT"
+			},
+			{
+				"name": "Manchester",
+				"state_code": "MAN"
+			},
+			{
+				"name": "Medway",
+				"state_code": "MDW"
+			},
+			{
+				"name": "Merthyr Tydfil County Borough",
+				"state_code": "MTY"
+			},
+			{
+				"name": "Metropolitan Borough of Wigan",
+				"state_code": "WGN"
+			},
+			{
+				"name": "Mid and East Antrim",
+				"state_code": "MEA"
+			},
+			{
+				"name": "Mid Ulster",
+				"state_code": "MUL"
+			},
+			{
+				"name": "Middlesbrough",
+				"state_code": "MDB"
+			},
+			{
+				"name": "Midlothian",
+				"state_code": "MLN"
+			},
+			{
+				"name": "Milton Keynes",
+				"state_code": "MIK"
+			},
+			{
+				"name": "Monmouthshire",
+				"state_code": "MON"
+			},
+			{
+				"name": "Moray",
+				"state_code": "MRY"
+			},
+			{
+				"name": "Moyle District Council",
+				"state_code": "MYL"
+			},
+			{
+				"name": "Neath Port Talbot County Borough",
+				"state_code": "NTL"
+			},
+			{
+				"name": "Newcastle upon Tyne",
+				"state_code": "NET"
+			},
+			{
+				"name": "Newport",
+				"state_code": "NWP"
+			},
+			{
+				"name": "Newry and Mourne District Council",
+				"state_code": "NYM"
+			},
+			{
+				"name": "Newry, Mourne and Down",
+				"state_code": "NMD"
+			},
+			{
+				"name": "Newtownabbey Borough Council",
+				"state_code": "NTA"
+			},
+			{
+				"name": "Norfolk",
+				"state_code": "NFK"
+			},
+			{
+				"name": "North Ayrshire",
+				"state_code": "NAY"
+			},
+			{
+				"name": "North Down Borough Council",
+				"state_code": "NDN"
+			},
+			{
+				"name": "North East Lincolnshire",
+				"state_code": "NEL"
+			},
+			{
+				"name": "North Lanarkshire",
+				"state_code": "NLK"
+			},
+			{
+				"name": "North Lincolnshire",
+				"state_code": "NLN"
+			},
+			{
+				"name": "North Somerset",
+				"state_code": "NSM"
+			},
+			{
+				"name": "North Tyneside",
+				"state_code": "NTY"
+			},
+			{
+				"name": "North Yorkshire",
+				"state_code": "NYK"
+			},
+			{
+				"name": "Northamptonshire",
+				"state_code": "NTH"
+			},
+			{
+				"name": "Northern Ireland",
+				"state_code": "NIR"
+			},
+			{
+				"name": "Northumberland",
+				"state_code": "NBL"
+			},
+			{
+				"name": "Nottinghamshire",
+				"state_code": "NTT"
+			},
+			{
+				"name": "Oldham",
+				"state_code": "OLD"
+			},
+			{
+				"name": "Omagh District Council",
+				"state_code": "OMH"
+			},
+			{
+				"name": "Orkney Islands",
+				"state_code": "ORK"
+			},
+			{
+				"name": "Outer Hebrides",
+				"state_code": "ELS"
+			},
+			{
+				"name": "Oxfordshire",
+				"state_code": "OXF"
+			},
+			{
+				"name": "Pembrokeshire",
+				"state_code": "PEM"
+			},
+			{
+				"name": "Perth and Kinross",
+				"state_code": "PKN"
+			},
+			{
+				"name": "Poole",
+				"state_code": "POL"
+			},
+			{
+				"name": "Powys",
+				"state_code": "POW"
+			},
+			{
+				"name": "Reading",
+				"state_code": "RDG"
+			},
+			{
+				"name": "Redcar and Cleveland",
+				"state_code": "RCC"
+			},
+			{
+				"name": "Renfrewshire",
+				"state_code": "RFW"
+			},
+			{
+				"name": "Rhondda Cynon Taf",
+				"state_code": "RCT"
+			},
+			{
+				"name": "Rochdale",
+				"state_code": "RCH"
+			},
+			{
+				"name": "Rotherham",
+				"state_code": "ROT"
+			},
+			{
+				"name": "Royal Borough of Greenwich",
+				"state_code": "GRE"
+			},
+			{
+				"name": "Royal Borough of Kensington and Chelsea",
+				"state_code": "KEC"
+			},
+			{
+				"name": "Royal Borough of Kingston upon Thames",
+				"state_code": "KTT"
+			},
+			{
+				"name": "Rutland",
+				"state_code": "RUT"
+			},
+			{
+				"name": "Saint Helena",
+				"state_code": "SH-HL"
+			},
+			{
+				"name": "Salford",
+				"state_code": "SLF"
+			},
+			{
+				"name": "Sandwell",
+				"state_code": "SAW"
+			},
+			{
+				"name": "Scotland",
+				"state_code": "SCT"
+			},
+			{
+				"name": "Scottish Borders",
+				"state_code": "SCB"
+			},
+			{
+				"name": "Sefton",
+				"state_code": "SFT"
+			},
+			{
+				"name": "Sheffield",
+				"state_code": "SHF"
+			},
+			{
+				"name": "Shetland Islands",
+				"state_code": "ZET"
+			},
+			{
+				"name": "Shropshire",
+				"state_code": "SHR"
+			},
+			{
+				"name": "Slough",
+				"state_code": "SLG"
+			},
+			{
+				"name": "Solihull",
+				"state_code": "SOL"
+			},
+			{
+				"name": "Somerset",
+				"state_code": "SOM"
+			},
+			{
+				"name": "South Ayrshire",
+				"state_code": "SAY"
+			},
+			{
+				"name": "South Gloucestershire",
+				"state_code": "SGC"
+			},
+			{
+				"name": "South Lanarkshire",
+				"state_code": "SLK"
+			},
+			{
+				"name": "South Tyneside",
+				"state_code": "STY"
+			},
+			{
+				"name": "Southend-on-Sea",
+				"state_code": "SOS"
+			},
+			{
+				"name": "St Helens",
+				"state_code": "SHN"
+			},
+			{
+				"name": "Staffordshire",
+				"state_code": "STS"
+			},
+			{
+				"name": "Stirling",
+				"state_code": "STG"
+			},
+			{
+				"name": "Stockport",
+				"state_code": "SKP"
+			},
+			{
+				"name": "Stockton-on-Tees",
+				"state_code": "STT"
+			},
+			{
+				"name": "Strabane District Council",
+				"state_code": "STB"
+			},
+			{
+				"name": "Suffolk",
+				"state_code": "SFK"
+			},
+			{
+				"name": "Surrey",
+				"state_code": "SRY"
+			},
+			{
+				"name": "Swindon",
+				"state_code": "SWD"
+			},
+			{
+				"name": "Tameside",
+				"state_code": "TAM"
+			},
+			{
+				"name": "Telford and Wrekin",
+				"state_code": "TFW"
+			},
+			{
+				"name": "Thurrock",
+				"state_code": "THR"
+			},
+			{
+				"name": "Torbay",
+				"state_code": "TOB"
+			},
+			{
+				"name": "Torfaen",
+				"state_code": "TOF"
+			},
+			{
+				"name": "Trafford",
+				"state_code": "TRF"
+			},
+			{
+				"name": "United Kingdom",
+				"state_code": "UKM"
+			},
+			{
+				"name": "Vale of Glamorgan",
+				"state_code": "VGL"
+			},
+			{
+				"name": "Wakefield",
+				"state_code": "WKF"
+			},
+			{
+				"name": "Wales",
+				"state_code": "WLS"
+			},
+			{
+				"name": "Walsall",
+				"state_code": "WLL"
+			},
+			{
+				"name": "Warrington",
+				"state_code": "WRT"
+			},
+			{
+				"name": "Warwickshire",
+				"state_code": "WAR"
+			},
+			{
+				"name": "West Berkshire",
+				"state_code": "WBK"
+			},
+			{
+				"name": "West Dunbartonshire",
+				"state_code": "WDU"
+			},
+			{
+				"name": "West Lothian",
+				"state_code": "WLN"
+			},
+			{
+				"name": "West Sussex",
+				"state_code": "WSX"
+			},
+			{
+				"name": "Wiltshire",
+				"state_code": "WIL"
+			},
+			{
+				"name": "Windsor and Maidenhead",
+				"state_code": "WNM"
+			},
+			{
+				"name": "Wirral",
+				"state_code": "WRL"
+			},
+			{
+				"name": "Wokingham",
+				"state_code": "WOK"
+			},
+			{
+				"name": "Worcestershire",
+				"state_code": "WOR"
+			},
+			{
+				"name": "Wrexham County Borough",
+				"state_code": "WRX"
+			}
+		]
+	}
+]

@@ -1305,6 +1305,15 @@ class AdsController extends Controller
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
+            }
+
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
             }
@@ -1425,6 +1434,14 @@ class AdsController extends Controller
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
+            }
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
             }
@@ -1539,6 +1556,14 @@ class AdsController extends Controller
             }
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+            }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
 
             if ($filters->condition) {
@@ -1656,6 +1681,14 @@ class AdsController extends Controller
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+            }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
@@ -1815,6 +1848,14 @@ class AdsController extends Controller
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
+            }
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
             }
@@ -1905,6 +1946,14 @@ class AdsController extends Controller
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
             }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
+            }
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
             }
@@ -1991,6 +2040,14 @@ class AdsController extends Controller
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+            }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
@@ -2084,6 +2141,14 @@ class AdsController extends Controller
 
             if ($filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->whereBetween('first_registration_year',[$filters->from_first_registration_year,$filters->to_first_registration_year]);
+            }
+
+            if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
+                $query->where('first_registration_year','>=',$filters->from_first_registration_year);
+            }
+            
+            if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
+                $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
             if ($filters->condition) {
                 $query->where('condition',$filters->condition);
