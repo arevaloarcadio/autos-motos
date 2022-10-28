@@ -825,7 +825,7 @@ class AdsController extends Controller
     public function characteristic_ads($ad){
 
         $sub_characteristic_ids = $ad->characteristics()->select('characteristic_id')->get()->toArray();
-
+        dd($sub_characteristic_ids);
         $characteristics = Characteristic::whereIn('id',$sub_characteristic_ids)
             ->with([
                 'sub_characteristics' => function ($query) use ($ad)
@@ -1778,7 +1778,7 @@ class AdsController extends Controller
     }
 
 
-public function getCountAutoAd($filters)
+    public function getCountAutoAd($filters)
     {
         $auto_ad = new AutoAd;
 
@@ -2020,10 +2020,6 @@ public function getCountAutoAd($filters)
                 $query->where('co2_emissions',$filters->co2_emissions);
             }*/
             
-            
-            if ($filters->inspection_valid_until_month) {
-                $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
-            }
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
