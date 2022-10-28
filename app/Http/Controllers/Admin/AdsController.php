@@ -824,8 +824,14 @@ class AdsController extends Controller
 
     public function characteristic_ads($ad){
 
-        $sub_characteristic_ids = $ad->characteristics()->select('characteristic_id')->get()->toArray();
+        $data_sub_characteristic_ids = $ad->characteristics()->select('characteristic_id')->get()->toArray();
         
+        $sub_characteristic_ids = [];
+
+        foreach ($data_sub_characteristic_ids as $sub_characteristic_id) {
+            array_push($sub_characteristic_ids, $sub_characteristic_id['characteristic_id']);
+        }
+
         $characteristics = Characteristic::whereIn('id',$sub_characteristic_ids)
             ->with([
                 'sub_characteristics' => function ($query) use ($ad)
