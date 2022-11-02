@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\Model\IndexModel;
 use App\Http\Requests\Admin\Model\StoreModel;
 use App\Http\Requests\Admin\Model\UpdateModel;
 use App\Models\Models;
+use App\Models\Make;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -32,15 +33,14 @@ class ModelsController extends Controller
     public function index(IndexModel $request)
     {
         if ($request->all) {
-            
             $query = Models::query();
-
             $columns =  ['id', 'name', 'make_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
+                       
                            $query->where($key,$filter);
                         }
                     }
@@ -48,13 +48,22 @@ class ModelsController extends Controller
             }
 
             foreach (Models::getRelationships() as $key => $value) {
+                
                $query->with($key);
             }
 
             return ['data' => $query->get()];
         }
         
-        // create and AdminListing instance for a specific model and
+        if ($request->filters) {
+            foreach ($request->filters as $key => $filter) {
+                $marca=Make::find($filter)->load(['grupos'=>function($q){
+                    return $q->with(['sub_models_by_model']);
+                }]);
+                if ($marca->has_sub_model) {
+                    return ['data' => $marca];
+                }else{
+                     // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Models::class)->processRequestAndGet(
             // pass the request with params
             $request,
@@ -66,26 +75,38 @@ class ModelsController extends Controller
             ['id', 'name', 'slug', 'make_id', 'ad_type'],
 
             function ($query) use ($request) {
-                        
+                
                 $columns =  ['id', 'name', 'make_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
                 
                 foreach ($columns as $column) {
                         if ($request->filters) {
                             foreach ($request->filters as $key => $filter) {
-                                if ($column == $key) {
-                                   $query->where($key,$filter);
-                                }
+                                
+                            
+                                    
+                            
+                                    if ($column == $key) {
+                                    
+                                        $query->where($key,$filter);
+                                     }
+                                
+                                
+                               
                             }
                         }
                     }
                 
-                foreach (Models::getRelationships() as $key => $value) {
-                   $query->with($key);
-                }
+                
             }
         );
         
         return ['data' => $data];
+                }
+                
+               
+            }
+        }
+       
     }
 
     /**

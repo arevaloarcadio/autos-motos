@@ -15,6 +15,7 @@ class Make extends Model
         'ad_type',
         'external_id',
         'external_updated_at',
+        'has_sub_model',
     
     ];
     
@@ -27,6 +28,11 @@ class Make extends Model
     ];
     
     protected $appends = ['resource_url'];
+
+    public function grupos()
+    {
+    return $this->hasMany('App\Models\Submodel','make_id');
+    }
 
     /* ************************ ACCESSOR ************************* */
 

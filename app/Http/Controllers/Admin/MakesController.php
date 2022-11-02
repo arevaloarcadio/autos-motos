@@ -40,7 +40,7 @@ class MakesController extends Controller
             
             $query = Make::query();
 
-            $columns = ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
+            $columns = ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at','has_sub_model'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -65,14 +65,14 @@ class MakesController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at'],
+            ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at','has_sub_model'],
 
             // set columns to searchIn
             ['id', 'name', 'slug', 'ad_type'],
 
             function ($query) use ($request) {
                         
-                $columns = ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
+                $columns = ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at','has_sub_model'];
                 
                 foreach ($columns as $column) {
                         if ($request->filters) {
