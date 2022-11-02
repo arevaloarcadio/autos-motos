@@ -39,10 +39,10 @@ class StoreUser extends FormRequest
             'password' => ['required', 'confirmed', 'min:7', 'string'],
             'dealer_id' => ['nullable', 'string'],
             'type' => ['required', 'string'],
-            'code_postal' => ['required', 'string'],
-            'address' => ['required', 'string'],
-            'country' => ['required', 'string'],
-            'city' => ['required', 'string'],
+            //'code_postal' => ['required', 'string'],
+            //'address' => ['required', 'string'],
+           // 'country' => ['required', 'string'],
+           // 'city' => ['required', 'string'],
             //, 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/',
         ];
     }
