@@ -46,7 +46,7 @@ class UsersController extends Controller
             
             $query = User::query();
 
-            $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id'];
+            $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','code_postal','dealer_id','address','country','city'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -71,14 +71,14 @@ class UsersController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type', 'image', 'status','dealer_id','created_at'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','code_postal','address','country','city','created_at'],
 
             // set columns to searchIn
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'type','image','status','dealer_id','created_at'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','code_postal','address','country','city','created_at'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','created_at'];
+                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','code_postal','address','country','city','created_at'];
                 
                 if ($request->filters) {
                     foreach ($columns as $column) {
@@ -427,6 +427,10 @@ class UsersController extends Controller
             $data['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
             $data['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
             $data['email'] =  $sanitized['email'] ?? $user['email'];
+            $data['code_postal'] = $request['code_postal'] ?? $user['code_postal'];
+            $data['address'] = $request['address'] ?? $user['address'];
+            $data['country'] = $request['country'] ?? $user['country'];
+            $data['city'] = $request['city'] ?? $user['city'];
             $data['password'] = array_key_exists('password', $sanitized) ? Hash::make($sanitized['password']) : $user['password'];
             $data['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
             
@@ -488,6 +492,10 @@ class UsersController extends Controller
             'email' => 'nullable|unique:users,email,'.$user->id,
             'password' => ['nullable', 'confirmed', 'min:7', 'string'],
             'dealer_id' => ['nullable', 'string'],
+            'code_postal' => ['sometimes', 'string'],
+            'address' => ['sometimes', 'string'],
+            'country' => ['sometimes', 'string'],
+            'city' => ['sometimes', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -496,15 +504,19 @@ class UsersController extends Controller
         }
         
         try {  
+
             $data = [];
             $data['first_name'] = $request['first_name'] ?? $user['first_name'];
             $data['last_name'] = $request['last_name'] ?? $user['last_name'];
             $data['mobile_number'] = $request['mobile_number'] ?? $user['mobile_number'];
             $data['landline_number'] = $request['landline_number'] ?? $user['landline_number'];
             $data['whatsapp_number'] = $request['whatsapp_number'] ?? $user['whatsapp_number'];
+            $data['code_postal'] = $request['code_postal'] ?? $user['code_postal'];
+            $data['address'] = $request['address'] ?? $user['address'];
+            $data['country'] = $request['country'] ?? $user['country'];
+            $data['city'] = $request['city'] ?? $user['city'];
             $data['email'] =  $request['email'] ?? $user['email'];
             $data['password'] =  $request['password'] ? Hash::make($request['password']) : $user['password'];
-            //$data['dealer_id'] = $request['dealer_id'] ?? $user['dealer_id'];
             
             $data['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
             
@@ -629,6 +641,10 @@ class UsersController extends Controller
             'whatsapp_number' => ['nullable', 'string'],
             'email' => 'required|unique:users,email,'.$user->id,
             'password' => ['sometimes', 'confirmed', 'min:7', 'string'],
+            'code_postal' => ['sometimes', 'string'],
+            'address' => ['sometimes', 'string'],
+            'country' => ['sometimes', 'string'],
+            'city' => ['sometimes', 'string'],
         //    'image' => ['file'],
         //    'dealer_id' => ['nullable', 'string'],
         ]);

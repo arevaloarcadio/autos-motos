@@ -37,6 +37,10 @@ class UpdateUser extends FormRequest
             'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($this->user->getKey(), $this->user->getKeyName()), 'string'],
             'password' => ['nullable', 'confirmed', 'min:7', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/', 'string'],
             'dealer_id' => ['nullable', 'string'],
+            'code_postal' => ['sometimes', 'string'],
+            'address' => ['sometimes', 'string'],
+            'country' => ['sometimes', 'string'],
+            'city' => ['sometimes', 'string'],
             
         ];
     }

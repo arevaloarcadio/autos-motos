@@ -26,7 +26,10 @@ class User extends Authenticatable  implements JWTSubject
         'type',
         'dealer_id',
         'image',
-    
+        'code_postal',
+        'address',
+        'country',
+        'city'
     ];
     
     protected $hidden = [
