@@ -71,14 +71,14 @@ class UsersController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type', 'image', 'status','dealer_id'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type', 'image', 'status','dealer_id','created_at'],
 
             // set columns to searchIn
-            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'type','image','status','dealer_id'],
+            ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'type','image','status','dealer_id','created_at'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id'];
+                $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','created_at'];
                 
                 if ($request->filters) {
                     foreach ($columns as $column) {
