@@ -7,6 +7,7 @@ use App\Enum\Ad\AdTypeEnum;
 use App\Enum\Ad\ImageProcessingStatusEnum;
 use App\Enum\Core\ApprovalStatusEnum;
 use App\Exceptions\InvalidAdTypeInputException;
+use Illuminate\Support\Facades\DB;
 use App\Exceptions\InvalidAdTypeProvidedException;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Ad;
