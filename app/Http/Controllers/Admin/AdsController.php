@@ -281,7 +281,7 @@ class AdsController extends Controller
                   ->orWhere('ads.description','LIKE','%'.$filter.'%');
         })
         ->where('status',10)
-        ->whereRaw('thumbnail is not null');
+        ->whereRaw('thumbnail is not null')
         ->where('type',$type)
         ->limit(24)
         ->get();
