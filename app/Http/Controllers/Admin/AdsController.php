@@ -213,7 +213,9 @@ class AdsController extends Controller
         
         $ads = Ad::where(function ($query) use ($filter){
             $query->where('ads.title','LIKE','%'. $filter.'%');
-        });
+        })
+        ->where('status',10)
+        ->whereRaw('thumbnail is not null');
 
         if ($type != 'all') {
             $ads = $ads->where('ads.type',$type);
@@ -278,6 +280,8 @@ class AdsController extends Controller
             $query->where('ads.title','LIKE','%'. $filter.'%')
                   ->orWhere('ads.description','LIKE','%'.$filter.'%');
         })
+        ->where('status',10)
+        ->whereRaw('thumbnail is not null');
         ->where('type',$type)
         ->limit(24)
         ->get();
