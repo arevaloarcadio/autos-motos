@@ -187,18 +187,18 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('ads')->middleware(['jwt.verify','is.admin'])->name('ads/')->group(static function() {
-            Route::get('/',                                             'AdsController@index')->name('index');
+        Route::prefix('ads')->name('ads/')->group(static function() {
+            Route::get('/',                                             'AdsController@index')->middleware(['jwt.verify','is.admin'])->name('index');
 
             Route::post('/filter',                                      'AdsController@index')->name('filter');
 
             Route::get('/byDealer/{dealer_id}',                         'AdsController@byDealer')->name('byDealer');
-            Route::get('/byDealerCount/{dealer_id}',                    'AdsController@byDealerCount')->name('byDealerCount');
-            Route::get('/bySource',                                     'AdsController@bySource')->name('bySource');
-            Route::get('/countToday',                                   'AdsController@countAdsToday')->name('countAdsToday');
-            Route::get('/countImportToday',                             'AdsController@countAdsImportToday')->name('countAdsImportToday');
-            Route::get('/byCsv/{csv_ad_id}',                            'AdsController@byCsv')->name('byCsv');
-            Route::get('/groupByCsv',                                   'AdsController@groupByCsv')->name('groupByCsv');
+            Route::get('/byDealerCount/{dealer_id}',                    'AdsController@byDealerCount')->middleware(['jwt.verify','is.admin'])->name('byDealerCount');
+            Route::get('/bySource',                                     'AdsController@bySource')->middleware(['jwt.verify','is.admin'])->name('bySource');
+            Route::get('/countToday',                                   'AdsController@countAdsToday')->middleware(['jwt.verify','is.admin'])->name('countAdsToday');
+            Route::get('/countImportToday',                             'AdsController@countAdsImportToday')->middleware(['jwt.verify','is.admin'])->name('countAdsImportToday');
+            Route::get('/byCsv/{csv_ad_id}',                            'AdsController@byCsv')->middleware(['jwt.verify','is.admin'])->name('byCsv');
+            Route::get('/groupByCsv',                                   'AdsController@groupByCsv')->middleware(['jwt.verify','is.admin'])->name('groupByCsv');
             //Route::get('/create',                                       'AdsController@create')->name('create');
             Route::get('/{ad_id}',                                      'AdsController@show')->name('show');
             Route::post('/',                                            'AdsController@store')->name('store');
@@ -212,12 +212,12 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
             Route::post('/search_ads_like_title',                       'AdsController@searchAdsLikeTitle')->name('search_ads_like');
 
 
-            Route::post('/{ad_id}/rejected_comment',                    'AdsController@storeCommentRejected')->name('storeCommentRejected');
-            Route::post('/rejected_comment_individual_ads',             'AdsController@storeCommentsRejectedIndividual')->name('storeCommentRejected');
-            Route::post('/{csv_ad_id}/ads_rejected_comment',            'AdsController@storeCommentsRejected')->name('ads_rejected_comment');
-            Route::post('/{status}/approved_rejected',                  'AdsController@setApprovedRejected')->name('store');
-            Route::post('/{status}/approved_rejected_individual',       'AdsController@setApprovedRejectedIndividual')->name('store');
-            Route::post('/{status}/approved_rejected_ads',              'AdsController@setApprovedRejected')->name('store');
+            Route::post('/{ad_id}/rejected_comment',                    'AdsController@storeCommentRejected')->middleware(['jwt.verify','is.admin'])->name('storeCommentRejected');
+            Route::post('/rejected_comment_individual_ads',             'AdsController@storeCommentsRejectedIndividual')->middleware(['jwt.verify','is.admin'])->name('storeCommentRejected');
+            Route::post('/{csv_ad_id}/ads_rejected_comment',            'AdsController@storeCommentsRejected')->middleware(['jwt.verify','is.admin'])->name('ads_rejected_comment');
+            Route::post('/{status}/approved_rejected',                  'AdsController@setApprovedRejected')->middleware(['jwt.verify','is.admin'])->name('store');
+            Route::post('/{status}/approved_rejected_individual',       'AdsController@setApprovedRejectedIndividual')->middleware(['jwt.verify','is.admin'])->name('store');
+            Route::post('/{status}/approved_rejected_ads',              'AdsController@setApprovedRejected')->middleware(['jwt.verify','is.admin'])->name('store');
 
             //Route::get('/{ad}/edit',                                    'AdsController@edit')->name('edit');
             Route::post('/bulk-destroy',                                'AdsController@bulkDestroy')->name('bulk-destroy');
@@ -229,7 +229,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('ad-images')->middleware(['jwt.verify','is.admin'])->name('ad-images/')->group(static function() {
+        Route::prefix('ad-images')->name('ad-images/')->group(static function() {
             Route::get('/',                                             'AdImagesController@index')->name('index');
             //Route::get('/create',                                       'AdImagesController@create')->name('create');
             Route::post('/',                                            'AdImagesController@store')->name('store');
@@ -242,7 +242,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('ad-image-versions')->middleware(['jwt.verify','is.admin'])->name('ad-image-versions/')->group(static function() {
+        Route::prefix('ad-image-versions')->name('ad-image-versions/')->group(static function() {
             Route::get('/',                                             'AdImageVersionsController@index')->name('index');
             //Route::get('/create',                                       'AdImageVersionsController@create')->name('create');
             Route::post('/',                                            'AdImageVersionsController@store')->name('store');
@@ -255,7 +255,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('ad-makes')->middleware(['jwt.verify','is.admin'])->name('ad-makes/')->group(static function() {
+        Route::prefix('ad-makes')->name('ad-makes/')->group(static function() {
             Route::get('/',                                             'AdMakesController@index')->name('index');
             //Route::get('/create',                                       'AdMakesController@create')->name('create');
             Route::post('/',                                            'AdMakesController@store')->name('store');
@@ -268,7 +268,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('ad-models')->middleware(['jwt.verify','is.admin'])->name('ad-models/')->group(static function() {
+        Route::prefix('ad-models')->name('ad-models/')->group(static function() {
             Route::get('/',                                             'AdModelsController@index')->name('index');
             //Route::get('/create',                                       'AdModelsController@create')->name('create');
             Route::post('/',                                            'AdModelsController@store')->name('store');
@@ -296,7 +296,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('auto-ad-options')->middleware(['jwt.verify','is.admin'])->name('auto-ad-options/')->group(static function() {
+        Route::prefix('auto-ad-options')->name('auto-ad-options/')->group(static function() {
             Route::get('/',                                             'AutoAdOptionsController@index')->name('index');
             //Route::get('/create',                                       'AutoAdOptionsController@create')->name('create');
             Route::post('/',                                            'AutoAdOptionsController@store')->name('store');
@@ -309,7 +309,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('auto-options')->middleware(['jwt.verify','is.admin'])->name('auto-options/')->group(static function() {
+        Route::prefix('auto-options')->name('auto-options/')->group(static function() {
             Route::get('/',                                             'AutoOptionsController@index')->name('index');
             //Route::get('/create',                                       'AutoOptionsController@create')->name('create');
             Route::post('/',                                            'AutoOptionsController@store')->name('store');
@@ -322,7 +322,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('banners')->middleware(['jwt.verify','is.admin'])->name('banners/')->group(static function() {
+        Route::prefix('banners')->name('banners/')->group(static function() {
             Route::get('/',                                             'BannersController@index')->name('index');
            // Route::get('/create',                                       'BannersController@create')->name('create');
             Route::post('/',                                            'BannersController@store')->name('store');
@@ -335,7 +335,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('car-body-types')->middleware(['jwt.verify','is.admin'])->name('car-body-types/')->group(static function() {
+        Route::prefix('car-body-types')->name('car-body-types/')->group(static function() {
             Route::get('/',                                             'CarBodyTypesController@index')->name('index');
             //Route::get('/create',                                       'CarBodyTypesController@create')->name('create');
             Route::post('/',                                            'CarBodyTypesController@store')->name('store');
@@ -435,7 +435,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('dealers')->name('dealers/')->group(static function() {
+        Route::prefix('dealers')->middleware(['jwt.verify','is.admin'])->name('dealers/')->group(static function() {
             Route::get('/',                                             'DealersController@index')->name('index');
             Route::get('/{dealer}',                                      'DealersController@show')->name('show');
             //Route::get('/create',                                       'DealersController@create')->name('create');
@@ -447,7 +447,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('dealer-show-rooms')->name('dealer-show-rooms/')->group(static function() {
+        Route::prefix('dealer-show-rooms')->middleware(['jwt.verify','is.admin'])->name('dealer-show-rooms/')->group(static function() {
             Route::get('/',                                             'DealerShowRoomsController@index')->name('index');
 
             //Route::get('/create',                                       'DealerShowRoomsController@create')->name('create');
@@ -508,7 +508,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('makes')->name('makes/')->group(static function() {
+        Route::prefix('makes')->middleware(['jwt.verify','is.admin'])->name('makes/')->group(static function() {
             Route::get('/',                                             'MakesController@index')->name('index');
             Route::get('/{id}/sub_models',                              'MakesController@getSubmodels')->name('getSubmodels');
             //Route::get('/create',                                       'MakesController@create')->name('create');
@@ -521,7 +521,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('markets')->name('markets/')->group(static function() {
+        Route::prefix('markets')->middleware(['jwt.verify','is.admin'])->name('markets/')->group(static function() {
             Route::get('/',                                             'MarketsController@index')->name('index');
             //Route::get('/create',                                       'MarketsController@create')->name('create');
             Route::post('/',                                            'MarketsController@store')->name('store');
@@ -546,7 +546,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('models')->name('models/')->group(static function() {
+        Route::prefix('models')->middleware(['jwt.verify','is.admin'])->name('models/')->group(static function() {
             Route::get('/',                                             'ModelsController@index')->name('index');
             //Route::get('/create',                                       'ModelsController@create')->name('create');
             Route::post('/',                                            'ModelsController@store')->name('store');
@@ -663,7 +663,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('shop-ads')->name('shop-ads/')->group(static function() {
+        Route::prefix('shop-ads')->middleware(['jwt.verify','is.admin'])->name('shop-ads/')->group(static function() {
             Route::get('/',                                             'ShopAdsController@index')->name('index');
             Route::get('/promoted',                                     'ShopAdsController@shopAdsPromotedFrontPage')->name('shopAdsPromotedFrontPage');
             //Route::get('/create',                                       'ShopAdsController@create')->name('create');
@@ -725,7 +725,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('truck-ads')->name('truck-ads/')->group(static function() {
+        Route::prefix('truck-ads')->middleware(['jwt.verify','is.admin'])->name('truck-ads/')->group(static function() {
             Route::get('/',                                             'TruckAdsController@index')->name('index');
             Route::get('/promoted',                                     'TruckAdsController@truckAdsPromotedFrontPage')->name('truckAdsPromotedFrontPage');
             //Route::get('/create',                                       'TruckAdsController@create')->name('create');
