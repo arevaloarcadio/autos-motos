@@ -281,7 +281,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('auto-ads')->middleware(['jwt.verify','is.admin'])->name('auto-ads/')->group(static function() {
+        Route::prefix('auto-ads')->name('auto-ads/')->group(static function() {
             Route::get('/',                                             'AutoAdsController@index')->name('index');
             Route::get('/promoted',                                     'AutoAdsController@autoAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
             //Route::get('/create',                                       'AutoAdsController@create')->name('create');
@@ -508,7 +508,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('makes')->middleware(['jwt.verify','is.admin'])->name('makes/')->group(static function() {
+        Route::prefix('makes')->name('makes/')->group(static function() {
             Route::get('/',                                             'MakesController@index')->name('index');
             Route::get('/{id}/sub_models',                              'MakesController@getSubmodels')->name('getSubmodels');
             //Route::get('/create',                                       'MakesController@create')->name('create');
@@ -521,7 +521,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('markets')->middleware(['jwt.verify','is.admin'])->name('markets/')->group(static function() {
+        Route::prefix('markets')->name('markets/')->group(static function() {
             Route::get('/',                                             'MarketsController@index')->name('index');
             //Route::get('/create',                                       'MarketsController@create')->name('create');
             Route::post('/',                                            'MarketsController@store')->name('store');
@@ -663,7 +663,7 @@ Route::namespace('App\Http\Controllers\Admin')->group(static function() {
 
 /* Auto-generated admin routes */
 
-        Route::prefix('shop-ads')->middleware(['jwt.verify','is.admin'])->name('shop-ads/')->group(static function() {
+        Route::prefix('shop-ads')->name('shop-ads/')->group(static function() {
             Route::get('/',                                             'ShopAdsController@index')->name('index');
             Route::get('/promoted',                                     'ShopAdsController@shopAdsPromotedFrontPage')->name('shopAdsPromotedFrontPage');
             //Route::get('/create',                                       'ShopAdsController@create')->name('create');
