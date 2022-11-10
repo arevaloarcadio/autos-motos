@@ -45,7 +45,7 @@ class AutoAdsController extends Controller
         // dd(Redis::exists('auto_ads') && !$request->filters && $request->query->get('orderBy') == null?"true":"false");
         // dd(!$request->filters && $request->query->get('orderBy') == 'created_at' && $request->query->get('orderDirection') == 'desc');
         if(
-            Redis::exists('auto_ads_ult') && 
+            Redis::exists('auto_ads_ult') &&
             !$request->filters &&
             $request->query->get('orderBy') == 'created_at' &&
             $request->query->get('orderDirection') == 'desc'
@@ -55,22 +55,22 @@ class AutoAdsController extends Controller
         }
 
         if(
-            Redis::exists('auto_ads') && 
+            Redis::exists('auto_ads') &&
             !$request->filters &&
             $request->query->get('orderBy') == null
         ) {
             $data = json_decode(Redis::get('auto_ads'));
             return ['data' => $data,'redis'=>'true'];
         }
-        
+
         $promoted_simple_ads = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
         foreach (AutoAd::getRelationships() as $key => $value) {
             $promoted_simple_ads->with($key);
         }
-    
+
         $promoted = $promoted_simple_ads->get()->toArray();
 
-        
+        $request['per_page'] = isset($request->per_page) ? $request->per_page : 30;
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(AutoAd::class)->processRequestAndGet(
             // pass the request with params
@@ -83,10 +83,10 @@ class AutoAdsController extends Controller
             ['id', 'ad_id', 'vin', 'exterior_color', 'interior_color', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link', 'make_id', 'model_id', 'equipment_id', 'additional_vehicle_info', 'latitude', 'longitude', 'geocoding_status'],
 
             function ($query) use ($request) {
-                        
+
                 $columns = ['id', 'ad_id', 'price', 'price_contains_vat', 'vin', 'doors', 'mileage', 'exterior_color', 'interior_color', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link', 'ad_fuel_type_id', 'ad_body_type_id', 'ad_transmission_type_id', 'ad_drive_type_id', 'first_registration_month', 'first_registration_year', 'engine_displacement', 'power_hp', 'owners', 'inspection_valid_until_month', 'inspection_valid_until_year', 'make_id', 'model_id', 'generation_id', 'series_id', 'trim_id', 'equipment_id', 'additional_vehicle_info', 'seats', 'fuel_consumption', 'co2_emissions', 'latitude', 'longitude', 'geocoding_status'];
 
-                
+
                 if ($request->filters) {
                     foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
@@ -99,7 +99,7 @@ class AutoAdsController extends Controller
 
                 if(Redis::exists('auto_ads_relation')) {
                     $relation = json_decode(Redis::get('auto_ads_relation'));
-        
+
                 }else{
                     $relation = AutoAd::getRelationships();
                     Redis::set('auto_ads_relation',json_encode($relation ));
@@ -107,9 +107,9 @@ class AutoAdsController extends Controller
                 foreach ($relation as $key => $value) {
                    $query->with($key);
                 }
-                
+
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-                
+
                 $query->with([
                     'ad' => function($query)
                     {
@@ -118,10 +118,10 @@ class AutoAdsController extends Controller
                 ]);
             }
         );
-        $data = $data->toArray(); 
-            
+        $data = $data->toArray();
+
         array_push($promoted,...$data['data']);
-    
+
         $data['data'] = $promoted;
 
         if(
@@ -151,11 +151,11 @@ class AutoAdsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => $validator->errors()],422);
         }
-        
+
         $filter = $request->filter;
 
-        
-        $data = AutoAd::where(function ($query) use ($filter){ 
+
+        $data = AutoAd::where(function ($query) use ($filter){
                     $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'auto')")
                         ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                         ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
@@ -194,7 +194,7 @@ class AutoAdsController extends Controller
      */
     public function store(Request $request)
     {
-   
+
 
         $validator = Validator::make($request->all(), [
             'make_id' => 'required|string|exists:makes,id',
@@ -253,8 +253,8 @@ class AutoAdsController extends Controller
         }
 
         try {
-            
-            
+
+
             $slug = $this->slugAd($request['title']);
 
             $ad = new Ad;
@@ -295,7 +295,7 @@ class AutoAdsController extends Controller
             Redis::del('auto_ads_ult');
             Redis::del('search_advanced_auto');
             Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
-            
+
             $autoAd = new AutoAd;
             $autoAd->ad_id = $ad->id;
             $autoAd->price = $request['price'];
@@ -341,7 +341,7 @@ class AutoAdsController extends Controller
             $autoAd->longitude = $request['longitude'];
             $autoAd->geocoding_status = $request['geocoding_status'];
             $autoAd->save();
-            
+
             $ad_sub_characteristics = [];
 
             foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
@@ -355,11 +355,11 @@ class AutoAdsController extends Controller
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'auto_ad' =>  $autoAd, 
+                    'auto_ad' =>  $autoAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -404,7 +404,7 @@ class AutoAdsController extends Controller
      */
     public function update(Request $request,$id)
     {
-        
+
         $validator = Validator::make($request->all(), [
             'make_id' => 'required|string|exists:makes,id',
             'model_id' => 'required|string|exists:models,id',
@@ -458,9 +458,9 @@ class AutoAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
-        
+
         try {
-            
+
             $ad = Ad::where('id',$id)->first();
             $ad->title =  $request['title'];
             $ad->description =  $request['description'];
@@ -470,7 +470,7 @@ class AutoAdsController extends Controller
             $thumbnail = null;
 
             $i = 0;
-            
+
             if ($request->image_ids) {
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
@@ -539,9 +539,9 @@ class AutoAdsController extends Controller
             $autoAd->longitude = $request['longitude'];
             $autoAd->geocoding_status = $request['geocoding_status'];
             $autoAd->save();
-            
+
             $ad_sub_characteristics = [];
-            
+
             AdSubCharacteristic::where('ad_id',$id)->delete();
 
             foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
@@ -555,11 +555,11 @@ class AutoAdsController extends Controller
             //$user = Auth::user();
 
             //$user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'auto_ad' =>  $autoAd, 
+                    'auto_ad' =>  $autoAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -615,37 +615,37 @@ class AutoAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 
