@@ -431,13 +431,18 @@ class ImportPortalClubAdsCommand extends Command
                            ->where('slug', '=', Str::slug($sellerInfo->company_name))
                            ->first();
 
+        $count = Dealer::whereRaw('code is not null')->count();
+        
+        $code =  $count + 1;
+
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $sellerInfo->id;
                 $dealer->source      = AdSourceEnum::PORTAL_CLUB_IMPORT;
 
             }
-            
+           
+            $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
             $dealer->logo_path = $sellerInfo->logo != '' ? $sellerInfo->logo : null;
 			$dealer->save();
             
@@ -461,6 +466,7 @@ class ImportPortalClubAdsCommand extends Command
             ),
             'source'        => AdSourceEnum::PORTAL_CLUB_IMPORT,
             'external_id'   => (string) $sellerInfo->id,
+            'code'          => str_pad($code, 5, "0",STR_PAD_LEFT)
         ];
 
         if ((string) $sellerInfo->logo !== '' && (string) $sellerInfo->id !== '543') {

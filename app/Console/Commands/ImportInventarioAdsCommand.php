@@ -399,7 +399,11 @@ class ImportInventarioAdsCommand extends Command
                            ->where('slug', '=', Str::slug((string) $seller->cliente_nombre))
                            ->first();
        
-               
+        
+        $count = Dealer::whereRaw('code is not null')->count();
+        
+        $code =  $count + 1;
+
         if ($dealer instanceof Dealer) {
             if (null === $dealer->external_id || null === $dealer->source) {
                 $dealer->external_id = (string) $seller->cliente_id;
@@ -408,6 +412,9 @@ class ImportInventarioAdsCommand extends Command
                 $dealer->save();
             }
             
+            $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
+            $dealer->save();
+
             return $dealer;
         }
 
@@ -423,6 +430,7 @@ class ImportInventarioAdsCommand extends Command
             'phone_number'  => $this->formatPhoneNumber((string) $seller->cliente_telefono_primero),
             'source'        => AdSourceEnum::INVENTARIO_IMPORT,
             'external_id'   => (string) $seller->cliente_id,
+            'code'          => str_pad($code, 5, "0",STR_PAD_LEFT)
         ];
 
         return $this->dealerService->create($dealerInput);

@@ -302,6 +302,11 @@ class ImportWebmobile24AdsCommand extends Command
             $this->info(sprintf('Successfully registered new dealer %s',$externalDealer));
         }
 
+        $count = Dealer::whereRaw('code is not null')->count();
+        $code =  $count + 1;
+        $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
+        $dealer->save();
+        
         return $dealer;
 
         //throw new Exception(sprintf('invalid_dea: %s', $externalMake));
