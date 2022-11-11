@@ -23,7 +23,7 @@ class Dealer extends Model
         'description',
         'external_id',
         'source',
-    
+        'code'
     ];
     
     
