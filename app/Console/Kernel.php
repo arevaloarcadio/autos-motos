@@ -16,8 +16,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('import:ads')->dailyAt('1:00');
-        $schedule->command('import:ads:webmobile')->dailyAt('3:00');
-        $schedule->command('import:ads:inventario')->dailyAt('6:00');
+        //$schedule->command('import:ads:webmobile')->dailyAt('3:00');
+        //$schedule->command('import:ads:inventario')->dailyAt('6:00');
     }
 
     /**

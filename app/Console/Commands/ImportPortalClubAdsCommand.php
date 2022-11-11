@@ -283,6 +283,8 @@ class ImportPortalClubAdsCommand extends Command
             );
         }
         $this->info(sprintf('Command ended at %s', (new DateTime())->format('Y-m-d H:i:s')));
+        
+        $this->call('import:ads:webmobile');
 
         return Command::SUCCESS;
     }
@@ -441,8 +443,11 @@ class ImportPortalClubAdsCommand extends Command
                 $dealer->source      = AdSourceEnum::PORTAL_CLUB_IMPORT;
 
             }
-           
-            $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
+            
+            if (is_null($dealer->code)) {
+                $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
+            }
+
             $dealer->logo_path = $sellerInfo->logo != '' ? $sellerInfo->logo : null;
 			$dealer->save();
             

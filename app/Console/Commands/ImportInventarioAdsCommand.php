@@ -412,8 +412,10 @@ class ImportInventarioAdsCommand extends Command
                 $dealer->save();
             }
             
-            $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
-            $dealer->save();
+            if (is_null($dealer->code)) {
+                $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
+                $dealer->save();
+            }
 
             return $dealer;
         }
