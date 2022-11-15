@@ -55,7 +55,7 @@ Route::group(['middleware' => ['jwt.verify']], function () {
         Route::prefix('auto-ads')->name('auto-ads/')->group(static function () {
             Route::get('/', 'AutoAdsController@index')->name('index');
             Route::post('/', 'AutoAdsController@store')->name('store');
-            Route::post('/{id}', 'AutoAdsController@update')->name('store');
+            Route::post('/{id}', 'AutoAdsController@update')->name('update');
         });
 
         Route::prefix('moto-ads')->name('moto-ads/')->group(static function () {
