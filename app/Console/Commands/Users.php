@@ -43,12 +43,12 @@ class Users extends Command
 
         foreach ($dealers as $dealer) {
 
-            $code = Dealer::whereRaw('code is not null')->count();
+            $code = Dealer::whereRaw('code is not null')->count()+1;
             
             $this->info($dealer->company_name."->".$code);
             
             $dealer->code = str_pad($code, 5, "0",STR_PAD_LEFT);
-            
+
             $dealer->save();
         }
     }
