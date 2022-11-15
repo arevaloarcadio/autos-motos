@@ -271,7 +271,7 @@ class UsersController extends Controller
             $dealer->phone_number = $request['dealer_phone_number'];
             $dealer->description = $request['dealer_description'];
             $code = Dealer::whereRaw('code is not null')->count()+1;
-            $dealer->code = $code;
+            $dealer->code =  str_pad($code, 5, "0",STR_PAD_LEFT);
             $dealer->description = $request['dealer_description'];
             $dealer->save();
 
