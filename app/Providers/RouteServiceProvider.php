@@ -45,7 +45,7 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::prefix('api/admin')
                 ->middleware(['api','jwt.verify','is.admin'])
-                ->namespace('App\Http\Controllers')
+                ->namespace('App\Http\Controllers\Admin')
                 ->group(base_path('routes/api/admin.php'));
 
             Route::middleware('web')
