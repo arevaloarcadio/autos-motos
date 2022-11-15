@@ -270,6 +270,9 @@ class UsersController extends Controller
             $dealer->email_address = $request['dealer_email_address'];
             $dealer->phone_number = $request['dealer_phone_number'];
             $dealer->description = $request['dealer_description'];
+            $code = Dealer::whereRaw('code is not null')->count()+1;
+            $dealer->code = $code;
+            $dealer->description = $request['dealer_description'];
             $dealer->save();
 
             $dealerShowRoom = new DealerShowRoom;
