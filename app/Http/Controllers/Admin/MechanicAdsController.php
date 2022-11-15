@@ -32,7 +32,7 @@ use Illuminate\Support\Arr;
 class MechanicAdsController extends Controller
 {
     use ApiController;
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -44,15 +44,15 @@ class MechanicAdsController extends Controller
         // $querys =$request->query->get();
 
         if(
-            Redis::exists('mechanic_ads') && 
-            !$request->filters && 
+            Redis::exists('mechanic_ads') &&
+            !$request->filters &&
             $request->query->get('orderBy') == 'created_at'  &&
             $request->query->get('orderDirection') == 'desc'
         ) {
             $data = json_decode(Redis::get('mechanic_ads'));
             return ['data' => $data];
         }
-            
+        $request['per_page'] = isset($request->per_page) ? $request->per_page : 30;
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MechanicAd::class)->processRequestAndGet(
             // pass the request with params
@@ -65,9 +65,9 @@ class MechanicAdsController extends Controller
             ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address', 'geocoding_status'],
 
             function ($query) use ($request) {
-                        
+
                 $columns =   ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'email_address', 'geocoding_status'];
-                
+
                 foreach ($columns as $column) {
                     if ($request->filters) {
                         foreach ($request->filters as $key => $filter) {
@@ -75,16 +75,16 @@ class MechanicAdsController extends Controller
                                 if ($key == 'city') {
                                     $query->where($key,'LIKE', '%'.$filter.'%');
                                 }else{
-                                   $query->where($key,$filter);  
+                                   $query->where($key,$filter);
                                 }
-                              
+
                             }
                         }
                     }
                 }
-                
+
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-                
+
 
                 if(isset($request->filters['title'])){
                     $ad_ids = Ad::select('id')
@@ -92,7 +92,7 @@ class MechanicAdsController extends Controller
                         ->where('type','mechanic')
                         ->get()
                         ->toArray();
-                    
+
                     $ids = [];
 
                     foreach ($ad_ids as $key => $ad_id) {
@@ -112,10 +112,10 @@ class MechanicAdsController extends Controller
                 }]);
             }
         );
-        
-       
+
+
         if(
-            !$request->filters && 
+            !$request->filters &&
             $request->query->get('orderBy') == 'created_at'  &&
             $request->query->get('orderDirection') == 'desc'
         ){
@@ -134,9 +134,9 @@ class MechanicAdsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => $validator->errors()],422);
         }
-        
+
         $filter = $request->filter;
-       
+
         $data = MechanicAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'mechanic')")->with([
                     'ad'=> function($query)
                     {
@@ -189,7 +189,7 @@ class MechanicAdsController extends Controller
                 'images_processing_status' => 'SUCCESSFUL',
                 'images_processing_status_text' => null,
             ]);
-            
+
             $file = $request->file('images');
             $thumbnail = $this->uploadFile($file,$ad->id,0,true);
             $ad->thumbnail = $thumbnail;
@@ -227,7 +227,7 @@ class MechanicAdsController extends Controller
             return $this->sendResponse($resource);
         }
     }
-        
+
 
     /**
      * Display the specified resource.
@@ -272,13 +272,13 @@ class MechanicAdsController extends Controller
         try {
 
             $sanitized = $request->getSanitized();
-            
+
             $ad =  Ad::where('id',$id)->first();
             $ad->title =  $sanitized['title'];
             $ad->description =  $sanitized['description'];
             $ad->status =  0;
             $ad->save();
-            
+
             $thumbnail = '';
             $i = 0;
 
@@ -288,7 +288,7 @@ class MechanicAdsController extends Controller
                 $ad->thumbnail = $thumbnail;
                 $ad->save();
             }
-        
+
             $mechanicAd = MechanicAd::where('ad_id',$id)->update([
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
@@ -302,7 +302,7 @@ class MechanicAdsController extends Controller
                 'email_address' => $sanitized['email_address'],
                 'geocoding_status' => $sanitized['geocoding_status'] ?? null
             ]);
-            
+
             $mechanicAd = MechanicAd::where('ad_id',$id)->first();
 
             Redis::del('mechanic_ads');
@@ -359,24 +359,24 @@ class MechanicAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
@@ -393,15 +393,15 @@ class MechanicAdsController extends Controller
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 

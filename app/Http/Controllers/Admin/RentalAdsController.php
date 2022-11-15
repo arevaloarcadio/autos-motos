@@ -42,15 +42,15 @@ class RentalAdsController extends Controller
     {
 
         if(
-            Redis::exists('rental_ads') && 
-            !$request->filters && 
+            Redis::exists('rental_ads') &&
+            !$request->filters &&
             $request->query->get('orderBy') == 'created_at'  &&
             $request->query->get('orderDirection') == 'desc'
         ) {
             $data = json_decode(Redis::get('rental_ads'));
             return ['data' => $data];
         }
-      
+        $request['per_page'] = isset($request->per_page) ? $request->per_page : 30;
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(RentalAd::class)->processRequestAndGet(
             // pass the request with params
@@ -63,9 +63,9 @@ class RentalAdsController extends Controller
             ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'website_url', 'dealer_id','dealer_show_room_id','email_address'],
 
             function ($query) use ($request) {
-                        
+
                 $columns =  ['id', 'ad_id', 'address', 'latitude', 'longitude', 'zip_code', 'city', 'country', 'mobile_number', 'whatsapp_number', 'dealer_id','dealer_show_room_id','website_url', 'email_address'];
-                
+
                foreach ($columns as $column) {
                     if ($request->filters) {
                         foreach ($request->filters as $key => $filter) {
@@ -73,21 +73,21 @@ class RentalAdsController extends Controller
                                 if ($key == 'city') {
                                     $query->where($key,'LIKE', '%'.$filter.'%');
                                 }else{
-                                   $query->where($key,$filter);  
+                                   $query->where($key,$filter);
                                 }
-                              
+
                             }
                         }
                     }
                 }
-                    
+
                 if(isset($request->filters['title'])){
                     $ad_ids = Ad::select('id')
                         ->where('title','LIKE','%'.$request->filters['title'].'%' )
                         ->where('type','rental')
                         ->get()
                         ->toArray();
-                    
+
                     $ids = [];
 
                     foreach ($ad_ids as $key => $ad_id) {
@@ -96,18 +96,18 @@ class RentalAdsController extends Controller
 
                     $query->whereIn('ad_id',$ids);
                 }
-                
+
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-            
+
                 $query->with(['ad' => function ($query)
                     {
                         $query->with(['images','user']);
                     }
                 ]);
-                
+
             }
         );
-        
+
         return ['data' => $data];
     }
 
@@ -120,7 +120,7 @@ class RentalAdsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => $validator->errors()],422);
         }
-        
+
         $filter = $request->filter;
 
         $data =  RentalAd::whereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'rental')")->with([
@@ -174,7 +174,7 @@ class RentalAdsController extends Controller
                 'images_processing_status' => 'SUCCESSFUL',
                 'images_processing_status_text' => null,
             ]);
-            
+
             $thumbnail = '';
             $i = 0;
 
@@ -188,7 +188,7 @@ class RentalAdsController extends Controller
             Redis::del('by_user_'.Auth::user()->id.'_filter_rental');
 
             $rental_ad = RentalAd::create([
-                'ad_id'  => $ad->id, 
+                'ad_id'  => $ad->id,
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
                 'longitude' => $sanitized['longitude'] ?? null,
@@ -207,7 +207,7 @@ class RentalAdsController extends Controller
             Ad::where('id',$ad->id)->update(['thumbnail' => $thumbnail]);
 
             $images = AdImage::where('ad_id',$ad->id)->get();
-            
+
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
@@ -265,24 +265,24 @@ class RentalAdsController extends Controller
 
             $sanitized = $request->getSanitized();
 
-           
+
             $ad =  Ad::where('id',$id)->first();
             $ad->title =  $request['title'];
             $ad->description =  $request['description'];
             $ad->status =  0;
             $ad->save();
-            
+
             $thumbnail = null;
 
             $i = 0;
-            
+
             if ($request->file('images')) {
                 $file = $request->file('images');
                 $thumbnail = $this->uploadFile($file,$ad->id,0,true);
                 $ad->thumbnail = $thumbnail;
                 $ad->save();
             }
-            
+
             $rental_ad = RentalAd::where('ad_id',$id)->update([
                 'address' => $sanitized['address'],
                 'latitude' => $sanitized['latitude'] ?? null,
@@ -296,7 +296,7 @@ class RentalAdsController extends Controller
                 'email_address' => $sanitized['email_address'],
             ]);
 
-            
+
             //$user = Auth::user();
 
             $rental_ad = RentalAd::where('ad_id',$id)->first();
@@ -356,37 +356,37 @@ class RentalAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 

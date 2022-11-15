@@ -52,12 +52,12 @@ class ShopAdsController extends Controller
         }
 
         $promoted = $promoted_simple_ads->get()->toArray();*/
-        
+
         if(Redis::exists('shop_ads') && !$request->filters) {
             $data = json_decode(Redis::get('shop_ads'));
             return ['data' => $data];
         }
-
+        $request['per_page'] = isset($request->per_page) ? $request->per_page : 30;
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(ShopAd::class)->processRequestAndGet(
             // pass the request with params
@@ -70,10 +70,10 @@ class ShopAdsController extends Controller
             ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','custom_model'],
 
             function ($query) use ($request) {
-                        
+
                 $columns =  ['id', 'ad_id', 'category', 'make_id', 'model_id', 'manufacturer', 'code', 'condition', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'latitude', 'longitude', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','custom_model'];
-                
-                
+
+
                     if ($request->filters) {
                         foreach ($columns as $column) {
                             foreach ($request->filters as $key => $filter) {
@@ -83,7 +83,7 @@ class ShopAdsController extends Controller
                             }
                         }
                     }
-                
+
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
                 foreach ( ShopAd::getRelationships() as $key => $value) {
@@ -96,11 +96,11 @@ class ShopAdsController extends Controller
                 ]);
             }
         );
-        
-        /*$data = $data->toArray(); 
-            
+
+        /*$data = $data->toArray();
+
         array_push($promoted,...$data['data']);
-    
+
         $data['data'] = $promoted;*/
         if(!$request->filters){
             Redis::set('shop_ads',json_encode($data));
@@ -120,7 +120,7 @@ class ShopAdsController extends Controller
 
         $filter = $request->filter;
 
-        $data = ShopAd::where(function ($query) use ($filter){ 
+        $data = ShopAd::where(function ($query) use ($filter){
                         $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'shop')")
                             ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                             ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
@@ -155,11 +155,11 @@ class ShopAdsController extends Controller
         $data = Ad::where('user_id',Auth::user()->id)
                     ->orderBy('created_at','DESC')
                     ->limit(20);
-      
+
         $data->with(
             ['ad','make','dealer','dealerShowRoom']
         );
-      
+
         return ['data' => $data->get()];
     }
 
@@ -215,7 +215,7 @@ class ShopAdsController extends Controller
         }
 
         try {
-            
+
             $slug = $this->slugAd($request['title']);
 
             $ad = new Ad;
@@ -281,7 +281,7 @@ class ShopAdsController extends Controller
             $shopAd->whatsapp_number = $request['whatsapp_number'];
             $shopAd->youtube_link = $request['youtube_link'];
             $shopAd->save();
-            
+
 
             $user = Auth::user();
 
@@ -307,13 +307,13 @@ class ShopAdsController extends Controller
         $resource = ApiHelper::resource();
 
         try {
-            
+
             $shop_ads = new ShopAd;
 
             if ($request->category) {
                 $shop_ads = $shop_ads->whereIn('category',$request->category);
             }
-            
+
             if ($request->make_id) {
                 $shop_ads = $shop_ads->where('make_id',$request->make_id);
             }
@@ -341,7 +341,7 @@ class ShopAdsController extends Controller
             foreach (ShopAd::getRelationships() as $key => $value) {
                    $shop_ads->with($key);
             }
-            
+
             return response()->json(['data' => $shop_ads->paginate(25)], 200);
 
         } catch (Exception $e) {
@@ -431,7 +431,7 @@ class ShopAdsController extends Controller
         }
 
         try {
-            
+
 
             $ad = Ad::where('id',$id)->first();
             $ad->title =  $request['title'];
@@ -443,7 +443,7 @@ class ShopAdsController extends Controller
 
             $i = 0;
 
-            
+
             if ($request->image_ids) {
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
@@ -491,7 +491,7 @@ class ShopAdsController extends Controller
             $shopAd->whatsapp_number = $request['whatsapp_number'];
             $shopAd->youtube_link = $request['youtube_link'];
             $shopAd->save();
-            
+
 
             //$user = Auth::user();
 
@@ -555,37 +555,37 @@ class ShopAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 
