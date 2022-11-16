@@ -264,20 +264,6 @@ Route::namespace ('App\Http\Controllers\Admin')->group(function () {
 
 /* Auto-generated admin routes */
 
-    Route::prefix('auto-ads')->name('auto-ads/')->group(static function () {
-        Route::get('/', 'AutoAdsController@index')->name('index');
-        Route::get('/promoted', 'AutoAdsController@autoAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
-        //Route::get('/create',                                       'AutoAdsController@create')->name('create');
-        Route::post('/search/like', 'AutoAdsController@searchLike');
-
-        //Route::get('/{autoAd}/edit',                                'AutoAdsController@edit')->name('edit');
-        Route::post('/bulk-destroy', 'AutoAdsController@bulkDestroy')->name('bulk-destroy');
-
-        Route::delete('/{autoAd}', 'AutoAdsController@destroy')->name('destroy');
-    });
-
-/* Auto-generated admin routes */
-
     Route::prefix('auto-ad-options')->name('auto-ad-options/')->group(static function () {
         Route::get('/', 'AutoAdOptionsController@index')->name('index');
         //Route::get('/create',                                       'AutoAdOptionsController@create')->name('create');
@@ -484,25 +470,12 @@ Route::namespace ('App\Http\Controllers\Admin')->group(function () {
 
     Route::prefix('makes')->name('makes/')->group(static function () {
         Route::get('/', 'MakesController@index')->name('index');
-        Route::get('/{id}/sub_models', 'MakesController@getSubmodels')->name('getSubmodels');
-        //Route::get('/create',                                       'MakesController@create')->name('create');
-        Route::post('/', 'MakesController@store')->name('store');
-        //Route::get('/{make}/edit',                                  'MakesController@edit')->name('edit');
-        Route::post('/bulk-destroy', 'MakesController@bulkDestroy')->name('bulk-destroy');
-        Route::post('/{make}', 'MakesController@update')->name('update');
-        Route::delete('/{make}', 'MakesController@destroy')->name('destroy');
     });
 
 /* Auto-generated admin routes */
 
     Route::prefix('markets')->name('markets/')->group(static function () {
         Route::get('/', 'MarketsController@index')->name('index');
-        //Route::get('/create',                                       'MarketsController@create')->name('create');
-        Route::post('/', 'MarketsController@store')->name('store');
-        //Route::get('/{market}/edit',                                'MarketsController@edit')->name('edit');
-        Route::post('/bulk-destroy', 'MarketsController@bulkDestroy')->name('bulk-destroy');
-        Route::post('/{market}', 'MarketsController@update')->name('update');
-        Route::delete('/{market}', 'MarketsController@destroy')->name('destroy');
     });
 
 /* Auto-generated admin routes */
@@ -522,12 +495,6 @@ Route::namespace ('App\Http\Controllers\Admin')->group(function () {
 
     Route::prefix('models')->name('models/')->group(static function () {
         Route::get('/', 'ModelsController@index')->name('index');
-        //Route::get('/create',                                       'ModelsController@create')->name('create');
-        Route::post('/', 'ModelsController@store')->name('store');
-        //Route::get('/{model}/edit',                                 'ModelsController@edit')->name('edit');
-        Route::post('/bulk-destroy', 'ModelsController@bulkDestroy')->name('bulk-destroy');
-        Route::post('/{model}', 'ModelsController@update')->name('update');
-        Route::delete('/{model}', 'ModelsController@destroy')->name('destroy');
     });
 
     Route::prefix('moto-ad-options')->name('moto-ad-options/')->group(static function () {

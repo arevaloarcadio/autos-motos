@@ -66,6 +66,8 @@ Route::prefix('users')->name('users/')->group(function () {
 
 Route::prefix('auto-ads')->name('auto-ads/')->group(function () {
     Route::get('/', 'AutoAdsController@index')->name('index');
+    Route::post('/', 'AutoAdsController@store')->name('store');
+    Route::post('/{id}', 'AutoAdsController@update')->name('update');
     Route::get('/promoted', 'AutoAdsController@autoAdsPromotedFrontPage')->name('autoAdsPromotedFrontPage');
     Route::post('/search/like', 'AutoAdsController@searchLike');
     Route::post('/bulk-destroy', 'AutoAdsController@bulkDestroy')->name('bulk-destroy');
