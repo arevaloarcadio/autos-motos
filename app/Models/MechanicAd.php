@@ -20,18 +20,20 @@ class MechanicAd extends Model
         'country',
         'mobile_number',
         'whatsapp_number',
+        'country_code_mobile_number',
+        'country_code_whatsapp_number',
         'website_url',
         'email_address',
         'geocoding_status',
     ];
-    
-    
+
+
     protected $dates = [
         'created_at',
         'updated_at',
-    
+
     ];
-    
+
    // protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */
@@ -59,7 +61,7 @@ class MechanicAd extends Model
     {
         return $this->belongsTo(DealerShowRoom::class);
     }
-    
+
     /**
      * @return string
      */

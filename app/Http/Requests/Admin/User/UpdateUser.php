@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class UpdateUser extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,6 +33,8 @@ class UpdateUser extends FormRequest
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'image' => ['nullable'],
             'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($this->user->getKey(), $this->user->getKeyName()), 'string'],
             'password' => ['nullable', 'confirmed', 'min:7', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/', 'string'],
@@ -41,7 +43,7 @@ class UpdateUser extends FormRequest
             'address' => ['sometimes', 'string'],
             'country' => ['sometimes', 'string'],
             'city' => ['sometimes', 'string'],
-            
+
         ];
     }
 

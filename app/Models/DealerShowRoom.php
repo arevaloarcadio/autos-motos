@@ -20,18 +20,20 @@ class DealerShowRoom extends Model
         'mobile_number',
         'landline_number',
         'whatsapp_number',
+        'country_code_mobile_number',
+        'country_code_whatsapp_number',
         'dealer_id',
         'market_id',
-    
+
     ];
-    
-    
+
+
     protected $dates = [
         'created_at',
         'updated_at',
-    
+
     ];
-    
+
     protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */

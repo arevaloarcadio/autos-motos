@@ -49,7 +49,7 @@ class MobileHomeAdsController extends Controller
         }
 
         $promoted = $promoted_simple_ads->get()->toArray();*/
-        
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(MobileHomeAd::class)->processRequestAndGet(
             // pass the request with params
@@ -60,12 +60,12 @@ class MobileHomeAdsController extends Controller
 
             // set columns to searchIn
             ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'beds', 'emission_class', 'condition', 'interior_color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','exterior_color'],
-            
+
             function ($query) use ($request) {
-                        
+
                 $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'length_cm', 'width_cm', 'height_cm', 'max_weight_allowed_kg', 'payload_kg', 'engine_displacement', 'mileage', 'power_kw', 'axes', 'seats', 'sleeping_places', 'beds', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'interior_color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','doors','additional_vehicle_info','generation','drive_type_id','exterior_color'];
-                
-                
+
+
                     if ($request->filters) {
                         foreach ($columns as $column) {
                             foreach ($request->filters as $key => $filter) {
@@ -77,7 +77,7 @@ class MobileHomeAdsController extends Controller
                     }
 
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-                
+
                 foreach (MobileHomeAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
@@ -91,12 +91,12 @@ class MobileHomeAdsController extends Controller
             }
         );
 
-        //$data = $data->toArray(); 
-            
+        //$data = $data->toArray();
+
         //array_push($promoted,...$data['data']);
-    
+
         //$data['data'] = $promoted;
-        
+
         return ['data' => $data];
     }
 
@@ -111,8 +111,8 @@ class MobileHomeAdsController extends Controller
         }
 
         $filter = $request->filter;
-        
-        $data = MobileHomeAd::where(function ($query) use ($filter){ 
+
+        $data = MobileHomeAd::where(function ($query) use ($filter){
                         $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'mobile-home')")
                             ->orWhere('custom_make','LIKE','%'.$filter.'%')
                             ->orWhere('custom_model','LIKE','%'.$filter.'%')
@@ -130,8 +130,8 @@ class MobileHomeAdsController extends Controller
             'data' => $data
         ]);
     }
-    
-    
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -199,6 +199,8 @@ class MobileHomeAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'doors' => ['nullable', 'integer'],
             'additional_vehicle_info' => ['nullable', 'string'],
@@ -222,9 +224,9 @@ class MobileHomeAdsController extends Controller
             ApiHelper::setError($resource, 0, 422,['files' => 'Debe enviar minimo 3 imagenes para publicar']);
             return $this->sendResponse($resource);
         }
-        
+
         try {
-            
+
             $slug = $this->slugAd($request['title']);
             Redis::del('by_user_'.Auth::user()->id.'_filter_auto');
 
@@ -315,8 +317,10 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $mobileHomeAd->drive_type_id = $request['drive_type_id'];
             $mobileHomeAd->generation = $request['generation_id'];
+            $mobileHomeAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $mobileHomeAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $mobileHomeAd->save();
-            
+
             $ad_sub_characteristics = [];
 
             foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
@@ -331,11 +335,11 @@ class MobileHomeAdsController extends Controller
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'mobile_home_ad' =>  $mobileHomeAd, 
+                    'mobile_home_ad' =>  $mobileHomeAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -433,6 +437,8 @@ class MobileHomeAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
@@ -454,18 +460,18 @@ class MobileHomeAdsController extends Controller
         }
 
         try {
-            
+
             $ad =  Ad::where('id',$id)->first();
             $ad->title =  $request['title'];
             $ad->description =  $request['description'];
             $ad->status =  0;
             $ad->save();
-            
+
             $thumbnail = null;
 
             $i = 0;
 
-            
+
             if ($request->image_ids) {
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
@@ -538,8 +544,10 @@ class MobileHomeAdsController extends Controller
             $mobileHomeAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $mobileHomeAd->drive_type_id = $request['drive_type_id'];
             $mobileHomeAd->generation = $request['generation_id'];
+            $mobileHomeAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $mobileHomeAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $mobileHomeAd->save();
-            
+
             $ad_sub_characteristics = [];
 
             AdSubCharacteristic::where('ad_id',$id)->delete();
@@ -556,11 +564,11 @@ class MobileHomeAdsController extends Controller
             //$user = Auth::user();
 
             //$user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'mobile_home_ad' =>  $mobileHomeAd, 
+                    'mobile_home_ad' =>  $mobileHomeAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -614,37 +622,37 @@ class MobileHomeAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 

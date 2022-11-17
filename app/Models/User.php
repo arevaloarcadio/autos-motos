@@ -12,13 +12,15 @@ class User extends Authenticatable  implements JWTSubject
     use \App\Traits\TraitUuid;
     use \App\Traits\Relationships;
     use Notifiable;
-    
+
     protected $fillable = [
         'first_name',
         'last_name',
         'mobile_number',
         'landline_number',
         'whatsapp_number',
+        'country_code_mobile_number',
+        'country_code_whatsapp_number',
         'email',
         'email_verified_at',
         'password',
@@ -31,20 +33,20 @@ class User extends Authenticatable  implements JWTSubject
         'country',
         'city'
     ];
-    
+
     protected $hidden = [
         'password',
         'remember_token',
-    
+
     ];
-    
+
     protected $dates = [
         'email_verified_at',
         'created_at',
         'updated_at',
-    
+
     ];
-    
+
     protected $appends = ['review_ratings'];
 
     //protected $appends = ['resource_url'];

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class UpdateRentalAd extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -38,12 +38,14 @@ class UpdateRentalAd extends FormRequest
             'country' => ['sometimes', 'string'],
             'mobile_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
             'images' =>  ['nullable', 'file'],
-            
+
         ];
     }
 
