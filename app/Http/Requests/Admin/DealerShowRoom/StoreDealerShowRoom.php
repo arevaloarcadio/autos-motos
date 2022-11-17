@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class StoreDealerShowRoom extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -39,9 +39,11 @@ class StoreDealerShowRoom extends FormRequest
             'mobile_number' => ['required', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'dealer_id' => ['required', 'string'],
             'market_id' => ['nullable', 'string'],
-            
+
         ];
     }
 

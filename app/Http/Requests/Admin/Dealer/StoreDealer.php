@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class StoreDealer extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -38,13 +38,14 @@ class StoreDealer extends FormRequest
             'logo_path' => ['nullable', 'file'],
             'email_address' => ['required', 'string'],
             'phone_number' => ['required', 'string'],
+            'country_code_phone_number' => ['nullable', 'string'],
             //'status' => ['required', 'integer'],
             'description' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
-            
+
             //'external_id' => ['nullable', 'integer'],
             //'source' => ['nullable', 'string'],
-            
+
         ];
     }
 

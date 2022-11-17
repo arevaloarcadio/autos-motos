@@ -19,22 +19,23 @@ class Dealer extends Model
         'logo_path',
         'email_address',
         'phone_number',
+        'country_code_phone_number',
         'status',
         'description',
         'external_id',
         'source',
         'code'
     ];
-    
-    
+
+
     protected $dates = [
         'created_at',
         'updated_at',
-    
+
     ];
-    
+
     protected $appends = ['review_ratings'];
-    
+
     public function getReviewRatingsAttribute()
     {
         $score = Review::selectRaw('FORMAT(AVG(score),2) as ratings')
@@ -54,7 +55,7 @@ class Dealer extends Model
          if ($score['ratings'] == null) {
             return 0;
         }
-    
+
         return $score['ratings'];
     }
 

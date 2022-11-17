@@ -43,11 +43,11 @@ class UsersController extends Controller
     public function index(IndexUser $request)
     {
         if ($request->all) {
-            
+
             $query = User::query();
 
             $columns = ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','code_postal','dealer_id','address','country','city'];
-                
+
             if ($request->filters) {
                 foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
@@ -64,7 +64,7 @@ class UsersController extends Controller
 
             return ['data' => $query->get()];
         }
-        
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(User::class)->processRequestAndGet(
             // pass the request with params
@@ -77,9 +77,9 @@ class UsersController extends Controller
             ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','code_postal','address','country','city','created_at'],
 
             function ($query) use ($request) {
-                        
+
                 $columns =  ['id', 'first_name', 'last_name', 'mobile_number', 'landline_number', 'whatsapp_number', 'email', 'email_verified_at', 'type' , 'image' ,'status','dealer_id','code_postal','address','country','city','created_at'];
-                
+
                 if ($request->filters) {
                     foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
@@ -96,12 +96,12 @@ class UsersController extends Controller
 
                 if ($request->dateStart && !$request->dateEnd) {
                      $query->where('created_at','LIKE','%'.$request->dateStart.'%');
-                }     
+                }
 
                 if ($request->filter_like) {
-                    
+
                     $filter =  $request->filter_like;
-                    
+
                     $query->where(function ($query1) use ($filter){
                         $query1->where('first_name','LIKE','%'.$filter.'%')
                             ->orWhere('last_name','LIKE','%'.$filter.'%')
@@ -115,7 +115,7 @@ class UsersController extends Controller
                 }
             }
         );
-        
+
         return ['data' => $data];
     }
 
@@ -154,7 +154,7 @@ class UsersController extends Controller
             $user = User::create($sanitized);
 
             $user->notify(new NewUser($user));
-            
+
             return response()->json(['data' => $user], 200);
 
         } catch (Exception $e) {
@@ -166,7 +166,7 @@ class UsersController extends Controller
     public function validator_email(Request $request)
     {
         $resource = ApiHelper::resource();
-        
+
         $validator = \Validator::make($request->all(), [
             'user_email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
         ]);
@@ -182,7 +182,7 @@ class UsersController extends Controller
     public function validator_company_name(Request $request)
     {
         $resource = ApiHelper::resource();
-        
+
         $validator = \Validator::make($request->all(), [
             'dealer_company_name' => ['required', Rule::unique('dealers', 'company_name'), 'string']
         ]);
@@ -194,11 +194,11 @@ class UsersController extends Controller
 
         return response()->json(['data' => 'OK'], 200);
     }
-    
+
     public function validator_dealer_show_room_name(Request $request)
     {
         $resource = ApiHelper::resource();
-        
+
         $validator = \Validator::make($request->all(), [
             'dealer_show_room_name' => ['required', Rule::unique('dealer_show_rooms', 'name'), 'string']
         ]);
@@ -214,13 +214,15 @@ class UsersController extends Controller
     public function store_professional(Request $request)
     {
         $resource = ApiHelper::resource();
-        
+
         $validator = \Validator::make($request->all(), [
             'user_first_name' => ['required', 'string'],
             'user_last_name' => ['required', 'string'],
             'user_mobile_number' => ['nullable', 'string'],
             'user_landline_number' => ['nullable', 'string'],
             'user_whatsapp_number' => ['nullable', 'string'],
+            'user_country_code_mobile_number' => ['nullable', 'string'],
+            'user_country_code_whatsapp_number' => ['nullable', 'string'],
             'user_email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
             //'user_image' => ['nullable'],
             'user_password' => ['required', 'confirmed', 'min:7', 'string'],
@@ -236,6 +238,7 @@ class UsersController extends Controller
             'dealer_phone_number' => ['required', 'string'],
             'dealer_description' => ['nullable', 'string'],
             'dealer_whatsapp_number' => ['nullable', 'string'],
+            'dealer_country_code_phone_number' => ['nullable', 'string'],
             //dealer_show_room
             'dealer_show_room_name' => ['required', Rule::unique('dealer_show_rooms', 'name'), 'string'],
             'dealer_show_room_address' => ['required', 'string'],
@@ -248,6 +251,8 @@ class UsersController extends Controller
             'dealer_show_room_mobile_number' => ['required', 'string'],
             'dealer_show_room_landline_number' => ['nullable', 'string'],
             'dealer_show_room_whatsapp_number' => ['nullable', 'string'],
+            'dealer_show_room_country_code_mobile_number' => ['nullable', 'string'],
+            'dealer_show_room_country_code_whatsapp_number' => ['nullable', 'string'],
             'dealer_show_room_market_id' => ['nullable', 'string'],
         ]);
 
@@ -257,7 +262,7 @@ class UsersController extends Controller
         }
 
         try {
-            
+
             $dealer = new Dealer;
             $dealer->company_name = $request['dealer_company_name'];
             $dealer->slug = Str::slug($request['dealer_company_name']);
@@ -269,6 +274,7 @@ class UsersController extends Controller
             $dealer->logo_path = $this->uploadFile($request->file('dealer_logo_path'),$request['dealer_company_name']);
             $dealer->email_address = $request['dealer_email_address'];
             $dealer->phone_number = $request['dealer_phone_number'];
+            $dealer->country_phone_number = $request['dealer_country_code_phone_number'];
             $dealer->description = $request['dealer_description'];
             $code = Dealer::whereRaw('code is not null')->count()+1;
             $dealer->code =  str_pad($code, 5, "0",STR_PAD_LEFT);
@@ -287,6 +293,8 @@ class UsersController extends Controller
             $dealerShowRoom->mobile_number = $request['dealer_show_room_mobile_number'];
             $dealerShowRoom->landline_number = $request['dealer_show_room_landline_number'];
             $dealerShowRoom->whatsapp_number = $request['dealer_show_room_whatsapp_number'];
+            $dealerShowRoom->country_code_whatsapp_number = $request['dealer_show_room_country_code_whatsapp_number'];
+            $dealerShowRoom->country_code_mobile_number = $request['dealer_show_room_country_code_mobile_number'];
             $dealerShowRoom->market_id = $request['dealer_show_room_market_id'];
             $dealerShowRoom->dealer_id = $dealer->id;
             $dealerShowRoom->save();
@@ -297,47 +305,49 @@ class UsersController extends Controller
             $user->mobile_number = $request['user_mobile_number'];
             $user->landline_number = $request['user_landline_number'];
             $user->whatsapp_number = $request['user_whatsapp_number'];
+            $user->country_code_whatsapp_number = $request['user_country_code_whatsapp_number'];
+            $user->country_code_mobile_number = $request['user_country_code_mobile_number'];
             $user->email = $request['user_email'];
             $user->password = Hash::make($request['user_password']);
-            $user->status = 'Pendiente'; 
+            $user->status = 'Pendiente';
             $user->image = $dealer->logo_path;
             $user->type = 'Profesional';
             $user->dealer_id = $dealer->id;
             $user->save();
 
             $user->notify(new NewUser($user));
-            
+
             return response()->json([
                 'data' => [
-                    'user' => $user, 
-                    'dealer' => $dealer, 
-                    'dealer_show_room' => $dealerShowRoom 
-                ] 
+                    'user' => $user,
+                    'dealer' => $dealer,
+                    'dealer_show_room' => $dealerShowRoom
+                ]
             ], 200);
 
         } catch (Exception $e) {
-            
+
             \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
             isset($dealerShowRoom) ? $dealerShowRoom->delete() : false;
             isset($dealer) ? $dealer->delete(): false;
             isset($user) ? $user->delete(): false;
             \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            
+
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
         }
     }
 
     public function uploadFile($file,$name)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'dealers/'.Str::slug($name), 's3'
             );
         }
-        
+
         return $path;
     }
 
@@ -353,7 +363,7 @@ class UsersController extends Controller
         $user->dealer;
         $user->payment_histories;
         $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
-        
+
         if (!is_null($user->dealer)) {
            $user->dealer->showRooms;
         }
@@ -364,7 +374,7 @@ class UsersController extends Controller
             $user['last_pay_method'] = $user->payment_histories()->orderBy('created_at','DESC')->get()[0]['way_to_pay'];
         else
             $user['last_pay_method'] = null;
-        
+
         return ['data' => $user];
     }
 
@@ -372,10 +382,10 @@ class UsersController extends Controller
     {
         $user->status = $request->status;
         $user->save();
-        
+
         $user->dealer;
         $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
-        
+
         if (!is_null($user->dealer)) {
            $user->dealer->showRooms;
         }
@@ -421,7 +431,7 @@ class UsersController extends Controller
         try {
             // Sanitize input
             $data = [];
-            
+
             $sanitized = $request->getSanitized();
 
             $data['first_name'] = $sanitized['first_name'] ?? $user['first_name']  ;
@@ -429,6 +439,8 @@ class UsersController extends Controller
             $data['mobile_number'] = $sanitized['mobile_number'] ?? $user['mobile_number'];
             $data['landline_number'] = $sanitized['landline_number'] ?? $user['landline_number'];
             $data['whatsapp_number'] = $sanitized['whatsapp_number'] ?? $user['whatsapp_number'];
+            $data['country_code_mobile_number'] = $sanitized['country_code_mobile_number'] ?? $user['country_code_mobile_number'];
+            $data['country_code_whatsapp_number'] = $sanitized['country_code_whatsapp_number'] ?? $user['country_code_whatsapp_number'];
             $data['email'] =  $sanitized['email'] ?? $user['email'];
             $data['code_postal'] = $request['code_postal'] ?? $user['code_postal'];
             $data['address'] = $request['address'] ?? $user['address'];
@@ -436,7 +448,7 @@ class UsersController extends Controller
             $data['city'] = $request['city'] ?? $user['city'];
             $data['password'] = array_key_exists('password', $sanitized) ? Hash::make($sanitized['password']) : $user['password'];
             $data['dealer_id'] = $sanitized['dealer_id'] ?? $user['dealer_id'];
-            
+
             $data['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
             // Update changed values User
             $user->update($data);
@@ -455,15 +467,15 @@ class UsersController extends Controller
                 $dealer->logo_path = $request->file('logo_path') ? $this->uploadFile($request->file('logo_path'),$user->id) : $dealer->logo_path;
                 $dealer->save();
             }
-            
+
             $user->dealer;
-            
+
             $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
-            
+
             if (!is_null($user->dealer)) {
                $user->dealer->showRooms;
             }
-            
+
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
 
             if(count($user['payment_histories']) != 0)
@@ -482,9 +494,9 @@ class UsersController extends Controller
     public function updateProfile(Request $request)
     {
         $resource = ApiHelper::resource();
-       
+
         $user = Auth::user();
-       
+
         $validator = Validator::make($request->all(), [
             'first_name' => ['sometimes', 'string'],
             'last_name' => ['sometimes', 'string'],
@@ -505,8 +517,8 @@ class UsersController extends Controller
             ApiHelper::setError($resource, 0, 422, $validator->errors());
             return $this->sendResponse($resource);
         }
-        
-        try {  
+
+        try {
 
             $data = [];
             $data['first_name'] = $request['first_name'] ?? $user['first_name'];
@@ -520,18 +532,18 @@ class UsersController extends Controller
             $data['city'] = $request['city'] ?? $user['city'];
             $data['email'] =  $request['email'] ?? $user['email'];
             $data['password'] =  $request['password'] ? Hash::make($request['password']) : $user['password'];
-            
+
             $data['image'] = $request->file('image') ? $this->uploadFile($request->file('image'),$user->id) : $user->image;
-            
+
             $user->update($data);
             $user->dealer;
-            
+
             if (!is_null($user->dealer)) {
                $user->dealer->showRooms;
             }
-            
+
             $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
-            
+
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
 
             if(count($user['payment_histories']) != 0)
@@ -556,15 +568,15 @@ class UsersController extends Controller
             $user = Auth::user();
             $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
             $user->dealer;
-         
+
 
             if (!is_null($user->dealer)) {
                $user->dealer->showRooms;
             }
-            
-            
+
+
             $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
-            
+
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
 
             if(count($user['payment_histories']) != 0)
@@ -595,7 +607,7 @@ class UsersController extends Controller
         try {
 
             $dealer = $user->dealer;
-           
+
             if (!is_null($dealer)) {
                $dealer->showRooms;
             }
@@ -660,9 +672,9 @@ class UsersController extends Controller
         try {
 
             $sanitized['image'] = $this->uploadFile($request->file('image'),$user->id);
-          
+
             $user->update($request->all());
-            
+
             $user['plan_active'] = $user->plan_active()->orderBy('created_at','DESC')->get();
 
             $user['payment_histories'] = $user->payment_histories()->orderBy('created_at','DESC')->get();
@@ -725,19 +737,19 @@ class UsersController extends Controller
         if ($email) {
 
             $user = User::where('email',$email)->first();
-            
+
             if (is_null($user)) {
                return view('confirmar');
             }
 
             if ($user->email_verified_at == null) {
                 $user->email_verified_at = Carbon::now();
-                $user->save();   
+                $user->save();
             }
         }
-        
+
         return view('confirmar');
     }
 
-   
+
 }

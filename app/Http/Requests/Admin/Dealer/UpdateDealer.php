@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class UpdateDealer extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -39,6 +39,7 @@ class UpdateDealer extends FormRequest
             'email_address' => ['sometimes', 'string'],
             'whatsapp_number' => ['sometimes', 'string'],
             'phone_number' => ['sometimes', 'string'],
+            'country_code_phone_number' => ['nullable', 'string'],
             'status' => ['sometimes', 'integer'],
             'description' => ['nullable', 'string'],
             'external_id' => ['nullable', 'integer'],

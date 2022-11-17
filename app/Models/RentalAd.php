@@ -8,7 +8,7 @@ class RentalAd extends Model
 {
     use \App\Traits\TraitUuid;
     use \App\Traits\Relationships;
-    
+
     protected $fillable = [
         'ad_id',
         'address',
@@ -21,18 +21,20 @@ class RentalAd extends Model
         'country',
         'mobile_number',
         'whatsapp_number',
+        'country_code_mobile_number',
+        'country_code_whatsapp_number',
         'website_url',
         'email_address',
-    
+
     ];
-    
-    
+
+
     protected $dates = [
         'created_at',
         'updated_at',
-    
+
     ];
-    
+
     protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */
@@ -59,7 +61,7 @@ class RentalAd extends Model
     {
         return $this->belongsTo(DealerShowRoom::class);
     }
-    
+
     /**
      * @return string
      */

@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class StoreUser extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,6 +33,8 @@ class StoreUser extends FormRequest
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'email' => ['required', 'email', Rule::unique('users', 'email'), 'string'],
             //'email_verified_at' => ['nullable', 'date'],
             'image' => ['nullable'],

@@ -31,7 +31,7 @@ use App\Models\{Ad,TruckAd,DealerShowRoom,AdSubCharacteristic,AdImage,VehicleCat
 use Illuminate\Support\Facades\Redis as Redis;
 
 class TruckAdsController extends Controller
-{   
+{
     use ApiController;
 
     /**
@@ -69,10 +69,10 @@ class TruckAdsController extends Controller
             ['id', 'ad_id', 'make_id', 'custom_make', 'model', 'truck_type', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'cab', 'wheel_formula', 'hydraulic_system', 'emission_class', 'condition', 'interior_color', 'exterior_color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info','doors'],
 
             function ($query) use ($request) {
-                        
+
                 $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model', 'truck_type', 'fuel_type_id', 'vehicle_category_id', 'transmission_type_id', 'cab', 'construction_year', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'owners', 'construction_height_mm', 'lifting_height_mm', 'lifting_capacity_kg_m', 'permanent_total_weight_kg', 'allowed_pulling_weight_kg', 'payload_kg', 'max_weight_allowed_kg', 'empty_weight_kg', 'loading_space_length_mm', 'loading_space_width_mm', 'loading_space_height_mm', 'loading_volume_m3', 'load_capacity_kg', 'operating_weight_kg', 'operating_hours', 'axes', 'wheel_formula', 'hydraulic_system', 'seats', 'mileage', 'power_kw', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'interior_color', 'exterior_color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info','doors'];
-                
-                
+
+
                     if ($request->filters) {
                         foreach ($columns as $column) {
                             foreach ($request->filters as $key => $filter) {
@@ -83,11 +83,11 @@ class TruckAdsController extends Controller
                         }
                     }
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-                
+
                 foreach (TruckAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
-                
+
                 $query->with(['ad' => function ($query)
                         {
                             $query->with(['images','user']);
@@ -97,13 +97,13 @@ class TruckAdsController extends Controller
             }
         );
 
-        $data = $data->toArray(); 
-            
+        $data = $data->toArray();
+
         array_push($promoted,...$data['data']);
-    
+
         $data['data'] = $promoted;
-        
-        
+
+
         return ['data' => $data];
     }
 
@@ -117,10 +117,10 @@ class TruckAdsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => $validator->errors()],422);
         }
-        
+
         $filter = $request->filter;
 
-        $data = TruckAd::where(function ($query) use ($filter){ 
+        $data = TruckAd::where(function ($query) use ($filter){
                         $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'truck')")
                             ->orWhere('custom_make','LIKE','%'.$filter.'%')
                             ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
@@ -136,7 +136,7 @@ class TruckAdsController extends Controller
             'data' => $data
         ]);
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -217,11 +217,13 @@ class TruckAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'doors' => ['nullable', 'integer'],
             'price_contains_vat' => ['required', 'boolean'],
-            
+
         ]);
 
         if ($validator->fails()) {
@@ -240,7 +242,7 @@ class TruckAdsController extends Controller
         }
 
         try {
-            
+
             $slug = $this->slugAd($request['title']);
 
             $ad = new Ad;
@@ -256,7 +258,7 @@ class TruckAdsController extends Controller
             $ad->images_processing_status_text = null;
             $ad->save();
 
-            
+
             $thumbnail = null;
 
             $i = 0;
@@ -342,8 +344,10 @@ class TruckAdsController extends Controller
             $truckAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $truckAd->doors = $request['doors'];
             $truckAd->drive_type_id = $request['drive_type_id'];
+            $truckAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $truckAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $truckAd->save();
-            
+
             $ad_sub_characteristics = [];
 
             foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
@@ -357,11 +361,11 @@ class TruckAdsController extends Controller
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'truck_ad' =>  $truckAd, 
+                    'truck_ad' =>  $truckAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -472,6 +476,8 @@ class TruckAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
@@ -502,7 +508,7 @@ class TruckAdsController extends Controller
 
             $i = 0;
 
-            
+
             if ($request->image_ids) {
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
@@ -589,10 +595,12 @@ class TruckAdsController extends Controller
             $truckAd->additional_vehicle_info = $request['additional_vehicle_info'];
             $truckAd->doors = $request['doors'];
             $truckAd->drive_type_id = $request['drive_type_id'];
+            $truckAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $truckAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $truckAd->save();
-            
+
             $ad_sub_characteristics = [];
-            
+
             AdSubCharacteristic::where('ad_id',$id)->first();
 
             foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
@@ -606,11 +614,11 @@ class TruckAdsController extends Controller
             //$user = Auth::user();
 
             //$user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'truck_ad' =>  $truckAd, 
+                    'truck_ad' =>  $truckAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -666,37 +674,37 @@ class TruckAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 

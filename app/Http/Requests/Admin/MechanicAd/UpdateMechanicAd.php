@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class UpdateMechanicAd extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -38,6 +38,8 @@ class UpdateMechanicAd extends FormRequest
             'country' => ['sometimes', 'string'],
             'mobile_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'website_url' => ['nullable', 'string'],
             'email_address' => ['nullable', 'string'],
             'geocoding_status' => ['nullable', 'string'],

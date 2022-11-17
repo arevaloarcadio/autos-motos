@@ -44,7 +44,7 @@ class MotoAdsController extends Controller
             $promoted = json_decode(Redis::get('moto_ads'));
 
         }else{
-        
+
             $promoted_simple_ads = MotoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10)')->inRandomOrder()->limit(25);
 
             foreach (MotoAd::getRelationships() as $key => $value) {
@@ -67,10 +67,10 @@ class MotoAdsController extends Controller
             ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'emission_class', 'condition', 'color', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info'],
 
             function ($query) use ($request) {
-                        
+
                 $columns =  ['id', 'ad_id', 'make_id', 'custom_make', 'model_id', 'custom_model', 'fuel_type_id', 'body_type_id', 'transmission_type_id', 'drive_type_id', 'first_registration_month', 'first_registration_year', 'inspection_valid_until_month', 'inspection_valid_until_year', 'last_customer_service_month', 'last_customer_service_year', 'owners', 'weight_kg', 'engine_displacement', 'mileage', 'power_kw', 'gears', 'cylinders', 'emission_class', 'fuel_consumption', 'co2_emissions', 'condition', 'color', 'price', 'price_contains_vat', 'dealer_id', 'dealer_show_room_id', 'first_name', 'last_name', 'email_address', 'zip_code', 'city', 'country', 'mobile_number', 'landline_number', 'whatsapp_number', 'youtube_link','additional_vehicle_info'];
-                
-                
+
+
                     if ($request->filters) {
                         foreach ($columns as $column) {
                             foreach ($request->filters as $key => $filter) {
@@ -82,7 +82,7 @@ class MotoAdsController extends Controller
                     }
 
                 $query->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-                
+
                 foreach (MotoAd::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
@@ -94,11 +94,11 @@ class MotoAdsController extends Controller
                 ]);
             }
         );
-        
-        $data = $data->toArray(); 
-            
+
+        $data = $data->toArray();
+
         array_push($promoted,...$data['data']);
-    
+
         $data['data'] = $promoted;
 
         return ['data' => $data];
@@ -113,10 +113,10 @@ class MotoAdsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => $validator->errors()],422);
         }
-        
+
         $filter = $request->filter;
 
-        $data = MotoAd::where(function ($query) use ($filter){ 
+        $data = MotoAd::where(function ($query) use ($filter){
                         $query->orWhereRaw("ad_id in (SELECT id FROM ads where (ads.title LIKE '%".$filter."%' or ads.description LIKE '%".$filter."%') and type = 'moto')")
                             ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                             ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
@@ -194,6 +194,8 @@ class MotoAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'additional_vehicle_info' => ['nullable', 'string'],
             'price_contains_vat' => ['required', 'boolean'],
@@ -215,7 +217,7 @@ class MotoAdsController extends Controller
         }
 
         try {
-            
+
             $slug = $this->slugAd($request['title']);
 
             $ad = new Ad;
@@ -291,8 +293,10 @@ class MotoAdsController extends Controller
             $motoAd->fuel_consumption = $request['fuel_consumption'];
             $motoAd->co2_emissions = $request['co2_emissions'];
             $motoAd->additional_vehicle_info = $request['additional_vehicle_info'];
+            $motoAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $motoAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $motoAd->save();
-            
+
             $ad_sub_characteristics = [];
 
             foreach ($request->sub_characteristic_ids as  $sub_characteristic_id) {
@@ -307,11 +311,11 @@ class MotoAdsController extends Controller
             $user = Auth::user();
 
             $user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'moto_ad' =>  $motoAd, 
+                    'moto_ad' =>  $motoAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -323,7 +327,7 @@ class MotoAdsController extends Controller
         }
     }
 
-    
+
 
 
     /**
@@ -408,6 +412,8 @@ class MotoAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
@@ -425,9 +431,9 @@ class MotoAdsController extends Controller
             return $this->sendResponse($resource);
         }
 
-        
+
         try {
-            
+
             $ad =  Ad::where('id',$id)->first();
             $ad->title =  $request['title'];
             $ad->description =  $request['description'];
@@ -438,7 +444,7 @@ class MotoAdsController extends Controller
 
             $i = 0;
 
-            
+
             if ($request->image_ids) {
                 AdImage::whereIn('id',$request->image_ids)->delete();
             }
@@ -497,8 +503,10 @@ class MotoAdsController extends Controller
             $motoAd->fuel_consumption = $request['fuel_consumption'];
             $motoAd->co2_emissions = $request['co2_emissions'];
             $motoAd->additional_vehicle_info = $request['additional_vehicle_info'];
+            $motoAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $motoAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $motoAd->save();
-            
+
             $ad_sub_characteristics = [];
 
             AdSubCharacteristic::where('ad_id',$id)->delete();
@@ -515,11 +523,11 @@ class MotoAdsController extends Controller
          //   $user = Auth::user();
 
            // $user->notify(new \App\Notifications\NewAd($user));
-            
+
             return response()->json([
                 'data' => [
                     'ad' => $ad,
-                    'moto_ad' =>  $motoAd, 
+                    'moto_ad' =>  $motoAd,
                     'ad_sub_characteristics' => $ad_sub_characteristics
                 ]
             ], 200);
@@ -574,37 +582,37 @@ class MotoAdsController extends Controller
     }
 
     public function uploadFile($file,$ad_id,$order_index,$thumbnail = false)
-    {   
+    {
         $path = null;
-        
+
         if ($file) {
             $path = $file->store(
                 'listings/'.$ad_id, 's3'
             );
         }
-        
+
         if (!$thumbnail) {
            AdImage::create([
                 'ad_id' => $ad_id,
-                'path' => $path, 
-                'is_external' => 1, 
+                'path' => $path,
+                'is_external' => 1,
                 'order_index' => $order_index
             ]);
         }
-        
+
         return $path;
     }
 
     private function slugAd($title)
-    {   
+    {
         $response = Str::slug($title);
 
-        $validate = Ad::where('slug',Str::slug($title))->count();  
-        
+        $validate = Ad::where('slug',Str::slug($title))->count();
+
         if ($validate  != 0) {
             $response .= '-'.Str::uuid()->toString().'-'.$validate;
         }
-        
+
         return $response;
     }
 

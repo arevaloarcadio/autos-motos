@@ -195,6 +195,8 @@ class ShopAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'price_contains_vat' => ['required', 'boolean'],
         ]);
@@ -280,6 +282,8 @@ class ShopAdsController extends Controller
             $shopAd->landline_number = $request['landline_number'];
             $shopAd->whatsapp_number = $request['whatsapp_number'];
             $shopAd->youtube_link = $request['youtube_link'];
+            $shopAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $shopAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $shopAd->save();
 
 
@@ -414,6 +418,8 @@ class ShopAdsController extends Controller
             'mobile_number' => ['nullable', 'string'],
             'landline_number' => ['nullable', 'string'],
             'whatsapp_number' => ['nullable', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'youtube_link' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
@@ -490,6 +496,8 @@ class ShopAdsController extends Controller
             $shopAd->landline_number = $request['landline_number'];
             $shopAd->whatsapp_number = $request['whatsapp_number'];
             $shopAd->youtube_link = $request['youtube_link'];
+            $shopAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $shopAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $shopAd->save();
 
 

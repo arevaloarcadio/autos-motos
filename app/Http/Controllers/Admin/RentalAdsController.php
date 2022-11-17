@@ -199,6 +199,8 @@ class RentalAdsController extends Controller
                 'country' =>$sanitized['country'],
                 'mobile_number' => $sanitized['mobile_number'],
                 'whatsapp_number' => $sanitized['whatsapp_number'],
+                'country_code_mobile_number' => $sanitized['country_code_mobile_number'],
+                'country_code_whatsapp_number' => $sanitized['country_code_whatsapp_number'],
                 'website_url' => $sanitized['website_url'],
                 'email_address' => $sanitized['email_address'],
                 'geocoding_status' => $sanitized['geocoding_status'] ?? null
@@ -292,6 +294,8 @@ class RentalAdsController extends Controller
                 'country' =>$sanitized['country'],
                 'mobile_number' => $sanitized['mobile_number'],
                 'whatsapp_number' => $sanitized['whatsapp_number'],
+                'country_code_mobile_number' => $sanitized['country_code_mobile_number'],
+                'country_code_whatsapp_number' => $sanitized['country_code_whatsapp_number'],
                 'website_url' => $sanitized['website_url'],
                 'email_address' => $sanitized['email_address'],
             ]);

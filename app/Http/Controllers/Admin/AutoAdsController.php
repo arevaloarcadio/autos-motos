@@ -234,6 +234,8 @@ class AutoAdsController extends Controller
             'address' => ['required', 'string'],
             'mobile_number' => ['required', 'string'],
             'whatsapp_number' => ['required', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'price_contains_vat' => ['required', 'boolean'],
         ]);
 
@@ -340,6 +342,8 @@ class AutoAdsController extends Controller
             $autoAd->latitude = $request['latitude'];
             $autoAd->longitude = $request['longitude'];
             $autoAd->geocoding_status = $request['geocoding_status'];
+            $autoAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $autoAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $autoAd->save();
 
             $ad_sub_characteristics = [];
@@ -443,6 +447,8 @@ class AutoAdsController extends Controller
             'address' => ['required', 'string'],
             'mobile_number' => ['required', 'string'],
             'whatsapp_number' => ['required', 'string'],
+            'country_code_mobile_number' => ['nullable', 'string'],
+            'country_code_whatsapp_number' => ['nullable', 'string'],
             'image_ids' => ['nullable', 'array'],
             'eliminated_thumbnail' => ['required', 'boolean'],
             'price_contains_vat' => ['required', 'boolean'],
@@ -538,6 +544,8 @@ class AutoAdsController extends Controller
             $autoAd->latitude = $request['latitude'];
             $autoAd->longitude = $request['longitude'];
             $autoAd->geocoding_status = $request['geocoding_status'];
+            $autoAd->country_code_whatsapp_number = $request['country_code_whatsapp_number'];
+            $autoAd->country_code_mobile_number = $request['country_code_mobile_number'];
             $autoAd->save();
 
             $ad_sub_characteristics = [];
