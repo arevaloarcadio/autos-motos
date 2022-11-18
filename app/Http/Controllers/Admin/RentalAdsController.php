@@ -38,6 +38,10 @@ class RentalAdsController extends Controller
      * @param IndexRentalAd $request
      * @return array|Factory|View
      */
+    public function __construct()
+    {
+        set_time_limit(180);
+    }
     public function index(IndexRentalAd $request)
     {
 

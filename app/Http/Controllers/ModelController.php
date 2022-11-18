@@ -4,15 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Models;
+use App\Models\{Submodel,Make,SubmodelByModel};
 use App\Models\Mark;
 
 class ModelController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         //
@@ -72,5 +68,19 @@ class ModelController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function generadorYOrdenamiento(Request $request)
+    {
+        $modelos = Models::where('make_id',$request->make_id)->get();
+        $grupo= Submodel::where('make_id',$request->make_id)->where('name','Otros')->first();
+            foreach ($modelos as $model) {
+                $modeloByGrupo=SubmodelByModel::where('model_id',$model->id)->first();
+                if (!$modeloByGrupo) {
+                    SubmodelByModel::create([
+                        'model_id' =>  $model->id,
+                        'sub_model_id' =>  $grupo->id,
+                     ]);   
+                }
+            }
     }
 }

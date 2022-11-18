@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\{SellerStore,User,UserRole,tore,Company,RecoveryCode};
+use App\Models\{SellerStore,User,UserRole,Store,Dealer,Company,RecoveryCode};
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -29,12 +29,28 @@ class UserController extends Controller
 
         try {
 
-            $credentials = $request->only('email', 'password');
-
-
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
+
+                $dealer = Dealer::where('code',$request->email)->first();
+
+                if (!is_null($dealer)) {
+
+                    $user = User::where('dealer_id',$dealer->id)->first();
+
+                    $credentials = [
+                        'email' => $user->email,
+                        'password' => $request->password
+                    ];
+
+                    if (!$token = JWTAuth::attempt($credentials)) {
+                       return response()->json(['error' => 'invalid_credentials'], 400);
+                    }
+
+                }else{
+                    return response()->json(['error' => 'invalid_credentials'], 400);
+                }
             }
+
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -52,14 +68,10 @@ class UserController extends Controller
 
     public function refresh(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-
-        $user = Auth::user();
-
         $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
 
         return response()->json([
-            'token' => $token,
+            'token' => auth()->refresh(),
             'user'  => Auth::user(),
             'plan_active' => $plan_active
         ]);

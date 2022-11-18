@@ -39,7 +39,7 @@ class DealersController extends Controller
             
             $query = Dealer::query();
 
-            $columns = ['id', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'status', 'external_id', 'source'];
+            $columns = ['id', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'status', 'external_id', 'source','code'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {
@@ -64,14 +64,14 @@ class DealersController extends Controller
             $request,
 
             // set columns to query
-            ['id', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'status', 'external_id', 'source'],
+            ['id', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'status', 'external_id', 'source','code'],
 
             // set columns to searchIn
-            ['id', 'slug', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'description', 'source'],
+            ['id', 'slug', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'description', 'source','code'],
 
             function ($query) use ($request) {
                         
-                $columns =  ['id', 'slug', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'description', 'source'];
+                $columns =  ['id', 'slug', 'company_name', 'vat_number', 'address', 'zip_code', 'city', 'country', 'logo_path', 'email_address', 'phone_number', 'description', 'source','code'];
                 
             if ($request->filters) {
                 foreach ($columns as $column) {

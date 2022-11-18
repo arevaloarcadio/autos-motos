@@ -41,16 +41,16 @@ class AdsController extends Controller
      * @return array|Factory|View
      */
     public function index(IndexAd $request)
-    {   
+    {
 
-       
+
         /*$promoted = [];
 
 
         $promoted_simple_ads = Ad::whereRaw('id in(SELECT ad_id FROM promoted_simple_ads)');
-        
+
         if (isset($request->filters['type'])) {
-            $promoted_simple_ads =  $promoted_simple_ads->where('type',$request->filters['type']); 
+            $promoted_simple_ads =  $promoted_simple_ads->where('type',$request->filters['type']);
         }
 
         $promoted_simple_ads->with([
@@ -81,7 +81,7 @@ class AdsController extends Controller
                 ]);
 
         $promoted = $promoted_simple_ads->inRandomOrder()->limit(25)->get()->toArray();*/
-        
+
         $data = AdminListing::create(Ad::class)->processRequestAndGet(
             // pass the request with params
             $request,
@@ -93,10 +93,10 @@ class AdsController extends Controller
             ['id', 'slug', 'title', 'description', 'thumbnail', 'status', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'],
 
             function ($query) use ($request) {
-                     
+
                 $columns =  ['id', 'slug', 'title', 'description', 'status', 'thumbnail', 'type', 'market_id', 'source', 'images_processing_status', 'images_processing_status_text','csv_ad_id','created_at'];
 
-               
+
                 if ($request->filters) {
                     foreach ($columns as $column) {
                         foreach ($request->filters as $key => $filter) {
@@ -110,7 +110,7 @@ class AdsController extends Controller
                         }
                     }
                 }
-                
+
                 $where_ad_id = null;
 
                 $i = 1;
@@ -121,7 +121,7 @@ class AdsController extends Controller
                     'mobile_home_ads',
                     'rental_ads',
                     'shop_ads',
-                    'truck_ads' 
+                    'truck_ads'
                 ];
 
                 foreach ($type_ads as $type) {
@@ -132,13 +132,13 @@ class AdsController extends Controller
                     }else{
                         $where_ad_id .= sprintf(' or ads.id in (SELECT ad_id from %s) ',$type);
                     }
-                    $i++; 
+                    $i++;
                 }
-                  
-                $query->whereRaw($where_ad_id); 
+
+                $query->whereRaw($where_ad_id);
 
                 $filter_like = $request->filter_like;
-                
+
                 if (!is_null($filter_like)) {
                     $query->where(function($query1) use ($filter_like){
                         $query1->where('title','LIKE','%'.$filter_like.'%')
@@ -146,7 +146,7 @@ class AdsController extends Controller
                             ->orWhereRaw("user_id IN(SELECT id FROM users WHERE email LIKE '%".$filter_like."%')");
                     });
                 }
-                
+
                 $query->with(
                     [
                         'user',
@@ -185,20 +185,20 @@ class AdsController extends Controller
             }
         );
 
-        //$data = $data->toArray(); 
-            
+        //$data = $data->toArray();
+
         //array_push($promoted,...$data['data']);
-    
+
         //$data['data'] = $promoted;
-      
+
         return ['data' => $data];
     }
 
 
-   
+
 
     public function searchAdsLike(Request $request)
-    {   
+    {
         $validator = \Validator::make($request->all(), [
             'filter' => 'required',
             'type' => 'required',
@@ -210,7 +210,7 @@ class AdsController extends Controller
 
         $filter = $request->filter;
         $type = $request->type;
-        
+
         $ads = Ad::where(function ($query) use ($filter){
             $query->where('ads.title','LIKE','%'. $filter.'%');
         })
@@ -263,7 +263,7 @@ class AdsController extends Controller
     }
 
     public function searchAdsLikeTitle(Request $request)
-    {   
+    {
         $validator = \Validator::make($request->all(), [
             'filter' => 'required',
             'type' => 'required',
@@ -275,7 +275,7 @@ class AdsController extends Controller
 
         $filter = $request->filter;
         $type = $request->type;
-        
+
         $ads = Ad::select('id')->where(function ($query) use ($filter){
             $query->where('ads.title','LIKE','%'. $filter.'%')
                   ->orWhere('ads.description','LIKE','%'.$filter.'%');
@@ -291,13 +291,13 @@ class AdsController extends Controller
         foreach ($ads as $ad) {
             array_push($ad_ids, $ad['id']);
         }
-        
+
         $response = [];
-        
+
         switch ($type) {
             case 'auto':
                 $response = AutoAd::whereIn('ad_id',$ad_ids)
-                    ->where(function ($query) use ($filter){ 
+                    ->where(function ($query) use ($filter){
                         $query->whereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                             ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
                     })
@@ -312,7 +312,7 @@ class AdsController extends Controller
                 break;
             case 'moto':
                 $response = MotoAd::whereIn('ad_id',$ad_ids)
-                    ->where(function ($query) use ($filter){ 
+                    ->where(function ($query) use ($filter){
                         $query->whereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                             ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
                     })
@@ -325,7 +325,7 @@ class AdsController extends Controller
                 break;
             case 'mobile-home':
                 $response = MobileHomeAd::whereIn('ad_id',$ad_ids)
-                    ->where(function ($query) use ($filter){ 
+                    ->where(function ($query) use ($filter){
                         $query->orWhere('custom_make','LIKE','%'.$filter.'%')
                             ->orWhere('custom_model','LIKE','%'.$filter.'%')
                             ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
@@ -340,7 +340,7 @@ class AdsController extends Controller
                 break;
             case 'truck':
                 $response = TruckAd::whereIn('ad_id',$ad_ids)
-                    ->where(function ($query) use ($filter){ 
+                    ->where(function ($query) use ($filter){
                         $query->orWhere('custom_make','LIKE','%'.$filter.'%')
                             ->orWhereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                             ->orWhere('model','LIKE','%'.$filter.'%');
@@ -358,10 +358,10 @@ class AdsController extends Controller
                         $query->with(['images','characteristics']);
                     },
                     'dealer','dealerShowRoom']);
-                break;  
+                break;
             case 'shop':
                 $response = ShopAd::whereIn('ad_id',$ad_ids)
-                    ->where(function ($query) use ($filter){ 
+                    ->where(function ($query) use ($filter){
                         $query->whereRaw("make_id IN(SELECT id FROM makes WHERE name LIKE '%".$filter."%')")
                             ->orWhereRaw("model_id IN(SELECT id FROM models WHERE name LIKE '%".$filter."%')");
                     })
@@ -378,12 +378,12 @@ class AdsController extends Controller
                         $query->with(['images','characteristics']);
                     },
                     'dealer','dealerShowRoom']);
-                break;     
+                break;
             default:
 
                 break;
         }
-    
+
         return response()->json([
             'data' => $response->paginate(24)
         ]);
@@ -397,7 +397,7 @@ class AdsController extends Controller
             ->where('source','!=',NULL)
             ->where('source','!=','CSV')
             ->groupBy('source');
-        
+
         if ($request->dateStart && $request->dateEnd) {
              $ads->whereBetween('created_at',[$request->dateStart,$request->dateEnd]);
         }
@@ -408,12 +408,12 @@ class AdsController extends Controller
 
     public function byUser(Request $request)
     {
-        
+
         if(Redis::exists('by_user_'.Auth::user()->id.'_filter_'.$request->filter)) {
             $data = json_decode(Redis::get('by_user_'.Auth::user()->id.'_filter_'.$request->filter));
             return ['data' => $data, 'redis'=>'true'];
         }else{
-            
+
             $data = Ad::where('user_id',Auth::user()->id)
             ->orderBy('created_at','DESC')
             ->limit(20);
@@ -424,7 +424,7 @@ class AdsController extends Controller
                 }else{
                     $data = $data->where('type',$request->filter);
                 }
-            } 
+            }
 
             $data->with([
                     'user',
@@ -463,10 +463,10 @@ class AdsController extends Controller
             $data=$data->get();
             Redis::set('by_user_'.Auth::user()->id.'_filter_'.$request->filter,json_encode($data));
             return ['data' => $data, 'redis'=>'false'];
-  
+
         }
 
-        
+
     }
 
     public function byDealer(Request $request,$dealer_id)
@@ -478,7 +478,7 @@ class AdsController extends Controller
                 $data = $data->where(function($query) use ($dealer_id){
                     $query->whereRaw("(
                         id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or
-                        id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or 
+                        id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or
                         id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."') or
                         id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."')
                     )")->where('ads.status','10');
@@ -500,7 +500,7 @@ class AdsController extends Controller
                     ->where('status','10');
                 break;
             default:
-                
+
                 break;
         }
 
@@ -537,7 +537,7 @@ class AdsController extends Controller
                 $query->with(['make','model','ad','dealer','dealerShowRoom']);
             }
         ]);
-      
+
         return ['data' => $data->paginate(10)];
     }
 
@@ -548,7 +548,7 @@ class AdsController extends Controller
             $product_ads = Ad::where(function($query) use ($dealer_id){
                 $query->whereRaw("(
                     id in (SELECT ad_id from auto_ads where dealer_id = '".$dealer_id."') or
-                    id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or 
+                    id in (SELECT ad_id from mobile_home_ads where dealer_id = '".$dealer_id."') or
                     id in (SELECT ad_id from moto_ads where dealer_id = '".$dealer_id."' ) or
                     id in (SELECT ad_id from truck_ads where dealer_id = '".$dealer_id."')
                 )")->where('ads.status','10');
@@ -557,13 +557,13 @@ class AdsController extends Controller
             $service_ads = Ad::where(function($query) use ($dealer_id){
                 $query->whereRaw("(
                     id in (SELECT ad_id from mechanic_ads where dealer_id = '".$dealer_id."') or
-                    id in (SELECT ad_id from rental_ads where dealer_id = '".$dealer_id."') or 
+                    id in (SELECT ad_id from rental_ads where dealer_id = '".$dealer_id."') or
                     id in (SELECT ad_id from shop_ads where dealer_id = '".$dealer_id."')
                 )")->where('ads.status','10');
             })->count();
 
             return response()->json(['data' => ['product_ads' => $product_ads, 'service_ads' => $service_ads]], 200);
-        
+
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
@@ -581,7 +581,7 @@ class AdsController extends Controller
                     }
                 ])
                 ->get();
-        
+
         return ['data' => $ads];
     }
 
@@ -589,12 +589,12 @@ class AdsController extends Controller
     {
         $ads = CsvAd::select('csv_ads.*')
             ->with('user');
-        
+
         if ($request->type) {
             $ads = $ads->join('users','users.id','csv_ads.user_id')
                         ->where('users.type',$request->type);
         }
-        
+
         if ($request->date) {
             $ads->where('csv_ads.created_at','LIKE','%'.$request->date.'%');
         }
@@ -604,7 +604,7 @@ class AdsController extends Controller
         }
 
         if (!is_null($request->filter_like)) {
-            
+
             $filter_like = $request->filter_like;
 
             $ads->where(function($query1) use ($filter_like){
@@ -620,17 +620,17 @@ class AdsController extends Controller
     {
         $today = date('Y-m-d');
         $count_ads = Ad::where('created_at','LIKE','%'.$today.'%')->count();
-        
+
         return ['data' => $count_ads];
     }
 
      public function countAdsImportToday(Request $request)
     {
-        
+
         $count_ads = Ad::where(function($query){
-            
+
             $today = date('Y-m-d');
-            
+
             $sources = [
                 'INVENTARIO_IMPORT',
                 'MECHANICS_IMPORT',
@@ -648,9 +648,9 @@ class AdsController extends Controller
 
 
     public function setApprovedRejected(Request $request,$status)
-    {   
+    {
         $resource = ApiHelper::resource();
-       
+
         $validator = Validator::make($request->all(), [
             'ad_ids' => 'required|array',
         ]);
@@ -659,9 +659,9 @@ class AdsController extends Controller
             ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
             return $this->sendResponse($resource);
         }
-        
+
         try {
-            
+
             Ad::whereIn('id',$request->ad_ids)
                 ->update(
                     [
@@ -673,7 +673,7 @@ class AdsController extends Controller
                 ->whereIn('id',$request->ad_ids)
                 ->groupBy('ads.user_id','ads.title')
                 ->get();
-            
+
             foreach ($ads as $ad) {
                 $user = User::find($ad->user_id);
                 if ($status == 'approved') {
@@ -681,7 +681,7 @@ class AdsController extends Controller
                 }
             }
             Redis::flushDB();
-               
+
             return response()->json(['data' => 'OK'], 200);
 
         } catch (Exception $e) {
@@ -691,10 +691,10 @@ class AdsController extends Controller
     }
 
      public function setApprovedRejectedIndividual(Request $request,$status)
-    {   
-        
+    {
+
         $resource = ApiHelper::resource();
-       
+
         $validator = Validator::make($request->all(), [
             'ads' => 'required|array',
             'ads.*.ad_id' => 'required',
@@ -716,7 +716,7 @@ class AdsController extends Controller
             $ad_ =  Ad::find($ad['ad_id']);
 
             $user = User::find($ad['user_id']);
-            
+
             if ($status == 'approved') {
                 $user->notify(new NotifyApproved($ad_->title));
             }
@@ -765,20 +765,20 @@ class AdsController extends Controller
      * @return void
      */
     public function show($id)
-    {   
- 
+    {
+
         $resource = ApiHelper::resource();
-        
+
         try {
 
             $ad = Ad::where('id',$id);
-        
+
             if (is_null($ad)) {
                 ApiHelper::setError($resource, 0, 404 ,['data' => 'Ad not found']);
                 return $this->sendResponse($resource);
             }
 
-           
+
 
             $ad->with([
                 'user',
@@ -813,11 +813,11 @@ class AdsController extends Controller
                     $query->with(['make','model','ad','dealer','dealerShowRoom']);
                 }
             ]);
-            
+
             $ad =  $ad->first();
 
             $ad['characteristic_ads'] = $this->characteristic_ads($ad);
-     
+
             return response()->json(['data' => $ad], 200);
 
         } catch (Exception $e) {
@@ -829,7 +829,7 @@ class AdsController extends Controller
     public function characteristic_ads($ad){
 
         $data_sub_characteristic_ids = $ad->characteristics()->select('characteristic_id')->get()->toArray();
-        
+
         $sub_characteristic_ids = [];
 
         foreach ($data_sub_characteristic_ids as $sub_characteristic_id) {
@@ -845,13 +845,13 @@ class AdsController extends Controller
             ]);
 
         return $characteristics->get();
-    }    
+    }
 
 
     public function storeCommentRejected(Request $request,$ad)
-    {   
+    {
         $ad = Ad::find($ad);
-        
+
         $rejected_comment = new RejectedComment;
         $rejected_comment->comment = $request->comment;
         $rejected_comment->save();
@@ -865,12 +865,12 @@ class AdsController extends Controller
         $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
         $ad_rejected_comment->save();
         Redis::flushDB();
-        
+
         return ['data' => 'OK'];
     }
 
      public function storeCommentsRejected(Request $request,$csv_ad_id)
-    {   
+    {
         $rejected_comment = new RejectedComment;
         $rejected_comment->comment = $request->comment;
         $rejected_comment->save();
@@ -881,19 +881,19 @@ class AdsController extends Controller
             $user = User::find($ad->user_id);
 
             $user->notify(new NotifyRejected($ad->title,$request->comment));
-            
+
             $ad_rejected_comment = new AdRejectedComment;
             $ad_rejected_comment->ad_id = $ad->id;
             $ad_rejected_comment->rejected_comment_id = $rejected_comment->id;
             $ad_rejected_comment->save();
         }
         Redis::flushDB();
-        
+
         return ['data' => 'OK'];
     }
 
     public function storeCommentsRejectedIndividual(Request $request)
-    {   
+    {
 
         $validator = \Validator::make($request->all(), [
             'ads' => 'required|array',
@@ -907,11 +907,11 @@ class AdsController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => $validator->errors()],422);
         }
-        
+
         foreach ($request->ads as $ad) {
 
             $ad_ = Ad::find($ad);
-            
+
             $user = User::find($ad_->user_id);
 
             $user->notify(new NotifyRejected($ad_->title,$request->comment));
@@ -976,7 +976,7 @@ class AdsController extends Controller
      * @return ResponseFactory|RedirectResponse|Response
      */
     public function destroy(DestroyAd $request,Ad $ad)
-    {   
+    {
         $resource = ApiHelper::resource();
         try {
             Redis::del('search_advanced_auto');
@@ -1038,11 +1038,11 @@ class AdsController extends Controller
                     Redis::del('auto_ads_ult');
                     break;
             }
-          
+
             $ad->delete();
-            
+
             DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            
+
             return response()->json(['data' => 'OK'], 200);
 
         } catch (Exception $e) {
@@ -1084,7 +1084,7 @@ class AdsController extends Controller
             'shop' => 'shop_ads',
             'truck' => 'truck_ads'
         ];
-        
+
         if (isset($type_ads[$key])) {
             return $type_ads[$key];
         }
@@ -1093,12 +1093,12 @@ class AdsController extends Controller
     }
 
     public function getPromotedAds($type,$make_id)
-    {   
+    {
         $data = null;
-       
+
         switch ($type) {
             case 'auto':
-                
+
                 $data = AutoAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
                         ->where('make_id',$make_id)
                         ->with(['make',
@@ -1146,7 +1146,7 @@ class AdsController extends Controller
 
                 break;
             case 'truck':
-                
+
                 $data = TruckAd::whereRaw('ad_id in(SELECT ad_id FROM promoted_simple_ads)')
                 ->where('make_id',$make_id)
                 ->with(['make','fuelType','ad'=> function($query)
@@ -1158,7 +1158,7 @@ class AdsController extends Controller
                 ->limit(10)
                 ->get()
                 ->toArray();
-                
+
                 break;
             default:
                 # code...
@@ -1173,16 +1173,16 @@ class AdsController extends Controller
     }
 
     public function searchAdvanced(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
         $filter_types = [];
         $response = [];
         $val_redis=false;
         try {
             $dealer_id = null;
-            
+
             $promotedAds = $this->getPromotedAds($request->type,$request->make_id);
-            
+
             if (!is_null($promotedAds)) {
                 array_push($response, ...$promotedAds);
             }
@@ -1194,7 +1194,7 @@ class AdsController extends Controller
                 if( $key == 'type'){
                     continue;
                 }
-                
+
                 if(
                     ($request->from_mileage == 0 && $request->to_mileage == 500000) &&
                     ($request->from_price == 500 && $request->to_price == 5000000)
@@ -1203,7 +1203,7 @@ class AdsController extends Controller
                     $request['to_price'] = null;
                     $request['to_mileage'] = null;
                 }
-                
+
                 if(
                     !($request->from_mileage == 0 && $request->to_mileage == 500000) ||
                     !($request->from_price == 500 && $request->to_price == 5000000)
@@ -1213,9 +1213,9 @@ class AdsController extends Controller
                 if($key == 'from_mileage' || $key == 'to_mileage' || $key == 'from_price' || $key == 'to_price'){
                     continue;
                 }
-                
+
                 if(!is_null($data) && $data != false && $key != 'newer'){
-                    
+
                     break;
                 }
                 if($key == 'newer'){
@@ -1231,7 +1231,7 @@ class AdsController extends Controller
                 }
             }
 
-            
+
             if ($request->dealer) {
                 $dealers = Dealer::select('id')->where('company_name','LIKE','%'.$request->dealer.'%')->get()->toArray();
                 foreach ($dealers as $key => $dealer) {
@@ -1241,7 +1241,7 @@ class AdsController extends Controller
             $request['dealer_id'] = $dealer_id;
 
             if ($request->type) {
-                
+
                 switch ($request->type) {
                     case 'auto':
                         $response = $this->getAutoAd($request);
@@ -1251,21 +1251,21 @@ class AdsController extends Controller
                         break;
                     case 'mobile-home':
                         $response = $this->getMobileHomeAd($request);
-                        break; 
+                        break;
                     case 'truck':
                         $response = $this->getTruckAd($request);
                         break;
                     default:
-                        
+
                         break;
                 }
-                
+
             }
 
             if($val_redis){
                 Redis::set('search_advanced_'.$request->type,json_encode($response ));
             }
-               
+
             return response()->json(['data' => $response,'redis'=>false], 200);
 
         } catch (Exception $e) {
@@ -1275,17 +1275,19 @@ class AdsController extends Controller
     }
 
 
-   
+
     public function getAutoAd($filters)
     {
         $auto_ad = new AutoAd;
-         
+
+        $auto_ad= $auto_ad->select('id','ad_id','mileage','price','ad_body_type_id','make_id','model_id','first_registration_year','ad_fuel_type_id','ad_transmission_type_id','dealer_show_room_id','dealer_id');
+
         $auto_ad = $auto_ad->where(function($query) use ($filters){
-            
+
             if($filters->dealer) {
                 $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
+
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1313,7 +1315,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -1385,7 +1387,7 @@ class AdsController extends Controller
         if ($filters->oldest) {
             $auto_ad->orderBy('created_at','ASC');
         }
-        
+
         if ($filters->newer) {
             $auto_ad->orderBy('created_at','DESC');
         }
@@ -1393,18 +1395,46 @@ class AdsController extends Controller
         if ($filters->higher_price) {
             $auto_ad->orderBy('price','DESC');
         }
-        
+
         if ($filters->lower_price) {
             $auto_ad->orderBy('price','ASC');
         }
 
         return $auto_ad
-            ->with(['make',
-                    'model',
-                    'ad'=> function($query)
-                    {
-                        $query->with(['images','user']);
-                    },'generation','series','equipment','fuelType','bodyType','transmissionType','driveType','dealer','dealerShowRoom'])
+            ->with([
+                'make'=> function($query) {
+                    $query->select('id', 'name');
+                },
+                'model'=> function($query) {
+                    $query->select('id', 'name');
+                },
+                'ad'=> function($query)
+                {
+                    $query->select('id','type','thumbnail','title','user_id')->with([
+                        'images' => function($query) {
+                            $query->select('id');
+                        },
+                        'user' => function($query) {
+                            $query->select('id', 'type');
+                        }
+                    ]);
+                },
+                'fuelType' => function($query) {
+                    $query->select('id', 'external_name');
+                },
+                'bodyType' => function($query) {
+                    $query->select('id', 'external_name');
+                },
+                'transmissionType'=> function($query) {
+                    $query->select('id', 'external_name');
+                },
+                'dealer'=> function($query) {
+                    $query->select('id', 'logo_path','company_name','zip_code', 'city', 'country');
+                },
+                'dealerShowRoom' => function($query) {
+                    $query->select('id', 'whatsapp_number','mobile_number');
+                }
+                ])
             ->paginate(24)
             ->toArray();
     }
@@ -1420,7 +1450,7 @@ class AdsController extends Controller
             if ($filters->model_id) {
                 $query->where('model_id',$filters->model_id);
             }
-            
+
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -1442,7 +1472,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -1473,7 +1503,7 @@ class AdsController extends Controller
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            
+
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1499,13 +1529,13 @@ class AdsController extends Controller
                 $query->where('co2_emissions',$filters->co2_emissions);
             }*/
         });
-        
+
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
         if ($filters->newer) {
             $moto_ad->orderBy('created_at','DESC');
         }
-        
+
         if ($filters->oldest) {
             $moto_ad->orderBy('created_at','ASC');
         }
@@ -1513,7 +1543,7 @@ class AdsController extends Controller
         if ($filters->higher_price) {
             $moto_ad->orderBy('price','DESC');
         }
-        
+
         if ($filters->lower_price) {
             $moto_ad->orderBy('price','ASC');
         }
@@ -1538,7 +1568,7 @@ class AdsController extends Controller
             if($filters->dealer) {
                 $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
+
             if ($filters->vehicle_category_id) {
                 $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
@@ -1565,7 +1595,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -1594,11 +1624,11 @@ class AdsController extends Controller
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            
+
             if (!is_null($filters->sleeping_places)) {
                 $query->where('sleeping_places',$filters->sleeping_places);
             }
-            
+
             if ($filters->inspection_valid_until_year) {
                 $query->where('inspection_valid_until_year',$filters->inspection_valid_until_year);
             }
@@ -1627,7 +1657,7 @@ class AdsController extends Controller
         if ($filters->newer) {
             $mobile_home_ad->orderBy('created_at','DESC');
         }
-        
+
         if ($filters->oldest) {
             $mobile_home_ad->orderBy('created_at','ASC');
         }
@@ -1635,12 +1665,12 @@ class AdsController extends Controller
         if ($filters->higher_price) {
             $mobile_home_ad->orderBy('price','DESC');
         }
-        
+
         if ($filters->lower_price) {
             $mobile_home_ad->orderBy('price','ASC');
         }
 
-        
+
 
 
         return $mobile_home_ad
@@ -1690,7 +1720,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -1715,7 +1745,7 @@ class AdsController extends Controller
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            
+
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1735,13 +1765,13 @@ class AdsController extends Controller
                 $query->where('co2_emissions',$filters->co2_emissions);
             }*/
         });
-        
+
         $truck_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
         if ($filters->newer) {
             $truck_ad->orderBy('created_at','DESC');
         }
-        
+
         if ($filters->oldest) {
             $truck_ad->orderBy('created_at','ASC');
         }
@@ -1749,7 +1779,7 @@ class AdsController extends Controller
         if ($filters->higher_price) {
             $truck_ad->orderBy('price','DESC');
         }
-        
+
         if ($filters->lower_price) {
             $truck_ad->orderBy('price','ASC');
         }
@@ -1763,33 +1793,33 @@ class AdsController extends Controller
             ->paginate(24)
             ->toArray();
     }
-    
+
     public function countSearchAdvanced(Request $request)
-    {   
-        
+    {
+
         $resource = ApiHelper::resource();
-        
+
 
         try {
 
             $dealer_id = null;
-            
+
             if ($request->dealer) {
-                
+
                 $dealers = Dealer::select('id')
                 	->where('company_name','LIKE','%'.$request->dealer.'%')
                 	->get()
                 	->toArray();
-                
+
                 foreach ($dealers as $key => $dealer) {
                     $dealer_id[$key] = $dealer['id'];
                 }
             }
-            
+
             $request['dealer_id'] = $dealer_id;
-            
+
             $counts = 0;
-            
+
             $type = $request->type;
 
             switch ($type) {
@@ -1811,7 +1841,7 @@ class AdsController extends Controller
                 default:
                     break;
             }
-               
+
             return response()->json(['data' => $counts], 200);
 
         } catch (Exception $e) {
@@ -1856,7 +1886,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -1890,7 +1920,7 @@ class AdsController extends Controller
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            
+
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -1913,9 +1943,9 @@ class AdsController extends Controller
                 $query->where('co2_emissions',$filters->co2_emissions);
             }*/
         });
-        
+
         $auto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-        
+
         return $auto_ad->count();
     }
 
@@ -1954,7 +1984,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -1982,7 +2012,7 @@ class AdsController extends Controller
             if ($filters->color) {
                 $query->where('color',$filters->color);
             }
-            
+
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -2008,7 +2038,7 @@ class AdsController extends Controller
                 $query->where('co2_emissions',$filters->co2_emissions);
             }*/
         });
-        
+
         $moto_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
 
         return $moto_ad->count();
@@ -2049,7 +2079,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -2086,7 +2116,7 @@ class AdsController extends Controller
             /*if (!is_null($filters->co2_emissions)) {
                 $query->where('co2_emissions',$filters->co2_emissions);
             }*/
-            
+
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -2120,7 +2150,7 @@ class AdsController extends Controller
              if($filters->dealer) {
                 $query->whereRaw("dealer_id IN(SELECT id FROM dealers WHERE company_name LIKE '%".$filters->dealer."%')");
             }
-            
+
             if ($filters->make_id) {
                 $query->where('make_id',$filters->make_id);
             }
@@ -2130,7 +2160,7 @@ class AdsController extends Controller
             if ($filters->vehicle_category_id) {
                 $query->where('vehicle_category_id',$filters->vehicle_category_id);
             }
-            
+
             if ($filters->category) {
                 $query->whereRaw("vehicle_category_id IN (SELECT id FROM vehicle_categories WHERE category = '".$filters->category."')" );
             }
@@ -2150,7 +2180,7 @@ class AdsController extends Controller
             if (!$filters->to_first_registration_year && $filters->from_first_registration_year) {
                 $query->where('first_registration_year','>=',$filters->from_first_registration_year);
             }
-            
+
             if ($filters->to_first_registration_year && !$filters->from_first_registration_year) {
                 $query->where('first_registration_year','<=',$filters->to_first_registration_year);
             }
@@ -2178,7 +2208,7 @@ class AdsController extends Controller
             if ($filters->interior_color) {
                 $query->where('interior_color',$filters->interior_color);
             }
-            
+
             if ($filters->inspection_valid_until_month) {
                 $query->where('inspection_valid_until_month',$filters->inspection_valid_until_month);
             }
@@ -2188,7 +2218,7 @@ class AdsController extends Controller
              if (!is_null($filters->owners)) {
                 $query->where('owners',$filters->owners);
             }
-            
+
             if (!is_null($filters->from_co2_emissions) && !is_null($filters->to_co2_emissions)){
                 $query->whereBetween('co2_emissions',[$filters->from_co2_emissions,$filters->to_co2_emissions]);
             }
@@ -2199,29 +2229,29 @@ class AdsController extends Controller
                 $query->where('fuel_consumption',$filters->fuel_consumption);
             }
         });
-        
+
         $truck_ad->whereRaw('ad_id in(SELECT id FROM ads WHERE status = 10 and thumbnail is not null)');
-        
+
         return $truck_ad->count();
     }
 
      public function searchAdvancedMechanic(Request $request)
-    {   
-        
+    {
+
         $resource = ApiHelper::resource();
         $filter_types = [];
         $response = [];
-        
+
         try {
-            
+
             $mechanic_ads = MechanicAd::join('ads','ads.id','mechanic_ads.ad_id');
-            
+
             //$mechanic_ads = MechanicAd::query();
 
             $filters = $request->all();
 
             $mechanic_ads = $mechanic_ads->where(function($query) use ($filters){
-            
+
                 if (isset($filters['title'])) {
                     $query->where('ads.title','LIKE', '%'.$filters['title'].'%');
                 }
@@ -2232,11 +2262,11 @@ class AdsController extends Controller
                     $query->where('mechanic_ads.city','LIKE','%'.$filters['city'].'%');
                 }
             })->with(['dealer','dealerShowRoom']);
-            
+
             if (isset($filters['oldest'])) {
                 $mechanic_ads->orderBy('created_at','DESC');
             }
-            
+
             if (isset($filters['newer'])) {
                 $mechanic_ads->orderBy('created_at','ASC');
             }
@@ -2253,19 +2283,19 @@ class AdsController extends Controller
     {
 
         $type = null;
-        
+
         if($request->type == 'vehicle'){
              $type = ['auto','moto','mobile-home','truck'];
         }
         if($request->type == 'service'){
-            $type = ['rental','shop','mechanic'];   
+            $type = ['rental','shop','mechanic'];
         }
-        
+
         $data = Ad::select('ads.*')
             ->join('promoted_simple_ads','ads.id','promoted_simple_ads.ad_id')
             ->where('promoted_simple_ads.user_id',Auth::user()->id);
-            
-            
+
+
         if (!is_null($type)) {
             $data = $data->whereIn('ads.type',$type);
         }
@@ -2310,22 +2340,22 @@ class AdsController extends Controller
     public function getPromotedFrontPageAdsByUser(Request $request)
     {
         $type = null;
-        
+
         if($request->type == 'vehicle'){
              $type = ['auto','moto','mobile-home','truck'];
         }
         if($request->type == 'service'){
-            $type = ['rental','shop','mechanic'];   
+            $type = ['rental','shop','mechanic'];
         }
 
 
         $data = Ad::select('ads.*')
             ->join('promoted_front_page_ads','ads.id','promoted_front_page_ads.ad_id')
             ->where('promoted_front_page_ads.user_id',Auth::user()->id);
-        
+
         if (!is_null($type)) {
             $data = $data->whereIn('ads.type',$type);
-        } 
+        }
 
         $data->with([
                     'user',
