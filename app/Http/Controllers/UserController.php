@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\{SellerStore,User,UserRole,tore,Company,RecoveryCode};
+use App\Models\{SellerStore,User,UserRole,Store,Dealer,Company,RecoveryCode};
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
@@ -29,20 +29,36 @@ class UserController extends Controller
 
         try {
 
-            $credentials = $request->only('email', 'password');
-
-            
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
+
+                $dealer = Dealer::where('code',$request->email)->first();
+
+                if (!is_null($dealer)) {
+
+                    $user = User::where('dealer_id',$dealer->id)->first();
+
+                    $credentials = [
+                        'email' => $user->email,
+                        'password' => $request->password
+                    ];
+
+                    if (!$token = JWTAuth::attempt($credentials)) {
+                       return response()->json(['error' => 'invalid_credentials'], 400);
+                    }
+
+                }else{
+                    return response()->json(['error' => 'invalid_credentials'], 400);
+                }
             }
+
         } catch (JWTException $e) {
             return response()->json(['error' => 'could_not_create_token'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $user = Auth::user();
-        
+
         $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
-    
+
         return response()->json([
             'token' => $token,
             'user'  => Auth::user(),
@@ -52,14 +68,10 @@ class UserController extends Controller
 
     public function refresh(Request $request)
     {
-        $user = JWTAuth::parseToken()->authenticate();
-
-        $user = Auth::user();
-        
         $plan_active = $user->plan_active()->orderBy('created_at','DESC')->first();
-       
+
         return response()->json([
-            'token' => $token,
+            'token' => auth()->refresh(),
             'user'  => Auth::user(),
             'plan_active' => $plan_active
         ]);
@@ -71,17 +83,17 @@ class UserController extends Controller
 
         try {
 
-            $admin = User::where('email',$credentials['email'])->first(); 
-            
+            $admin = User::where('email',$credentials['email'])->first();
+
             $authenticate = false;
-            
+
             if (is_null($admin)) {
                 return response()->json(['error' => 'invalid_credentials'], Response::HTTP_UNAUTHORIZED);
             }
 
             foreach ($admin->roles as $role) {
                 $authenticate = $role['name'] == 'ADMIN' ? true : false;
-             
+
             }
 
             if (!$token = JWTAuth::attempt($credentials)) {
@@ -122,7 +134,7 @@ class UserController extends Controller
     }
 
     public function register_occasional(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
@@ -138,9 +150,9 @@ class UserController extends Controller
             ApiHelper::setError($resource, 0, 422, $validator->errors()->all());
             return $this->sendResponse($resource);
         }
-        
+
         try {
-            
+
             $user = new User;
             $user->first_name = $request->name;
             $user->last_name = $request->last_name;
@@ -148,7 +160,7 @@ class UserController extends Controller
             $user->mobile_number = $request->mobile_number;
             $user->whatsapp_number = $request->whatsapp_number;
             $user->password = Hash::make($request->password);
-            
+
             $user->save();
 
             $token = JWTAuth::fromUser($user);
@@ -158,11 +170,11 @@ class UserController extends Controller
         } catch (Exception $e) {
             ApiHelper::setError($resource, 0, 500, $e->getMessage());
             return $this->sendResponse($resource);
-        }    
+        }
     }
 
     public function register_professional(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
@@ -181,7 +193,7 @@ class UserController extends Controller
         }
 
         try {
-            
+
             $user = new User;
             $user->name = $request->name;
             $user->email = $request->email;
@@ -189,14 +201,14 @@ class UserController extends Controller
             $user->last_name = $request->last_name;
             $user->password = Hash::make($request->password);
             $user->company_id = $request->company_id;
-            
+
             $user->save();
 
             $seller_store = new SellerStore;
             $seller_store->user_id = $user->id;
             $seller_store->store_id = $request->store_id;
 
-            $seller_store->save(); 
+            $seller_store->save();
 
             $store = Store::find($request->store_id);
             $company = Company::find($request->company_id);
@@ -212,7 +224,7 @@ class UserController extends Controller
     }
 
     public function recovery_email(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
@@ -250,7 +262,7 @@ class UserController extends Controller
     }
 
     public function recovery_code(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
@@ -281,7 +293,7 @@ class UserController extends Controller
                 return $this->sendResponse($resource);
             }
 
-            
+
             if ($recovery_code->expiret_at < Carbon::now()) {
                 $recovery_code->delete();
                 ApiHelper::setError($resource, 0, 422, ['data' => 'Código expirado, inténtelo nuevamente']);
@@ -298,7 +310,7 @@ class UserController extends Controller
     }
 
     public function recovery_password(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [
@@ -319,7 +331,7 @@ class UserController extends Controller
             $recovery_code = RecoveryCode::where('user_id',$user->id)
                 ->where('code',$request->code)
                 ->first();
-            
+
             if (is_null($recovery_code)) {
                 ApiHelper::setError($resource, 0, 422, ['data' => 'Código incorrecto']);
                 return $this->sendResponse($resource);
@@ -330,7 +342,7 @@ class UserController extends Controller
             $user->save();
 
             $recovery_code->delete();
-            
+
             return response()->json(['data' => 'OK'], 200);
 
         } catch (Exception $e) {
@@ -340,7 +352,7 @@ class UserController extends Controller
     }
 
     public function recovery_password_admin(Request $request)
-    {   
+    {
         $resource = ApiHelper::resource();
 
         $validator = Validator::make($request->all(), [

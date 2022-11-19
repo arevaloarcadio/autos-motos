@@ -40,6 +40,10 @@ class AutoAdsController extends Controller
      * @param IndexAutoAd $request
      * @return array|Factory|View
      */
+    public function __construct()
+    {
+        set_time_limit(360);
+    }
     public function index(IndexAutoAd $request)
     {
         // dd(Redis::exists('auto_ads') && !$request->filters && $request->query->get('orderBy') == null?"true":"false");

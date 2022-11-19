@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Redis;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/generar-ordenar','App\Http\Controllers\ModelController@generadorYOrdenamiento')->name('models.order');
 
 Route::get('/clear/redis', function () {
     $clear = Redis::flushDB();

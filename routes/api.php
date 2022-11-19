@@ -20,11 +20,16 @@ Route::namespace ('App\Http\Controllers')->group(function () {
     });
 });
 
-Route::group(['middleware' => ['jwt.verify']], function () {
+Route::prefix('auth')->middleware(['jwt.verify'])->group(static function() {
+    Route::get('/profile', 'App\Http\Controllers\UserController@getAuthenticatedUserProfile');
+});
 
+Route::group(['middleware' => ['jwt.verify']], function() {
+
+    Route::post('/refresh', 'App\Http\Controllers\UserController@refresh');
     Route::post('/recovery-password-admin', 'App\Http\Controllers\UserController@recovery_password_admin');
 
-    Route::namespace ('App\Http\Controllers')->group(static function () {
+    Route::namespace('App\Http\Controllers')->group(static function() {
         Route::post('/billings', 'BillingController@store')->name('billing-store');
         Route::post('/paypal-payments', 'PaypalController@pay')->name('paypal-payment');
         Route::post('/paypal-payments-anuncio', 'PaypalController@payAnuncio')->name('paypal-payment.anuncio');
@@ -154,7 +159,6 @@ Route::namespace ('App\Http\Controllers\Admin')->group(function () {
 });
 
 Route::post('/login', 'App\Http\Controllers\UserController@authenticate');
-Route::post('/refresh', 'App\Http\Controllers\UserController@refresh');
 
 Route::post('/recovery-password-email', 'App\Http\Controllers\UserController@recovery_email');
 Route::post('/recovery-password-code', 'App\Http\Controllers\UserController@recovery_code');
