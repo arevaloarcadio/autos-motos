@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ModelsController extends Controller
@@ -35,12 +36,12 @@ class ModelsController extends Controller
         if ($request->all) {
             $query = Models::query();
             $columns =  ['id', 'name', 'make_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
-                
+
             if ($request->filters) {
                 foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
                         if ($column == $key) {
-                       
+
                            $query->where($key,$filter);
                         }
                     }
@@ -48,13 +49,13 @@ class ModelsController extends Controller
             }
 
             foreach (Models::getRelationships() as $key => $value) {
-                
+
                $query->with($key);
             }
 
             return ['data' => $query->get()];
         }
-        
+
         if ($request->filters) {
             foreach ($request->filters as $key => $filter) {
                 $marca=Make::find($filter)->load(['grupos'=>function($q){
@@ -75,38 +76,38 @@ class ModelsController extends Controller
             ['id', 'name', 'slug', 'make_id', 'ad_type'],
 
             function ($query) use ($request) {
-                
+
                 $columns =  ['id', 'name', 'make_id', 'is_active', 'ad_type', 'external_id', 'external_updated_at'];
-                
+
                 foreach ($columns as $column) {
                         if ($request->filters) {
                             foreach ($request->filters as $key => $filter) {
-                                
-                            
-                                    
-                            
+
+
+
+
                                     if ($column == $key) {
-                                    
+
                                         $query->where($key,$filter);
                                      }
-                                
-                                
-                               
+
+
+
                             }
                         }
                     }
-                
-                
+
+
             }
         );
-        
+
         return ['data' => $data];
                 }
-                
-               
+
+
             }
         }
-       
+
     }
 
     /**
@@ -234,5 +235,16 @@ class ModelsController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function deleteGroup(Request $request, Models $model)
+    {
+        $model->sub_model_id = null;
+        $model->save();
+
+        return response()->json([
+            'data'=> $model,
+            'ok' => true
+        ],200);
     }
 }

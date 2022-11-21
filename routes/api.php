@@ -27,8 +27,6 @@ Route::prefix('auth')->middleware(['jwt.verify'])->group(static function() {
 Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::post('/refresh', 'App\Http\Controllers\UserController@refresh');
-    Route::post('/recovery-password-admin', 'App\Http\Controllers\UserController@recovery_password_admin');
-
     Route::namespace('App\Http\Controllers')->group(static function() {
         Route::post('/billings', 'BillingController@store')->name('billing-store');
         Route::post('/paypal-payments', 'PaypalController@pay')->name('paypal-payment');

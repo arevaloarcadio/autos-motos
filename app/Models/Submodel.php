@@ -16,4 +16,15 @@ class Submodel extends Model
         return $this->belongsToMany(Models::class,'sub_model_by_models','sub_model_id','model_id')
                   ->using(SubmodelByModel::class);
     }
+
+
+    /**
+     * Get all of the models for the Submodel
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function models(): HasMany
+    {
+        return $this->hasMany(Models::class, 'sub_model_id', 'id');
+    }
 }
