@@ -246,6 +246,15 @@ class MakesController extends Controller
         ],200);
     }
 
+    public function getModels(Make $make)
+    {
+        return response()->json([
+            'data' => $make->models,
+            'message' => 'Lista de modelos de marca',
+            'ok' => true
+        ],200);
+    }
+
     public function getAll()
     {
         $makes = Make::select('id','name','has_sub_model')
