@@ -184,14 +184,11 @@ class MakesController extends Controller
         // Update changed values Make
         $make->update($sanitized);
 
-        if ($request->ajax()) {
-            return [
-                'redirect' => url('admin/makes'),
-                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
-            ];
-        }
-
-        return redirect('admin/makes');
+        return response()->json([
+            'data' => $make,
+            'message' => 'Marca actualizada',
+            'ok' => true
+        ],200);
     }
 
     /**
@@ -240,6 +237,20 @@ class MakesController extends Controller
         $makes = Make::select('id','name')
         ->where('is_active',1)
         ->where('has_sub_model',1)
+        ->get();
+
+        return response()->json([
+            'data' => $makes,
+            'message' => 'Lista de marcas con grupos',
+            'ok' => true
+        ],200);
+    }
+
+    public function getAll()
+    {
+        $makes = Make::select('id','name','has_sub_model')
+        ->where('is_active',1)
+        ->withCount('grupos')
         ->get();
 
         return response()->json([
