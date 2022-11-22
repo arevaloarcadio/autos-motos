@@ -37,11 +37,11 @@ class MakesController extends Controller
     public function index(IndexMake $request)
     {
         if ($request->all) {
-            
+
             $query = Make::query();
 
             $columns = ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at','has_sub_model'];
-                
+
             if ($request->filters) {
                 foreach ($columns as $column) {
                     foreach ($request->filters as $key => $filter) {
@@ -58,7 +58,7 @@ class MakesController extends Controller
 
             return ['data' => $query->get()];
         }
-        
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Make::class)->processRequestAndGet(
             // pass the request with params
@@ -71,9 +71,9 @@ class MakesController extends Controller
             ['id', 'name', 'slug', 'ad_type'],
 
             function ($query) use ($request) {
-                        
+
                 $columns = ['id', 'name', 'is_active', 'ad_type', 'external_id', 'external_updated_at','has_sub_model'];
-                
+
                 foreach ($columns as $column) {
                         if ($request->filters) {
                             foreach ($request->filters as $key => $filter) {
@@ -89,7 +89,7 @@ class MakesController extends Controller
                 }
             }
         );
-        
+
         return ['data' => $data];
     }
 
@@ -98,7 +98,7 @@ class MakesController extends Controller
         $resource = ApiHelper::resource();
 
         try {
-            
+
             $sub_models = Submodel::where('make_id',$make_id)->with('sub_models_by_model')->get();
 
             return response()->json(['data' => $sub_models], 200);
@@ -233,5 +233,19 @@ class MakesController extends Controller
         });
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
+    }
+
+    public function getGroupedMakes()
+    {
+        $makes = Make::select('id','name')
+        ->where('is_active',1)
+        ->where('has_sub_model',1)
+        ->get();
+
+        return response()->json([
+            'data' => $makes,
+            'message' => 'Lista de marcas con grupos',
+            'ok' => true
+        ],200);
     }
 }

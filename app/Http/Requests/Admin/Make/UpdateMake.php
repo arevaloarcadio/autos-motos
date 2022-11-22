@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class UpdateMake extends FormRequest
 {
     use \App\Traits\ErrorMessageValidations;
-    
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,10 +31,11 @@ class UpdateMake extends FormRequest
             'name' => ['sometimes', 'string'],
             'slug' => ['sometimes', Rule::unique('makes', 'slug')->ignore($this->make->getKey(), $this->make->getKeyName()), 'string'],
             'is_active' => ['sometimes', 'boolean'],
+            'has_sub_model' => ['sometimes', 'boolean'],
             'ad_type' => ['sometimes', 'string'],
             'external_id' => ['nullable', Rule::unique('makes', 'external_id')->ignore($this->make->getKey(), $this->make->getKeyName()), 'integer'],
             'external_updated_at' => ['nullable', 'date'],
-            
+
         ];
     }
 

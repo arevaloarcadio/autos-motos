@@ -91,6 +91,7 @@ Route::namespace ('App\Http\Controllers\Admin')->group(function () {
 
     Route::prefix('makes')->name('makes/')->group(function () {
         Route::get('/', 'MakesController@index')->name('index');
+        Route::get('/get-grouped', 'MakesController@getGroupedMakes')->name('getGroupedMakes');
         Route::get('/{id}/sub_models', 'MakesController@getSubmodels')->name('getSubmodels');
         Route::post('/', 'MakesController@store')->name('store');
         Route::post('/bulk-destroy', 'MakesController@bulkDestroy')->name('bulk-destroy');
