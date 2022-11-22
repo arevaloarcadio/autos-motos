@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Submodel;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SubModel\StoreRequest;
+use App\Http\Requests\Admin\SubModel\UpdateRequest;
 
 class SubModelController extends Controller
 {
@@ -34,9 +36,29 @@ class SubModelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        $data = $request->all();
+        $sub_model_exist = Submodel::where('name',$data['name'])->where('make_id',$data['make_id'])->first();
+        if($sub_model_exist){
+            return response()->json([
+                'data' => [],
+                'message' => 'Ya existe un grupo con este nombre para esta marca',
+                'ok' => false
+            ],200);
+        }
+        $sub_model = new Submodel;
+        $sub_model->name = $data['name'];
+        $sub_model->make_id = $data['make_id'];
+        if(isset($data['value'])){
+            $sub_model->value = $data['value'];
+        }
+        $sub_model->save();
+        return response()->json([
+            'data' => $sub_model,
+            'message' => 'Grupo creado',
+            'ok' => true
+        ],201);
     }
 
     /**
@@ -68,9 +90,28 @@ class SubModelController extends Controller
      * @param  \App\Models\Submodel  $submodel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Submodel $sub_model)
+    public function update(UpdateRequest $request, Submodel $sub_model)
     {
-        //
+        $data = $request->all();
+        $sub_model_exist = Submodel::where('name',$data['name'])->where('make_id',$data['make_id'])->where('id','!=',$sub_model->id)->first();
+        if($sub_model_exist){
+            return response()->json([
+                'data' => [],
+                'message' => 'Ya existe un grupo con este nombre para esta marca',
+                'ok' => false
+            ],200);
+        }
+        $sub_model->name = $data['name'];
+        $sub_model->make_id = $data['make_id'];
+        if(isset($data['value'])){
+            $sub_model->value = $data['value'];
+        }
+        $sub_model->save();
+        return response()->json([
+            'data' => $sub_model,
+            'message' => 'Grupo actualizado',
+            'ok' => true
+        ],200);
     }
 
     /**
