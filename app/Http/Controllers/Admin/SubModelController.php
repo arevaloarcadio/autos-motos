@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Models;
 use App\Models\Submodel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SubModel\StoreRequest;
 use App\Http\Requests\Admin\SubModel\UpdateRequest;
+use App\Http\Requests\Admin\SubModel\UpdateModelsRequest;
 
 class SubModelController extends Controller
 {
@@ -127,6 +129,26 @@ class SubModelController extends Controller
         $submodel->delete();
         return response()->json([
             'data'=> [],
+            'ok' => true
+        ],200);
+    }
+
+    public function updateModels(UpdateModelsRequest $request, Submodel $sub_model)
+    {
+        $old_models = $sub_model->models()->get()->pluck('id')->toArray();
+        $models = $request->models;
+        $deleted_models = array_diff($old_models,$models);
+        if ($deleted_models) {
+            Models::whereIn('id',$deleted_models)->update([
+                'sub_model_id' => null
+            ]);
+        }
+        Models::whereIn('id',$models)->update([
+            'sub_model_id' => $sub_model->id
+        ]);
+        return response()->json([
+            'data'=> [],
+            'message'=> 'Modelos de grupo actualizados',
             'ok' => true
         ],200);
     }

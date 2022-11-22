@@ -101,6 +101,9 @@ Route::namespace ('App\Http\Controllers\Admin')->group(function () {
     });
 
     Route::resource('sub-models', 'SubModelController');
+    Route::prefix('sub-models')->name('sub-models.')->group(function () {
+        Route::post('/{sub_model}/update-models', 'SubModelController@updateModels')->name('bulk-destroy');
+    });
 
     Route::prefix('markets')->name('markets/')->group(function () {
         Route::get('/', 'MarketsController@index')->name('index');

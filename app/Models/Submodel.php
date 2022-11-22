@@ -23,7 +23,7 @@ class Submodel extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function models(): HasMany
+    public function models()
     {
         return $this->hasMany(Models::class, 'sub_model_id', 'id');
     }
