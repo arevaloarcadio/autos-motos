@@ -99,7 +99,7 @@ class MakesController extends Controller
 
         try {
 
-            $sub_models = Submodel::where('make_id',$make_id)->with('sub_models_by_model')->get();
+            $sub_models = Submodel::where('make_id',$make_id)->with('models')->get();
 
             return response()->json(['data' => $sub_models], 200);
 
