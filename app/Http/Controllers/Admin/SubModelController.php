@@ -47,7 +47,7 @@ class SubModelController extends Controller
                 'data' => [],
                 'message' => 'Ya existe un grupo con este nombre para esta marca',
                 'ok' => false
-            ],200);
+            ],400);
         }
         $sub_model = new Submodel;
         $sub_model->name = $data['name'];
@@ -101,7 +101,7 @@ class SubModelController extends Controller
                 'data' => [],
                 'message' => 'Ya existe un grupo con este nombre para esta marca',
                 'ok' => false
-            ],200);
+            ],400);
         }
         $sub_model->name = $data['name'];
         $sub_model->make_id = $data['make_id'];
