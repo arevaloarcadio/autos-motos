@@ -246,10 +246,15 @@ class MakesController extends Controller
         ],200);
     }
 
-    public function getModels(Make $make)
+    public function getModels(Request $request,Make $make)
     {
+        $models = $make->models();
+        if (isset($request->grouped) && $request->grouped == "false") {
+            $models = $models->whereNull('sub_model_id');
+        }
+        $models = $models->get();
         return response()->json([
-            'data' => $make->models,
+            'data' => $models,
             'message' => 'Lista de modelos de marca',
             'ok' => true
         ],200);
