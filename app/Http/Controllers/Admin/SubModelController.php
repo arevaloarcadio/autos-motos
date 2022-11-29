@@ -124,7 +124,7 @@ class SubModelController extends Controller
      */
     public function destroy(Submodel $sub_model)
     {
-        $submodel_id = $submodel->id;
+        $submodel_id = $sub_model->id;
         $submodel->models()->update(['sub_model_id' => null]);
         $submodel->delete();
         return response()->json([
