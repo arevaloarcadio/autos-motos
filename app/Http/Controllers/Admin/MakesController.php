@@ -87,6 +87,7 @@ class MakesController extends Controller
                 foreach (Make::getRelationships() as $key => $value) {
                    $query->with($key);
                 }
+                $query->withCount('models');
             }
         );
 
